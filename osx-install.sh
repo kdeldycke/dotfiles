@@ -7,9 +7,14 @@ xcodebuild -license
 # Install Homebrew
 ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
 brew update
-brew doctor
 brew install git
 
+# Install Python & co
 brew install python
-#sudo easy_install pip
+brew link --overwrite python
+tee -a ~/.bash_profile <<-EOF
+  export PATH="/usr/local/bin:\$PATH"
+EOF
 sudo pip install virtualenv
+
+brew doctor
