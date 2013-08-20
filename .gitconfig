@@ -1,0 +1,17 @@
+[core]
+    editor=/usr/bin/vi
+	pager = 
+[user]
+	name = Kevin Deldycke
+	email = kevin@deldycke.com
+[color]
+	diff = auto
+	status = auto
+	branch = auto
+	ui = auto
+[diff]
+    renames = copies
+    # Source: http://blog.apiaxle.com/post/handy-git-tips-to-stop-you-getting-fired/
+	algorithm = patience
+[push]
+	default = simple
