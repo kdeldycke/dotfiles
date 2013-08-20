@@ -1,6 +1,7 @@
 #TODO:
 # install xcode
 xcodebuild -license
+# install xcode's command line tools
 
 # update all 
 
