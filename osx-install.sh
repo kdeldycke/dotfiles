@@ -1,9 +1,14 @@
-#TODO:
-# install xcode
-xcodebuild -license
-# install xcode's command line tools
+# TODO: install xcode
+# See: http://stackoverflow.com/a/18244349
 
-# update all 
+# Accept Xcode license
+xcodebuild -license
+
+# TODO: install xcode's command line tools
+# See: http://apple.stackexchange.com/a/98764
+
+# TODO: update all OSX packages
+# See: http://apple.stackexchange.com/questions/42353/can-mac-app-store-installs-upgrades-be-automated
 
 # Install Homebrew
 ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
