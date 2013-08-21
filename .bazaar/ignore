@@ -1,0 +1,10 @@
+*.a
+*.o
+*.py[co]
+*.so
+*.sw[nop]
+*~
+.#*
+[#]*#
+__pycache__
+bzr-orphans

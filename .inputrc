@@ -1,0 +1,12 @@
+# Source of these tips: https://speakerdeck.com/u/reinout/p/explicit-developer-laptop-automation
+
+# Ignore case for tab completion
+set completion-ignore-case on
+
+# No need to press tab twice
+set show-all-if-ambiguous on
+
+# Type the start of a command and press up/down to cycle through previous versions od that command.
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+
