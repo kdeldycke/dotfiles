@@ -23,7 +23,7 @@ shopt -s histappend
 alias du='du -csh'
 alias df='df -Th'
 alias ll='ls -lah --group-directories-first'
-alias ls='ls -hF --color'
+alias ls='ls -hFp --color'
 alias vi='vim'
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
