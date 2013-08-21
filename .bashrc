@@ -37,6 +37,5 @@ alias .....="cd ../../../.."
 
 # Python shell auto-completion and history
 export PYTHONSTARTUP="$HOME/python-shell-enhancement/pythonstartup.py"
-export PYTHON_HISTORY_FILE="$HOME/.pythonhistory"
-
+export PYTHON_HISTORY_FILE="$HOME/.python_history"
 
