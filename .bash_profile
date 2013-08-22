@@ -48,6 +48,7 @@ alias egrep='egrep --color=auto'
 alias g="git"
 alias h="history"
 alias v="vim"
+alias svn="colorsvn"
 alias gitx="open ~/Applications/GitX.app"
 
 # Detect which `ls` flavor is in use
