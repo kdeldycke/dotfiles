@@ -38,7 +38,6 @@ sudo aptitude install libavcodec-extra-53
 
 
 # Install GMVault
-sudo pip install --upgrade distribute
 sudo pip install gmvault
 
 
