@@ -35,3 +35,4 @@ but also draws from others:
 
   * http://kevin.deldycke.com/2006/12/all-my-command-lines/
   * https://github.com/mathiasbynens/dotfiles
+  * https://github.com/reinout/tools
