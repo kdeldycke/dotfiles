@@ -8,6 +8,9 @@ export LC_ALL="en_US.UTF-8"
 # Make vim the default editor
 export EDITOR="vim"
 
+# I don't like being restricted to launch apps as root
+export DISPLAY=:0.0 xhost +
+
 # Setting history length
 export HISTCONTROL="ignorespace:erasedups"
 export HISTTIMEFORMAT="[%F %T] "
@@ -31,6 +34,9 @@ shopt -s cdspell
 # Check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
+
+# Tip from http://sourceforge.net/apps/trac/qlc/wiki/InstallationSubversionLinux#Optionalhelpers
+export LESS="-erX"
 
 # Shortcuts and good defaults
 alias du='du -csh'
