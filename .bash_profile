@@ -1,10 +1,19 @@
 # Force Homebrew binaries to take precedence on OSX defaults                                                                             
 export PATH="/usr/local/bin:$PATH"
 
+# Prefer US English and use UTF-8
+export LANG="en_US"
+export LC_ALL="en_US.UTF-8"
+
+# Make vim the default editor
+export EDITOR="vim"
+
 # Setting history length
-HISTCONTROL="ignorespace:erasedups"
-HISTTIMEFORMAT="[%F %T] "
-HISTSIZE=99999
+export HISTCONTROL="ignorespace:erasedups"
+export HISTTIMEFORMAT="[%F %T] "
+export HISTSIZE=99999
+# Make some commands not show up in history
+export HISTIGNORE="ls:cd:cd -:pwd:exit:date:* --help"
 
 # append to the history file, don't overwrite it
 shopt -s histappend
