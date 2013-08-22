@@ -62,4 +62,5 @@ export PYTHON_HISTORY_FILE="$HOME/.python_history"
 complete -W "NSGlobalDomain" defaults
 
 # If possible, add tab completion for many more commands
+[ -f $(brew --prefix)/etc/bash_completion ] && source $(brew --prefix)/etc/bash_completion
 [ -f /etc/bash_completion ] && source /etc/bash_completion

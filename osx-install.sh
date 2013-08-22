@@ -30,7 +30,7 @@ brew install findutils
 brew install bash
 brew tap homebrew/dupes
 brew install homebrew/dupes/grep
-brew install ack rename tree webkit2png bazaar osxutils htop-osx p7zip faad2
+brew install ack rename tree webkit2png bazaar osxutils htop-osx p7zip faad2 bash-completion md5sha1sum
 
 # Install Python & co
 brew install python
