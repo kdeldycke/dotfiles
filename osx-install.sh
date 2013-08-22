@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-./common.sh
+source ./common.sh
 
 # TODO: install xcode
 # See: http://stackoverflow.com/a/18244349
