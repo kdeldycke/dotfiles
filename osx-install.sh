@@ -35,8 +35,6 @@ brew install ack rename tree webkit2png bazaar osxutils htop-osx p7zip faad2 bas
 # Install Python & co
 brew install python
 brew link --overwrite python
-sudo pip install --upgrade pip
-sudo pip install --upgrade setuptools
 sudo pip install --upgrade $PYTHON_PACKAGES
 
 # Install native apps
