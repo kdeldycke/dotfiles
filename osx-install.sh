@@ -36,8 +36,8 @@ brew install ack rename tree webkit2png bazaar osxutils htop-osx p7zip faad2 bas
 brew install python
 brew link --overwrite python
 sudo pip install --upgrade pip
-sudo pip install virtualenv
 sudo pip install --upgrade setuptools
+sudo pip install --upgrade $PYTHON_PACKAGES
 
 # Install native apps
 brew tap phinze/homebrew-cask

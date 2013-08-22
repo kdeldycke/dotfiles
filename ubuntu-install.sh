@@ -15,6 +15,8 @@ sudo aptitude $COMMON_PACKAGES
 # Install Ubuntu specific packages
 sudo aptitude install prey mkvtoolnix-gui mbr hfsprogs hfsplus subtitlecomposer deborphan chromium-browser blender bzr kompare avidemux-common transcode mkvtoolnix mencoder mplayer gitg bleachbit audacity gimp vlc p7zip-full firefox htop thunderbird virtualbox gtk-chtheme gnome-themes-standard python-pip faad h264enc kwrite kscreensaver hunspell-fr hunspell-dictionary-fr aspell-fr gimp-plugin-registry xscreensaver xscreensaver-data xscreensaver-data-extra xscreensaver-gl xscreensaver-gl-extra network-manager-openvpn ksshaskpass bitcoin-qt qemu-kvm dmg2img pdftk chromium-codecs-ffmpeg-extra picard xsltproc xfsprogs lm-sensors bzrtools ntp ca-certificates apt-file kdenlive python-dev gtk2-engines runsnakerun
 
+# Install global Python packages
+sudo pip install --package $PYTHON_PACKAGES
 
 
 sudo aptitude install flashplugin-installer
