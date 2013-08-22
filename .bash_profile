@@ -23,17 +23,26 @@ shopt -s cdspell
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
-# Ubuntu stuff
+# Shortcuts and good defaults
 alias du='du -csh'
 alias df='df -Th'
-alias ll='ls -lah --group-directories-first'
-alias ls='ls -hFp --color'
-# TODO: activate this OSX version
-# alias ls='ls -hFp -G'
 alias vi='vim'
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
+alias g="git"
+alias h="history"
+alias v="vim"
+alias gitx="open ~/Applications/GitX.app"
+
+# Detect which `ls` flavor is in use
+if ls --color > /dev/null 2>&1; then # GNU `ls`
+    colorflag="--color"
+else # OS X `ls`
+    colorflag="-G"
+fi
+alias ll='ls -lah ${colorflag} --group-directories-first'
+alias ls="ls -hFp ${colorflag}"
 
 # Handy aliases for going up in a directory
 alias ..="cd .."
