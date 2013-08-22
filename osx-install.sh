@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+./common.sh
 
 # TODO: install xcode
 # See: http://stackoverflow.com/a/18244349
@@ -15,7 +16,12 @@ xcodebuild -license
 # Install Homebrew
 ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
 brew update
-brew install git
+
+# Install common packages
+brew install $COMMON_PACKAGES
+
+# Install OSX only packages
+brew install bazaar osxutils htop-osx p7zip faad2 
 
 # Install Python & co
 brew install python
@@ -23,3 +29,6 @@ brew link --overwrite python
 sudo pip install virtualenv
 
 brew doctor
+
+# XXX: Ugly patches to fix commands parameters on OSX
+

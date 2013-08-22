@@ -1,3 +1,5 @@
+./common.sh
+
 sudo apt-get update
 sudo apt-get install aptitude
 
@@ -7,8 +9,11 @@ sudo aptitude update
 sudo aptitude upgrade
 
 
+# Install common packages
+sudo aptitude $COMMON_PACKAGES
 
-sudo aptitude install vim prey jnettop mkvtoolnix-gui mbr hfsutils hfsprogs hfsplus subtitlecomposer deborphan chromium-browser blender bzr kompare unrar avidemux-common transcode mkvtoolnix mencoder mplayer subversion git gitg bleachbit audacity gimp vlc p7zip-full firefox colordiff htop thunderbird virtualbox gtk-chtheme gnome-themes-standard python-pip faac faad flac h264enc lame kwrite kscreensaver x264 inkscape hunspell-fr hunspell-dictionary-fr aspell-fr gimp-plugin-registry xscreensaver xscreensaver-data xscreensaver-data-extra xscreensaver-gl xscreensaver-gl-extra network-manager-openvpn ksshaskpass bitcoin-qt graphviz qemu-kvm dmg2img pdftk lftp chromium-codecs-ffmpeg-extra picard xsltproc xfsprogs lm-sensors shntool bzrtools ntp ca-certificates testdisk fdupes apt-file recode pngcrush kdenlive python-dev gtk2-engines exiftool rtmpdump optipng runsnakerun
+# Install Ubuntu specific packages
+sudo aptitude install prey mkvtoolnix-gui mbr hfsprogs hfsplus subtitlecomposer deborphan chromium-browser blender bzr kompare avidemux-common transcode mkvtoolnix mencoder mplayer gitg bleachbit audacity gimp vlc p7zip-full firefox htop thunderbird virtualbox gtk-chtheme gnome-themes-standard python-pip faad h264enc kwrite kscreensaver hunspell-fr hunspell-dictionary-fr aspell-fr gimp-plugin-registry xscreensaver xscreensaver-data xscreensaver-data-extra xscreensaver-gl xscreensaver-gl-extra network-manager-openvpn ksshaskpass bitcoin-qt qemu-kvm dmg2img pdftk chromium-codecs-ffmpeg-extra picard xsltproc xfsprogs lm-sensors bzrtools ntp ca-certificates apt-file kdenlive python-dev gtk2-engines runsnakerun
 
 
 
