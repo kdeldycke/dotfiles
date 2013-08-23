@@ -30,7 +30,7 @@ brew install brew-cask
 installcask x-quartz 
 
 # Install common packages
-brew install $COMMON_PACKAGES
+brew install $SOURCE_PACKAGES
 
 # htop-osx requires root privileges to correctly display all running processes.
 sudo chown root:wheel /usr/local/bin/htop
@@ -47,23 +47,16 @@ brew link --overwrite python
 sudo pip install --upgrade $PYTHON_PACKAGES
 
 # Install binary apps
-installcask audacity
-installcask avidemux
-installcask dropbox
+for PACKAGE in $BIN_PACKAGES
+do
+    installcask $PACKAGE
+done
 installcask f-lux
-installcask firefox
-installcask gimp
 installcask gitx
-installcask inkscape
 installcask insync
 installcask chromium
 installcask iterm2
-installcask virtualbox
-installcask vlc
-installcask bitcoin-qt
-installcask blender
 installcask libre-office
-installcask wireshark
 installcask tunnelblick
 
 # Clean things up
