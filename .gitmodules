@@ -1,3 +1,3 @@
 [submodule "python-shell-enhancement"]
 	path = python-shell-enhancement
-	url = git@github.com:jbisbee/python-shell-enhancement.git
+	url = https://github.com/jbisbee/python-shell-enhancement.git
