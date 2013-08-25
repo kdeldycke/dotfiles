@@ -5,12 +5,6 @@ function installcask() {
     brew cask install "${@}" 2> /dev/null
 }
 
-# TODO: install xcode
-# See: http://stackoverflow.com/a/18244349
-
-# Accept Xcode license
-xcodebuild -license
-
 # Install Xcode's command line tools
 # Source: http://apple.stackexchange.com/a/98764
 curl -fsSL https://gist.github.com/trinitronx/6217746/raw/2c172e297fbafc3b8e0fcc6363df0b7b52e4ae6d/xcode-cli-tools.sh | sudo sh
