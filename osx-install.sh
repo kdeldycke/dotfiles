@@ -11,8 +11,9 @@ function installcask() {
 # Accept Xcode license
 xcodebuild -license
 
-# TODO: install xcode's command line tools
-# See: http://apple.stackexchange.com/a/98764
+# Install Xcode's command line tools
+# Source: http://apple.stackexchange.com/a/98764
+curl -fsSL https://gist.github.com/trinitronx/6217746/raw/2c172e297fbafc3b8e0fcc6363df0b7b52e4ae6d/xcode-cli-tools.sh | sudo sh
 
 # Update all OSX packages
 sudo softwareupdate -i -a
