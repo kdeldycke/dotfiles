@@ -14,6 +14,9 @@ Ubuntu install
 
 Run:
 
+    $ cd
+    $ git clone --recursive https://github.com/kdeldycke/dotfiles.git
+    $ cd dotfiles
     $ ./ubuntu-install.sh
 
 
@@ -22,7 +25,16 @@ OSX install
 
 Run:
 
+    $ cd
+    $ git clone --recursive https://github.com/kdeldycke/dotfiles.git
+    $ cd dotfiles
     $ ./osx-install.sh
+
+
+TODO
+----
+
+  * Update install instructions: there is no git on a pristine OSX.
 
 
 Sources
