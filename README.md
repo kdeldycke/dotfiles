@@ -1,9 +1,7 @@
 dotfiles
 ========
 
-Personal dotfiles for both Ubuntu & OSX.
-
-Currently designed to work for:
+Personal dotfiles, currently designed to work for:
 
   * **Kubuntu 13.04**
   * **Mac OSX 10.8 (Mountain Lion)**
