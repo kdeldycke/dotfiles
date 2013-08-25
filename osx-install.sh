@@ -66,6 +66,7 @@ installcask blender
 installcask libre-office
 installcask wireshark
 installcask tunnelblick
+# TODO: install Prey when https://github.com/phinze/homebrew-cask/pull/953 and https://github.com/phinze/homebrew-cask/pull/954 are addressed.
 
 # Clean things up
 brew doctor
