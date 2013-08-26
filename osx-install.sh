@@ -5,14 +5,9 @@ function installcask() {
     brew cask install "${@}" 2> /dev/null
 }
 
-# TODO: install xcode
-# See: http://stackoverflow.com/a/18244349
-
-# Accept Xcode license
-xcodebuild -license
-
-# TODO: install xcode's command line tools
-# See: http://apple.stackexchange.com/a/98764
+# Install Xcode's command line tools
+# Source: http://apple.stackexchange.com/a/98764
+curl -fsSL https://gist.github.com/trinitronx/6217746/raw/2c172e297fbafc3b8e0fcc6363df0b7b52e4ae6d/xcode-cli-tools.sh | sudo sh
 
 # Update all OSX packages
 sudo softwareupdate -i -a
@@ -58,6 +53,7 @@ installcask chromium
 installcask iterm2
 installcask libre-office
 installcask tunnelblick
+# TODO: install Prey when https://github.com/phinze/homebrew-cask/pull/953 and https://github.com/phinze/homebrew-cask/pull/954 are addressed.
 
 # Clean things up
 brew doctor

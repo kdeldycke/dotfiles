@@ -1,9 +1,7 @@
 dotfiles
 ========
 
-Personal dotfiles for both Ubuntu & OSX.
-
-Currently designed to work for:
+Personal dotfiles, currently designed to work for:
 
   * **Kubuntu 13.04**
   * **Mac OSX 10.8 (Mountain Lion)**
@@ -16,6 +14,9 @@ Ubuntu install
 
 Run:
 
+    $ cd
+    $ git clone --recursive https://github.com/kdeldycke/dotfiles.git
+    $ cd dotfiles
     $ ./ubuntu-install.sh
 
 
@@ -24,7 +25,16 @@ OSX install
 
 Run:
 
+    $ cd
+    $ git clone --recursive https://github.com/kdeldycke/dotfiles.git
+    $ cd dotfiles
     $ ./osx-install.sh
+
+
+TODO
+----
+
+  * Update install instructions: there is no git on a pristine OSX.
 
 
 Sources
