@@ -54,12 +54,12 @@ alias gitx="open ~/Applications/GitX.app"
 
 # Detect which `ls` flavor is in use
 if ls --color > /dev/null 2>&1; then # GNU `ls`
-    colorflag="--color"
-else # OS X `ls`
-    colorflag="-G"
+    lsflags="--color  --group-directories-first"
+else # OSX `ls`
+    lsflags="-G"
 fi
-alias ll='ls -lah ${colorflag} --group-directories-first'
-alias ls="ls -hFp ${colorflag}"
+alias ll='ls -lah ${lsflags}'
+alias ls="ls -hFp ${lsflags}"
 
 # Handy aliases for going up in a directory
 alias ..="cd .."
