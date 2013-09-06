@@ -2,6 +2,7 @@
 
 set nocompatible             " No to the total compatibility with the ancient vi
 
+
 " NeoBundle auto-installation and setup {{{
 
 " Auto installing NeoBundle
@@ -15,7 +16,6 @@ if !filereadable(neobundle_readme)
     let iCanHazNeoBundle=0
 endif
 
-
 " Call NeoBundle
 if has('vim_starting')
     set rtp+=$HOME/.vim/bundle/neobundle.vim/
@@ -24,30 +24,140 @@ call neobundle#rc(expand($HOME.'/.vim/bundle/'))
 
 " is better if NeoBundle rules NeoBundle (needed!)
 NeoBundle 'Shougo/neobundle.vim'
+
 " }}}
+
+
+" BUNDLES (plugins administrated by NeoBundle) {{{
+
+" Vimproc to asynchronously run commands (NeoBundle, Unite)
+NeoBundle 'Shougo/vimproc', {
+      \ 'build' : {
+      \     'windows' : 'make -f make_mingw32.mak',
+      \     'cygwin' : 'make -f make_cygwin.mak',
+      \     'mac' : 'make -f make_mac.mak',
+      \     'unix' : 'make -f make_unix.mak',
+      \    },
+      \ }
+
+" Improved terminal version of molokai, almost identical to the GUI one
+NeoBundle 'joedicastro/vim-molokai256'
+NeoBundle 'tomasr/molokai'
+
+" END BUNDLES }}}
+
+
+" Auto install the plugins {{{
+
+" First-time plugins installation
+if iCanHazNeoBundle == 0
+    echo "Installing Bundles, please ignore key map error messages"
+    echo ""
+    :NeoBundleInstall
+endif
+
+" Check if all of the plugins are already installed, in other case ask if we
+" want to install them (useful to add plugins in the .vimrc)
+NeoBundleCheck
+
+" }}}
+
+
+filetype plugin indent on      " Indent and plugins by filetype
+
+" END NEOBUNDLE }}}
+
+
+
+" VIM Setup {{{ ===============================================================
+
+scriptencoding utf-8
+set encoding=utf-8              " setup the encoding to UTF-8
+set ls=2                        " status line always visible
 
 set statusline=%<\ %n:%f\ %m%r%y%=%-35.(line:\ %l\ of\ %L,\ col:\ %c%V\ (%P)%)
 filetype plugin indent on
  
-syntax on
 set number
 set mouse=a
 set mousehide
 
-set hlsearch
-set showmatch
-set incsearch
-set ignorecase
 set wrap
 set autoindent
-set history=1000
+set visualbell
 set cursorline
+set ttyfast
+set title   
+set showcmd
+set hidden
+set ruler
+set lazyredraw
+set autoread                                     
+set ttimeoutlen=0
 
-set expandtab
-set shiftwidth=4
-set tabstop=4
-set softtabstop=4
-set backspace=2
 
-set background=dark
-"colorscheme solarized
+" Editing {{{
+set expandtab                  " spaces instead of tabs
+set tabstop=4                  " a tab = four spaces
+set shiftwidth=4               " number of spaces for auto-indent
+set softtabstop=4              " a soft-tab of four spaces
+set backspace=indent,eol,start
+set autoindent                 " set on the auto-indent
+set virtualedit=all
+set textwidth=80
+set colorcolumn=81
+" }}}
+
+
+" Searching {{{
+set incsearch                   " incremental searching
+set showmatch                   " show pairs match
+set hlsearch                    " highlight search results
+set smartcase                   " smart case ignore
+set ignorecase                  " ignore case letters
+" }}}
+
+
+" History and permanent undo levels {{{
+set history=1000
+set undofile
+set undoreload=1000
+" }}}
+
+
+" Colorscheme {{{
+syntax enable                  " enable the syntax highlight
+set background=dark            " set a dark background
+set t_Co=256                   " 256 colors for the terminal
+if has('gui_running')
+    colorscheme molokai
+else
+    colorscheme molokai256
+endif
+" }}}
+
+
+" Make a dir if no exists {{{
+function! MakeDirIfNoExists(path)
+    if !isdirectory(expand(a:path))
+        call mkdir(expand(a:path), "p")
+    endif
+endfunction
+" }}}
+
+
+" Backups {{{
+set backup
+set noswapfile
+set backupdir=$HOME/.vim/tmp/backup/
+set undodir=$HOME/.vim/tmp/undo/
+set directory=$HOME/.vim/tmp/swap/
+set viminfo+=n$HOME/.vim/tmp/viminfo
+" make this dirs if no exists previously
+silent! call MakeDirIfNoExists(&undodir)
+silent! call MakeDirIfNoExists(&backupdir)
+silent! call MakeDirIfNoExists(&directory)
+" }}}
+
+
+" END VIM SETUP }}}
