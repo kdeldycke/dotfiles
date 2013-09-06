@@ -13,5 +13,24 @@ BIN_PACKAGES="audacity avidemux dropbox firefox gimp inkscape vlc blender thunde
 # Define global Python packages
 PYTHON_PACKAGES="readline pip setuptools distribute virtualenv virtualenvwrapper pep8 pylint pyflakes coverage"
 
-# Sync dot files
-rsync --exclude ".git/" --exclude ".DS_Store" --exclude ".gitignore" --exclude ".gitmodules" --exclude "*.sh" --exclude "*.swp" --exclude "*.md" -av --no-perms . ~
+# Search local dotfiles
+DOT_FILES=`find . -depth 1 -not -name "\.DS_Store" -and -not -name "\.gitignore" -and -not -name "\.gitmodules" -and -not -name "*\.sh" -and -not -name "*\.swp" -and -not -name "*\.md" -and -not -name "\.git"`
+
+for f in $DOT_FILES
+do
+    source="${PWD}/$f"
+    target="${HOME}/$f"
+    if [ "$1" = "restore" ]; then
+        # Restore backups if found
+        if [ -e "${target}.bak" ] && [ -L "${target}" ]; then
+            unlink ${target}
+            mv $target.df.bak $target
+        fi
+    else
+        # Link files
+        if [ -e "${target}" ] && [ ! -L "${target}" ]; then
+            mv $target $target.bak
+        fi
+        ln -sf ${source} ${target}
+    fi
+done
