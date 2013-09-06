@@ -44,6 +44,12 @@ NeoBundle 'Shougo/vimproc', {
 NeoBundle 'joedicastro/vim-molokai256'
 NeoBundle 'tomasr/molokai'
 
+" Syntax
+NeoBundleLazy 'vim-scripts/JSON.vim', {'autoload': {'filetypes': ['json']}}
+NeoBundleLazy 'vim-scripts/po.vim--gray', {'autoload': {'filetypes': ['po']}}
+NeoBundleLazy 'joedicastro/vim-markdown'
+NeoBundle 'scrooloose/syntastic'
+
 " END BUNDLES }}}
 
 
@@ -188,4 +194,29 @@ augroup END
 " }}}
 
 
+
+" FILETYPES  {{{ ==============================================================
+
+" JSON
+autocmd BufNewFile,BufRead *.json set ft=json
+augroup json_autocmd
+  autocmd!
+  autocmd FileType json set autoindent
+  autocmd FileType json set formatoptions=tcq2l
+  autocmd FileType json set textwidth=78 shiftwidth=2
+  autocmd FileType json set softtabstop=2 tabstop=8
+  autocmd FileType json set expandtab
+  autocmd FileType json set foldmethod=syntax
+augroup END
+
+" MARKDOWN
+au BufRead,BufNewFile *.{md,mdown,mkd,mkdn,markdown,mdwn} set filetype=markdown
+autocmd FileType markdown NeoBundleSource vim-markdown
+autocmd FileType markdown NeoBundleSource vim-markdown-extra-preview
+
+" END FILETYPES }}}
+
+
+
 " END VIM SETUP }}}
+" vim:foldmethod=marker
