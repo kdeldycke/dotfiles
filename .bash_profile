@@ -1,4 +1,11 @@
-# Force Homebrew binaries to take precedence on OSX defaults                                                                             
+# Detect ditribution based on `ls` options availability
+if ls --color > /dev/null 2>&1; then
+    IS_OSX=false
+else
+    IS_OSX=true
+fi
+
+# Force Homebrew binaries to take precedence on OSX default
 export PATH="/usr/local/bin:$PATH"
 
 # Prefer US English and use UTF-8
@@ -7,9 +14,6 @@ export LC_ALL="en_US.UTF-8"
 
 # Make vim the default editor
 export EDITOR="vim"
-
-# I don't like being restricted to launch apps as root
-export DISPLAY=:0.0 xhost +
 
 # Setting history length
 export HISTCONTROL="ignorespace:erasedups"
@@ -53,12 +57,12 @@ alias svn="colorsvn"
 alias gitx="open ~/Applications/GitX.app"
 
 # Detect which `ls` flavor is in use
-if ls --color > /dev/null 2>&1; then # GNU `ls`
-    lsflags="--color  --group-directories-first"
+if $IS_OSX -lt 1; then # GNU `ls`
+    lsflags="--color--group-directories-first"
 else # OSX `ls`
     lsflags="-G"
 fi
-alias ll='ls -lah ${lsflags}'
+alias ll="ls -lah ${lsflags}"
 alias ls="ls -hFp ${lsflags}"
 
 # Handy aliases for going up in a directory
@@ -74,9 +78,26 @@ export PYTHON_HISTORY_FILE="$HOME/.python_history"
 # Add tab completion for SSH hostnames based on ~/.ssh/config, ignoring wildcards
 [ -e "$HOME/.ssh/config" ] && complete -o "default" -o "nospace" -W "$(grep "^Host" ~/.ssh/config | grep -v "[?*]" | cut -d " " -f2 | tr ' ' '\n')" scp sftp ssh
 
-# Add tab completion for `defaults read|write NSGlobalDomain`
-# You could just use `-g` instead, but I like being explicit
-complete -W "NSGlobalDomain" defaults
+
+# Distribution-specific commands
+if $IS_OSX -lt 1; then
+    # GNU
+
+    # I don't like being restricted to launch apps as root
+    export DISPLAY=:0.0 xhost +
+
+else
+    # OSX
+
+    # Replace netstat command on OSX to find ports used by apps
+    alias netstat="sudo lsof -i -P"
+
+    # Add tab completion for `defaults read|write NSGlobalDomain`
+    # You could just use `-g` instead, but I like being explicit
+    complete -W "NSGlobalDomain" defaults
+
+fi
+
 
 # If possible, add tab completion for many more commands
 [ -f $(brew --prefix)/etc/bash_completion ] && source $(brew --prefix)/etc/bash_completion
