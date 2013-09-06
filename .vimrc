@@ -77,7 +77,7 @@ set ls=2                        " status line always visible
 
 set statusline=%<\ %n:%f\ %m%r%y%=%-35.(line:\ %l\ of\ %L,\ col:\ %c%V\ (%P)%)
 filetype plugin indent on
- 
+
 set number
 set mouse=a
 set mousehide
@@ -87,12 +87,12 @@ set autoindent
 set visualbell
 set cursorline
 set ttyfast
-set title   
+set title
 set showcmd
 set hidden
 set ruler
 set lazyredraw
-set autoread                                     
+set autoread
 set ttimeoutlen=0
 
 
@@ -153,10 +153,38 @@ set backupdir=$HOME/.vim/tmp/backup/
 set undodir=$HOME/.vim/tmp/undo/
 set directory=$HOME/.vim/tmp/swap/
 set viminfo+=n$HOME/.vim/tmp/viminfo
-" make this dirs if no exists previously
+" Make this dirs if no exists previously
 silent! call MakeDirIfNoExists(&undodir)
 silent! call MakeDirIfNoExists(&backupdir)
 silent! call MakeDirIfNoExists(&directory)
+" }}}
+
+
+ " Autoload configuration when this file changes ($MYVIMRC)
+ autocmd! BufWritePost vimrc source %
+
+
+ " Delete trailing whitespaces
+ autocmd BufWritePre * :%s/\s\+$//e
+
+
+" Execution permissions by default to shebang (#!) files {{{
+augroup shebang_chmod
+  autocmd!
+  autocmd BufNewFile  * let b:brand_new_file = 1
+  autocmd BufWritePost * unlet! b:brand_new_file
+  autocmd BufWritePre *
+        \ if exists('b:brand_new_file') |
+        \   if getline(1) =~ '^#!' |
+        \     let b:chmod_post = '+x' |
+        \   endif |
+        \ endif
+  autocmd BufWritePost,FileWritePost *
+        \ if exists('b:chmod_post') && executable('chmod') |
+        \   silent! execute '!chmod '.b:chmod_post.' "<afile>"' |
+        \   unlet b:chmod_post |
+        \ endif
+augroup END
 " }}}
 
 
