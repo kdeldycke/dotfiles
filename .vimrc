@@ -50,4 +50,4 @@ set softtabstop=4
 set backspace=2
 
 set background=dark
-colorscheme solarized
+"colorscheme solarized
