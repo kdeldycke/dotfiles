@@ -57,10 +57,10 @@ alias svn="colorsvn"
 alias gitx="open ~/Applications/GitX.app"
 
 # Detect which `ls` flavor is in use
-if $IS_OSX -lt 1; then # GNU `ls`
-    lsflags="--color--group-directories-first"
-else # OSX `ls`
+if $IS_OSX; then
     lsflags="-G"
+else
+    lsflags="--color --group-directories-first"
 fi
 alias ll="ls -lah ${lsflags}"
 alias ls="ls -hFp ${lsflags}"
@@ -80,14 +80,7 @@ export PYTHON_HISTORY_FILE="$HOME/.python_history"
 
 
 # Distribution-specific commands
-if $IS_OSX -lt 1; then
-    # GNU
-
-    # I don't like being restricted to launch apps as root
-    export DISPLAY=:0.0 xhost +
-
-else
-    # OSX
+if $IS_OSX; then
 
     # Replace netstat command on OSX to find ports used by apps
     alias netstat="sudo lsof -i -P"
@@ -95,6 +88,11 @@ else
     # Add tab completion for `defaults read|write NSGlobalDomain`
     # You could just use `-g` instead, but I like being explicit
     complete -W "NSGlobalDomain" defaults
+
+else
+
+    # I don't like being restricted to launch apps as root
+    export DISPLAY=":0.0 xhost +"
 
 fi
 
