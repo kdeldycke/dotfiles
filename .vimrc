@@ -81,6 +81,12 @@ scriptencoding utf-8
 set encoding=utf-8              " setup the encoding to UTF-8
 set ls=2                        " status line always visible
 
+if has ('x') && has ('gui') " On Linux use + register for copy-paste
+    set clipboard=unnamedplus
+elseif has ('gui')          " On mac and Windows, use * register for copy-paste
+    set clipboard=unnamed
+endif
+
 set statusline=%<\ %n:%f\ %m%r%y%=%-35.(line:\ %l\ of\ %L,\ col:\ %c%V\ (%P)%)
 filetype plugin indent on
 
