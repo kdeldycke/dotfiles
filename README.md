@@ -31,6 +31,18 @@ Run:
     $ ./osx-install.sh
 
 
+Restore previous dotfiles
+-------------------------
+
+A backup of the original dotfiles is made when `./[ubuntu|osx]-install.sh` is first called.
+
+To restore the originals, run:
+
+    $ ./common.sh restore
+
+Note that if there was not an original version, the installed links will not be removed.
+
+
 TODO
 ----
 
@@ -45,4 +57,5 @@ but also draws from others:
 
   * http://kevin.deldycke.com/2006/12/all-my-command-lines/
   * https://github.com/mathiasbynens/dotfiles
+  * https://github.com/sontek/dotfiles
   * https://github.com/reinout/tools
