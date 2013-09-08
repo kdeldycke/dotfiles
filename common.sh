@@ -24,12 +24,12 @@ do
         # Restore backups if found
         if [ -e "${target}.bak" ] && [ -L "${target}" ]; then
             unlink ${target}
-            mv $target.df.bak $target
+            mv $target.dotfile.bak $target
         fi
     else
         # Link files
         if [ -e "${target}" ] && [ ! -L "${target}" ]; then
-            mv $target $target.bak
+            mv $target $target.dotfile.bak
         fi
         ln -sf ${source} ${target}
     fi
