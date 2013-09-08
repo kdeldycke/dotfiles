@@ -13,7 +13,7 @@ sudo aptitude upgrade
 sudo aptitude $SOURCE_PACKAGES $BIN_PACKAGES
 
 # Install Ubuntu specific packages
-sudo aptitude install prey mkvtoolnix-gui mbr hfsprogs hfsplus subtitlecomposer deborphan chromium-browser bzr kompare avidemux-common transcode mkvtoolnix mencoder mplayer gitg bleachbit p7zip-full htop gtk-chtheme gnome-themes-standard python-pip faad h264enc kwrite kscreensaver hunspell-fr hunspell-dictionary-fr aspell-fr gimp-plugin-registry xscreensaver xscreensaver-data xscreensaver-data-extra xscreensaver-gl xscreensaver-gl-extra network-manager-openvpn ksshaskpass qemu-kvm dmg2img pdftk chromium-codecs-ffmpeg-extra picard xsltproc xfsprogs lm-sensors bzrtools ntp ca-certificates apt-file kdenlive python-dev gtk2-engines runsnakerun unclutter
+sudo aptitude install prey mkvtoolnix-gui mbr hfsprogs hfsplus subtitlecomposer deborphan chromium-browser bzr kompare avidemux-common transcode mkvtoolnix mencoder mplayer gitg bleachbit p7zip-full htop gtk-chtheme gnome-themes-standard python-pip faad h264enc kwrite kscreensaver hunspell-fr hunspell-dictionary-fr aspell-fr gimp-plugin-registry xscreensaver xscreensaver-data xscreensaver-data-extra xscreensaver-gl xscreensaver-gl-extra network-manager-openvpn ksshaskpass qemu-kvm dmg2img pdftk chromium-codecs-ffmpeg-extra picard xsltproc xfsprogs lm-sensors bzrtools ntp ca-certificates apt-file kdenlive python-dev gtk2-engines runsnakerun unclutter driftnet
 
 # Install global Python packages
 sudo pip install --package $PYTHON_PACKAGES
