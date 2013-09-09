@@ -22,7 +22,7 @@ do
     target="${HOME}/$f"
     if [ "$1" = "restore" ]; then
         # Restore backups if found
-        if [ -e "${target}.bak" ] && [ -L "${target}" ]; then
+        if [ -e "${target}.dotfile.bak" ] && [ -L "${target}" ]; then
             unlink ${target}
             mv $target.dotfile.bak $target
         fi
