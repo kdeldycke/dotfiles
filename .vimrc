@@ -116,8 +116,8 @@ set softtabstop=4              " a soft-tab of four spaces
 set backspace=indent,eol,start
 set autoindent                 " set on the auto-indent
 set virtualedit=all
-set textwidth=80
-set colorcolumn=81
+set textwidth=99
+set colorcolumn=100
 " }}}
 
 
