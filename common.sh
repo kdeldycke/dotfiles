@@ -23,7 +23,8 @@ DOT_FILES=`find . -depth 1 \
     -not -name "*\.swp" -and \
     -not -name "*\.md" -and \
     -not -name "\.git" -and \
-    -not -name "*~*"`
+    -not -name "*~*" \
+    -exec basename {} \;`
 
 for f in $DOT_FILES
 do
