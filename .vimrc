@@ -109,13 +109,13 @@ elseif has ('gui')          " On mac and Windows, use * register for copy-paste
     set clipboard=unnamed
 endif
 
+
+" GUI {{{
 set number
 set mouse=a
 set mousehide
-
 set wrap
 set autoindent
-set visualbell
 set cursorline
 set ttyfast
 set title
@@ -125,6 +125,12 @@ set ruler
 set lazyredraw
 set autoread
 set ttimeoutlen=0
+" No annoying sound on errors
+set noerrorbells
+set novisualbell
+set t_vb=
+set tm=500
+"}}}
 
 
 " Editing {{{
@@ -134,6 +140,8 @@ set shiftwidth=4               " number of spaces for auto-indent
 set softtabstop=4              " a soft-tab of four spaces
 set backspace=indent,eol,start
 set autoindent                 " set on the auto-indent
+set foldmethod=indent          " automatically fold by indent level
+set nofoldenable               " ... but have folds open by default"
 set virtualedit=all
 set textwidth=99
 set colorcolumn=100
@@ -168,6 +176,10 @@ endif
 " }}}
 
 
+" Font
+set guifont=Dejavu\ Sans\ Mono\ for\ Powerline
+
+
 " Make a dir if no exists {{{
 function! MakeDirIfNoExists(path)
     if !isdirectory(expand(a:path))
@@ -199,7 +211,7 @@ silent! call MakeDirIfNoExists(&directory)
  autocmd BufWritePre * :%s/\s\+$//e
 
 
-" Execution permissions by default to shebang (#!) files {{{
+" Execution permissions by default to shebang (#!) files
 augroup shebang_chmod
   autocmd!
   autocmd BufNewFile  * let b:brand_new_file = 1
@@ -216,10 +228,9 @@ augroup shebang_chmod
         \   unlet b:chmod_post |
         \ endif
 augroup END
-" }}}
 
 
-" Airline {{{
+" Airline
 set noshowmode
 let g:airline_theme='powerlineish'
 let g:airline_enable_branch=1
@@ -229,7 +240,19 @@ let g:airline#extensions#hunks#non_zero_only = 1
 let g:airline#extensions#tabline#enabled = 2
 let g:airline#extensions#tabline#fnamemod = ':t'
 let g:airline#extensions#tabline#buffer_min_count = 1
-" }}}
+
+
+" indentLine
+let g:indentLine_char = '┊'
+let g:indentLine_color_term = 239
+
+
+" Syntastic
+let g:syntastic_python_pylint_exe = "pylint2"
+let g:syntastic_error_symbol='✗'
+let g:syntastic_warning_symbol='⚠'
+let g:syntastic_style_error_symbol  = '⚡'
+let g:syntastic_style_warning_symbol  = '⚡'
 
 
 " FILETYPES  {{{ ==============================================================
