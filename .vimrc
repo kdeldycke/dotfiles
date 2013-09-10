@@ -40,7 +40,8 @@ NeoBundle 'Shougo/vimproc', {
       \    },
       \ }
 
-" Show git repository changes in the current file
+" Git
+NeoBundle 'tpope/vim-fugitive'
 NeoBundle 'airblade/vim-gitgutter'
 
 " Improved terminal version of molokai, almost identical to the GUI one
@@ -54,8 +55,22 @@ NeoBundleLazy 'joedicastro/vim-markdown'
 NeoBundle 'scrooloose/syntastic'
 
 " Python
-" Autocompletion
 NeoBundle 'Shougo/neocomplete.vim'
+NeoBundleLazy 'klen/python-mode', {'autoload': {'filetypes': ['python']}}
+NeoBundle 'jmcantrell/vim-virtualenv'
+NeoBundleLazy 'Yggdroot/indentLine', {'autoload': {'filetypes': ['python']}}
+NeoBundleLazy 'alfredodeza/coveragepy.vim', {'autoload': {'filetypes': ['python']}}
+
+" Text edition
+NeoBundle 'delimitMate.vim'
+NeoBundle 'tpope/vim-speeddating'
+NeoBundle 'tpope/vim-surround'
+NeoBundle 'tpope/vim-repeat'
+NeoBundle 'tpope/vim-commentary'
+NeoBundle 'terryma/vim-multiple-cursors'
+
+" GUI
+NeoBundle 'bling/vim-airline'
 
 " END BUNDLES }}}
 
@@ -93,9 +108,6 @@ if has ('x') && has ('gui') " On Linux use + register for copy-paste
 elseif has ('gui')          " On mac and Windows, use * register for copy-paste
     set clipboard=unnamed
 endif
-
-set statusline=%<\ %n:%f\ %m%r%y%=%-35.(line:\ %l\ of\ %L,\ col:\ %c%V\ (%P)%)
-filetype plugin indent on
 
 set number
 set mouse=a
@@ -207,6 +219,18 @@ augroup END
 " }}}
 
 
+" Airline {{{
+set noshowmode
+let g:airline_theme='powerlineish'
+let g:airline_enable_branch=1
+let g:airline_powerline_fonts=1
+let g:airline_detect_whitespace = 1
+let g:airline#extensions#hunks#non_zero_only = 1
+let g:airline#extensions#tabline#enabled = 2
+let g:airline#extensions#tabline#fnamemod = ':t'
+let g:airline#extensions#tabline#buffer_min_count = 1
+" }}}
+
 
 " FILETYPES  {{{ ==============================================================
 
@@ -232,4 +256,3 @@ autocmd FileType markdown NeoBundleSource vim-markdown-extra-preview
 
 
 " END VIM SETUP }}}
-" vim:foldmethod=marker
