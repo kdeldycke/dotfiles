@@ -22,10 +22,14 @@ brew tap phinze/homebrew-cask
 brew install brew-cask
 
 # Install OSX system requirements
-installcask x-quartz 
+installcask x-quartz
 
 # Install common packages
 brew install $SOURCE_PACKAGES
+
+# Install vim with lua support
+brew install lua --completion
+brew install vim --with-lua --override-system-vim
 
 # htop-osx requires root privileges to correctly display all running processes.
 sudo chown root:wheel /usr/local/bin/htop

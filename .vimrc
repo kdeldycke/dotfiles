@@ -40,6 +40,9 @@ NeoBundle 'Shougo/vimproc', {
       \    },
       \ }
 
+" Show git repository changes in the current file
+NeoBundle 'airblade/vim-gitgutter'
+
 " Improved terminal version of molokai, almost identical to the GUI one
 NeoBundle 'joedicastro/vim-molokai256'
 NeoBundle 'tomasr/molokai'
@@ -49,6 +52,10 @@ NeoBundleLazy 'vim-scripts/JSON.vim', {'autoload': {'filetypes': ['json']}}
 NeoBundleLazy 'vim-scripts/po.vim--gray', {'autoload': {'filetypes': ['po']}}
 NeoBundleLazy 'joedicastro/vim-markdown'
 NeoBundle 'scrooloose/syntastic'
+
+" Python
+" Autocompletion
+NeoBundle 'Shougo/neocomplete.vim'
 
 " END BUNDLES }}}
 
