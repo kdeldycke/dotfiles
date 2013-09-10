@@ -279,3 +279,4 @@ autocmd FileType markdown NeoBundleSource vim-markdown-extra-preview
 
 
 " END VIM SETUP }}}
+" vim:foldmethod=marker
