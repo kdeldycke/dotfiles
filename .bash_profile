@@ -6,7 +6,7 @@ else
 fi
 
 # Force Homebrew binaries to take precedence on OSX default
-export PATH="/usr/local/bin:$PATH"
+export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
 
 # Prefer US English and use UTF-8
 export LANG="en_US"
