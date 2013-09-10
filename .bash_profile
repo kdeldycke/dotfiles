@@ -1,5 +1,5 @@
-# Detect ditribution based on `ls` options availability
-if ls --color > /dev/null 2>&1; then
+# Detect ditribution
+if [ "$(uname -s)" == "Linux" ]; then
     IS_OSX=false
 else
     IS_OSX=true
