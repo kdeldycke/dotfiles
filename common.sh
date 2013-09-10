@@ -11,7 +11,7 @@ COMMON_PACKAGES="git git-extras legit jnettop hfsutils unrar subversion ack colo
 BIN_PACKAGES="audacity avidemux dropbox firefox gimp inkscape vlc blender thunderbird virtualbox bitcoin-qt wireshark"
 
 # Define global Python packages
-PYTHON_PACKAGES="readline pip setuptools distribute virtualenv virtualenvwrapper pep8 pylint pyflakes coverage"
+PYTHON_PACKAGES="readline pip setuptools distribute virtualenv virtualenvwrapper pep8 pylint pyflakes coverage rope autopep8 mccabe"
 
 # Search local dotfiles
 DOT_FILES=`find . -depth 1 \
