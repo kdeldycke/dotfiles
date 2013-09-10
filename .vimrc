@@ -255,6 +255,11 @@ let g:syntastic_style_error_symbol  = '⚡'
 let g:syntastic_style_warning_symbol  = '⚡'
 
 
+" PythonMode
+let g:pymode_lint_checker = 'pylint,pep8,mccabe,pep257'
+let g:pymode_lint_config = $HOME.'/.pylintrc'
+
+
 " FILETYPES  {{{ ==============================================================
 
 " JSON
