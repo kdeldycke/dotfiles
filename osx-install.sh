@@ -58,9 +58,19 @@ installcask libre-office
 installcask tunnelblick
 # TODO: install Prey when https://github.com/phinze/homebrew-cask/pull/953 and https://github.com/phinze/homebrew-cask/pull/954 are addressed.
 
-# Install vim with lua support
+# Install vim
 brew install lua --completion
-brew install vim --with-lua --override-system-vim
+brew install cscope
+VIM_FLAGS="--with-python --with-lua --with-cscope --override-system-vim"
+brew install macvim $VIM_FLAGS
+brew install vim $VIM_FLAGS
+# TODO: detect currently used font in Terminal & patch it for Vim's Airline plugin
+brew install fontforge
+#wget https://raw.github.com/Lokaltog/powerline/develop/font/fontpatcher.py
+# See: https://powerline.readthedocs.org/en/latest/fontpatching.html
+#fontforge -script ./fontpatcher.py MyFontFile.ttf
+
+brew linkapps
 
 # Clean things up
 brew doctor
