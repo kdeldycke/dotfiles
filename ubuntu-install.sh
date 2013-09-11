@@ -22,7 +22,7 @@ qemu-kvm dmg2img pdftk chromium-codecs-ffmpeg-extra picard xsltproc xfsprogs lm-
 ntp ca-certificates apt-file kdenlive python-dev gtk2-engines runsnakerun unclutter driftnet vim
 
 # Install global Python packages
-sudo pip install --package $PYTHON_PACKAGES
+sudo pip install --upgrade $PYTHON_PACKAGES
 
 
 sudo aptitude install flashplugin-installer
