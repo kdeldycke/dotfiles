@@ -44,3 +44,6 @@ do
         ln -sf ${source} ${target}
     fi
 done
+
+# Create empty folders
+mkdir -p ~/.pip/cache ~/virtualenvs
