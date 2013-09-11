@@ -74,6 +74,9 @@ alias .....="cd ../../../.."
 export PYTHONSTARTUP="$HOME/python-shell-enhancement/pythonstartup.py"
 export PYTHON_HISTORY_FILE="$HOME/.python_history"
 
+# Use virtualenv facilities
+source /usr/local/bin/virtualenvwrapper.sh
+
 # Add tab completion for SSH hostnames based on ~/.ssh/config, ignoring wildcards
 [ -e "$HOME/.ssh/config" ] && complete -o "default" -o "nospace" -W "$(grep "^Host" ~/.ssh/config | grep -v "[?*]" | cut -d " " -f2 | tr ' ' '\n')" scp sftp ssh
 
