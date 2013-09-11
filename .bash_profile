@@ -134,5 +134,6 @@ fi
 
 
 # If possible, add tab completion for many more commands
+eval "`pip completion --bash`"
 [ -f $(brew --prefix)/etc/bash_completion ] && source $(brew --prefix)/etc/bash_completion
 [ -f /etc/bash_completion ] && source /etc/bash_completion
