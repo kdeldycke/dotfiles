@@ -46,4 +46,4 @@ do
 done
 
 # Create empty folders
-mkdir -p ~/.pip/cache ~/virtualenvs
+mkdir -p ~/.pip/cache

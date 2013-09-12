@@ -1,0 +1,15 @@
+#!/bin/bash
+# This hook is run after every virtualenv is activated.
+
+# Override cd to go to the venv root
+# Source: http://virtualenvwrapper.readthedocs.org/en/latest/tips.html#changing-the-default-behavior-of-cd
+cd () {
+    if (( $# == 0 ))
+    then
+        builtin cd $VIRTUAL_ENV
+    else
+        builtin cd "$@"
+    fi
+}
+
+cd
