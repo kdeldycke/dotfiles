@@ -1,5 +1,5 @@
 [core]
-    editor=/usr/bin/vi
+    editor = vim
     pager =
     autocrlf = input
     whitespace = fix,space-before-tab,tab-in-indent,trailing-space
