@@ -53,6 +53,7 @@ alias g="git"
 alias h="history"
 alias v="vim"
 alias top="htop"
+alias diff="colordiff -ru"
 alias svn="colorsvn"
 
 # Detect which `ls` flavor is in use
