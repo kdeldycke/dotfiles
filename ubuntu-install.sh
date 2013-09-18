@@ -10,7 +10,7 @@ sudo aptitude upgrade -y
 
 
 # Install common packages
-sudo aptitude $SOURCE_PACKAGES $BIN_PACKAGES
+sudo aptitude install $SOURCE_PACKAGES $BIN_PACKAGES
 
 # Install Ubuntu specific packages
 sudo aptitude install prey mkvtoolnix-gui mbr hfsprogs hfsplus subtitlecomposer deborphan \
