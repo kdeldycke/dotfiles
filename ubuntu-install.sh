@@ -129,4 +129,4 @@ sudo aptitude remove akregator kaddressbook knotes kontact korganizer dragonplay
 sudo apt-file update
 
 deborphan | xargs apt-get -y remove --purge
-sudo apt-get autoremove
+sudo apt-get -y autoremove
