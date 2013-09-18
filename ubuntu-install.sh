@@ -60,7 +60,6 @@ sudo pip install pelican mdx_video typogrify
 
 
 # Install google music manager
-cd ~
 wget "https://dl.google.com/linux/direct/google-musicmanager-beta_current_amd64.deb"
 sudo dpkg -i ./google-musicmanager-beta_current_amd64.deb
 rm ./google-musicmanager-beta_current_amd64.deb
