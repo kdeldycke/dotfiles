@@ -3,7 +3,7 @@ dotfiles
 
 Personal dotfiles, currently designed to work for:
 
-  * **Kubuntu 13.04**
+  * **Kubuntu 13.04 (Raring Ringtail)**
   * **Mac OSX 10.8 (Mountain Lion)**
 
 Snapshots of older distributions may be found as tags of the current repository.
