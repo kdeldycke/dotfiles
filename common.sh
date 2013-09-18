@@ -8,7 +8,7 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 # We need to distinguish sources and binary packages for Brew & Cask on OSX
 COMMON_PACKAGES="git git-extras legit jnettop hfsutils unrar subversion ack colordiff faac flac lame x264 inkscape graphviz qemu lftp shntool testdisk fdupes recode pngcrush exiftool rtmpdump optipng colortail colorsvn mercurial"
-BIN_PACKAGES="audacity avidemux dropbox firefox gimp inkscape vlc blender thunderbird virtualbox bitcoin-qt wireshark"
+BIN_PACKAGES="audacity avidemux firefox gimp inkscape vlc blender thunderbird virtualbox bitcoin-qt wireshark"
 
 # Define global Python packages
 PYTHON_PACKAGES="readline pip setuptools distribute virtualenv virtualenvwrapper autoenv pep8 pylint pyflakes coverage rope autopep8 mccabe"

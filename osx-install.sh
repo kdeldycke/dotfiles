@@ -49,6 +49,7 @@ for PACKAGE in $BIN_PACKAGES
 do
     installcask $PACKAGE
 done
+installcask dropbox
 installcask f-lux
 installcask gitx
 installcask insync
