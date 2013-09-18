@@ -3,10 +3,10 @@ source ./common.sh
 sudo apt-get update
 sudo apt-get install aptitude
 
-sudo add-apt-repository ppa:sunab/kdenlive-svn
+sudo add-apt-repository -y ppa:sunab/kdenlive-svn
 
 sudo aptitude update
-sudo aptitude upgrade
+sudo aptitude upgrade -y
 
 
 # Install common packages
