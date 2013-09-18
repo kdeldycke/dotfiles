@@ -14,7 +14,7 @@ BIN_PACKAGES="audacity avidemux dropbox firefox gimp inkscape vlc blender thunde
 PYTHON_PACKAGES="readline pip setuptools distribute virtualenv virtualenvwrapper autoenv pep8 pylint pyflakes coverage rope autopep8 mccabe"
 
 # Search local dotfiles
-DOT_FILES=`find . -depth 1 \
+DOT_FILES=`find . -maxdepth 1 \
     -not -name "\.DS_Store" -and \
     -not -name "\.gitignore" -and \
     -not -name "\.gitmodules" -and \
@@ -24,6 +24,7 @@ DOT_FILES=`find . -depth 1 \
     -not -name "*\.md" -and \
     -not -name "\.git" -and \
     -not -name "*~*" \
+    -not -name "\." \
     -exec basename {} \;`
 
 for f in $DOT_FILES
