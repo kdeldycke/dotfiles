@@ -10,10 +10,10 @@ sudo aptitude upgrade -y
 
 
 # Install common packages
-sudo aptitude install $SOURCE_PACKAGES $BIN_PACKAGES
+sudo aptitude install -y $SOURCE_PACKAGES $BIN_PACKAGES
 
 # Install Ubuntu specific packages
-sudo aptitude install prey mkvtoolnix-gui mbr hfsprogs hfsplus subtitlecomposer deborphan \
+sudo aptitude install -y prey mkvtoolnix-gui mbr hfsprogs hfsplus subtitlecomposer deborphan \
 chromium-browser bzr kompare avidemux-common transcode mkvtoolnix mencoder mplayer gitg bleachbit \
 p7zip-full htop gtk-chtheme gnome-themes-standard python-pip faad h264enc kwrite kscreensaver \
 hunspell-fr hunspell-dictionary-fr aspell-fr gimp-plugin-registry xscreensaver xscreensaver-data \
@@ -25,21 +25,21 @@ ntp ca-certificates apt-file kdenlive python-dev gtk2-engines runsnakerun unclut
 sudo pip install --upgrade $PYTHON_PACKAGES
 
 
-sudo aptitude install flashplugin-installer
+sudo aptitude install -y flashplugin-installer
 
 
 
-sudo aptitude install virt-manager
+sudo aptitude install -y virt-manager
 sudo usermod -a -G libvirtd kevin
 sudo usermod -a -G kvm kevin
 
 
 
-sudo aptitude install redshift gtk-redshift geoclue
+sudo aptitude install -y redshift gtk-redshift geoclue
 
 
 
-sudo aptitude install libavcodec-extra-53
+sudo aptitude install -y libavcodec-extra-53
 
 
 
@@ -49,7 +49,7 @@ sudo pip install gmvault
 
 
 # Install Pelican and its dependencies
-sudo aptitude install python-markdown python-pygments python-beautifulsoup pandoc python-smartypants
+sudo aptitude install -y python-markdown python-pygments python-beautifulsoup pandoc python-smartypants
 sudo pip install pelican mdx_video typogrify
 
 
@@ -73,7 +73,7 @@ sudo tee -a /etc/apt/sources.list <<-EOF
 EOF
 sudo aptitude update
 # Fix some insync beta issues
-sudo aptitude install gir1.2-appindicator3-0.1 gir1.2-notify-0.7 insync-beta-kde
+sudo aptitude install -y gir1.2-appindicator3-0.1 gir1.2-notify-0.7 insync-beta-kde
 sudo ln -sf /usr/lib/x86_64-linux-gnu/libpython2.7.so.1 /usr/lib/libpython2.7.so.1
 sudo ldconfig
 
@@ -88,7 +88,7 @@ sudo update-grub
 # Source: http://download.maketecheasier.com/mba52/post-install-quantal.sh
 # sudo add-apt-repository ppa:mactel-support/ppa
 # sudo aptitude update
-# sudo aptitude install macfanctld
+# sudo aptitude install -y macfanctld
 # sudo service macfanctld stop
 # sudo sed -i "s/\(^exclude:\).*\$/\\1 16 17 20/" /etc/macfanctl.conf
 # sudo service macfanctld start
