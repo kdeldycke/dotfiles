@@ -54,8 +54,8 @@ sudo pip install pelican mdx_video typogrify
 
 
 
-# Install Dropbox
-cd ~ && wget -O - "http://www.dropbox.com/download?plat=lnx.x86_64" | tar xzf -
+# Install Dropbox if not already there
+[ ! -f ~/.dropbox-dist/dropbox ] && wget -O - "http://www.dropbox.com/download?plat=lnx.x86_64" | tar -xvz --directory ~ -f -
 
 
 
