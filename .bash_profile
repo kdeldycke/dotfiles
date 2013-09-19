@@ -1,4 +1,4 @@
-# Detect ditribution
+# Detect distribution
 if [ "$(uname -s)" == "Linux" ]; then
     IS_OSX=false
 else
@@ -78,7 +78,7 @@ export PYTHON_HISTORY_FILE="$HOME/.python_history"
 # Set virtualenv facilities
 export WORKON_HOME=$HOME/virtualenvs
 export VIRTUALENVWRAPPER_HOOK_DIR=$HOME/.virtualenv
-export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python
+export VIRTUALENVWRAPPER_PYTHON=`which python`
 export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
 export PIP_VIRTUALENV_BASE=$WORKON_HOME
 source /usr/local/bin/virtualenvwrapper.sh
