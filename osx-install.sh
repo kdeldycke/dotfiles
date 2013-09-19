@@ -398,13 +398,12 @@ sudo mdutil -i on /
 # Rebuild the index from scratch
 sudo mdutil -E /
 
-# Only use UTF-8 in Terminal.app
-defaults write com.apple.terminal StringEncodings -array 4
 # Use a custom theme for Terminal.app
-open "./osx-terminal.app-colors-solarized/Solarized Dark.terminal"
-sleep 1 # Wait a bit to make sure the theme is loaded
+cp "./osx-terminal.app-colors-solarized/Solarized Dark.terminal" "~/Library/Preferences/com.apple.terminal.plist"
 defaults write com.apple.terminal "Default Window Settings" -string "Solarized Dark"
 defaults write com.apple.terminal "Startup Window Settings" -string "Solarized Dark"
+# Only use UTF-8 in Terminal.app
+defaults write com.apple.terminal StringEncodings -array 4
 
 # Enable “focus follows mouse” for Terminal.app and all X11 apps
 # i.e. hover over a window and start typing in it without clicking first
