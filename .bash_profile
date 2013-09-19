@@ -5,6 +5,9 @@ else
     IS_OSX=true
 fi
 
+# Prompt
+PS1='\[\e[0;32m\]\u\[\e[m\] \[\e[1;34m\]\w\[\e[m\] \[\e[1;32m\]\$\[\e[m\] '
+
 # Force Homebrew binaries to take precedence on OSX default
 export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
 
