@@ -54,7 +54,6 @@ installcask f-lux
 installcask gitx
 installcask insync
 installcask chromium
-installcask iterm2
 installcask libre-office
 installcask tunnelblick
 # TODO: install Prey when https://github.com/phinze/homebrew-cask/pull/953 and https://github.com/phinze/homebrew-cask/pull/954 are addressed.
