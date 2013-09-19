@@ -44,9 +44,8 @@ NeoBundle 'Shougo/vimproc', {
 NeoBundle 'tpope/vim-fugitive'
 NeoBundle 'airblade/vim-gitgutter'
 
-" Improved terminal version of molokai, almost identical to the GUI one
-NeoBundle 'joedicastro/vim-molokai256'
-NeoBundle 'tomasr/molokai'
+" Color scheme
+NeoBundle 'altercation/vim-colors-solarized.git'
 
 " Syntax
 NeoBundleLazy 'vim-scripts/JSON.vim', {'autoload': {'filetypes': ['json']}}
@@ -167,12 +166,9 @@ set undoreload=1000
 " Colorscheme {{{
 syntax enable                  " enable the syntax highlight
 set background=dark            " set a dark background
-set t_Co=256                   " 256 colors for the terminal
-if has('gui_running')
-    colorscheme molokai
-else
-    colorscheme molokai256
-endif
+let g:solarized_termcolors = 256
+let g:solarized_termtrans = 1
+colorscheme solarized
 " }}}
 
 
