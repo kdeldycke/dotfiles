@@ -15,6 +15,7 @@ PYTHON_PACKAGES="readline pip setuptools distribute virtualenv virtualenvwrapper
 
 # Search local dotfiles
 DOT_FILES=`find . -maxdepth 1 \
+    -not -name "osx-terminal\.app-colors-solarized" -and \
     -not -name "\.DS_Store" -and \
     -not -name "\.gitignore" -and \
     -not -name "\.gitmodules" -and \
