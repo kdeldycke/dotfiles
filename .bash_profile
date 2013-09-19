@@ -39,10 +39,16 @@ shopt -s cdspell
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
-# Tip from http://sourceforge.net/apps/trac/qlc/wiki/InstallationSubversionLinux#Optionalhelpers
-export LESS="-erX"
+# Activate global colors
+# OSX/Linux color translations generated with http://geoff.greer.fm/lscolors/
+if $IS_OSX; then
+    export CLICOLOR=1
+    export LSCOLORS="GxFxCxDxBxegedabagaced"
+else
+    export LS_COLORS="di=1;;40:ln=1;;40:so=1;;40:pi=1;;40:ex=1;;40:bd=34;46:cd=34;43:su=0;41:sg=0;46:tw=0;42:ow=34;43:"
+fi
 
-# Shortcuts and good defaults
+# Force colored output and good defaults
 alias du='du -csh'
 alias df='df -Th'
 alias vi='vim'
@@ -55,6 +61,7 @@ alias v="vim"
 alias top="htop"
 alias diff="colordiff -ru"
 alias svn="colorsvn"
+alias dmesg="dmesg --color"
 
 # Detect which `ls` flavor is in use
 if $IS_OSX; then
@@ -70,6 +77,9 @@ alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
 alias .....="cd ../../../.."
+
+# Tip from http://sourceforge.net/apps/trac/qlc/wiki/InstallationSubversionLinux#Optionalhelpers
+export LESS="-erX"
 
 # Python shell auto-completion and history
 export PYTHONSTARTUP="$HOME/python-shell-enhancement/pythonstartup.py"
