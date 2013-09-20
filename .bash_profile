@@ -42,7 +42,11 @@ shopt -s cdspell
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
-# Activate global colors
+# Activate global dir colors
+if $IS_OSX; then
+    alias dircolors='gdircolors'
+fi
+[ -f ~/.dircolors ] && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
 # OSX/Linux color translations generated with http://geoff.greer.fm/lscolors/
 if $IS_OSX; then
     export CLICOLOR=1
