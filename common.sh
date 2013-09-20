@@ -39,16 +39,16 @@ do
     if [ "$1" = "restore" ]; then
         # Restore backups if found
         if [ -e "${target}.dotfile.bak" ] && [ -L "${target}" ]; then
-            unlink ${target}
-            mv $target.dotfile.bak $target
+            unlink "${target}"
+            mv "$target.dotfile.bak" "$target"
         fi
     else
         # Link files
         if [ -e "${target}" ] && [ ! -L "${target}" ]; then
-            mv $target $target.dotfile.bak
+            mv "$target" "$target.dotfile.bak"
         fi
         # TODO: fix recursive symlinks
-        ln -sf ${source} ${target}
+        ln -sf "${source}" "${target}"
     fi
 done
 
