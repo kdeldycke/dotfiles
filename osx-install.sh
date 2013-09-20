@@ -402,6 +402,7 @@ defaults write com.apple.terminal StringEncodings -array 4
 # i.e. hover over a window and start typing in it without clicking first
 defaults write com.apple.terminal FocusFollowsMouse -bool true
 defaults write org.x.X11 wm_ffm -bool true
+defaults write org.x.X11 wm_click_through -bool true
 
 # Prevent Time Machine from prompting to use new hard drives as backup volume
 defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool true
