@@ -80,6 +80,7 @@ then
     alias g++='colourify g++'
     alias gas='colourify gas'
     alias gcc='colourify gcc'
+    alias head='colourify head'
     alias ifconfig='colourify ifconfig'
     #irclog
     alias ld='colourify ld'
@@ -93,6 +94,7 @@ then
     alias ping='colourify ping'
     #proftpd
     alias ps='colourify ps'
+    alias tail='colourify tail'
     alias traceroute='colourify traceroute'
     #wdiff
 fi
