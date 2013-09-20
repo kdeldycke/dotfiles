@@ -1,4 +1,4 @@
-# Detect ditribution
+# Detect distribution
 if [ "$(uname -s)" == "Linux" ]; then
     IS_OSX=false
 else
@@ -121,7 +121,7 @@ export PYTHON_HISTORY_FILE="$HOME/.python_history"
 # Set virtualenv facilities
 export WORKON_HOME=$HOME/virtualenvs
 export VIRTUALENVWRAPPER_HOOK_DIR=$HOME/.virtualenv
-export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python
+export VIRTUALENVWRAPPER_PYTHON=`which python`
 export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
 export PIP_VIRTUALENV_BASE=$WORKON_HOME
 source /usr/local/bin/virtualenvwrapper.sh
@@ -153,6 +153,11 @@ extract () {
 }
 
 
+# If possible, add tab completion for many more commands
+eval "`pip completion --bash`"
+[ -f /etc/bash_completion ] && source /etc/bash_completion
+
+
 # Distribution-specific commands
 if $IS_OSX; then
 
@@ -170,15 +175,12 @@ if $IS_OSX; then
     # You could just use `-g` instead, but I like being explicit
     complete -W "NSGlobalDomain" defaults
 
+    # Add completion of some commands
+    [ -f $(brew --prefix)/etc/bash_completion ] && source $(brew --prefix)/etc/bash_completion
+
 else
 
     # I don't like being restricted to launch apps as root
     export DISPLAY=":0.0 xhost +"
 
 fi
-
-
-# If possible, add tab completion for many more commands
-eval "`pip completion --bash`"
-[ -f $(brew --prefix)/etc/bash_completion ] && source $(brew --prefix)/etc/bash_completion
-[ -f /etc/bash_completion ] && source /etc/bash_completion
