@@ -64,15 +64,17 @@ brew install cscope
 VIM_FLAGS="--with-python --with-lua --with-cscope --override-system-vim"
 brew install macvim $VIM_FLAGS
 brew install vim $VIM_FLAGS
-# TODO: detect currently used font in Terminal & patch it for Vim's Airline plugin
-brew install fontforge
-#wget https://raw.github.com/Lokaltog/powerline/develop/font/fontpatcher.py
+# Patch the font defined by default for Terminale (Monaco, 11pt) for Vim's Airline plugin
 # See: https://powerline.readthedocs.org/en/latest/fontpatching.html
-#fontforge -script ./fontpatcher.py MyFontFile.ttf
-
-brew linkapps
+brew install fontforge
+mkdir ./powerline-fontconfig
+wget -O - "https://github.com/Lokaltog/powerline/tarball/develop" | tar -xvz --strip-components 2 --include "*/font/*" --directory ./powerline-fontconfig -f -
+fontforge -script ./powerline-fontconfig/fontpatcher.py /System/Library/Fonts/Monaco.dfont
+sudo mv ./Monaco\ for\ Powerline.otf /System/Library/Fonts/
+rm -rf ./powerline-fontconfig
 
 # Clean things up
+brew linkapps
 brew doctor
 brew cleanup
 
