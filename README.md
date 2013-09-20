@@ -49,8 +49,8 @@ TODO
   * Update install instructions: there is no git on a pristine OSX.
 
 
-Sources
--------
+Source & inspiration
+--------------------
 
 This repository contain configuration I accumulated over years of daily usage,
 but also draws from others:
@@ -60,3 +60,10 @@ but also draws from others:
   * https://github.com/mathiasbynens/dotfiles
   * https://github.com/sontek/dotfiles
   * https://github.com/reinout/tools
+
+Third party assets:
+
+    Solarized - OS X 10.7+ Terminal.App color theme
+    Copyright (c) 2013 Tomislav Filipčić
+    Distributed under an unknown open-source license
+    Source: https://github.com/tomislav/osx-terminal.app-colors-solarized
