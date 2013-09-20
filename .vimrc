@@ -166,7 +166,6 @@ set undoreload=1000
 " Colorscheme {{{
 syntax enable                  " enable the syntax highlight
 set background=dark            " set a dark background
-let g:solarized_termcolors = 256
 let g:solarized_termtrans = 1
 colorscheme solarized
 " }}}
