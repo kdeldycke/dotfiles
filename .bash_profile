@@ -65,6 +65,7 @@ alias top="htop"
 alias diff="colordiff -ru"
 alias svn="colorsvn"
 alias dmesg="dmesg --color"
+alias tree='tree -Csh'
 
 # Use GRC for additionnal colorization
 GRC=`which grc`
