@@ -172,7 +172,7 @@ colorscheme solarized
 
 
 " Font
-set guifont=Dejavu\ Sans\ Mono\ for\ Powerline
+set guifont=Monaco\ for\ Powerline:h11
 
 
 " Make a dir if no exists {{{
