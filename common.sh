@@ -42,6 +42,7 @@ do
         if [ -e "${target}" ] && [ ! -L "${target}" ]; then
             mv $target $target.dotfile.bak
         fi
+        # TODO: fix recursive symlinks
         ln -sf ${source} ${target}
     fi
 done
