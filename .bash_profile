@@ -71,17 +71,29 @@ GRC=`which grc`
 if [ -n GRC ]
 then
     alias colourify="$GRC -es --colour=auto"
+    alias as='colourify as'
+    #cvs
     alias configure='colourify ./configure'
     alias diff='colourify diff'
-    alias make='colourify make'
-    alias gcc='colourify gcc'
+    alias dig='colourify dig'
     alias g++='colourify g++'
-    alias as='colourify as'
     alias gas='colourify gas'
+    alias gcc='colourify gcc'
+    alias ifconfig='colourify ifconfig'
+    #irclog
     alias ld='colourify ld'
+    #ldap
+    #log
+    alias ls='colourify ls'
+    alias make='colourify make'
+    alias mount='colourify mount'
+    #mtr
     alias netstat='colourify netstat'
     alias ping='colourify ping'
-    alias traceroute='colourify /usr/sbin/traceroute'
+    #proftpd
+    alias ps='colourify ps'
+    alias traceroute='colourify traceroute'
+    #wdiff
 fi
 
 # Detect which `ls` flavor is in use
