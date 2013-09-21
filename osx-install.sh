@@ -32,7 +32,7 @@ brew install python
 brew link --overwrite python
 
 # Install common packages
-brew install $SOURCE_PACKAGES
+brew install $COMMON_PACKAGES
 
 # Install OSX only packages
 brew install findutils bash ack grep rename tree webkit2png bazaar osxutils htop-osx p7zip faad2 bash-completion md5sha1sum
