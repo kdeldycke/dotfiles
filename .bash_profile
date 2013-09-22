@@ -5,22 +5,29 @@ else
     IS_OSX=true
 fi
 
-# Fancy PWD display function
-# Source: https://wiki.archlinux.org/index.php/Color_Bash_Prompt
+# If possible, add tab completion for many more commands
+[ -f /etc/bash_completion ] && source /etc/bash_completion
+if $IS_OSX; then
+    [ -f $(brew --prefix)/etc/bash_completion ] && source $(brew --prefix)/etc/bash_completion
+fi
+
 bash_prompt_command() {
+    ## Fancy PWD display function, better than PROMPT_DIRTRIM
+    # Source: https://wiki.archlinux.org/index.php/Color_Bash_Prompt
     # How many characters of the $PWD should be kept
     local pwdmaxlen=25
     # Indicate that there has been dir truncation
-    local trunc_symbol=".."
+    local trunc_symbol="…"
     local dir=${PWD##*/}
     pwdmaxlen=$(( ( pwdmaxlen < ${#dir} ) ? ${#dir} : pwdmaxlen ))
     NEW_PWD=${PWD/#$HOME/\~}
     local pwdoffset=$(( ${#NEW_PWD} - pwdmaxlen ))
-    if [ ${pwdoffset} -gt "0" ]
-    then
+    if [ ${pwdoffset} -gt "0" ]; then
         NEW_PWD=${NEW_PWD:$pwdoffset:$pwdmaxlen}
         NEW_PWD=${trunc_symbol}/${NEW_PWD#*/}
     fi
+    ## Set git contextextual info
+    PROMPT_GIT=$(__git_ps1 "(%s)")
 }
 
 bash_prompt() {
@@ -31,8 +38,14 @@ bash_prompt() {
         USER_COLOR="\[\033[0;31m\]"
         PROMPT_COLOR="\[\033[1;31m\]"
     fi
-    PS1="${USER_COLOR}\u\[\e[m\] \[\e[1;34m\]\${NEW_PWD}\[\e[m\] \$(if [[ \$? == 0 ]]; then echo \"\[\033[01;32m\]\342\234\223\"; else echo \"\[\033[01;31m\]\342\234\227\"; fi) ${PROMPT_COLOR}\$\[\e[m\] "
+    PS1="${USER_COLOR}\u\[\e[m\] \[\e[1;34m\]\${NEW_PWD}\[\e[m\]\${PROMPT_GIT} \$(if [[ \$? == 0 ]]; then echo \"\[\033[01;32m\]\342\234\223\"; else echo \"\[\033[01;31m\]\342\234\227\"; fi) ${PROMPT_COLOR}\$\[\e[m\] "
 }
+
+# Git prompt options
+export GIT_PS1_SHOWUPSTREAM="verbose"
+export GIT_PS1_SHOWDIRTYSTATE=true
+export GIT_PS1_SHOWCOLORHINTS=true
+export GIT_PS1_SHOWUNTRACKEDFILES=true
 
 export PROMPT_COMMAND=bash_prompt_command
 bash_prompt
@@ -184,6 +197,8 @@ export PIP_VIRTUALENV_BASE=$WORKON_HOME
 source /usr/local/bin/virtualenvwrapper.sh
 source /usr/local/bin/activate.sh
 
+eval "`pip completion --bash`"
+
 # Add tab completion for SSH hostnames based on ~/.ssh/config, ignoring wildcards
 [ -e "$HOME/.ssh/config" ] && complete -o "default" -o "nospace" -W "$(grep "^Host" ~/.ssh/config | grep -v "[?*]" | cut -d " " -f2 | tr ' ' '\n')" scp sftp ssh
 
@@ -211,11 +226,6 @@ extract () {
 }
 
 
-# If possible, add tab completion for many more commands
-eval "`pip completion --bash`"
-[ -f /etc/bash_completion ] && source /etc/bash_completion
-
-
 # Distribution-specific commands
 if $IS_OSX; then
 
@@ -232,9 +242,6 @@ if $IS_OSX; then
     # Add tab completion for `defaults read|write NSGlobalDomain`
     # You could just use `-g` instead, but I like being explicit
     complete -W "NSGlobalDomain" defaults
-
-    # Add completion of some commands
-    [ -f $(brew --prefix)/etc/bash_completion ] && source $(brew --prefix)/etc/bash_completion
 
 else
 
