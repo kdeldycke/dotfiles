@@ -58,18 +58,24 @@ fi
 # Force colored output and good defaults
 alias du='du -csh'
 alias df='df -Th'
-alias vi='vim'
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
-alias g="git"
-alias h="history"
-alias v="vim"
-alias top="htop"
 alias diff="colordiff -ru"
 alias svn="colorsvn"
 alias dmesg="dmesg --color"
 alias tree='tree -Csh'
+
+alias top="htop"
+alias vi='vim'
+alias v="vim"
+alias g="git"
+alias h="history"
+
+alias c='clear'
+alias cls='clear'
+
+alias q='exit'
 
 # Use GRC for additionnal colorization
 GRC=`which grc`
