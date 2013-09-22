@@ -6,7 +6,7 @@ else
 fi
 
 # Prompt
-PS1='\[\e[0;32m\]\u\[\e[m\] \[\e[1;34m\]\w\[\e[m\] \[\e[1;32m\]\$\[\e[m\] '
+PS1="$(if [[ ${EUID} == 0 ]]; then echo '\[\e[1;41m\]'; else echo '\[\e[0;32m\]'; fi)\u\[\e[m\] \[\e[1;34m\]\w\[\e[m\] \$(if [[ \$? == 0 ]]; then echo \"\[\033[01;32m\]\342\234\223\"; else echo \"\[\033[01;31m\]\342\234\227\"; fi) \[\e[1;32m\]\$\[\e[m\] "
 
 # Force Homebrew binaries to take precedence on OSX default
 export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
