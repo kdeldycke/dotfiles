@@ -34,7 +34,7 @@ bash_prompt() {
     PS1="${USER_COLOR}\u\[\e[m\] \[\e[1;34m\]\${NEW_PWD}\[\e[m\] \$(if [[ \$? == 0 ]]; then echo \"\[\033[01;32m\]\342\234\223\"; else echo \"\[\033[01;31m\]\342\234\227\"; fi) ${PROMPT_COLOR}\$\[\e[m\] "
 }
 
-PROMPT_COMMAND=bash_prompt_command
+export PROMPT_COMMAND=bash_prompt_command
 bash_prompt
 unset bash_prompt
 
