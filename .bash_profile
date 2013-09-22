@@ -5,14 +5,39 @@ else
     IS_OSX=true
 fi
 
-# Prompt
-USER_COLOR="\[\033[0;32m\]"
-PROMPT_COLOR="\[\033[1;32m\]"
-if [[ ${EUID} == 0 ]]; then
-    USER_COLOR="\[\033[0;31m\]"
-    PROMPT_COLOR="\[\033[1;31m\]"
-fi
-PS1="${USER_COLOR}\u\[\e[m\] \[\e[1;34m\]\w\[\e[m\] \$(if [[ \$? == 0 ]]; then echo \"\[\033[01;32m\]\342\234\223\"; else echo \"\[\033[01;31m\]\342\234\227\"; fi) ${PROMPT_COLOR}\$\[\e[m\] "
+# Fancy PWD display function
+# Source: https://wiki.archlinux.org/index.php/Color_Bash_Prompt
+bash_prompt_command() {
+    # How many characters of the $PWD should be kept
+    local pwdmaxlen=25
+    # Indicate that there has been dir truncation
+    local trunc_symbol=".."
+    local dir=${PWD##*/}
+    pwdmaxlen=$(( ( pwdmaxlen < ${#dir} ) ? ${#dir} : pwdmaxlen ))
+    NEW_PWD=${PWD/#$HOME/\~}
+    local pwdoffset=$(( ${#NEW_PWD} - pwdmaxlen ))
+    if [ ${pwdoffset} -gt "0" ]
+    then
+        NEW_PWD=${NEW_PWD:$pwdoffset:$pwdmaxlen}
+        NEW_PWD=${trunc_symbol}/${NEW_PWD#*/}
+    fi
+}
+
+bash_prompt() {
+    # Prompt
+    local USER_COLOR="\[\033[0;32m\]"
+    local PROMPT_COLOR="\[\033[1;32m\]"
+    if [[ ${EUID} == 0 ]]; then
+        USER_COLOR="\[\033[0;31m\]"
+        PROMPT_COLOR="\[\033[1;31m\]"
+    fi
+    PS1="${USER_COLOR}\u\[\e[m\] \[\e[1;34m\]\${NEW_PWD}\[\e[m\] \$(if [[ \$? == 0 ]]; then echo \"\[\033[01;32m\]\342\234\223\"; else echo \"\[\033[01;31m\]\342\234\227\"; fi) ${PROMPT_COLOR}\$\[\e[m\] "
+}
+
+PROMPT_COMMAND=bash_prompt_command
+bash_prompt
+unset bash_prompt
+
 
 # Force Homebrew binaries to take precedence on OSX default
 export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
