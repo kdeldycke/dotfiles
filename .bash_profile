@@ -242,9 +242,4 @@ if $IS_OSX; then
     # You could just use `-g` instead, but I like being explicit
     complete -W "NSGlobalDomain" defaults
 
-else
-
-    # I don't like being restricted to launch apps as root
-    export DISPLAY=":0.0 xhost +"
-
 fi
