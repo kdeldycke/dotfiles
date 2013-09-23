@@ -1,3 +1,10 @@
+# Force Homebrew binaries to take precedence on OSX default
+export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
+
+# Prefer US English and use UTF-8
+export LANG="en_US"
+export LC_ALL="en_US.UTF-8"
+
 # Detect distribution
 if [ "$(uname -s)" == "Linux" ]; then
     IS_OSX=false
@@ -48,13 +55,6 @@ bash_prompt() {
 export PROMPT_COMMAND=bash_prompt_command
 bash_prompt
 unset bash_prompt
-
-# Force Homebrew binaries to take precedence on OSX default
-export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
-
-# Prefer US English and use UTF-8
-export LANG="en_US"
-export LC_ALL="en_US.UTF-8"
 
 # Make vim the default editor
 export EDITOR="vim"
@@ -186,9 +186,12 @@ export PYTHONSTARTUP="$HOME/python-shell-enhancement/pythonstartup.py"
 export PYTHON_HISTORY_FILE="$HOME/.python_history"
 
 # Set virtualenv facilities
+if $IS_OSX; then
+    # Force virtualenv to use homebrew's Python on OSX
+    export VIRTUALENVWRAPPER_PYTHON="/usr/local/bin/python"
+fi
 export WORKON_HOME=$HOME/virtualenvs
 export VIRTUALENVWRAPPER_HOOK_DIR=$HOME/.virtualenv
-export VIRTUALENVWRAPPER_PYTHON=`which python`
 export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
 export PIP_VIRTUALENV_BASE=$WORKON_HOME
 source /usr/local/bin/virtualenvwrapper.sh
@@ -229,9 +232,6 @@ if $IS_OSX; then
     # Opens current directory in apps
     alias f='open -a Finder ./'
     alias gitx='open -a ~/Applications/GitX.app ./'
-
-    # Find executables
-    alias which='type -all'
 
     # Replace netstat command on OSX to find ports used by apps
     alias netstat="sudo lsof -i -P"
