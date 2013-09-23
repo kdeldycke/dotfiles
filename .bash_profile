@@ -45,11 +45,6 @@ bash_prompt() {
 }
 
 # Git prompt options
-export GIT_PS1_SHOWUPSTREAM="verbose"
-export GIT_PS1_SHOWDIRTYSTATE=true
-export GIT_PS1_SHOWCOLORHINTS=true
-export GIT_PS1_SHOWUNTRACKEDFILES=true
-
 export PROMPT_COMMAND=bash_prompt_command
 bash_prompt
 unset bash_prompt
