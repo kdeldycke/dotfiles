@@ -111,6 +111,7 @@ alias dmesg="dmesg --color"
 alias tree='tree -Csh'
 
 alias top="htop"
+alias gr='grep -RIi --no-messages'
 alias vi='vim'
 alias v="vim"
 alias g="git"
