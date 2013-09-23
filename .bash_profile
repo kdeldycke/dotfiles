@@ -26,8 +26,11 @@ bash_prompt_command() {
         NEW_PWD=${NEW_PWD:$pwdoffset:$pwdmaxlen}
         NEW_PWD=${trunc_symbol}/${NEW_PWD#*/}
     fi
-    ## Set git contextextual info
-    PROMPT_GIT=$(__git_ps1 "(%s)")
+    ## Set git contextual info
+    git_sha() {
+        git rev-parse --short HEAD 2>/dev/null
+    }
+    PROMPT_GIT=$(__git_ps1 "(%s@$(git_sha))")
 }
 
 bash_prompt() {
