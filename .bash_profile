@@ -35,8 +35,8 @@ bash_prompt_command() {
 
 bash_prompt() {
     # Prompt
-    local USER_COLOR="\[\033[0;32m\]"
-    local PROMPT_COLOR="\[\033[1;32m\]"
+    local USER_COLOR="\[\033[01;30m\]"
+    local PROMPT_COLOR="\[\033[01;32m\]"
     if [[ ${EUID} == 0 ]]; then
         USER_COLOR="\[\033[0;31m\]"
         PROMPT_COLOR="\[\033[1;31m\]"
