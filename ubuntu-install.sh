@@ -29,24 +29,19 @@ sudo pip install --upgrade $PYTHON_PACKAGES
 sudo aptitude install -y flashplugin-installer
 
 
-
 sudo aptitude install -y virt-manager
 sudo usermod -a -G libvirtd kevin
 sudo usermod -a -G kvm kevin
 
 
-
 sudo aptitude install -y redshift gtk-redshift geoclue
-
 
 
 sudo aptitude install -y libavcodec-extra-53
 
 
-
 # Install GMVault
 sudo pip install --upgrade gmvault
-
 
 
 # Install Pelican and its dependencies
@@ -54,10 +49,8 @@ sudo aptitude install -y python-markdown python-pygments python-beautifulsoup pa
 sudo pip install --upgrade pelican mdx_video typogrify
 
 
-
 # Install Dropbox if not already there
 [ ! -f ~/.dropbox-dist/dropbox ] && wget -O - "http://www.dropbox.com/download?plat=lnx.x86_64" | tar -xvz --directory ~ -f -
-
 
 
 # Install google music manager
@@ -66,12 +59,11 @@ sudo dpkg -i ./google-musicmanager-beta_current_amd64.deb
 rm ./google-musicmanager-beta_current_amd64.deb
 
 
-
 # Install insync
 wget -qO - https://d2t3ff60b2tol4.cloudfront.net/services@insynchq.com.gpg.key | sudo apt-key add -
 # TODO: don't add twice if config line already there
 sudo tee -a /etc/apt/sources.list <<-EOF
-  deb http://apt.insynchq.com/ubuntu raring non-free
+    deb http://apt.insynchq.com/ubuntu raring non-free
 EOF
 sudo aptitude update
 # Fix some insync beta issues
@@ -80,7 +72,7 @@ sudo ln -sf /usr/lib/x86_64-linux-gnu/libpython2.7.so.1 /usr/lib/libpython2.7.so
 sudo ldconfig
 
 
-
+# Speed-up Grub boot
 sudo sed -i 's/GRUB_TIMEOUT=10/GRUB_TIMEOUT=1/g' /etc/default/grub
 sudo update-grub
 
@@ -123,7 +115,6 @@ sudo update-grub
 # ResultActive=yes
 # EOF
 # gsettings set org.gnome.settings-daemon.plugins.power critical-battery-action 'hibernate'
-
 
 
 sudo aptitude remove akregator kaddressbook knotes kontact korganizer dragonplayer kamera kcalc kaccessible kdegraphics-strigi-analyzer kdepim-strigi-plugins kmag kpat rekonq quassel kmail appmenu-gtk appmenu-gtk3
