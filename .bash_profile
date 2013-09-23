@@ -1,3 +1,10 @@
+# Force Homebrew binaries to take precedence on OSX default
+export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
+
+# Prefer US English and use UTF-8
+export LANG="en_US"
+export LC_ALL="en_US.UTF-8"
+
 # Detect distribution
 if [ "$(uname -s)" == "Linux" ]; then
     IS_OSX=false
@@ -50,14 +57,6 @@ export GIT_PS1_SHOWUNTRACKEDFILES=true
 export PROMPT_COMMAND=bash_prompt_command
 bash_prompt
 unset bash_prompt
-
-
-# Force Homebrew binaries to take precedence on OSX default
-export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
-
-# Prefer US English and use UTF-8
-export LANG="en_US"
-export LC_ALL="en_US.UTF-8"
 
 # Make vim the default editor
 export EDITOR="vim"
