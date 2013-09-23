@@ -67,3 +67,8 @@ Third party assets:
     Copyright (c) 2013 Tomislav Filipčić
     Distributed under an unknown open-source license
     Source: https://github.com/tomislav/osx-terminal.app-colors-solarized
+
+    Solarized Xresources Color Scheme
+    Copyright (c) 2011 Ethan Schoonover
+    Distributed under an open-source license
+    Source: https://github.com/solarized/xresources
