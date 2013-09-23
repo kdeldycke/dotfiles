@@ -49,7 +49,6 @@ export PROMPT_COMMAND=bash_prompt_command
 bash_prompt
 unset bash_prompt
 
-
 # Force Homebrew binaries to take precedence on OSX default
 export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
 
