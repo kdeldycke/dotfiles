@@ -6,10 +6,10 @@ export LANG="en_US"
 export LC_ALL="en_US.UTF-8"
 
 # Detect distribution
-if [ "$(uname -s)" == "Linux" ]; then
-    IS_OSX=false
-else
+if [ "$(uname -s)" == "Darwin" ]; then
     IS_OSX=true
+else
+    IS_OSX=false
 fi
 
 # If possible, add tab completion for many more commands

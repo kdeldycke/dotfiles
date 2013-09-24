@@ -77,12 +77,6 @@ sudo sed -i 's/GRUB_TIMEOUT=10/GRUB_TIMEOUT=1/g' /etc/default/grub
 sudo update-grub
 
 
-# Set default root prompt
-sudo tee -a /etc/bash.bashrc <<-EOF
-    PS1='\[\e[31m\]\u\[\e[37m\]:\[\e[33m\]\w\[\e[31m\]\$\[\033[00m\] '
-EOF
-
-
 # It is highly recommended to use the fan controller daemon that is included in the mactel-support ppa called macfanctl.
 # Source: http://download.maketecheasier.com/mba52/post-install-quantal.sh
 # sudo add-apt-repository ppa:mactel-support/ppa
