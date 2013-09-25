@@ -61,12 +61,3 @@ done
 
 # Create empty folders
 mkdir -p ~/.pip/cache
-
-# Set default root prompt
-SYSTEM_BASHRC='/etc/bash.bashrc'
-if $IS_OSX; then
-    SYSTEM_BASHRC='/etc/bashrc'
-fi
-sudo tee -a $SYSTEM_BASHRC <<-EOF
-    PS1='\[\e[31m\]\u\[\e[37m\]:\[\e[33m\]\w\[\e[31m\]\$\[\033[00m\] '
-EOF

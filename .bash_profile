@@ -51,8 +51,9 @@ bash_prompt() {
     PS1="${USER_COLOR}\u\[\e[m\] \[\e[1;34m\]\${NEW_PWD}\[\e[m\]\${PROMPT_GIT} \$(if [[ \$? == 0 ]]; then echo \"\[\033[01;32m\]\342\234\223\"; else echo \"\[\033[01;31m\]\342\234\227\"; fi) ${PROMPT_COLOR}\$\[\e[m\] "
 }
 
-# Git prompt options
+# Set user & root prompt
 export PROMPT_COMMAND=bash_prompt_command
+export SUDO_PS1='\[\e[31m\]\u\[\e[37m\]:\[\e[33m\]\w\[\e[31m\]\$\[\033[00m\] '
 bash_prompt
 unset bash_prompt
 
