@@ -274,6 +274,9 @@ au BufRead,BufNewFile *.{md,mdown,mkd,mkdn,markdown,mdwn} set filetype=markdown
 autocmd FileType markdown NeoBundleSource vim-markdown
 autocmd FileType markdown NeoBundleSource vim-markdown-extra-preview
 
+" Git commit
+autocmd Filetype gitcommit setlocal spell textwidth=72
+
 " END FILETYPES }}}
 
 
