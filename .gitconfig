@@ -26,7 +26,7 @@
 [merge]
     log = true
 [branch]
-    autosetuprebase = always
+    autosetuprebase = remote
 [alias]
     br = branch
     ci = commit
