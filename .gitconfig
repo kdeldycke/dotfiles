@@ -16,11 +16,17 @@
 [diff]
     renames = copies
     # Source: http://blog.apiaxle.com/post/handy-git-tips-to-stop-you-getting-fired/
-	algorithm = patience
+    algorithm = patience
+[pull]
+    rebase = true
 [push]
-    default = simple
+    # Prevent accidental pushes to branches which you’re not ready to push yet.
+    # Source: http://mislav.uniqpath.com/2010/07/git-tips/
+    default = tracking
 [merge]
     log = true
+[branch]
+    autosetuprebase = always
 [alias]
     br = branch
     ci = commit
@@ -35,7 +41,7 @@
     # View abbreviated SHA, description, and history graph of the latest 20 commits
     l = log --pretty=oneline -n 20 --graph --abbrev-commit --decorate
     # View the current working tree status using the short format
-    s = status -s
+    s = status -sb
     # Show the diff between the latest commit and the current state
     d = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
     # `git di $number` shows the diff between the state `$number` revisions ago and the current state
