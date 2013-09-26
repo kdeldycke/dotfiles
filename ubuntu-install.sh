@@ -46,7 +46,7 @@ sudo pip install --upgrade gmvault
 
 # Install Pelican and its dependencies
 sudo aptitude install -y python-markdown python-pygments python-beautifulsoup pandoc python-smartypants
-sudo pip install --upgrade pelican mdx_video typogrify
+sudo pip install --upgrade pelican mdx_video typogrify Fabric
 
 
 # Install Dropbox if not already there
