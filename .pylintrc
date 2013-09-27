@@ -1,0 +1,10 @@
+[MESSAGES CONTROL]
+
+# Disable the message(s) with the given id(s).
+# W0142: Used * or ** magic
+disable-msg=W0142
+
+
+[REPORTS]
+
+output-format=colorized
