@@ -2,9 +2,18 @@
 
 # Disable the message(s) with the given id(s).
 # W0142: Used * or ** magic
-disable-msg=W0142
+# C0111: Missing docstring
+disable-msg=W0142,C0111
+
+# Ignore Python code in VCS metadata
+ignore=CVS
+ignore=.bzr
+ignore=.svn
 
 
 [REPORTS]
-
 output-format=colorized
+
+[FORMAT]
+# Encourage modern programming
+max-line-length=99
