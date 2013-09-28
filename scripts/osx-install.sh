@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-source ./common.sh
 
 function installcask() {
     brew cask install "${@}" 2> /dev/null

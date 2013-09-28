@@ -27,10 +27,11 @@ pylint pyflakes coverage rope autopep8 mccabe"
 # Search local dotfiles
 DOT_FILES=`find . -maxdepth 1 \
     -not -name "assets" -and \
+    -not -name "scripts" -and \
+    -not -name "install.sh" -and \
     -not -name "\.DS_Store" -and \
     -not -name "\.gitignore" -and \
     -not -name "\.gitmodules" -and \
-    -not -name "*\.sh" -and \
     -not -name "*\.dmg" -and \
     -not -name "*\.swp" -and \
     -not -name "*\.md" -and \
@@ -61,3 +62,10 @@ done
 
 # Create empty folders
 mkdir -p ~/.pip/cache
+
+# Call distribution specific scripts
+if $IS_OSX; then
+    source ./scripts/osx-install.sh
+else
+    source ./scripts/ubuntu-install.sh
+fi
