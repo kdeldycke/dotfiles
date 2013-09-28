@@ -394,7 +394,7 @@ sudo mdutil -i on /
 sudo mdutil -E /
 
 # Use a custom theme for Terminal.app
-cp -f ./Solarized\ Dark.terminal ~/Library/Preferences/com.apple.Terminal.plist
+cp -f ./assets/Solarized\ Dark.terminal ~/Library/Preferences/com.apple.Terminal.plist
 defaults write com.apple.Terminal "Default Window Settings" -string "Solarized Dark"
 defaults write com.apple.Terminal "Startup Window Settings" -string "Solarized Dark"
 # Only use UTF-8 in Terminal.app

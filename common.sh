@@ -26,7 +26,7 @@ pylint pyflakes coverage rope autopep8 mccabe"
 
 # Search local dotfiles
 DOT_FILES=`find . -maxdepth 1 \
-    -not -name "Solarized Dark\.terminal" -and \
+    -not -name "assets" -and \
     -not -name "\.DS_Store" -and \
     -not -name "\.gitignore" -and \
     -not -name "\.gitmodules" -and \
