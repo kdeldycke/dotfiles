@@ -23,11 +23,11 @@ Run:
 Restore previous dotfiles
 -------------------------
 
-A backup of the original dotfiles is made when `./[ubuntu|osx]-install.sh` is first called.
+A backup of the original dotfiles is made when `install.sh` is first called.
 
 To restore the originals, run:
 
-    $ ./common.sh restore
+    $ ./install.sh restore
 
 Note that if there was not an original version, the installed links will not be removed.
 
