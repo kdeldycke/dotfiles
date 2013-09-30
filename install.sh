@@ -69,3 +69,6 @@ if $IS_OSX; then
 else
     source ./scripts/ubuntu-install.sh
 fi
+
+# Reload Bash with new configuration
+source ~/.bash_profile
