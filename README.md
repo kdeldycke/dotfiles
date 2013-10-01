@@ -12,16 +12,35 @@ Snapshots of older distributions may be found as tags of the current repository.
 Installation
 ------------
 
-Run:
+First, you need a local copy of this project.
 
-    $ cd
+If you're lucky and have Git already installed on your machine, do:
+
+    $ cd ~
     $ git clone --recursive https://github.com/kdeldycke/dotfiles.git
-    $ cd dotfiles
+
+If you don't have Git, which is the case on OSX, do:
+
+    $ mkdir ~/dotfiles
+    $ cd ~/dotfiles
+    $ curl -fsSL https://github.com/kdeldycke/dotfiles/tarball/master | tar --strip-components 1 -xvzf -
+
+Now you can install the dotfiles on your system:
+
+    $ cd ~/dotfiles
     $ ./install.sh
 
 
-Restore previous dotfiles
--------------------------
+Upgrade
+-------
+
+Juste call the installation script again:
+
+    $ ./install.sh
+
+
+Restore
+-------
 
 A backup of the original dotfiles is made when `install.sh` is first called.
 
@@ -30,12 +49,6 @@ To restore the originals, run:
     $ ./install.sh restore
 
 Note that if there was not an original version, the installed links will not be removed.
-
-
-TODO
-----
-
-  * Update install instructions: there is no git on a pristine OSX.
 
 
 Sources
