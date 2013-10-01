@@ -9,26 +9,26 @@ Personal dotfiles, currently designed to work for:
 Snapshots of older distributions may be found as tags of the current repository.
 
 
-Installation
-------------
+Install
+-------
 
-First, you need a local copy of this project.
+1. First, you need a local copy of this project.
 
-If you're lucky and have Git already installed on your machine, do:
+   If you're lucky and have Git already installed on your machine, do:
 
-    $ cd ~
-    $ git clone --recursive https://github.com/kdeldycke/dotfiles.git
+        $ cd ~
+        $ git clone --recursive https://github.com/kdeldycke/dotfiles.git
 
-If you don't have Git, which is the case on OSX, do:
+   If you don't have Git, do:
 
-    $ mkdir ~/dotfiles
-    $ cd ~/dotfiles
-    $ curl -fsSL https://github.com/kdeldycke/dotfiles/tarball/master | tar --strip-components 1 -xvzf -
+        $ mkdir ~/dotfiles
+        $ cd ~/dotfiles
+        $ curl -fsSL https://github.com/kdeldycke/dotfiles/tarball/master | tar --strip-components 1 -xvzf -
 
-Now you can install the dotfiles on your system:
+2. Now you can install the dotfiles on your system:
 
-    $ cd ~/dotfiles
-    $ ./install.sh
+        $ cd ~/dotfiles
+        $ ./install.sh
 
 
 Upgrade
