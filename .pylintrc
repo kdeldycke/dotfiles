@@ -2,8 +2,9 @@
 
 # Disable the message(s) with the given id(s).
 # W0142: Used * or ** magic
+# W0511: Warning notes in code comments
 # C0111: Missing docstring
-disable-msg=W0142,C0111
+disable-msg=W0142,W0511,C0111
 
 # Ignore Python code in VCS metadata
 ignore=CVS
