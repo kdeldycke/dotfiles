@@ -66,8 +66,10 @@ mkdir -p ~/.pip/cache
 # Call distribution specific scripts
 if $IS_OSX; then
     source ./scripts/osx-install.sh
+    source ./scripts/osx-config.sh
 else
     source ./scripts/ubuntu-install.sh
+    source ./scripts/ubuntu-config.sh
 fi
 
 # Reload Bash with new configuration
