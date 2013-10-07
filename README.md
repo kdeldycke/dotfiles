@@ -13,6 +13,7 @@ Features
 --------
 
   * Aimed at Python programmers using vim.
+  * Common configuration for both OSX and Kubuntu.
   * Produce colored output for most of shell commands.
   * All color schemes are based on [Solarized](http://ethanschoonover.com/solarized).
 
@@ -63,6 +64,7 @@ TODO
 ----
 
   * Auto-install Xcode on OSX.
+  * Add terminal & vim screenshot on both OSX and Kubuntu.
 
 
 Sources
