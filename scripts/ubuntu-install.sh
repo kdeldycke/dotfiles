@@ -19,7 +19,8 @@ p7zip-full htop gtk-chtheme gnome-themes-standard python-pip faad h264enc kwrite
 hunspell-fr hunspell-dictionary-fr aspell-fr gimp-plugin-registry xscreensaver xscreensaver-data \
 xscreensaver-data-extra xscreensaver-gl xscreensaver-gl-extra network-manager-openvpn ksshaskpass \
 qemu-kvm dmg2img pdftk chromium-codecs-ffmpeg-extra picard xsltproc xfsprogs lm-sensors bzrtools \
-ntp ca-certificates apt-file kdenlive python-dev gtk2-engines runsnakerun unclutter driftnet vim
+ntp ca-certificates apt-file kdenlive python-dev gtk2-engines runsnakerun unclutter driftnet vim \
+ttf-ancient-fonts
 # TODO: install vim-lua
 
 # Install global Python packages
