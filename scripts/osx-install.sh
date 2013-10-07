@@ -12,7 +12,7 @@ if [[ $? -ne 0 ]]; then
     # See: http://stackoverflow.com/a/18244349
 
     # Accept Xcode license
-    xcodebuild -license
+    sudo xcodebuild -license
 
     # Install Xcode's command line tools
     # Source: http://apple.stackexchange.com/a/98764
