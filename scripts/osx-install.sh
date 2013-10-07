@@ -79,7 +79,7 @@ brew install vim $VIM_FLAGS
 # See: https://powerline.readthedocs.org/en/latest/fontpatching.html
 brew install fontforge
 mkdir ./powerline-fontconfig
-wget -O - "https://github.com/Lokaltog/powerline/tarball/develop" | tar -xvz --strip-components 2 --include "*/font/*" --directory ./powerline-fontconfig -f -
+curl -fsSL https://github.com/Lokaltog/powerline/tarball/develop | tar -xvz --strip-components 2 --include "*/font/*" --directory ./powerline-fontconfig -f -
 fontforge -script ./powerline-fontconfig/fontpatcher.py /System/Library/Fonts/Monaco.dfont
 sudo mv ./Monaco\ for\ Powerline.otf /System/Library/Fonts/
 rm -rf ./powerline-fontconfig
