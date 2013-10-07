@@ -6,15 +6,18 @@ function installcask() {
 
 # A full installation of Xcode.app is required to compile macvim.
 # Installing just the Command Line Tools is not sufficient.
-# TODO: find a way to install Xcode.app
-# See: http://stackoverflow.com/a/18244349
+xcodebuild -version
+if [[ $? -ne 0 ]]; then
+    # TODO: find a way to install Xcode.app automatticaly
+    # See: http://stackoverflow.com/a/18244349
 
-# Install Xcode's command line tools
-# Source: http://apple.stackexchange.com/a/98764
-curl -fsSL https://gist.github.com/trinitronx/6217746/raw/2c172e297fbafc3b8e0fcc6363df0b7b52e4ae6d/xcode-cli-tools.sh | sudo sh
+    # Accept Xcode license
+    xcodebuild -license
 
-# Accept Xcode license
-xcodebuild -license
+    # Install Xcode's command line tools
+    # Source: http://apple.stackexchange.com/a/98764
+    curl -fsSL https://gist.github.com/trinitronx/6217746/raw/2c172e297fbafc3b8e0fcc6363df0b7b52e4ae6d/xcode-cli-tools.sh | sudo sh
+fi
 
 # Update all OSX packages
 sudo softwareupdate -i -a
