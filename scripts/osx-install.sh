@@ -60,6 +60,7 @@ do
     installcask $PACKAGE
 done
 installcask dropbox
+installcask steam
 installcask f-lux
 installcask gitx
 installcask insync
