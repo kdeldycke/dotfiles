@@ -41,15 +41,8 @@ bash_prompt_command() {
 }
 
 bash_prompt() {
-    # Prompt
-    local USER_COLOR="\[\033[01;30m\]"
-    local PROMPT_COLOR="\[\033[01;32m\]"
-    if [[ ${EUID} == 0 ]]; then
-        USER_COLOR="\[\033[0;31m\]"
-        PROMPT_COLOR="\[\033[1;31m\]"
-    fi
-    PS1="${USER_COLOR}\u\[\e[m\] \[\e[1;34m\]\${NEW_PWD}\[\e[m\]\${PROMPT_GIT} \$(if [[ \$? == 0
-    ]]; then echo \"\[\033[01;32m\]\342\234\224\"; else echo \"\[\033[01;31m\]\342\234\230\"; fi) ${PROMPT_COLOR}\$\[\e[m\] "
+    PS1="\[\033[01;30m\]\u\[\e[m\] \[\e[1;34m\]\${NEW_PWD}\[\e[m\]\${PROMPT_GIT} \$(if [[ \$? == 0
+    ]]; then echo \"\[\033[01;32m\]\342\234\224\"; else echo \"\[\033[01;31m\]\342\234\230\"; fi) \[\033[01;32m\]\$\[\e[m\] "
 }
 
 # Set user & root prompt
