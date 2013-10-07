@@ -244,7 +244,7 @@ let g:indentLine_color_term = 239
 
 " Syntastic
 let g:syntastic_python_pylint_exe = "pylint2"
-let g:syntastic_error_symbol = '✗'
+let g:syntastic_error_symbol = '✘'
 let g:syntastic_warning_symbol = '⚠'
 let g:syntastic_style_error_symbol = '⚡'
 let g:syntastic_style_warning_symbol = '⚡'
@@ -254,6 +254,14 @@ let g:syntastic_style_warning_symbol = '⚡'
 let g:pymode_lint_checker = 'pylint,pep8,mccabe,pep257'
 let g:pymode_lint_config = $HOME.'/.pylintrc'
 let g:pymode_lint_cwindow = 0
+" Custom symbols will be supported in the future (I hope).
+" See: https://github.com/klen/python-mode/pull/295
+let g:pymode_lint_todo_symbol = '⚠'
+let g:pymode_lint_comment_symbol = '⑊'
+let g:pymode_lint_visual_symbol = '⑆'
+let g:pymode_lint_error_symbol = '✘'
+let g:pymode_lint_info_symbol = '●'
+let g:pymode_lint_pyflakes_symbol = '●'
 
 
 " FILETYPES  {{{ ==============================================================
