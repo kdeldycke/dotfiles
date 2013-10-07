@@ -42,7 +42,7 @@ bash_prompt_command() {
 
 bash_prompt() {
     PS1="\[\033[01;30m\]\u\[\e[m\] \[\e[1;34m\]\${NEW_PWD}\[\e[m\]\${PROMPT_GIT} \$(if [[ \$? == 0
-    ]]; then echo \"\[\033[01;32m\]\342\234\224\"; else echo \"\[\033[01;31m\]\342\234\230\"; fi) \[\033[01;32m\]\$\[\e[m\] "
+    ]]; then echo \"\[\033[01;32m\]\342\234\224\"; else echo \"\[\033[01;31m\]\342\234\230\"; fi)\[\e[m\] "
 }
 
 # Set user & root prompt
