@@ -227,9 +227,9 @@ augroup END
 
 " Airline
 set noshowmode
-let g:airline_theme='solarized'
-let g:airline_enable_branch=1
-let g:airline_powerline_fonts=1
+let g:airline_theme = 'solarized'
+let g:airline_enable_branch = 1
+let g:airline_powerline_fonts = 1
 let g:airline_detect_whitespace = 1
 let g:airline#extensions#hunks#non_zero_only = 1
 let g:airline#extensions#tabline#enabled = 2
@@ -244,10 +244,10 @@ let g:indentLine_color_term = 239
 
 " Syntastic
 let g:syntastic_python_pylint_exe = "pylint2"
-let g:syntastic_error_symbol='✗'
-let g:syntastic_warning_symbol='⚠'
-let g:syntastic_style_error_symbol  = '⚡'
-let g:syntastic_style_warning_symbol  = '⚡'
+let g:syntastic_error_symbol = '✗'
+let g:syntastic_warning_symbol = '⚠'
+let g:syntastic_style_error_symbol = '⚡'
+let g:syntastic_style_warning_symbol = '⚡'
 
 
 " PythonMode
