@@ -9,6 +9,14 @@ Personal dotfiles, currently designed to work for:
 Snapshots of older distributions may be found as tags of the current repository.
 
 
+Features
+--------
+
+  * Aimed at Python programmers using vim.
+  * Produce colored output for most of shell commands.
+  * All color schemes are based on [Solarized](http://ethanschoonover.com/solarized).
+
+
 Install
 -------
 
@@ -49,6 +57,12 @@ To restore the originals, run:
     $ ./install.sh restore
 
 Note that if there was not an original version, the installed links will not be removed.
+
+
+TODO
+----
+
+  * Auto-install Xcode on OSX.
 
 
 Sources
