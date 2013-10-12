@@ -27,9 +27,6 @@ ttf-ancient-fonts
 sudo pip install --upgrade $PYTHON_PACKAGES
 
 
-sudo aptitude install -y flashplugin-installer
-
-
 sudo aptitude install -y virt-manager
 sudo usermod -a -G libvirtd kevin
 sudo usermod -a -G kvm kevin
