@@ -1,7 +1,9 @@
 dotfiles
 ========
 
-Personal dotfiles, currently designed to work for:
+Collection of dotfiles for Python developers working in vim. 
+
+Project is currently targetting:
 
   * **Kubuntu 13.04** (Raring Ringtail)
   * **Mac OSX 10.8** (Mountain Lion)
