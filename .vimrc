@@ -55,9 +55,7 @@ NeoBundle 'scrooloose/syntastic'
 
 " Python
 NeoBundle 'Shougo/neocomplete.vim'
-" XXX Use my own version of python-mode until https://github.com/klen/python-mode/pull/295 is merged.
-"NeoBundleLazy 'klen/python-mode', {'autoload': {'filetypes': ['python']}}
-NeoBundleLazy 'kdeldycke/python-mode', {'autoload': {'filetypes': ['python']}}
+NeoBundleLazy 'klen/python-mode', {'autoload': {'filetypes': ['python']}}
 NeoBundle 'jmcantrell/vim-virtualenv'
 NeoBundleLazy 'Yggdroot/indentLine', {'autoload': {'filetypes': ['python']}}
 NeoBundleLazy 'alfredodeza/coveragepy.vim', {'autoload': {'filetypes': ['python']}}
