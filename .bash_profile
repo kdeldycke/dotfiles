@@ -176,6 +176,9 @@ export LESS_TERMCAP_ZV=$(tput rsubm)
 export LESS_TERMCAP_ZO=$(tput ssupm)
 export LESS_TERMCAP_ZW=$(tput rsupm)
 
+# Don't let Python produce .pyc or .pyo. Left-overs can produce strange side-effects.
+export PYTHONDONTWRITEBYTECODE=true
+
 # Python shell auto-completion and history
 export PYTHONSTARTUP="$HOME/python-shell-enhancement/pythonstartup.py"
 export PYTHON_HISTORY_FILE="$HOME/.python_history"
