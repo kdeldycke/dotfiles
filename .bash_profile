@@ -1,5 +1,5 @@
 # Force Homebrew binaries to take precedence on OSX default
-export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
+export PATH="/usr/local/share/python:/usr/local/bin:/usr/local/sbin:$PATH"
 
 # Prefer US English and use UTF-8
 export LANG="en_US"
@@ -184,13 +184,15 @@ export PYTHONSTARTUP="$HOME/python-shell-enhancement/pythonstartup.py"
 export PYTHON_HISTORY_FILE="$HOME/.python_history"
 
 # Set virtualenv facilities
-if $IS_OSX; then
-    # Force virtualenv to use homebrew's Python on OSX
-    export VIRTUALENVWRAPPER_PYTHON="/usr/local/bin/python"
-fi
 export WORKON_HOME=$HOME/virtualenvs
+# virtualenv should use Distribute instead of legacy setuptools
+export VIRTUALENV_DISTRIBUTE=true
 export VIRTUALENVWRAPPER_HOOK_DIR=$HOME/.virtualenv
-export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
+# Use default Python. VIRTUALENVWRAPPER_PYTHON doesn't seems to be used by virtualenvwrapper, so
+# force it through venv's args.
+# export VIRTUALENVWRAPPER_PYTHON=`which python`
+export VIRTUALENVWRAPPER_VIRTUALENV_ARGS="--no-site-packages --python=`which python`"
+# Centralized location for new virtual environments
 export PIP_VIRTUALENV_BASE=$WORKON_HOME
 source /usr/local/bin/virtualenvwrapper.sh
 source /usr/local/bin/activate.sh
