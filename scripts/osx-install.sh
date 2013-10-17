@@ -38,7 +38,7 @@ brew install brew-cask
 installcask x-quartz
 
 # Install a brand new Python
-brew install python
+brew install python --with-brewed-openssl
 brew link --overwrite python
 
 # Install common packages
