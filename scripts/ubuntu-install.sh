@@ -75,5 +75,5 @@ sudo aptitude remove akregator kaddressbook knotes kontact korganizer dragonplay
 
 sudo apt-file update
 
-deborphan | xargs apt-get -y remove --purge
+sudo deborphan | xargs sudo apt-get -y remove --purge
 sudo apt-get -y autoremove
