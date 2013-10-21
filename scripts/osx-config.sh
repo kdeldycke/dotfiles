@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# Set standby delay to 3 hours (default is 1 hour)
+# See: http://www.ewal.net/2012/09/09/slow-wake-for-macbook-pro-retina/
+sudo pmset -a standbydelay 10800
+
 # Disable the sound effects on boot
 sudo nvram SystemAudioVolume=" "
 
