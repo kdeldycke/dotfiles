@@ -18,7 +18,7 @@ lame x264 inkscape graphviz qemu lftp shntool testdisk fdupes recode pngcrush ex
 optipng colortail colorsvn mercurial grc coreutils"
 
 BIN_PACKAGES="audacity avidemux firefox gimp inkscape vlc blender thunderbird virtualbox
-bitcoin-qt wireshark"
+bitcoin-qt wireshark prey"
 
 # Define global Python packages
 PYTHON_PACKAGES="readline pip setuptools distribute virtualenv virtualenvwrapper autoenv pep8

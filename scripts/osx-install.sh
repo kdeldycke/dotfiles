@@ -67,7 +67,6 @@ installcask insync
 installcask chromium
 installcask libre-office
 installcask tunnelblick
-installcask prey
 
 # Install vim
 brew install lua --completion

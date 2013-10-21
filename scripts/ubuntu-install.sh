@@ -13,7 +13,7 @@ sudo aptitude upgrade -y
 sudo aptitude install -y $COMMON_PACKAGES $BIN_PACKAGES
 
 # Install Ubuntu specific packages
-sudo aptitude install -y prey mkvtoolnix-gui mbr hfsprogs hfsplus subtitlecomposer deborphan \
+sudo aptitude install -y mkvtoolnix-gui mbr hfsprogs hfsplus subtitlecomposer deborphan \
 chromium-browser bzr kompare avidemux-common transcode mkvtoolnix mencoder mplayer gitg bleachbit \
 p7zip-full htop gtk-chtheme gnome-themes-standard python-pip faad h264enc kwrite kscreensaver \
 hunspell-fr hunspell-dictionary-fr aspell-fr gimp-plugin-registry xscreensaver xscreensaver-data \
