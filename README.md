@@ -92,3 +92,8 @@ Third party assets:
     Copyright (c) 2011 Ethan Schoonover
     Distributed under an open-source license
     Source: https://github.com/solarized/xresources
+
+    Solarized Color Theme for GNU ls
+    Copyright (c) 2013 Sebastian Tramp
+    Distributed under a Do What The Fuck You Want To Public License (WTFPL)
+    Source: https://github.com/seebi/dircolors-solarized/blob/master/dircolors.256dark
