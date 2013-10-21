@@ -84,11 +84,12 @@ if $IS_OSX; then
 fi
 [ -f ~/.dircolors ] && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
 # OSX/Linux color translations generated with http://geoff.greer.fm/lscolors/
+# Color scheme is from https://github.com/seebi/dircolors-solarized/issues/10
 if $IS_OSX; then
     export CLICOLOR=1
-    export LSCOLORS="GxFxCxDxBxegedabagaced"
+    export LSCOLORS="gxfxbEaEBxxEhEhBaDaCaD"
 else
-    export LS_COLORS="di=1;;40:ln=1;;40:so=1;;40:pi=1;;40:ex=1;;40:bd=34;46:cd=34;43:su=0;41:sg=0;46:tw=0;42:ow=34;43:"
+    export LS_COLORS="di=36;40:ln=35;40:so=31;:pi=0;:ex=1;;40:bd=0;:cd=37;:su=37;:sg=0;:tw=0;:ow=0;:"
 fi
 
 # Force colored output and good defaults
