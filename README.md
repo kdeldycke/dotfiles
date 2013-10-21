@@ -1,7 +1,7 @@
 dotfiles
 ========
 
-Collection of dotfiles for Python developers working in vim. 
+Collection of dotfiles for Python developers working in vim.
 
 Project is currently targetting:
 
