@@ -18,7 +18,7 @@ keycode 133 = Alt_L Meta_L Alt_L Meta_L
 keycode 134 = ISO_Level3_Shift
 clear Mod1
 clear Mod4
-clear Mod5 
+clear Mod5
 add Mod1    = Alt_L Alt_R Meta_L
 add Mod4    = Super_L Super_R Super_L Hyper_L
 add Mod5    = ISO_Level3_Shift Mode_switch
