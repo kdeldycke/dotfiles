@@ -88,6 +88,11 @@ Third party assets:
     Distributed under an unknown open-source license
     Source: https://github.com/tomislav/osx-terminal.app-colors-solarized
 
+    Solarized - KDE Konsole Settings
+    Copyright (c) 2012 Pete Higgins
+    Distributed under an unknown open-source license
+    Source: https://github.com/phiggins/konsole-colors-solarized
+
     Solarized Xresources Color Scheme
     Copyright (c) 2011 Ethan Schoonover
     Distributed under an open-source license
