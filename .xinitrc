@@ -1,7 +1,0 @@
-if [ -s ~/.Xmodmap ]; then
-    xmodmap ~/.Xmodmap
-fi
-
-# Deactivate non-breakable spaces.
-# See: http://linuxtoosx.blogspot.fr/2010/10/disabling-option-space-and-altgr-space.html
-setxkbmap -option "nbsp:none"

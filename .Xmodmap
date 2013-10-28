@@ -3,6 +3,10 @@
 ! --- Natural Scrolling
 pointer = 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
 
+! Remove non-breakable spaces
+! See: http://dhauweele.blogspot.fr/2013/03/get-rid-of-that-non-breaking-space.html
+keycode 65 = space space space space space space space space
+
 ! --- Remove Cmd keys
 ! Remaps the keys (reading left-to-right):
 !    -FROM-
