@@ -114,7 +114,6 @@ set number
 set mouse=a
 set mousehide
 set wrap
-set autoindent
 set cursorline
 set ttyfast
 set title
@@ -144,6 +143,10 @@ set nofoldenable               " ... but have folds open by default"
 set virtualedit=all
 set textwidth=99
 set colorcolumn=100
+" highlight tabs and trailing spaces
+" source: https://wincent.com/blog/making-vim-highlight-suspicious-characters
+set listchars=nbsp:¬,eol:¶,tab:→\ ,extends:»,precedes:«,trail:•
+"set list
 " }}}
 
 
