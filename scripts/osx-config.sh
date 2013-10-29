@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# Turns off WakeOnMagicPacket
+sudo pmset -a womp 1
+# Automatic restart on power loss
+sudo pmset -a autorestart 1
+# Sets displaysleep to 10 minutes
+sudo pmset -a displaysleep 10
 # Set standby delay to 3 hours (default is 1 hour)
 # See: http://www.ewal.net/2012/09/09/slow-wake-for-macbook-pro-retina/
 sudo pmset -a standbydelay 10800
