@@ -45,7 +45,7 @@ brew link --overwrite python
 brew install $COMMON_PACKAGES
 
 # Install OSX only packages
-brew install findutils bash ack grep rename tree webkit2png osxutils p7zip faad2 bash-completion md5sha1sum
+brew install findutils bash ack grep rename tree webkit2png osxutils p7zip faad2 bash-completion md5sha1sum ssh-copy-id
 
 # htop-osx requires root privileges to correctly display all running processes.
 sudo chown root:wheel /usr/local/bin/htop
