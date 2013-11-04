@@ -244,4 +244,7 @@ if $IS_OSX; then
     # You could just use `-g` instead, but I like being explicit
     complete -W "NSGlobalDomain" defaults
 
+    # Lock the screen
+    alias lock='/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend'
+
 fi
