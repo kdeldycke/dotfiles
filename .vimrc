@@ -205,8 +205,11 @@ silent! call MakeDirIfNoExists(&directory)
  autocmd! BufWritePost vimrc source %
 
 
- " Delete trailing whitespaces
- autocmd BufWritePre * :%s/\s\+$//e
+" Delete trailing whitespaces
+autocmd BufWritePre,FileWritePost * :%s/\s\+$//e
+" Replace all non-breakable spaces by simple spaces
+" Source: http://nathan.vertile.com/find-and-replace-non-breaking-spaces-in-vim/
+autocmd BufWritePre,FileWritePost * silent :%s/\%xa0/ /g
 
 
 " Execution permissions by default to shebang (#!) files
