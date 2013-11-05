@@ -201,8 +201,8 @@ silent! call MakeDirIfNoExists(&directory)
 " }}}
 
 
- " Autoload configuration when this file changes ($MYVIMRC)
- autocmd! BufWritePost vimrc source %
+" Autoload configuration when this file changes ($MYVIMRC)
+autocmd! BufWritePost vimrc source %
 
 
 " Delete trailing whitespaces
