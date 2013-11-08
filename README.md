@@ -5,10 +5,8 @@ Collection of dotfiles for Python developers working in vim.
 
 Project is currently targetting:
 
-  * **Kubuntu 13.04** (Raring Ringtail)
-  * **Mac OSX 10.8** (Mountain Lion)
-
-Snapshots of older distributions may be found as tags of the current repository.
+  * **Kubuntu 13.10** (Saucy Salamander)
+  * **OSX 10.9** (Maverick)
 
 
 Features
@@ -67,6 +65,15 @@ TODO
 
   * Auto-install Xcode on OSX.
   * Add terminal & vim screenshot on both OSX and Kubuntu.
+
+
+Old versions
+------------
+
+Snapshots of older distributions may be found as tags of the current repository:
+
+  * [**Kubuntu 13.04** (Raring Ringtail)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-13.04)
+  * [**OSX 10.8** (Mountain Lion)](https://github.com/kdeldycke/dotfiles/tree/osx-10.8)
 
 
 Sources
