@@ -364,3 +364,8 @@ defaults write com.apple.TextEdit PlainTextEncodingForWrite -int 4
 # Enable the debug menu in Disk Utility
 defaults write com.apple.DiskUtility DUDebugMenuEnabled -bool true
 defaults write com.apple.DiskUtility advanced-image-options -bool true
+
+# TODO:
+#   * Remove shortcuts from the dock
+#   * use https://github.com/kcrawford/dockutil ?
+# killall Dock
