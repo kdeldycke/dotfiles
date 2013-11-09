@@ -88,6 +88,8 @@ curl -O http://kent.dl.sourceforge.net/project/refind/0.7.4/refind-bin-0.7.4.zip
 unzip ./refind-bin-0.7.4.zip
 ./refind-bin-0.7.4/install.sh --yes
 rm -rf ./refind-bin-0.7.4*
+# Adjust refind config
+sed -i "" -e "s/timeout 20/timeout 1/" /EFI/refind/refind.conf
 
 # Clean things up
 brew linkapps
