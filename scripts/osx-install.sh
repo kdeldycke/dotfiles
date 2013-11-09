@@ -83,6 +83,12 @@ fontforge -script ./powerline-fontconfig/fontpatcher.py /System/Library/Fonts/Mo
 sudo mv ./Monaco\ for\ Powerline.otf /System/Library/Fonts/
 rm -rf ./powerline-fontconfig
 
+# Install custom bootloader
+curl -O http://kent.dl.sourceforge.net/project/refind/0.7.4/refind-bin-0.7.4.zip
+unzip ./refind-bin-0.7.4.zip
+./refind-bin-0.7.4/install.sh --yes
+rm -rf ./refind-bin-0.7.4*
+
 # Clean things up
 brew linkapps
 brew doctor
