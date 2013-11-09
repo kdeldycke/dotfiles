@@ -24,8 +24,14 @@ fi
 # Update all OSX packages
 sudo softwareupdate -i -a
 
-# Install Homebrew
-ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
+# Install Homebrew if not found
+brew --version
+if [[ $? -ne 0 ]]; then
+    # Clean-up failed Homebrew install
+    rm -rf /usr/local/Cellar /usr/local/.git && brew cleanup
+    # Install Homebrew
+    ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
+fi
 brew update
 brew upgrade
 
