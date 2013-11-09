@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 
-function installcask() {
-    brew cask install "${@}" 2> /dev/null
-}
-
 # Install command line tools
 xcode-select -p
 if [[ $? -ne 0 ]]; then
@@ -62,15 +58,15 @@ sudo chmod u+s /usr/local/bin/htop
 # Install binary apps
 for PACKAGE in $BIN_PACKAGES
 do
-    installcask $PACKAGE
+   brew cask install $PACKAGE
 done
-installcask dropbox
-installcask f-lux
-installcask gitx
-installcask insync
-installcask chromium
-installcask libre-office
-installcask tunnelblick
+brew cask install dropbox
+brew cask install f-lux
+brew cask install gitx
+brew cask install insync
+brew cask install chromium
+brew cask install libre-office
+brew cask install tunnelblick
 
 # Install vim
 brew install lua --completion
