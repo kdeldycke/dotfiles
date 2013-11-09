@@ -28,7 +28,7 @@ sudo softwareupdate -i -a
 brew --version
 if [[ $? -ne 0 ]]; then
     # Clean-up failed Homebrew install
-    rm -rf /usr/local/Cellar /usr/local/.git && brew cleanup
+    rm -rf /usr/local/Cellar /usr/local/.git
     # Install Homebrew
     ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
 fi
