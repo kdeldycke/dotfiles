@@ -39,17 +39,31 @@ brew tap phinze/homebrew-cask
 brew install brew-cask
 
 # Install OSX system requirements
-installcask x-quartz
+brew install cask x-quartz
 
 # Install a brand new Python
 brew install python --with-brewed-openssl
 brew link --overwrite python
 
 # Install common packages
-brew install $COMMON_PACKAGES
-
-# Install OSX only packages
-brew install findutils bash ack grep rename tree webkit2png osxutils p7zip faad2 bash-completion md5sha1sum ssh-copy-id
+brew install apple-gcc42
+for PACKAGE in $COMMON_PACKAGES
+do
+   brew install $PACKAGE
+done
+brew install findutils
+brew install bash
+brew install ack
+brew install grep
+brew install rename
+brew install tree
+brew install webkit2png
+brew install osxutils
+brew install p7zip
+brew install faad2
+brew install bash-completion
+brew install md5sha1sum
+brew install ssh-copy-id
 
 # htop-osx requires root privileges to correctly display all running processes.
 sudo chown root:wheel /usr/local/bin/htop
