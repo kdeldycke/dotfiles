@@ -23,9 +23,6 @@ ntp ca-certificates apt-file kdenlive python-dev gtk2-engines runsnakerun unclut
 ttf-ancient-fonts
 # TODO: install vim-lua
 
-# Install global Python packages
-sudo pip install --upgrade $PYTHON_PACKAGES
-
 
 sudo aptitude install -y virt-manager
 sudo usermod -a -G libvirtd kevin

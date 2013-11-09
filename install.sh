@@ -20,10 +20,6 @@ optipng colortail colorsvn mercurial grc coreutils bzr htop"
 BIN_PACKAGES="audacity avidemux firefox gimp inkscape vlc blender thunderbird virtualbox
 bitcoin-qt wireshark prey"
 
-# Define global Python packages
-PYTHON_PACKAGES="readline pip setuptools distribute virtualenv virtualenvwrapper autoenv pep8
-pylint pyflakes coverage rope autopep8 mccabe"
-
 # Search local dotfiles
 DOT_FILES=`find . -maxdepth 1 \
     -not -name "assets" -and \
@@ -71,6 +67,11 @@ else
     source ./scripts/ubuntu-install.sh
     source ./scripts/ubuntu-config.sh
 fi
+
+# Install & upgrade all global python modules
+PYTHON_PACKAGES="readline pip setuptools distribute virtualenv virtualenvwrapper autoenv pep8
+pylint pyflakes coverage rope autopep8 mccabe"
+sudo pip install --upgrade $PYTHON_PACKAGES
 
 # Reload Bash with new configuration
 source ~/.bash_profile

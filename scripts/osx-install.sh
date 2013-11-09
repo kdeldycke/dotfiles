@@ -59,9 +59,6 @@ brew install findutils bash ack grep rename tree webkit2png osxutils p7zip faad2
 sudo chown root:wheel /usr/local/bin/htop
 sudo chmod u+s /usr/local/bin/htop
 
-# Install Python packages
-sudo pip install --upgrade $PYTHON_PACKAGES
-
 # Install binary apps
 for PACKAGE in $BIN_PACKAGES
 do
