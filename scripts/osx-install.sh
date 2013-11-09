@@ -4,6 +4,12 @@ function installcask() {
     brew cask install "${@}" 2> /dev/null
 }
 
+# Install command line tools
+xcode-select -p
+if [[ $? -ne 0 ]]; then
+    xcode-select --install
+fi
+
 # A full installation of Xcode.app is required to compile macvim.
 # Installing just the Command Line Tools is not sufficient.
 xcodebuild -version
@@ -13,10 +19,6 @@ if [[ $? -ne 0 ]]; then
 
     # Accept Xcode license
     sudo xcodebuild -license
-
-    # Install Xcode's command line tools
-    # Source: http://apple.stackexchange.com/a/98764
-    curl -fsSL https://gist.github.com/trinitronx/6217746/raw/2c172e297fbafc3b8e0fcc6363df0b7b52e4ae6d/xcode-cli-tools.sh | sudo sh
 fi
 
 # Update all OSX packages
