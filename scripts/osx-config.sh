@@ -365,6 +365,9 @@ defaults write com.apple.TextEdit PlainTextEncodingForWrite -int 4
 defaults write com.apple.DiskUtility DUDebugMenuEnabled -bool true
 defaults write com.apple.DiskUtility advanced-image-options -bool true
 
+# Remove default content
+rm -rf ~/Downloads/About\ Downloads.lpdf
+
 # TODO:
 #   * Remove shortcuts from the dock
 #   * use https://github.com/kcrawford/dockutil ?
