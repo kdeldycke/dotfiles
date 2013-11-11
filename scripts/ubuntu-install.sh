@@ -68,7 +68,9 @@ sudo ldconfig
 
 
 # Clean-up
-sudo aptitude remove akregator kaddressbook knotes kontact korganizer dragonplayer kamera kcalc kaccessible kdegraphics-strigi-analyzer kdepim-strigi-plugins kmag kpat rekonq quassel kmail appmenu-gtk appmenu-gtk3
+sudo aptitude remove -y akregator kaddressbook knotes kontact korganizer dragonplayer kamera kcalc \
+kaccessible kdegraphics-strigi-analyzer kmag kpat rekonq quassel kmail unity-gtk2-module \
+unity-gtk3-module
 
 sudo apt-file update
 
