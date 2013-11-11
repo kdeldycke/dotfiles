@@ -50,6 +50,8 @@ NeoBundle 'altercation/vim-colors-solarized.git'
 " Syntax
 NeoBundleLazy 'vim-scripts/JSON.vim', {'autoload': {'filetypes': ['json']}}
 NeoBundleLazy 'vim-scripts/po.vim--gray', {'autoload': {'filetypes': ['po']}}
+NeoBundleLazy 'vim-scripts/plist.vim', {'autoload': {'filetypes': ['plist']}}
+NeoBundleLazy 'hunner/vim-plist', {'autoload': {'filetypes': ['plist']}}
 NeoBundleLazy 'joedicastro/vim-markdown'
 NeoBundle 'scrooloose/syntastic'
 
@@ -287,7 +289,11 @@ augroup END
 " MARKDOWN
 au BufRead,BufNewFile *.{md,mdown,mkd,mkdn,markdown,mdwn} set filetype=markdown
 autocmd FileType markdown NeoBundleSource vim-markdown
-autocmd FileType markdown NeoBundleSource vim-markdown-extra-preview
+
+" Plist
+au BufRead,BufNewFile *.plist set filetype=plist
+autocmd FileType plist NeoBundleSource vim-plist
+autocmd FileType plist NeoBundleSource plist.vim
 
 " Git commit
 autocmd Filetype gitcommit setlocal spell textwidth=72
