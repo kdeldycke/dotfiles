@@ -4,6 +4,7 @@ sudo apt-get update
 sudo apt-get install aptitude
 
 sudo add-apt-repository -y ppa:sunab/kdenlive-svn
+sudo add-apt-repository -y ppa:dgadomski/vim-daily
 
 sudo aptitude update
 sudo aptitude upgrade -y
@@ -19,9 +20,8 @@ p7zip-full gtk-chtheme gnome-themes-standard python-pip faad h264enc kwrite kscr
 hunspell-fr hunspell-dictionary-fr aspell-fr gimp-plugin-registry xscreensaver xscreensaver-data \
 xscreensaver-data-extra xscreensaver-gl xscreensaver-gl-extra network-manager-openvpn ksshaskpass \
 qemu-kvm dmg2img pdftk chromium-codecs-ffmpeg-extra picard xsltproc xfsprogs lm-sensors bzrtools \
-ntp ca-certificates apt-file kdenlive python-dev gtk2-engines runsnakerun unclutter driftnet vim \
-ttf-ancient-fonts kdesdk-scripts
-# TODO: install vim-lua
+ntp ca-certificates apt-file kdenlive python-dev gtk2-engines runsnakerun unclutter driftnet \
+vim-nox ttf-ancient-fonts kdesdk-scripts
 
 sudo pip install --upgrade distribute
 
