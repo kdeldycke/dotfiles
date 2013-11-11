@@ -64,6 +64,7 @@ brew install faad2
 brew install bash-completion
 brew install md5sha1sum
 brew install ssh-copy-id
+brew install colorsvn
 
 # htop-osx requires root privileges to correctly display all running processes.
 sudo chown root:wheel /usr/local/bin/htop
