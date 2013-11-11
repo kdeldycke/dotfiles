@@ -8,6 +8,8 @@ Project is currently targetting:
   * **Kubuntu 13.10** (Saucy Salamander)
   * **OSX 10.9** (Maverick)
 
+All running on a [`MacBookAir5,2`](http://www.amazon.com/dp/B008GV6QV2/?tag=kevideld-20).
+
 
 Features
 --------
@@ -16,6 +18,7 @@ Features
   * Common configuration for both OSX and Kubuntu.
   * Produce colored output for most of shell commands.
   * All color schemes are based on [Solarized](http://ethanschoonover.com/solarized).
+  * Keeps OSes fast and lean.
 
 
 Install
