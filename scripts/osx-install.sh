@@ -106,6 +106,7 @@ unzip ./refind-bin-0.7.4.zip
 rm -rf ./refind-bin-0.7.4*
 # Adjust refind config
 sudo sed -i "" -e "s/timeout 20/timeout 1/" /EFI/refind/refind.conf
+sudo sed -i "" -e "s/#default_selection 1/default_selection linux/" /EFI/refind/refind.conf
 
 # Install steam in a case-insensitive disk image
 # Source: http://blog.andersonshatch.com/2010/05/13/using-steam-on-mac-with-case-sensitive-drive/
