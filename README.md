@@ -75,8 +75,8 @@ Old versions
 
 Snapshots of older distributions may be found as tags of the current repository:
 
-  * [**Kubuntu 13.04** (Raring Ringtail)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-13.04)
-  * [**OSX 10.8** (Mountain Lion)](https://github.com/kdeldycke/dotfiles/tree/osx-10.8)
+  * [Kubuntu 13.04 (Raring Ringtail)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-13.04)
+  * [OSX 10.8 (Mountain Lion)](https://github.com/kdeldycke/dotfiles/tree/osx-10.8)
 
 
 Sources
