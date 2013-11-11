@@ -59,13 +59,10 @@ rm ./google-musicmanager-beta_current_amd64.deb
 wget -qO - https://d2t3ff60b2tol4.cloudfront.net/services@insynchq.com.gpg.key | sudo apt-key add -
 # TODO: don't add twice if config line already there
 sudo tee -a /etc/apt/sources.list <<-EOF
-    deb http://apt.insynchq.com/ubuntu raring non-free
+    deb http://apt.insynchq.com/ubuntu saucy non-free contrib
 EOF
 sudo aptitude update
-# Fix some insync beta issues
-sudo aptitude install -y gir1.2-appindicator3-0.1 gir1.2-notify-0.7 insync-beta-kde
-sudo ln -sf /usr/lib/x86_64-linux-gnu/libpython2.7.so.1 /usr/lib/libpython2.7.so.1
-sudo ldconfig
+sudo aptitude install insync insync-dolphin
 
 
 # Clean-up
