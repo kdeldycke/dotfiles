@@ -23,6 +23,7 @@ ntp ca-certificates apt-file kdenlive python-dev gtk2-engines runsnakerun unclut
 ttf-ancient-fonts kdesdk-scripts
 # TODO: install vim-lua
 
+sudo pip install --upgrade distribute
 
 sudo aptitude install -y virt-manager
 sudo usermod -a -G libvirtd kevin
