@@ -41,7 +41,8 @@ sudo pip install --upgrade https://pypi.python.org/packages/source/g/gmvault/gmv
 
 
 # Install Pelican and its dependencies
-sudo aptitude install -y python-markdown python-pygments python-beautifulsoup pandoc python-smartypants
+sudo aptitude install -y python-markdown python-pygments python-beautifulsoup pandoc \
+python-smartypants s3cmd
 sudo pip install --upgrade pelican mdx_video typogrify Fabric
 
 
