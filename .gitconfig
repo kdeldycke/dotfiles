@@ -3,6 +3,9 @@
     pager =
     autocrlf = input
     whitespace = fix,space-before-tab,tab-in-indent,trailing-space
+    # Prevent OSX's revisiond daemon to mess up with our files.
+    # See: http://www.git-tower.com/blog/make-git-rebase-safe-on-osx/
+    trustctime = false
 [user]
 	name = Kevin Deldycke
 	email = kevin@deldycke.com
