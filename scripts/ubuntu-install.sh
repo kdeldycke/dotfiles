@@ -25,6 +25,9 @@ vim-nox ttf-ancient-fonts kdesdk-scripts cpufrequtils sysfsutils powertop
 
 sudo pip install --upgrade distribute
 
+sudo gem install hub
+
+
 sudo aptitude install -y virt-manager
 sudo usermod -a -G libvirtd kevin
 sudo usermod -a -G kvm kevin

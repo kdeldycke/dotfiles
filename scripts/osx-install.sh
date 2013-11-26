@@ -66,6 +66,7 @@ brew install bash-completion
 brew install md5sha1sum
 brew install ssh-copy-id
 brew install colorsvn
+brew install hub
 
 # Install Cassandra
 brew install cassandra
