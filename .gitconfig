@@ -7,8 +7,8 @@
     # See: http://www.git-tower.com/blog/make-git-rebase-safe-on-osx/
     trustctime = false
 [user]
-	name = Kevin Deldycke
-	email = kevin@deldycke.com
+    name = Kevin Deldycke
+    email = kevin@deldycke.com
 [color]
     diff = auto
     status = auto
