@@ -10,10 +10,11 @@
 	name = Kevin Deldycke
 	email = kevin@deldycke.com
 [color]
-	diff = auto
-	status = auto
-	branch = auto
+    diff = auto
+    status = auto
+    branch = auto
     ui = auto
+    interactive = auto
 [apply]
     whitespace = fix
 [diff]
