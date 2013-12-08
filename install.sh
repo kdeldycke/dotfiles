@@ -73,5 +73,22 @@ PYTHON_PACKAGES="readline pip setuptools virtualenv virtualenvwrapper autoenv pe
 coverage rope autopep8 mccabe nose"
 sudo pip install --upgrade $PYTHON_PACKAGES
 
+# Patch terminal font for Vim's Airline plugin
+# See: https://powerline.readthedocs.org/en/latest/fontpatching.html
+mkdir ./powerline-fontconfig
+curl -fsSL https://github.com/Lokaltog/powerline/tarball/develop | tar -xvz --strip-components 2 --directory ./powerline-fontconfig -f -
+fontforge -script ./powerline-fontconfig/fontpatcher.py --no-rename ./assets/SourceCodePro-Regular.otf
+rm -rf ./powerline-fontconfig
+# Install the patched font
+if $IS_OSX; then
+    mkdir -p ~/Library/Fonts/
+    mv ./Source\ Code\ Pro.otf ~/Library/Fonts/
+else
+    mkdir -p ~/.fonts/
+    mv ./Source\ Code\ Pro.otf ~/.fonts/
+    # Refresh font cache
+    sudo fc-cache -f -v
+fi
+
 # Reload Bash with new configuration
 source ~/.bash_profile

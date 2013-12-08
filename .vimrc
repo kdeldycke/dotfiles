@@ -177,7 +177,7 @@ colorscheme solarized
 
 
 " Font
-set guifont=Monaco\ for\ Powerline:h11
+set guifont=Source\ Code\ Pro:h11
 
 
 " Make a dir if no exists {{{

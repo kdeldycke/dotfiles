@@ -108,13 +108,6 @@ brew install cscope
 VIM_FLAGS="--with-python --with-lua --with-cscope --override-system-vim"
 brew install macvim $VIM_FLAGS
 brew install vim $VIM_FLAGS
-# Patch the font defined by default for Terminale (Monaco, 11pt) for Vim's Airline plugin
-# See: https://powerline.readthedocs.org/en/latest/fontpatching.html
-mkdir ./powerline-fontconfig
-curl -fsSL https://github.com/Lokaltog/powerline/tarball/develop | tar -xvz --strip-components 2 --include "*/font/*" --directory ./powerline-fontconfig -f -
-fontforge -script ./powerline-fontconfig/fontpatcher.py /System/Library/Fonts/Monaco.dfont
-sudo mv ./Monaco\ for\ Powerline.otf /System/Library/Fonts/
-rm -rf ./powerline-fontconfig
 
 # Install custom bootloader
 curl -O http://kent.dl.sourceforge.net/project/refind/0.7.4/refind-bin-0.7.4.zip
