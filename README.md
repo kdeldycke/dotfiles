@@ -18,6 +18,7 @@ Features
   * Common configuration for both OSX and Kubuntu.
   * Produce colored output for most of shell commands.
   * All color schemes are based on [Solarized](http://ethanschoonover.com/solarized).
+  * All Terminal font is [Source Code Pro](https://en.wikipedia.org/wiki/Source_Code_Pro).
   * Keeps OSes fast and lean.
 
 
@@ -92,6 +93,11 @@ but also draws from others:
   * https://github.com/reinout/tools
 
 Third party assets:
+
+    Source Code Pro 1.017
+    Copyright (c) 2012 Adobe Systems
+    Distributed under a SIL Open Font License version 1.1
+    Source: https://github.com/adobe/source-code-pro
 
     Solarized - OS X 10.7+ Terminal.App color theme
     Copyright (c) 2013 Tomislav Filipčić
