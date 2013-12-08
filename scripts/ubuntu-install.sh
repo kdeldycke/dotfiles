@@ -80,3 +80,6 @@ sudo apt-file update
 
 sudo deborphan | xargs sudo apt-get -y remove --purge
 sudo apt-get -y autoremove
+
+# Refresh font cache
+sudo fc-cache -f -v
