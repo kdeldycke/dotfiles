@@ -16,15 +16,14 @@ sudo nvram SystemAudioVolume=" "
 # Menu bar: disable transparency
 defaults write NSGlobalDomain AppleEnableMenuBarTransparency -bool false
 
-# Menu bar: hide the useless Time Machine and add TextInput
-defaults write com.apple.systemuiserver menuExtras -array \
-    "/System/Library/CoreServices/Menu Extras/Displays.menu" \
-    "/System/Library/CoreServices/Menu Extras/Bluetooth.menu" \
+# Menu bar: hide Time Machine, AirPort and User icons
+defaults write ~/Library/Preferences/ByHost/com.apple.systemuiserver.* dontAutoLoad -array \
+    "/System/Library/CoreServices/Menu Extras/TimeMachine.menu" \
     "/System/Library/CoreServices/Menu Extras/AirPort.menu" \
-    "/System/Library/CoreServices/Menu Extras/TextInput.menu" \
-    "/System/Library/CoreServices/Menu Extras/Battery.menu" \
-    "/System/Library/CoreServices/Menu Extras/Volume.menu" \
-    "/System/Library/CoreServices/Menu Extras/Clock.menu"
+    "/System/Library/CoreServices/Menu Extras/User.menu"
+
+# TODO: add Textinpur in menubar
+#    "/System/Library/CoreServices/Menu Extras/TextInput.menu"
 
 # Set sidebar icon size to medium
 defaults write NSGlobalDomain NSTableViewDefaultSizeMode -int 2
