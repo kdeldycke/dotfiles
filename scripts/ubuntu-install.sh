@@ -21,7 +21,7 @@ hunspell-fr hunspell-dictionary-fr aspell-fr gimp-plugin-registry xscreensaver x
 xscreensaver-data-extra xscreensaver-gl xscreensaver-gl-extra network-manager-openvpn ksshaskpass \
 qemu-kvm dmg2img pdftk chromium-codecs-ffmpeg-extra picard xsltproc xfsprogs lm-sensors bzrtools \
 ntp ca-certificates apt-file kdenlive python-dev gtk2-engines runsnakerun unclutter driftnet \
-vim-nox ttf-ancient-fonts kdesdk-scripts cpufrequtils sysfsutils powertop
+vim-nox ttf-ancient-fonts kdesdk-scripts cpufrequtils sysfsutils powertop sqlitebrowser
 
 sudo pip install --upgrade distribute
 
