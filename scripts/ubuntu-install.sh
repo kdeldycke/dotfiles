@@ -69,6 +69,12 @@ sudo aptitude update
 sudo aptitude install insync insync-dolphin
 
 
+# Install Steam
+sudo dpkg --add-architecture i386
+sudo aptitude update
+sudo aptitude install steam mesa-utils xboxdrv
+
+
 # Clean-up
 sudo aptitude remove -y akregator kaddressbook knotes kontact korganizer dragonplayer kamera kcalc \
 kaccessible kdegraphics-strigi-analyzer kmag kpat rekonq quassel kmail unity-gtk2-module \
