@@ -72,7 +72,12 @@ sudo aptitude install insync insync-dolphin
 # Install Steam
 sudo dpkg --add-architecture i386
 sudo aptitude update
-sudo aptitude install steam mesa-utils xboxdrv
+sudo aptitude install steam mesa-utils
+# Install xbox gamepad support
+# See: http://29a.ch/2013/2/24/xbox-controller-with-ubuntu-steam-xboxdrv
+sudo aptitude install xboxdrv
+sudo echo "blacklist xpad" > /etc/modprobe.d/blacklist.conf
+sudo rmmod xpad
 
 
 # Clean-up
