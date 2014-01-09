@@ -314,6 +314,30 @@ defaults write com.apple.Safari FindOnPageMatchesWordStartsOnly -bool false
 # Remove useless icons from Safari’s bookmarks bar
 defaults write com.apple.Safari ProxiesInBookmarksBar "()"
 
+# Don't remember passwords
+defaults write com.apple.Safari AutoFillPasswords -bool false
+
+# Warn About Fraudulent Websites
+defaults write com.apple.Safari WarnAboutFraudulentWebsites -bool true
+
+# Disable plug-ins
+defaults write com.apple.Safari WebKitPluginsEnabled -bool false
+defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2PluginsEnabled -bool false
+
+# Disable Java
+defaults write com.apple.Safari WebKitJavaEnabled -bool false
+defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2JavaEnabled -bool false
+
+# Block pop-up windows
+defaults write com.apple.Safari WebKitJavaScriptCanOpenWindowsAutomatically -bool false
+defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2JavaScriptCanOpenWindowsAutomatically -bool false
+
+# Do not track
+defaults write com.apple.Safari SendDoNotTrackHTTPHeader -bool true
+
+# Update extensions automatically
+defaults write com.apple.Safari InstallExtensionUpdatesAutomatically -bool true
+
 # Enable the Develop menu and the Web Inspector in Safari
 defaults write com.apple.Safari IncludeDevelopMenu -bool true
 defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
