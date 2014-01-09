@@ -129,7 +129,9 @@ defaults write NSGlobalDomain AppleMeasurementUnits -string "Centimeters"
 defaults write NSGlobalDomain AppleMetricUnits -bool true
 
 # Set the timezone; see `systemsetup -listtimezones` for other values
-systemsetup -settimezone "Europe/Paris" > /dev/null
+systemsetup -settimezone "Europe/Paris"
+systemsetup -setnetworktimeserver "time.euro.apple.com"
+systemsetup -setusingnetworktime on
 
 # Require password immediately after sleep or screen saver begins
 defaults write com.apple.screensaver askForPassword -int 1
