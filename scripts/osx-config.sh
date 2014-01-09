@@ -414,6 +414,9 @@ defaults write com.apple.DiskUtility advanced-image-options -bool true
 # Disable the receiving of faxes.
 sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.efax.plist
 
+# Enable secure virtual memory
+sudo defaults write /Library/Preferences/com.apple.virtualMemory UseEncryptedSwap -bool yes
+
 # Remove default content
 rm -rf ~/Downloads/About\ Downloads.lpdf
 
