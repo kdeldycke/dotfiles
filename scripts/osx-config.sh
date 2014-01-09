@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Turns off WakeOnMagicPacket
-sudo pmset -a womp 1
+sudo pmset -a womp 0
 # Automatic restart on power loss
 sudo pmset -a autorestart 1
 # Sets displaysleep to 10 minutes
