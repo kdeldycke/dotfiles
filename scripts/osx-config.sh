@@ -411,6 +411,9 @@ defaults write com.apple.TextEdit PlainTextEncodingForWrite -int 4
 defaults write com.apple.DiskUtility DUDebugMenuEnabled -bool true
 defaults write com.apple.DiskUtility advanced-image-options -bool true
 
+# Disable the receiving of faxes.
+sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.efax.plist
+
 # Remove default content
 rm -rf ~/Downloads/About\ Downloads.lpdf
 
