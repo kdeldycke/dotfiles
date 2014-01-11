@@ -22,7 +22,8 @@
     # Source: http://blog.apiaxle.com/post/handy-git-tips-to-stop-you-getting-fired/
     algorithm = patience
 [pull]
-    rebase = true
+    # Source: http://stackoverflow.com/a/18756102/487610
+    rebase = preserve
 [push]
     # Prevent accidental pushes to branches which you’re not ready to push yet.
     # Source: http://mislav.uniqpath.com/2010/07/git-tips/
