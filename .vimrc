@@ -52,7 +52,7 @@ NeoBundleLazy 'vim-scripts/JSON.vim', {'autoload': {'filetypes': ['json']}}
 NeoBundleLazy 'vim-scripts/po.vim--gray', {'autoload': {'filetypes': ['po']}}
 NeoBundleLazy 'vim-scripts/plist.vim', {'autoload': {'filetypes': ['plist']}}
 NeoBundleLazy 'hunner/vim-plist', {'autoload': {'filetypes': ['plist']}}
-NeoBundleLazy 'joedicastro/vim-markdown'
+NeoBundleLazy 'joedicastro/vim-markdown', {'autoload': {'filetypes': ['markdown']}}
 NeoBundleLazy 'sophacles/vim-bundle-mako', {'autoload': {'filetypes': ['mako']}}
 NeoBundle 'scrooloose/syntastic'
 
@@ -286,10 +286,6 @@ augroup json_autocmd
   autocmd FileType json set expandtab
   autocmd FileType json set foldmethod=syntax
 augroup END
-
-" MARKDOWN
-au BufRead,BufNewFile *.{md,mdown,mkd,mkdn,markdown,mdwn} set filetype=markdown
-autocmd FileType markdown NeoBundleSource vim-markdown
 
 " Plist
 au BufRead,BufNewFile *.plist set filetype=plist
