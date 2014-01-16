@@ -53,6 +53,7 @@ NeoBundleLazy 'vim-scripts/po.vim--gray', {'autoload': {'filetypes': ['po']}}
 NeoBundleLazy 'vim-scripts/plist.vim', {'autoload': {'filetypes': ['plist']}}
 NeoBundleLazy 'hunner/vim-plist', {'autoload': {'filetypes': ['plist']}}
 NeoBundleLazy 'joedicastro/vim-markdown'
+NeoBundleLazy 'sophacles/vim-bundle-mako', {'autoload': {'filetypes': ['mako']}}
 NeoBundle 'scrooloose/syntastic'
 
 " Python
