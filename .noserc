@@ -1,4 +1,3 @@
 [nosetests]
 verbosity = 3
-with-doctest = True
 with-color = True
