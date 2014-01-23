@@ -1,3 +1,4 @@
 [nosetests]
 verbosity = 3
+nocapture = 1
 with-color = True
