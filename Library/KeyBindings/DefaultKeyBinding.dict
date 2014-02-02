@@ -1,5 +1,45 @@
-# Deactivate non-breakable spaces.
-# See: http://linuxtoosx.blogspot.fr/2010/10/disabling-option-space-and-altgr-space.html
 {
-    "~ " = ("insertText:", " ");
+
+/* Deactivate non-breakable spaces.
+ * See: http://linuxtoosx.blogspot.fr/2010/10/disabling-option-space-and-altgr-space.html
+ */
+
+"~ " = ("insertText:", " ");
+    
+    
+/* Add text movements bindings.
+ * Source: https://github.com/mathiasbynens/dotfiles/issues/324
+ */
+
+"^w" = "deleteWordBackward:";
+"^u" = "deleteToBeginningOfLine:";
+
+/* Home */
+"\UF729"  = "moveToBeginningOfLine:";
+/* Shift+Home */
+"$\UF729" = "moveToBeginningOfLineAndModifySelection:";
+
+/* Cmd-Left */
+"@\UF702"  = "moveToBeginningOfLine:";
+/* Cmd-Shift-Left */
+"$@\UF702" = "moveToBeginningOfLineAndModifySelection:";
+
+/* Cmd-Right */
+"@\UF703"  = "moveToEndOfLine:";
+/* Cmd-Shift-Right */
+"$@\UF703" = "moveToEndOfLineAndModifySelection:";
+
+/* End */
+"\UF72B"  = "moveToEndOfLine:";
+/* Shift-End */
+"$\UF72B" = "moveToEndOfLineAndModifySelection:";
+
+/* Page Up/Page Down */
+"\UF72C"  = "pageUp:";
+"\UF72D"  = "pageDown:";
+
+/* Ctrl-Home */
+"^\UF729" ="moveToBeginningOfDocument:";
+/* Ctrl-End */
+"^\UF72B" ="moveToEndOfDocument:";
 }
