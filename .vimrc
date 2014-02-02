@@ -260,8 +260,7 @@ let g:syntastic_style_warning_symbol = '⚡'
 
 
 " PythonMode
-let g:pymode_lint_checker = 'pylint,pep8,mccabe,pep257'
-let g:pymode_lint_config = $HOME.'/.pylintrc'
+let g:pymode_lint_checkers = 'pylint,pep8,mccabe,pep257'
 let g:pymode_lint_cwindow = 0
 " Custom symbols will be supported in the future (I hope).
 " See: https://github.com/klen/python-mode/pull/295
