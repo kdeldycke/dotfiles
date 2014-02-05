@@ -428,3 +428,10 @@ rm -rf ~/Downloads/About\ Downloads.lpdf
 #   * Remove shortcuts from the dock
 #   * use https://github.com/kcrawford/dockutil ?
 # killall Dock
+
+# Kill affected applications
+for app in "Activity Monitor" "Address Book" "Calendar" "Contacts" "cfprefsd" \
+	"Dock" "Finder" "Mail" "Messages" "Safari" "SizeUp" "SystemUIServer" \
+	"Terminal" "Transmission" "Twitter" "iCal"; do
+	killall "${app}" > /dev/null 2>&1
+done
