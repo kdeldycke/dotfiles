@@ -51,7 +51,7 @@ do
         if [ -e "${target}" ] && [ ! -L "${target}" ]; then
             mv "$target" "$target.dotfile.bak"
         fi
-        ln -sf "${source}" $(dirname "${target}")
+        ln -sf "${source}" "$(dirname "${target}")"
     fi
 done
 
