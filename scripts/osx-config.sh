@@ -295,6 +295,10 @@ ln -s /Applications/Xcode.app/Contents/Applications/iPhone\ Simulator.app /Appli
 defaults write com.apple.dock wvous-tl-corner -int 5
 defaults write com.apple.dock wvous-tl-modifier -int 0
 
+# Enable Continuous Spellchecking and Disabled Auto-correct
+defaults write com.apple.Safari WebContinuousSpellCheckingEnabled -bool true
+defaults write com.apple.Safari WebAutomaticSpellingCorrectionEnabled -bool false
+
 # Set Safari’s home page to `about:blank` for faster loading
 defaults write com.apple.Safari HomePage -string "about:blank"
 
@@ -424,3 +428,10 @@ rm -rf ~/Downloads/About\ Downloads.lpdf
 #   * Remove shortcuts from the dock
 #   * use https://github.com/kcrawford/dockutil ?
 # killall Dock
+
+# Kill affected applications
+for app in "Activity Monitor" "Address Book" "Calendar" "Contacts" "cfprefsd" \
+	"Dock" "Finder" "Mail" "Messages" "Safari" "SizeUp" "SystemUIServer" \
+	"Terminal" "Transmission" "Twitter" "iCal"; do
+	killall "${app}" > /dev/null 2>&1
+done
