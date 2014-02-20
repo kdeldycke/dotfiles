@@ -89,5 +89,8 @@ else
     sudo fc-cache -f -v
 fi
 
+# Force vim plugin upgrades
+vim +NeoBundleUpdate +q
+
 # Reload Bash with new configuration
 source ~/.bash_profile
