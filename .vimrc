@@ -262,8 +262,6 @@ let g:syntastic_style_warning_symbol = '⚡'
 " PythonMode
 let g:pymode_lint_checkers = 'pylint,pep8,mccabe,pep257'
 let g:pymode_lint_cwindow = 0
-" Custom symbols will be supported in the future (I hope).
-" See: https://github.com/klen/python-mode/pull/295
 let g:pymode_lint_todo_symbol = '⚠'
 let g:pymode_lint_comment_symbol = '⑊'
 let g:pymode_lint_visual_symbol = '⑆'
