@@ -101,6 +101,9 @@ filetype plugin indent on      " Indent and plugins by filetype
 
 " VIM Setup {{{ ===============================================================
 
+let mapleader=','
+let maplocalleader=' '
+
 scriptencoding utf-8
 set encoding=utf-8              " setup the encoding to UTF-8
 set ls=2                        " status line always visible
