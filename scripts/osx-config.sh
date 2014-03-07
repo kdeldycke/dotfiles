@@ -67,7 +67,7 @@ defaults write com.apple.CrashReporter DialogType -string "none"
 defaults write com.apple.helpviewer DevMode -bool true
 
 # Restart automatically if the computer freezes
-systemsetup -setrestartfreeze on
+sudo systemsetup -setrestartfreeze on
 
 # Check for software updates daily, not just once per week
 defaults write com.apple.SoftwareUpdate ScheduleFrequency -int 1
@@ -123,9 +123,9 @@ defaults write NSGlobalDomain AppleMeasurementUnits -string "Centimeters"
 defaults write NSGlobalDomain AppleMetricUnits -bool true
 
 # Set the timezone; see `systemsetup -listtimezones` for other values
-systemsetup -settimezone "Europe/Paris"
-systemsetup -setnetworktimeserver "time.euro.apple.com"
-systemsetup -setusingnetworktime on
+sudo systemsetup -settimezone "Europe/Paris"
+sudo systemsetup -setnetworktimeserver "time.euro.apple.com"
+sudo systemsetup -setusingnetworktime on
 
 # Require password immediately after sleep or screen saver begins
 defaults write com.apple.screensaver askForPassword -int 1
