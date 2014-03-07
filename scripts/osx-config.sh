@@ -116,12 +116,6 @@ defaults write NSGlobalDomain KeyRepeat -int 0
 # Disable “natural” (Lion-style) scrolling
 defaults write NSGlobalDomain com.apple.swipescrolldirection -bool false
 
-# Automatically illuminate built-in MacBook keyboard in low light
-defaults write com.apple.BezelServices kDim -bool true
-
-# Turn off keyboard illumination when computer is not used for 5 minutes
-defaults write com.apple.BezelServices kDimTime -int 300
-
 # Set language and text formats
 defaults write NSGlobalDomain AppleLanguages -array "en" "fr"
 defaults write NSGlobalDomain AppleLocale -string "en_GB@currency=EUR"
