@@ -388,8 +388,6 @@ sudo mdutil -i on /
 sudo mdutil -E /
 
 # Use a custom theme for Terminal.app
-# Alternative to consider: https://github.com/hjuutilainen/dotfiles/blob/master/bin/osx-user-defaults.sh#L583-L612
-#cp -f "./assets/Solarized Dark.terminal" "$HOME/Library/Preferences/com.apple.Terminal.plist"
 # Force removal of theme first
 /usr/libexec/PlistBuddy -c "Delete :Window\ Settings:Solarized\ Dark" ~/Library/Preferences/com.apple.Terminal.plist 2> /dev/null
 /usr/libexec/PlistBuddy -c "Add :Window\ Settings:Solarized\ Dark dict" ~/Library/Preferences/com.apple.Terminal.plist
