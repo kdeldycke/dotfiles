@@ -241,6 +241,8 @@ chflags nohidden ~/Library
 defaults write com.apple.dock mouse-over-hilite-stack -bool true
 # Set the icon size of Dock items to 36 pixels
 defaults write com.apple.dock tilesize -int 36
+# Change minimize/maximize window effect
+defaults write com.apple.dock mineffect -string "scale"
 # Enable spring loading for all Dock items
 defaults write com.apple.dock enable-spring-load-actions-on-all-items -bool true
 # Show indicator lights for open applications in the Dock
