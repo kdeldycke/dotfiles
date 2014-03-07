@@ -391,9 +391,10 @@ sudo mdutil -E /
 # Alternative to consider: https://github.com/hjuutilainen/dotfiles/blob/master/bin/osx-user-defaults.sh#L583-L612
 #cp -f "./assets/Solarized Dark.terminal" "$HOME/Library/Preferences/com.apple.Terminal.plist"
 open "./assets/Solarized Dark.terminal"
-sleep 5  # Wait a bit to make sure the theme is loaded
 defaults write com.apple.Terminal "Default Window Settings" -string "Solarized Dark"
 defaults write com.apple.Terminal "Startup Window Settings" -string "Solarized Dark"
+defaults import com.apple.Terminal "$HOME/Library/Preferences/com.apple.Terminal.plist"
+
 # Only use UTF-8 in Terminal.app
 defaults write com.apple.terminal StringEncodings -array 4
 
