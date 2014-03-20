@@ -133,6 +133,12 @@ if [! -e "~/steam.sparsebundle" ]; then
     # See: https://en.wikipedia.org/wiki/Alias_(Mac_OS)
 fi
 
+# Install runsnakeerun
+# Need to apply: https://github.com/Homebrew/homebrew/issues/23666#issuecomment-32453279
+#brew install wxmac
+#brew install wxpython
+#pip install --upgrade RunSnakeRun
+
 # Clean things up
 brew linkapps
 brew doctor
