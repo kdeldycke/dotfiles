@@ -80,6 +80,11 @@ sudo echo "blacklist xpad" > /etc/modprobe.d/blacklist.conf
 sudo rmmod xpad
 
 
+# Install Popcorn Time
+[ ! -f ~/Popcorn-Time ] && wget -O - "http://cdn.get-popcorn.com/build/Popcorn-Time-0.2.9-Linux-64.tar.gz" | tar -xvz --directory ~ -f -
+sudo ln -s /lib/x86_64-linux-gnu/libudev.so.1 /lib/x86_64-linux-gnu/libudev.so.0
+
+
 # Clean-up
 sudo aptitude remove -y akregator kaddressbook knotes kontact korganizer dragonplayer kamera kcalc \
 kaccessible kdegraphics-strigi-analyzer kmag kpat rekonq quassel kmail unity-gtk2-module \
