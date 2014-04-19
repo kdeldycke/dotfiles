@@ -74,10 +74,10 @@ sudo pip install --upgrade $PYTHON_PACKAGES
 
 # Patch terminal font for Vim's Airline plugin
 # See: https://powerline.readthedocs.org/en/latest/fontpatching.html
-mkdir ./powerline-fontconfig
-curl -fsSL https://github.com/Lokaltog/powerline/tarball/develop | tar -xvz --strip-components 2 --directory ./powerline-fontconfig -f -
-fontforge -script ./powerline-fontconfig/fontpatcher.py --no-rename ./assets/SourceCodePro-Regular.otf
-rm -rf ./powerline-fontconfig
+mkdir ./powerline-fontpatcher
+curl -fsSL https://github.com/Lokaltog/powerline-fontpatcher/tarball/develop | tar -xvz --strip-components 1 --directory ./powerline-fontpatcher -f -
+fontforge -script ./powerline-fontpatcher/scripts/powerline-fontpatcher --no-rename ./assets/SourceCodePro-Regular.otf
+rm -rf ./powerline-fontpatcher
 # Install the patched font
 if $IS_OSX; then
     mkdir -p ~/Library/Fonts/
