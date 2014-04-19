@@ -77,7 +77,7 @@ sudo aptitude install -y steam mesa-utils
 # Install xbox gamepad support
 # See: http://29a.ch/2013/2/24/xbox-controller-with-ubuntu-steam-xboxdrv
 sudo aptitude install -y xboxdrv
-sudo echo "blacklist xpad" > /etc/modprobe.d/blacklist.conf
+sudo sh -c "echo 'blacklist xpad' > /etc/modprobe.d/blacklist.conf"
 sudo rmmod xpad
 
 
