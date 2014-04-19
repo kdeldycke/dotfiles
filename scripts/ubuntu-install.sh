@@ -4,7 +4,6 @@ sudo apt-get update
 sudo apt-get install aptitude
 
 sudo add-apt-repository -y ppa:sunab/kdenlive-svn
-sudo add-apt-repository -y ppa:dgadomski/vim-daily
 
 sudo aptitude update
 sudo aptitude upgrade -y
