@@ -81,8 +81,8 @@ sudo rmmod xpad
 
 
 # Install Popcorn Time
-[ ! -f ~/Popcorn-Time ] && wget -O - "http://cdn.get-popcorn.com/build/Popcorn-Time-0.2.9-Linux-64.tar.gz" | tar -xvz --directory ~ -f -
-sudo ln -s /lib/x86_64-linux-gnu/libudev.so.1 /lib/x86_64-linux-gnu/libudev.so.0
+[ ! -d ~/Popcorn-Time ] && wget -O - "http://cdn.get-popcorn.com/build/Popcorn-Time-0.2.9-Linux-64.tar.gz" | tar -xvz --directory ~ -f -
+[ ! -f /lib/x86_64-linux-gnu/libudev.so.0 ] && sudo ln -s /lib/x86_64-linux-gnu/libudev.so.1 /lib/x86_64-linux-gnu/libudev.so.0
 
 
 # Clean-up
