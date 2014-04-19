@@ -18,7 +18,7 @@ lame x264 inkscape graphviz qemu lftp shntool testdisk fdupes recode pngcrush rt
 optipng colortail mercurial grc coreutils bzr htop apg fontforge"
 
 BIN_PACKAGES="audacity avidemux firefox gimp inkscape vlc blender thunderbird virtualbox
-bitcoin-qt wireshark prey"
+bitcoin wireshark prey"
 
 # Search local dotfiles
 DOT_FILES=`find . -maxdepth 1 \
