@@ -68,6 +68,7 @@ brew install ssh-copy-id
 brew install colorsvn
 brew install hub
 brew install ack
+brew install exiftool
 
 # Install Cassandra
 brew install cassandra

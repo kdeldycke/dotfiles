@@ -22,7 +22,7 @@ xscreensaver-data-extra xscreensaver-gl xscreensaver-gl-extra network-manager-op
 qemu-kvm dmg2img pdftk chromium-codecs-ffmpeg-extra picard xsltproc xfsprogs lm-sensors bzrtools \
 ntp ca-certificates apt-file kdenlive python-dev gtk2-engines runsnakerun unclutter driftnet \
 vim-nox ttf-ancient-fonts kdesdk-scripts cpufrequtils sysfsutils powertop sqlitebrowser efibootmgr \
-ack-grep
+ack-grep libimage-exiftool-perl
 
 sudo pip install --upgrade distribute
 
