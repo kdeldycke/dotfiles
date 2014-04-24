@@ -90,6 +90,7 @@ brew cask install insync
 brew cask install chromium
 brew cask install libre-office
 brew cask install tunnelblick
+brew cask install bitcoin
 
 # Install QuickLooks plugins
 # Source: https://github.com/sindresorhus/quick-look-plugins
