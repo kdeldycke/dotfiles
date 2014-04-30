@@ -16,14 +16,15 @@ sudo aptitude install -y $COMMON_PACKAGES $BIN_PACKAGES
 # Install Ubuntu specific packages
 sudo aptitude install -y mkvtoolnix-gui mbr hfsprogs hfsplus subtitlecomposer deborphan \
 chromium-browser kompare avidemux-common transcode mkvtoolnix mencoder mplayer gitg bleachbit \
-p7zip-full gtk-chtheme gnome-themes-standard python-pip faad h264enc kwrite kscreensaver \
+p7zip-full gtk-chtheme gnome-themes-standard faad h264enc kwrite kscreensaver \
 hunspell-fr hunspell-fr-classical gimp-plugin-registry xscreensaver xscreensaver-data \
 xscreensaver-data-extra xscreensaver-gl xscreensaver-gl-extra network-manager-openvpn ksshaskpass \
 qemu-kvm dmg2img pdftk chromium-codecs-ffmpeg-extra picard xsltproc xfsprogs lm-sensors bzrtools \
-ntp ca-certificates apt-file kdenlive python-dev gtk2-engines runsnakerun unclutter driftnet \
+ntp ca-certificates apt-file kdenlive gtk2-engines unclutter driftnet \
 vim-nox ttf-ancient-fonts kdesdk-scripts cpufrequtils sysfsutils powertop sqlitebrowser \
 efibootmgr ack-grep libimage-exiftool-perl subsurface bitcoin-qt
 
+sudo aptitude install -y python-pip python-dev runsnakerun
 sudo pip install --upgrade distribute
 
 sudo gem install hub
