@@ -62,7 +62,7 @@
 		    if (( $(git br | grep $1 | wc -l) == 1 )); then \
 			    git checkout $1; \
 		    else \
-			    git checkout -B $1; \
+			    git checkout -b $1; \
 		    fi }; g"
     # Show verbose output about tags, branches or remotes
     tags = tag -l
