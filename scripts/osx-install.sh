@@ -35,7 +35,7 @@ brew upgrade
 brew tap homebrew/dupes
 
 # Install Cask
-brew tap phinze/homebrew-cask
+brew tap caskroom/cask
 brew install brew-cask
 
 # Install OSX system requirements
