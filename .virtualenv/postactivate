@@ -6,10 +6,10 @@
 cd () {
     if (( $# == 0 ))
     then
-        builtin cd $VIRTUAL_ENV
+        builtin cd "$VIRTUAL_ENV"
     else
         builtin cd "$@"
     fi
 }
 
-cd
+cd "$@"

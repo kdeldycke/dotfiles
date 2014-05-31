@@ -18,7 +18,7 @@ defaults write NSGlobalDomain AppleEnableMenuBarTransparency -bool false
 
 # Menu bar: hide Time Machine, AirPort and User icons
 for domain in ~/Library/Preferences/ByHost/com.apple.systemuiserver.* ; do
-    defaults write $domain dontAutoLoad -array \
+    defaults write "$domain" dontAutoLoad -array \
         "/System/Library/CoreServices/Menu Extras/TimeMachine.menu" \
         "/System/Library/CoreServices/Menu Extras/AirPort.menu" \
         "/System/Library/CoreServices/Menu Extras/User.menu"

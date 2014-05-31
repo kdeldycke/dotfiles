@@ -21,7 +21,7 @@ BIN_PACKAGES="audacity avidemux firefox gimp inkscape vlc blender thunderbird vi
 wireshark prey"
 
 # Search local dotfiles
-DOT_FILES=`find . -maxdepth 1 \
+DOT_FILES=$(find . -maxdepth 1 \
     -not -name "assets" -and \
     -not -name "scripts" -and \
     -not -name "install.sh" -and \
@@ -34,7 +34,7 @@ DOT_FILES=`find . -maxdepth 1 \
     -not -name "\.git" -and \
     -not -name "*~*" \
     -not -name "\." \
-    -exec basename {} \;`
+    -exec basename {} \;)
 
 for f in $DOT_FILES
 do
@@ -70,7 +70,7 @@ fi
 # Install & upgrade all global python modules
 PYTHON_PACKAGES="readline pip setuptools virtualenv virtualenvwrapper autoenv pep8 pylint pyflakes
 coverage rope autopep8 mccabe nose"
-sudo pip install --upgrade $PYTHON_PACKAGES
+sudo pip install --upgrade "$PYTHON_PACKAGES"
 
 # Patch terminal font for Vim's Airline plugin
 # See: https://powerline.readthedocs.org/en/latest/fontpatching.html

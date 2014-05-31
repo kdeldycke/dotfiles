@@ -18,7 +18,7 @@ fi
 # If possible, add tab completion for many more commands
 [ -f /etc/bash_completion ] && source /etc/bash_completion
 if $IS_OSX; then
-    [ -f $(brew --prefix)/etc/bash_completion ] && source $(brew --prefix)/etc/bash_completion
+    [ -f "$(brew --prefix)/etc/bash_completion" ] && source "$(brew --prefix)/etc/bash_completion"
 fi
 
 bash_prompt_command() {
@@ -40,7 +40,7 @@ bash_prompt_command() {
     git_sha() {
         git rev-parse --short HEAD 2>/dev/null
     }
-    PROMPT_GIT=$(__git_ps1 "(%s@$(git_sha))")
+    export PROMPT_GIT=$(__git_ps1 "(%s@$(git_sha))")
 }
 
 bash_prompt() {
@@ -94,7 +94,12 @@ fi
 if $IS_OSX; then
     alias dircolors='gdircolors'
 fi
-[ -f ~/.dircolors ] && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+if [ -f ~/.dircolors ]
+then
+    eval "$(dircolors -b ~/.dircolors)"
+else
+    eval "$(dircolors -b)"
+fi
 
 # Force colored output and good defaults
 alias du='du -csh'
@@ -120,9 +125,9 @@ alias cls='clear'
 alias q='exit'
 
 # Use GRC for additionnal colorization
-GRC=`which grc`
+GRC=$(which grc)
 if [ -n GRC ]; then
-    alias colourify="$GRC -es --colour=auto"
+    alias colourify='$GRC -es --colour=auto'
     alias as='colourify as'
     #cvs
     alias configure='colourify ./configure'
@@ -156,8 +161,8 @@ if $IS_OSX; then
 else
     lsflags="--color --group-directories-first"
 fi
-alias ll="ls -lah ${lsflags}"
-alias ls="ls -hFp ${lsflags}"
+alias ll='ls -lah ${lsflags}'
+alias ls='ls -hFp ${lsflags}'
 
 # Handy aliases for going up in a directory
 alias ..="cd .."
@@ -196,7 +201,7 @@ export VIRTUALENVWRAPPER_HOOK_DIR=$HOME/.virtualenv
 # Use default Python. VIRTUALENVWRAPPER_PYTHON doesn't seems to be used by virtualenvwrapper, so
 # force it through venv's args.
 # export VIRTUALENVWRAPPER_PYTHON=`which python`
-export VIRTUALENVWRAPPER_VIRTUALENV_ARGS="--no-site-packages --python=`which python`"
+export VIRTUALENVWRAPPER_VIRTUALENV_ARGS="--no-site-packages --python=$(which python)"
 # Centralized location for new virtual environments
 export PIP_VIRTUALENV_BASE=$WORKON_HOME
 # Define a function for automatic virtualenv loading
@@ -220,27 +225,27 @@ use_env() {
 source /usr/local/bin/virtualenvwrapper.sh
 source /usr/local/bin/activate.sh
 
-eval "`pip completion --bash`"
+eval "$(pip completion --bash)"
 
 # Add tab completion for SSH hostnames based on ~/.ssh/config, ignoring wildcards
 [ -e "$HOME/.ssh/config" ] && complete -o "default" -o "nospace" -W "$(grep "^Host" ~/.ssh/config | grep -v "[?*]" | cut -d " " -f2 | tr ' ' '\n')" scp sftp ssh
 
 # Extract most know archives with one command
 extract () {
-    if [ -f $1 ]; then
+    if [ -f "$1" ]; then
         case $1 in
-            *.tar.bz2)  tar xjf $1    ;;
-            *.tar.gz)   tar xzf $1    ;;
-            *.bz2)      bunzip2 $1    ;;
-            *.rar)      unrar e $1    ;;
-            *.gz)       gunzip $1     ;;
-            *.tar)      tar xf $1     ;;
-            *.tbz2)     tar xjf $1    ;;
-            *.tgz)      tar xzf $1    ;;
-            *.xz)       tar xJf $1    ;;
-            *.zip)      unzip $1      ;;
-            *.Z)        uncompress $1 ;;
-            *.7z)       7z x $1       ;;
+            *.tar.bz2)  tar xjf "$1"    ;;
+            *.tar.gz)   tar xzf "$1"    ;;
+            *.bz2)      bunzip2 "$1"    ;;
+            *.rar)      unrar e "$1"    ;;
+            *.gz)       gunzip "$1"     ;;
+            *.tar)      tar xf "$1"     ;;
+            *.tbz2)     tar xjf "$1"    ;;
+            *.tgz)      tar xzf "$1"    ;;
+            *.xz)       tar xJf "$1"    ;;
+            *.zip)      unzip "$1"      ;;
+            *.Z)        uncompress "$1" ;;
+            *.7z)       7z x "$1"       ;;
             *)          echo "'$1' cannot be extracted via extract()";;
         esac
     else

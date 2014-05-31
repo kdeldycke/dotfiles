@@ -11,7 +11,7 @@ sudo aptitude upgrade -y
 
 
 # Install common packages
-sudo aptitude install -y $COMMON_PACKAGES $BIN_PACKAGES
+sudo aptitude install -y "$COMMON_PACKAGES" "$BIN_PACKAGES"
 
 # Install Ubuntu specific packages
 sudo aptitude install -y mkvtoolnix-gui mbr hfsprogs hfsplus subtitlecomposer deborphan \

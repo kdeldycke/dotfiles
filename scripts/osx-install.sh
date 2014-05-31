@@ -50,7 +50,7 @@ sudo pip install --upgrade distribute
 brew install apple-gcc42
 for PACKAGE in $COMMON_PACKAGES
 do
-   brew install $PACKAGE
+   brew install "$PACKAGE"
 done
 brew install findutils
 brew install bash
@@ -81,7 +81,7 @@ sudo chmod u+s /usr/local/bin/htop
 # Install binary apps
 for PACKAGE in $BIN_PACKAGES
 do
-   brew cask install $PACKAGE
+   brew cask install "$PACKAGE"
 done
 brew cask install dropbox
 brew cask install f-lux
@@ -109,8 +109,8 @@ qlmanage -r
 brew install lua --completion
 brew install cscope
 VIM_FLAGS="--with-python --with-lua --with-cscope --override-system-vim"
-brew install macvim $VIM_FLAGS
-brew install vim $VIM_FLAGS
+brew install macvim "$VIM_FLAGS"
+brew install vim "$VIM_FLAGS"
 
 # Install custom bootloader
 curl -O http://kent.dl.sourceforge.net/project/refind/0.7.8/refind-bin-0.7.8.zip
@@ -123,7 +123,7 @@ sudo sed -i "" -e "s/#default_selection 1/default_selection linux/" /EFI/refind/
 
 # Install steam in a case-insensitive disk image
 # Source: http://blog.andersonshatch.com/2010/05/13/using-steam-on-mac-with-case-sensitive-drive/
-if [! -e "~/steam.sparsebundle" ]; then
+if [ ! -e "~/steam.sparsebundle" ]; then
     brew install cask steam
     hdiutil create -size 30G -fs HFS+ -layout NONE -type SPARSEBUNDLE -volname steam ~/steam
     hdiutil mount ~/steam.sparsebundle

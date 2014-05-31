@@ -2,6 +2,6 @@
 # This hook is run after a new virtualenv is activated.
 
 # Create a .env file at the base of the new virtualenv
-PROJECT_NAME=$(echo $VIRTUAL_ENV|awk -F'/' '{print $NF}')
+PROJECT_NAME=$(echo "$VIRTUAL_ENV" | awk -F '/' '{print $NF}')
 ENV_CONF=$WORKON_HOME/$PROJECT_NAME/.env
-echo "workon $PROJECT_NAME" > $ENV_CONF
+echo "workon $PROJECT_NAME" > "$ENV_CONF"
