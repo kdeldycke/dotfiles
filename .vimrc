@@ -256,6 +256,7 @@ let g:indentLine_color_term = 239
 
 " Syntastic
 let g:syntastic_python_pylint_exe = "pylint2"
+let g:syntastic_sh_checkers = ['shellcheck', 'sh']
 let g:syntastic_error_symbol = '✘'
 let g:syntastic_warning_symbol = '⚠'
 let g:syntastic_style_error_symbol = '⚡'
