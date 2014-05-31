@@ -45,6 +45,12 @@ sudo aptitude install -y libavcodec-extra-53
 sudo /usr/share/doc/libdvdread4/install-css.sh
 
 
+# Install cabal and shellcheck
+sudo aptitude install -y cabal-install
+cabal update
+cabal install shellcheck
+
+
 # Install GMVault
 sudo pip install --upgrade https://pypi.python.org/packages/source/g/gmvault/gmvault-1.8.1-beta.tar.gz#md5=a0b26d814506748deca8e2eee4086b31
 
