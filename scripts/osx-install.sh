@@ -152,3 +152,4 @@ brew linkapps
 brew doctor
 brew cleanup
 brew prune
+brew cask cleanup
