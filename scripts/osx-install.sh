@@ -42,7 +42,7 @@ brew install brew-cask
 brew install cask xquartz
 
 # Install a brand new Python
-brew install python --with-brewed-openssl
+brew install python
 brew link --overwrite python
 sudo pip install --upgrade distribute
 
