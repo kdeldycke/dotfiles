@@ -72,7 +72,9 @@ brew install exiftool
 
 # Add EXT support
 brew install osxfuse
-brew link osxfuse
+# The new osxfuse file system bundle needs to be installed by the root user:
+sudo cp -RfX /usr/local/opt/osxfuse/Library/Filesystems/osxfusefs.fs /Library/Filesystems
+sudo chmod +s /Library/Filesystems/osxfusefs.fs/Support/load_osxfusefs
 brew install ext2fuse
 brew install ext4fuse
 
