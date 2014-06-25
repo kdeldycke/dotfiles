@@ -151,3 +151,4 @@ fi
 brew linkapps
 brew doctor
 brew cleanup
+brew prune
