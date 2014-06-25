@@ -24,7 +24,7 @@ sudo softwareupdate -i -a
 brew --version
 if [[ $? -ne 0 ]]; then
     # Clean-up failed Homebrew install
-    rm -rf $(brew --prefix)/Cellar $(brew --prefix)/.git
+    rm -rf "$(brew --prefix)/Cellar" "$(brew --prefix)/.git"
     # Install Homebrew
     ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
 fi
@@ -73,7 +73,7 @@ brew install exiftool
 # Add EXT support
 brew install osxfuse
 # The new osxfuse file system bundle needs to be installed by the root user:
-sudo cp -Rf $(brew --prefix)/opt/osxfuse/Library/Filesystems/osxfusefs.fs /Library/Filesystems
+sudo cp -Rf "$(brew --prefix)/opt/osxfuse/Library/Filesystems/osxfusefs.fs" /Library/Filesystems
 sudo chmod +s /Library/Filesystems/osxfusefs.fs/Support/load_osxfusefs
 brew install ext2fuse
 brew install ext4fuse
@@ -83,8 +83,8 @@ brew install cassandra
 pip install cql
 
 # htop-osx requires root privileges to correctly display all running processes.
-sudo chown root:wheel $(brew --prefix)/bin/htop
-sudo chmod u+s $(brew --prefix)/bin/htop
+sudo chown root:wheel "$(brew --prefix)/bin/htop"
+sudo chmod u+s "$(brew --prefix)/bin/htop"
 
 # Install binary apps
 for PACKAGE in $BIN_PACKAGES
