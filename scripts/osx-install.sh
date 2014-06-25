@@ -69,6 +69,7 @@ brew install colorsvn
 brew install hub
 brew install ack
 brew install exiftool
+brew install osxfuse
 
 # Install Cassandra
 brew install cassandra
