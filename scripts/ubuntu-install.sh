@@ -22,7 +22,7 @@ xscreensaver-data-extra xscreensaver-gl xscreensaver-gl-extra network-manager-op
 qemu-kvm dmg2img pdftk chromium-codecs-ffmpeg-extra picard xsltproc xfsprogs lm-sensors bzrtools \
 ntp ca-certificates apt-file kdenlive gtk2-engines unclutter driftnet \
 vim-nox ttf-ancient-fonts kdesdk-scripts cpufrequtils sysfsutils powertop sqlitebrowser \
-efibootmgr ack-grep libimage-exiftool-perl subsurface bitcoin-qt
+efibootmgr ack-grep libimage-exiftool-perl subsurface bitcoin-qt audacious
 
 sudo aptitude install -y python-pip python-dev runsnakerun
 sudo pip install --upgrade distribute
