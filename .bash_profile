@@ -2,7 +2,7 @@
 # XXX Should we use GNU utilities on OSX ? See:
 # https://github.com/mxcl/homebrew/blob/master/Library/Formula/coreutils.rb#L33
 # https://github.com/mathiasbynens/dotfiles/issues/182#issuecomment-26945081
-export PATH="/usr/local/share/python:/usr/local/bin:/usr/local/sbin:$PATH:~/.cabal/bin/"
+export PATH="/usr/local/share/python:/usr/local/bin:/usr/local/sbin:$PATH:~/.cabal/bin"
 
 # Prefer US English and use UTF-8
 export LANG="en_US"
