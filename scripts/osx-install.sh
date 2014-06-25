@@ -39,7 +39,7 @@ brew tap caskroom/cask
 brew install brew-cask
 
 # Install OSX system requirements
-brew install cask x-quartz
+brew install cask xquartz
 
 # Install a brand new Python
 brew install python --with-brewed-openssl
