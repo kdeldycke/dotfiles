@@ -74,6 +74,7 @@ brew install exiftool
 brew install osxfuse
 brew link osxfuse
 brew install ext2fuse
+brew install ext4fuse
 
 # Install Cassandra
 brew install cassandra
