@@ -21,7 +21,38 @@ if $IS_OSX; then
     [ -f "$(brew --prefix)/etc/bash_completion" ] && source "$(brew --prefix)/etc/bash_completion"
 fi
 
+# Setting history length
+export HISTCONTROL="erasedups"
+export HISTTIMEFORMAT="[%F %T] "
+export HISTSIZE=99999
+export HISTFILESIZE=$HISTSIZE;
+# Make some commands not show up in history
+export HISTIGNORE="ls:cd:cd -:pwd:exit:date:* --help:history"
+
+# append to the history file, don't overwrite it
+shopt -s histappend
+# Allow use to re-edit a faild history substitution.
+shopt -s histreedit
+# History expansions will be verified before execution.
+shopt -s histverify
+
+# Case-insensitive globbing (used in pathname expansion)
+shopt -s nocaseglob
+
+# Autocorrect typos in path names when using `cd`
+shopt -s cdspell
+
+# Check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
+
 bash_prompt_command() {
+    ## After each command, save and reload history
+    # Source: http://unix.stackexchange.com/a/18443
+    history -n
+    history -w
+    history -c
+    history -r
     ## Fancy PWD display function, better than PROMPT_DIRTRIM
     # Source: https://wiki.archlinux.org/index.php/Color_Bash_Prompt
     # How many characters of the $PWD should be kept
@@ -56,30 +87,6 @@ unset bash_prompt
 
 # Make vim the default editor
 export EDITOR="vim"
-
-# Setting history length
-export HISTCONTROL="ignorespace:erasedups"
-export HISTTIMEFORMAT="[%F %T] "
-export HISTSIZE=99999
-# Make some commands not show up in history
-export HISTIGNORE="ls:cd:cd -:pwd:exit:date:* --help"
-
-# append to the history file, don't overwrite it
-shopt -s histappend
-# Allow use to re-edit a faild history substitution.
-shopt -s histreedit
-# History expansions will be verified before execution.
-shopt -s histverify
-
-# Case-insensitive globbing (used in pathname expansion)
-shopt -s nocaseglob
-
-# Autocorrect typos in path names when using `cd`
-shopt -s cdspell
-
-# Check the window size after each command and, if necessary,
-# update the values of LINES and COLUMNS.
-shopt -s checkwinsize
 
 # Set default ls color schemes (source: https://github.com/seebi/dircolors-solarized/issues/10 ).
 # OSX/Linux color translations generated with http://geoff.greer.fm/lscolors/
