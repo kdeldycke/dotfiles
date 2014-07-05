@@ -44,7 +44,6 @@ brew install cask xquartz
 # Install a brand new Python
 brew install python
 brew link --overwrite python
-sudo pip install --upgrade distribute
 
 # Install common packages
 brew install apple-gcc42

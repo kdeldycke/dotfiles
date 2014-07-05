@@ -25,7 +25,6 @@ vim-nox ttf-ancient-fonts kdesdk-scripts cpufrequtils sysfsutils powertop sqlite
 efibootmgr ack-grep libimage-exiftool-perl subsurface bitcoin-qt audacious
 
 sudo aptitude install -y python-pip python-dev runsnakerun
-sudo pip install --upgrade distribute
 
 sudo gem install hub
 
