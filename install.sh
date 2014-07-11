@@ -68,7 +68,7 @@ else
 fi
 
 # Install & upgrade all global python modules
-PYTHON_PACKAGES="readline pip setuptools virtualenv virtualenvwrapper autoenv pep8 pylint pyflakes
+PYTHON_PACKAGES="pip setuptools virtualenv virtualenvwrapper autoenv pep8 pylint pyflakes
 coverage rope autopep8 mccabe nose"
 sudo pip install --upgrade "$PYTHON_PACKAGES"
 
