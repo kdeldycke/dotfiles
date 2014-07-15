@@ -91,13 +91,13 @@ do
    brew cask install "$PACKAGE"
 done
 brew cask install dropbox
-brew cask install f-lux
+brew cask install flux
 brew cask install gitx
 brew cask install insync
 brew cask install chromium
-brew cask install libre-office
+brew cask install libreoffice
 brew cask install tunnelblick
-brew cask install bitcoin
+brew cask install bitcoin-core
 
 # Install QuickLooks plugins
 # Source: https://github.com/sindresorhus/quick-look-plugins
