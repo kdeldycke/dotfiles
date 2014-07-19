@@ -68,6 +68,7 @@ brew install colorsvn
 brew install hub
 brew install ack
 brew install exiftool
+brew install dockutil
 
 # Add EXT support
 brew install osxfuse
