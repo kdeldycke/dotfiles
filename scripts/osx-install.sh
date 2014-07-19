@@ -121,10 +121,10 @@ brew install macvim "$VIM_FLAGS"
 brew install vim "$VIM_FLAGS"
 
 # Install custom bootloader
-curl -O http://kent.dl.sourceforge.net/project/refind/0.7.8/refind-bin-0.7.8.zip
-unzip ./refind-bin-0.7.8.zip
-./refind-bin-0.7.8/install.sh --yes
-rm -rf ./refind-bin-0.7.8*
+curl -O http://kent.dl.sourceforge.net/project/refind/0.8.3/refind-bin-0.8.3.zip
+unzip ./refind-bin-0.8.3.zip
+./refind-bin-0.8.3/install.sh --yes
+rm -rf ./refind-bin-0.8.3*
 # Adjust refind config
 sudo sed -i "" -e "s/timeout 20/timeout 1/" /EFI/refind/refind.conf
 sudo sed -i "" -e "s/#default_selection 1/default_selection linux/" /EFI/refind/refind.conf
