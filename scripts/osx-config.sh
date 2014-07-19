@@ -434,10 +434,18 @@ sudo defaults write /Library/Preferences/com.apple.virtualMemory UseEncryptedSwa
 # Remove default content
 rm -rf ~/Downloads/About\ Downloads.lpdf
 
-# TODO:
-#   * Remove shortcuts from the dock
-#   * use https://github.com/kcrawford/dockutil ?
-# killall Dock
+# Remove apps I don't use from the dock.
+for shortcut_label in "Launchpad" "Calendar" "Contacts" "Mail" \
+    "Safari" "Maps" "FaceTime" "iTunes" "iBooks" "App Store"; do
+    dockutil --remove "${shortcut_label}" --allhomes
+done
+# Add new app shortcuts to the dock.
+for app in "Chromium" "Firefox" "GitX" "Dropbox" "LibreOffice"; do
+    dockutil --find "${shortcut}"
+    if [ $? -ne 0 ]; then
+        dockutil --add "~/Applications/${app}.app"
+    fi
+done
 
 # Kill affected applications
 for app in "Activity Monitor" "Address Book" "Calendar" "Contacts" "cfprefsd" \
