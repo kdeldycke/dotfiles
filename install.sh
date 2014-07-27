@@ -69,7 +69,7 @@ fi
 
 # Install & upgrade all global python modules
 PYTHON_PACKAGES="pip setuptools virtualenv virtualenvwrapper autoenv pep8 pylint pyflakes
-coverage rope autopep8 mccabe nose"
+coverage rope autopep8 mccabe nose bumpversion"
 sudo pip install --upgrade "$PYTHON_PACKAGES"
 
 # Patch terminal font for Vim's Airline plugin
