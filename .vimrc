@@ -108,11 +108,27 @@ scriptencoding utf-8
 set encoding=utf-8              " setup the encoding to UTF-8
 set ls=2                        " status line always visible
 
+" Copy & paste {{{
 if has ('x') && has ('gui') " On Linux use + register for copy-paste
     set clipboard=unnamedplus
 elseif has ('gui')          " On mac and Windows, use * register for copy-paste
     set clipboard=unnamed
 endif
+" Enable "bracketed paste mode". See: http://stackoverflow.com/a/7053522/31493
+if &term =~ "xterm.*"
+    let &t_ti = &t_ti . "\e[?2004h"
+    let &t_te = "\e[?2004l" . &t_te
+    function XTermPasteBegin(ret)
+        set pastetoggle=<Esc>[201~
+        set paste
+        return a:ret
+    endfunction
+    map <expr> <Esc>[200~ XTermPasteBegin("i")
+    imap <expr> <Esc>[200~ XTermPasteBegin("")
+    cmap <Esc>[200~ <nop>
+    cmap <Esc>[201~ <nop>
+endif
+"}}}
 
 
 " GUI {{{
