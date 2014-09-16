@@ -99,6 +99,7 @@ brew cask install chromium
 brew cask install libreoffice
 brew cask install tunnelblick
 brew cask install bitcoin-core
+brew cask install torbrowser
 
 # Install QuickLooks plugins
 # Source: https://github.com/sindresorhus/quick-look-plugins
