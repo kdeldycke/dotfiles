@@ -168,7 +168,9 @@ set colorcolumn=100
 " highlight tabs and trailing spaces
 " source: https://wincent.com/blog/making-vim-highlight-suspicious-characters
 set listchars=nbsp:¬,eol:¶,tab:→\ ,extends:»,precedes:«,trail:•
-"set list
+" Leave Ex Mode, For Good
+" source: http://www.bestofvim.com/tip/leave-ex-mode-good/
+nnoremap Q <nop>
 " }}}
 
 
