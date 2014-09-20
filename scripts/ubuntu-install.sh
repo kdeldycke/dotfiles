@@ -3,7 +3,7 @@
 sudo apt-get update
 sudo apt-get install aptitude
 
-sudo add-apt-repository -y ppa:sunab/kdenlive-svn
+sudo add-apt-repository -y ppa:sunab/kdenlive-release
 sudo add-apt-repository -y ppa:bitcoin/bitcoin
 sudo add-apt-repository -y ppa:webupd8team/tor-browser
 
