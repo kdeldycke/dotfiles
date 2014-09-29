@@ -55,6 +55,7 @@ brew install findutils
 brew install bash
 brew install ack
 brew install grep
+brew install watch
 brew install rename
 brew install tree
 brew install webkit2png
