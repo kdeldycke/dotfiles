@@ -20,7 +20,7 @@ sudo aptitude upgrade -y
 sudo aptitude install -y "$COMMON_PACKAGES" "$BIN_PACKAGES"
 
 # Install Ubuntu specific packages
-sudo aptitude install -y mkvtoolnix-gui mbr hfsprogs hfsplus subtitlecomposer deborphan \
+sudo aptitude install -y mkvtoolnix-gui mbr hfsprogs hfsplus aegisub deborphan \
 chromium-browser kompare avidemux-common transcode mkvtoolnix mencoder mplayer gitg bleachbit \
 p7zip-full gtk-chtheme gnome-themes-standard faad h264enc kwrite kscreensaver \
 hunspell-fr hunspell-fr-classical gimp-plugin-registry xscreensaver xscreensaver-data \
