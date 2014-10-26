@@ -6,7 +6,7 @@ Collection of dotfiles for Python developers working in vim.
 Project is currently targetting:
 
   * **Kubuntu 14.10** (Utopic Unicorn)
-  * **OSX 10.9** (Maverick)
+  * **OSX 10.10** (Yosemite)
 
 All running on a [`MacBookAir5,2`](http://www.amazon.com/dp/B008GV6QV2/?tag=kevideld-20).
 
@@ -79,6 +79,7 @@ Snapshots of older distributions may be found as tags of the current repository:
   * [Kubuntu 14.04 (Trusty Tahr)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-14.04)
   * [Kubuntu 13.10 (Saucy Salamander)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-13.10)
   * [Kubuntu 13.04 (Raring Ringtail)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-13.04)
+  * [OSX 10.9 (Yosemit)](https://github.com/kdeldycke/dotfiles/tree/osx-10.9)
   * [OSX 10.8 (Mountain Lion)](https://github.com/kdeldycke/dotfiles/tree/osx-10.8)
 
 
