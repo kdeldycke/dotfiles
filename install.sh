@@ -70,7 +70,10 @@ fi
 # Install & upgrade all global python modules
 PYTHON_PACKAGES="pip setuptools virtualenv virtualenvwrapper autoenv pep8 pylint pyflakes
 coverage rope autopep8 mccabe nose bumpversion tox"
-sudo pip install --upgrade "$PYTHON_PACKAGES"
+for p in $PYTHON_PACKAGES
+do
+    sudo pip install --upgrade "$p"
+done
 
 # Patch terminal font for Vim's Airline plugin
 # See: https://powerline.readthedocs.org/en/latest/fontpatching.html

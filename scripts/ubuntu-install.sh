@@ -17,7 +17,14 @@ sudo aptitude upgrade -y
 
 
 # Install common packages
-sudo aptitude install -y "$COMMON_PACKAGES" "$BIN_PACKAGES"
+for p in $COMMON_PACKAGES
+do
+    sudo aptitude install -y "$p"
+done
+for p in $BIN_PACKAGES
+do
+    sudo aptitude install -y "$p"
+done
 
 # Install Ubuntu specific packages
 sudo aptitude install -y mkvtoolnix-gui mbr hfsprogs hfsplus aegisub deborphan \
