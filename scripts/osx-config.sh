@@ -281,9 +281,6 @@ defaults write com.apple.dock hide-mirror -bool true
 # Reset Launchpad, but keep the desktop wallpaper intact
 find ~/Library/Application\ Support/Dock -name "*-*.db" -maxdepth 1 -delete
 
-# Add iOS Simulator to Launchpad
-ln -s /Applications/Xcode.app/Contents/Applications/iPhone\ Simulator.app /Applications/iOS\ Simulator.app
-
 # Hot corners
 # Possible values:
 #  0: no-op
