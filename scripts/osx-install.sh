@@ -71,14 +71,6 @@ brew install ack
 brew install exiftool
 brew install dockutil
 
-# Add EXT support
-brew install osxfuse
-# The new osxfuse file system bundle needs to be installed by the root user:
-sudo cp -Rf "$(brew --prefix)/opt/osxfuse/Library/Filesystems/osxfusefs.fs" /Library/Filesystems
-sudo chmod +s /Library/Filesystems/osxfusefs.fs/Support/load_osxfusefs
-brew install ext2fuse
-brew install ext4fuse
-
 # Install Cassandra
 brew install cassandra
 pip install cql
@@ -114,6 +106,14 @@ brew cask install betterzipql
 brew cask install webp-quicklook
 brew cask install suspicious-package
 qlmanage -r
+
+# Add EXT support
+brew cask install osxfuse
+# The new osxfuse file system bundle needs to be installed by the root user:
+sudo cp -Rf "$(brew --prefix)/opt/osxfuse/Library/Filesystems/osxfusefs.fs" /Library/Filesystems
+sudo chmod +s /Library/Filesystems/osxfusefs.fs/Support/load_osxfusefs
+brew install ext2fuse
+brew install ext4fuse
 
 # Install vim
 brew install lua --completion
