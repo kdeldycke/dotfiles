@@ -39,7 +39,7 @@ brew tap caskroom/cask
 brew install brew-cask
 
 # Install OSX system requirements
-brew install cask xquartz
+brew cask install xquartz
 
 # Install a brand new Python
 brew install python
@@ -131,7 +131,7 @@ sudo sed -i "" -e "s/#default_selection 1/default_selection linux/" /EFI/refind/
 # Install steam in a case-insensitive disk image
 # Source: http://blog.andersonshatch.com/2010/05/13/using-steam-on-mac-with-case-sensitive-drive/
 if [ ! -e "~/steam.sparsebundle" ]; then
-    brew install cask steam
+    brew cask install steam
     hdiutil create -size 30G -fs HFS+ -layout NONE -type SPARSEBUNDLE -volname steam ~/steam
     hdiutil mount ~/steam.sparsebundle
     cp -av /opt/homebrew-cask/Caskroom/steam/stable/Steam.app /Volumes/steam/
