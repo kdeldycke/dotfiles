@@ -74,6 +74,8 @@ NeoBundle 'terryma/vim-multiple-cursors'
 " GUI
 NeoBundle 'bling/vim-airline'
 
+call neobundle#end()
+
 " END BUNDLES }}}
 
 
@@ -94,8 +96,6 @@ NeoBundleCheck
 
 
 filetype plugin indent on      " Indent and plugins by filetype
-
-call neobundle#end()
 
 " END NEOBUNDLE }}}
 
