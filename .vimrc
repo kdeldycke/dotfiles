@@ -20,7 +20,7 @@ endif
 if has('vim_starting')
     set rtp+=$HOME/.vim/bundle/neobundle.vim/
 endif
-call neobundle#rc(expand($HOME.'/.vim/bundle/'))
+call neobundle#begin(expand($HOME.'/.vim/bundle/'))
 
 " is better if NeoBundle rules NeoBundle (needed!)
 NeoBundle 'Shougo/neobundle.vim'
@@ -94,6 +94,8 @@ NeoBundleCheck
 
 
 filetype plugin indent on      " Indent and plugins by filetype
+
+call neobundle#end()
 
 " END NEOBUNDLE }}}
 
