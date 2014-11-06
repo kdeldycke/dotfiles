@@ -301,6 +301,9 @@ defaults write com.apple.dock wvous-tl-modifier -int 0
 defaults write com.apple.Safari WebContinuousSpellCheckingEnabled -bool true
 defaults write com.apple.Safari WebAutomaticSpellingCorrectionEnabled -bool false
 
+# Privacy: don’t send search queries to Apple
+defaults write com.apple.Safari UniversalSearchEnabled -bool false
+
 # Set Safari’s home page to `about:blank` for faster loading
 defaults write com.apple.Safari HomePage -string "about:blank"
 
