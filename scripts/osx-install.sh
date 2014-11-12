@@ -26,7 +26,7 @@ if [[ $? -ne 0 ]]; then
     # Clean-up failed Homebrew install
     rm -rf "$(brew --prefix)/Cellar" "$(brew --prefix)/.git"
     # Install Homebrew
-    ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
+    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 fi
 brew update
 brew upgrade
