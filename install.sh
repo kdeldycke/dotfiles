@@ -20,6 +20,13 @@ optipng colortail mercurial grc coreutils bzr htop apg fontforge"
 BIN_PACKAGES="audacity avidemux firefox gimp inkscape vlc blender thunderbird virtualbox
 wireshark prey"
 
+# Install all software first.
+if $IS_OSX; then
+    source ./scripts/osx-install.sh
+else
+    source ./scripts/ubuntu-install.sh
+fi
+
 # Search local dotfiles
 DOT_FILES=$(find . -maxdepth 1 \
     -not -name "assets" -and \
@@ -58,12 +65,10 @@ done
 # Create empty folders
 mkdir -p ~/.pip/cache
 
-# Call distribution specific scripts
+# Configure everything.
 if $IS_OSX; then
-    source ./scripts/osx-install.sh
     source ./scripts/osx-config.sh
 else
-    source ./scripts/ubuntu-install.sh
     source ./scripts/ubuntu-config.sh
 fi
 
