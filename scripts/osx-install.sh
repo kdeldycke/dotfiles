@@ -122,7 +122,7 @@ brew install vim "$VIM_FLAGS"
 # Install custom bootloader
 curl -O http://softlayer-ams.dl.sourceforge.net/project/refind/0.8.3/refind-bin-0.8.3.zip
 unzip ./refind-bin-0.8.3.zip
-./refind-bin-0.8.3/install.sh --yes
+./refind-bin-0.8.3/install.sh --esp --alldrivers
 rm -rf ./refind-bin-0.8.3*
 # Adjust refind config
 sudo sed -i "" -e "s/timeout 20/timeout 1/" /EFI/refind/refind.conf
