@@ -96,6 +96,7 @@ brew cask install torbrowser
 
 # Install QuickLooks plugins
 # Source: https://github.com/sindresorhus/quick-look-plugins
+brew cask install cert-quicklook
 brew cask install qlcolorcode
 brew cask install qlstephen
 brew cask install qlmarkdown
