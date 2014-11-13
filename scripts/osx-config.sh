@@ -5,7 +5,7 @@ sudo pmset -a womp 0
 # Automatic restart on power loss
 sudo pmset -a autorestart 1
 # Sets displaysleep to 10 minutes
-sudo pmset -a displaysleep 10
+sudo pmset -a displaysleep 10Privacy
 # Set standby delay to 3 hours (default is 1 hour)
 # See: http://www.ewal.net/2012/09/09/slow-wake-for-macbook-pro-retina/
 sudo pmset -a standbydelay 10800
@@ -303,6 +303,7 @@ defaults write com.apple.Safari WebAutomaticSpellingCorrectionEnabled -bool fals
 
 # Privacy: don’t send search queries to Apple
 defaults write com.apple.Safari UniversalSearchEnabled -bool false
+defaults write com.apple.Safari SuppressSearchSuggestions -bool true
 
 # Show the full URL in the address bar (note: this still hides the scheme)
 defaults write com.apple.Safari ShowFullURLInSmartSearchField -bool true
