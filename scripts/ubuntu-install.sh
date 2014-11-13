@@ -32,7 +32,7 @@ chromium-browser kompare avidemux-common transcode mkvtoolnix mplayer2 gitg blea
 p7zip-full gtk-chtheme gnome-themes-standard faad kwrite kscreensaver \
 hunspell-fr hunspell-fr-classical gimp-plugin-registry xscreensaver xscreensaver-data \
 xscreensaver-data-extra xscreensaver-gl xscreensaver-gl-extra network-manager-openvpn ksshaskpass \
-qemu-kvm dmg2img pdftk chromium-codecs-ffmpeg-extra picard xsltproc xfsprogs lm-sensors bzrtools \
+qemu-kvm dmg2img chromium-codecs-ffmpeg-extra picard xsltproc xfsprogs lm-sensors bzrtools \
 ntp ca-certificates apt-file kdenlive gtk2-engines unclutter driftnet \
 vim-nox ttf-ancient-fonts kdesdk-scripts cpufrequtils sysfsutils powertop sqlitebrowser \
 efibootmgr ack-grep libimage-exiftool-perl subsurface bitcoin-qt audacious tor-browser utox

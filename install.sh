@@ -18,7 +18,7 @@ lame x264 graphviz qemu lftp shntool testdisk fdupes recode pngcrush rtmpdump
 optipng colortail mercurial grc coreutils bzr htop apg fontforge"
 
 BIN_PACKAGES="audacity avidemux blender darktable firefox gimp hugin inkscape
-prey thunderbird virtualbox vlc wireshark"
+pdftk prey thunderbird virtualbox vlc wireshark"
 
 # Install all software first.
 if $IS_OSX; then
