@@ -120,7 +120,7 @@ brew install macvim "$VIM_FLAGS"
 brew install vim "$VIM_FLAGS"
 
 # Install custom bootloader
-curl -O http://kent.dl.sourceforge.net/project/refind/0.8.3/refind-bin-0.8.3.zip
+curl -O http://softlayer-ams.dl.sourceforge.net/project/refind/0.8.3/refind-bin-0.8.3.zip
 unzip ./refind-bin-0.8.3.zip
 ./refind-bin-0.8.3/install.sh --yes
 rm -rf ./refind-bin-0.8.3*
