@@ -119,18 +119,30 @@ VIM_FLAGS="--with-python --with-lua --with-cscope --override-system-vim"
 brew install macvim "$VIM_FLAGS"
 brew install vim "$VIM_FLAGS"
 
-# Install custom bootloader
+# Remove previous install of refind bootloader first.
+mkdir /Volumes/esp
+sudo mount -t msdos /dev/disk0s1 /Volumes/esp
+sudo rm -rf /Volumes/esp/EFI/refind
+sudo rm -rf /Volumes/esp/EFI/BOOT
+sudo diskutil umount /Volumes/esp
+# Install custom bootloader.
 curl -O http://softlayer-ams.dl.sourceforge.net/project/refind/0.8.3/refind-bin-0.8.3.zip
 unzip ./refind-bin-0.8.3.zip
 ./refind-bin-0.8.3/install.sh --esp --alldrivers
 rm -rf ./refind-bin-0.8.3*
+sudo diskutil umount /Volumes/esp
 # Fix Yosemite boot. Source: http://www.rodsbooks.com/refind/yosemite.html
 mkdir /Volumes/esp
 sudo mount -t msdos /dev/disk0s1 /Volumes/esp
-sudo sed -i "" -e "s/#dont_scan_volumes \"Recovery HD\"/dont_scan_volumes/" /Volumes/esp//EFI/refind/refind.conf
+sudo sed -i "" -e "s/#dont_scan_volumes \"Recovery HD\"/dont_scan_volumes/" /Volumes/esp/EFI/refind/refind.conf
 # Adjust personnal refind config
 sudo sed -i "" -e "s/timeout 20/timeout 1/" /Volumes/esp/EFI/refind/refind.conf
-sudo sed -i "" -e "s/#default_selection 1/default_selection linux/" /Volumes/esp//EFI/refind/refind.conf
+sudo sed -i "" -e "s/#default_selection 1/default_selection linux/" /Volumes/esp/EFI/refind/refind.conf
+# Fix the 30-second delay before rEFInd appears when installed on ESP.
+# Source: http://askubuntu.com/a/543121
+sudo mv /Volumes/esp/EFI/refind/refind_x64.efi /Volumes/esp/EFI/refind/bootx64.efi
+sudo mv /Volumes/esp/EFI/refind /Volumes/esp/EFI/BOOT
+
 
 # Install steam in a case-insensitive disk image
 # Source: http://blog.andersonshatch.com/2010/05/13/using-steam-on-mac-with-case-sensitive-drive/
