@@ -367,7 +367,7 @@ launchctl unload -w /System/Library/LaunchAgents/com.apple.rcd.plist
 # been indexed before.
 # Use `sudo mdutil -i off "/Volumes/foo"` to stop indexing any volume.
 sudo defaults write /.Spotlight-V100/VolumeConfiguration Exclusions -array "/Volumes"
-# Change indexing order and disable some file types
+# Change indexing order and disable some search results
 defaults write com.apple.spotlight orderedItems -array \
     '{"enabled" = 1;"name" = "APPLICATIONS";}' \
     '{"enabled" = 1;"name" = "SYSTEM_PREFS";}' \
@@ -384,7 +384,13 @@ defaults write com.apple.spotlight orderedItems -array \
     '{"enabled" = 0;"name" = "MOVIES";}' \
     '{"enabled" = 0;"name" = "PRESENTATIONS";}' \
     '{"enabled" = 0;"name" = "SPREADSHEETS";}' \
-    '{"enabled" = 0;"name" = "SOURCE";}'
+    '{"enabled" = 0;"name" = "SOURCE";}' \
+    '{"enabled" = 0;"name" = "MENU_DEFINITION";}' \
+    '{"enabled" = 0;"name" = "MENU_OTHER";}' \
+    '{"enabled" = 0;"name" = "MENU_CONVERSION";}' \
+    '{"enabled" = 0;"name" = "MENU_EXPRESSION";}' \
+    '{"enabled" = 0;"name" = "MENU_WEBSEARCH";}' \
+    '{"enabled" = 0;"name" = "MENU_SPOTLIGHT_SUGGESTIONS";}'
 # Load new settings before rebuilding the index
 killall mds
 # Make sure indexing is enabled for the main volume
