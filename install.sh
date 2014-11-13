@@ -14,11 +14,11 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 # We need to distinguish sources and binary packages for Brew & Cask on OSX
 COMMON_PACKAGES="git git-extras legit jnettop hfsutils unrar subversion colordiff faac flac
-lame x264 inkscape graphviz qemu lftp shntool testdisk fdupes recode pngcrush rtmpdump
+lame x264 graphviz qemu lftp shntool testdisk fdupes recode pngcrush rtmpdump
 optipng colortail mercurial grc coreutils bzr htop apg fontforge"
 
 BIN_PACKAGES="audacity avidemux firefox gimp inkscape vlc blender thunderbird virtualbox
-wireshark prey"
+wireshark prey inkscape"
 
 # Install all software first.
 if $IS_OSX; then
