@@ -127,7 +127,7 @@ rm -rf ./refind-bin-0.8.3*
 # Fix Yosemite boot. Source: http://www.rodsbooks.com/refind/yosemite.html
 mkdir /Volumes/esp
 sudo mount -t msdos /dev/disk0s1 /Volumes/esp
-sudo sed -i "" -e "s/#dont_scan_volumes \"Recovery HD\"/#dont_scan_volumes/" /Volumes/esp//EFI/refind/refind.conf
+sudo sed -i "" -e "s/#dont_scan_volumes \"Recovery HD\"/dont_scan_volumes/" /Volumes/esp//EFI/refind/refind.conf
 # Adjust personnal refind config
 sudo sed -i "" -e "s/timeout 20/timeout 1/" /Volumes/esp/EFI/refind/refind.conf
 sudo sed -i "" -e "s/#default_selection 1/default_selection linux/" /Volumes/esp//EFI/refind/refind.conf
