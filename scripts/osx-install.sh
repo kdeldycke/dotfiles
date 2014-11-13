@@ -124,9 +124,13 @@ curl -O http://softlayer-ams.dl.sourceforge.net/project/refind/0.8.3/refind-bin-
 unzip ./refind-bin-0.8.3.zip
 ./refind-bin-0.8.3/install.sh --esp --alldrivers
 rm -rf ./refind-bin-0.8.3*
-# Adjust refind config
-sudo sed -i "" -e "s/timeout 20/timeout 1/" /EFI/refind/refind.conf
-sudo sed -i "" -e "s/#default_selection 1/default_selection linux/" /EFI/refind/refind.conf
+# Fix Yosemite boot. Source: http://www.rodsbooks.com/refind/yosemite.html
+mkdir /Volumes/esp
+sudo mount -t msdos /dev/disk0s1 /Volumes/esp
+sudo sed -i "" -e "s/#dont_scan_volumes \"Recovery HD\"/#dont_scan_volumes/" /Volumes/esp//EFI/refind/refind.conf
+# Adjust personnal refind config
+sudo sed -i "" -e "s/timeout 20/timeout 1/" /Volumes/esp/EFI/refind/refind.conf
+sudo sed -i "" -e "s/#default_selection 1/default_selection linux/" /Volumes/esp//EFI/refind/refind.conf
 
 # Install steam in a case-insensitive disk image
 # Source: http://blog.andersonshatch.com/2010/05/13/using-steam-on-mac-with-case-sensitive-drive/
