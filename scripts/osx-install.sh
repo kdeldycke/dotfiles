@@ -93,6 +93,7 @@ brew cask install libreoffice
 brew cask install tunnelblick
 brew cask install bitcoin-core
 brew cask install torbrowser
+brew cask install steam
 
 # Install QuickLooks plugins
 # Source: https://github.com/sindresorhus/quick-look-plugins
@@ -144,22 +145,6 @@ sudo sed -i "" -e "s/#default_selection 1/default_selection linux/" /Volumes/esp
 # Source: http://askubuntu.com/a/543121
 sudo mv /Volumes/esp/EFI/refind/refind_x64.efi /Volumes/esp/EFI/refind/bootx64.efi
 sudo mv /Volumes/esp/EFI/refind /Volumes/esp/EFI/BOOT
-
-
-# Install steam in a case-insensitive disk image
-# Source: http://blog.andersonshatch.com/2010/05/13/using-steam-on-mac-with-case-sensitive-drive/
-if [ ! -e "~/steam.sparsebundle" ]; then
-    brew cask install steam
-    hdiutil create -size 30G -fs HFS+ -layout NONE -type SPARSEBUNDLE -volname steam ~/steam
-    hdiutil mount ~/steam.sparsebundle
-    cp -av /opt/homebrew-cask/Caskroom/steam/stable/Steam.app /Volumes/steam/
-    mkdir /Volumes/steam/steam\ library /Volumes/steam/steam\ content
-    ln -s /Volumes/steam/steam\ library ~/Library/Application\ Support/Steam
-    sudo ln -s /Volumes/ /volumes
-    brew cask uninstall steam
-    # TODO: Find a way to create OSX alias to /Applications (to get automount)
-    # See: https://en.wikipedia.org/wiki/Alias_(Mac_OS)
-fi
 
 # Install runsnakeerun
 brew install wxmac
