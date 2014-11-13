@@ -96,17 +96,17 @@ brew cask install torbrowser
 
 # Install QuickLooks plugins
 # Source: https://github.com/sindresorhus/quick-look-plugins
+brew cask install betterzipql
 brew cask install cert-quicklook
 brew cask install epubquicklook
 brew cask install qlcolorcode
-brew cask install qlstephen
 brew cask install qlmarkdown
-brew cask install quicklook-json
 brew cask install qlprettypatch
+brew cask install qlstephen
 brew cask install quicklook-csv
-brew cask install betterzipql
-brew cask install webp-quicklook
+brew cask install quicklook-json
 brew cask install suspicious-package
+brew cask install webp-quicklook
 qlmanage -r
 
 # Add EXT support
