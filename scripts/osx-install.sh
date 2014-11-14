@@ -67,7 +67,6 @@ brew install md5sha1sum
 brew install ssh-copy-id
 brew install colorsvn
 brew install hub
-brew install ack
 brew install exiftool
 brew install dockutil
 
