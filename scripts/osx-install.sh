@@ -52,16 +52,16 @@ do
    brew install "$PACKAGE"
 done
 brew install ack
+brew install colorsvn
+brew install dockutil
+brew install exiftool
+brew install faad2
+brew install hub
+brew install md5sha1sum
+brew install osxutils
+brew install ssh-copy-id
 brew install watch
 brew install webkit2png
-brew install osxutils
-brew install faad2
-brew install md5sha1sum
-brew install ssh-copy-id
-brew install colorsvn
-brew install hub
-brew install exiftool
-brew install dockutil
 
 # Install Cassandra
 brew install cassandra
@@ -76,17 +76,17 @@ for PACKAGE in $BIN_PACKAGES
 do
    brew cask install "$PACKAGE"
 done
+brew cask install bitcoin-core
+brew cask install chromium
 brew cask install dropbox
 brew cask install flux
 brew cask install gitx
 brew cask install insync
-brew cask install chromium
 brew cask install libreoffice
-brew cask install tunnelblick
-brew cask install bitcoin-core
-brew cask install torbrowser
-brew cask install steam
 brew cask install sqlite-database-browser
+brew cask install steam
+brew cask install torbrowser
+brew cask install tunnelblick
 
 # Install QuickLooks plugins
 # Source: https://github.com/sindresorhus/quick-look-plugins
