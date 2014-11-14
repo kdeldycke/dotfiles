@@ -94,6 +94,7 @@ brew cask install tunnelblick
 brew cask install bitcoin-core
 brew cask install torbrowser
 brew cask install steam
+brew cask install sqlite-database-browser
 
 # Install QuickLooks plugins
 # Source: https://github.com/sindresorhus/quick-look-plugins
