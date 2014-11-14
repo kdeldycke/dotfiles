@@ -51,18 +51,11 @@ for PACKAGE in $COMMON_PACKAGES
 do
    brew install "$PACKAGE"
 done
-brew install findutils
-brew install bash
 brew install ack
-brew install grep
 brew install watch
-brew install rename
-brew install tree
 brew install webkit2png
 brew install osxutils
-brew install p7zip
 brew install faad2
-brew install bash-completion
 brew install md5sha1sum
 brew install ssh-copy-id
 brew install colorsvn
