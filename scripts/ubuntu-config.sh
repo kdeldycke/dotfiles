@@ -18,6 +18,16 @@ sudo update-grub
 
 if [ "$(sudo dmidecode -s system-product-name)" == "MacBookAir5,2" ]; then
 
+sudo tee -a /usr/share/X11/xorg.conf.d/20-intel.conf <<-EOF
+# Fix screen backlight. Source: http://askubuntu.com/a/542271
+Section "Device"
+    Identifier  "card0"
+    Driver      "intel"
+    Option      "Backlight"  "intel_backlight"
+    BusID       "PCI:0:2:0"
+EndSection
+EOF
+
 # Set CPU governor
 sudo tee -a /etc/default/cpufrequtils <<-EOF
 # valid values: userspace conservative powersave ondemand performance
