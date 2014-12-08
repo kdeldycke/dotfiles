@@ -98,11 +98,6 @@ sudo aptitude install -y insync insync-dolphin
 sudo dpkg --add-architecture i386
 sudo aptitude update
 sudo aptitude install -y steam mesa-utils
-# Install xbox gamepad support
-# See: http://29a.ch/2013/2/24/xbox-controller-with-ubuntu-steam-xboxdrv
-sudo aptitude install -y xboxdrv
-sudo -E bash -c "echo 'blacklist xpad' > /etc/modprobe.d/blacklist.conf"
-sudo rmmod xpad
 
 
 # Install Popcorn Time
