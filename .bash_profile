@@ -200,6 +200,9 @@ export PYTHONDONTWRITEBYTECODE=true
 export PYTHONSTARTUP="$HOME/python-shell-enhancement/pythonstartup.py"
 export PYTHON_HISTORY_FILE="$HOME/.python_history"
 
+# Display DeprecationWarning
+export PYTHONWARNINGS=d
+
 # Set virtualenv facilities
 export WORKON_HOME=$HOME/virtualenvs
 # virtualenv should use Distribute instead of legacy setuptools
