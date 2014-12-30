@@ -30,13 +30,14 @@ done
 sudo aptitude install -y ack-grep aegisub apt-file audacious avidemux-common \
 bitcoin-qt bleachbit bzrtools ca-certificates chromium-browser \
 chromium-codecs-ffmpeg-extra cpufrequtils deborphan dmg2img driftnet efibootmgr \
-faad gimp-plugin-registry gitg gnome-themes-standard gtk-chtheme gtk2-engines \
+exfat-fuse exfat-utils faad gimp-plugin-registry gitg gnome-themes-standard gtk-chtheme gtk2-engines \
 hfsplus hfsprogs hunspell-fr hunspell-fr-classical kdenlive kdesdk-scripts \
 kompare kscreensaver ksshaskpass kwrite libimage-exiftool-perl lm-sensors mbr \
 mkvtoolnix mkvtoolnix-gui mplayer2 network-manager-openvpn ntp p7zip-full picard \
 powertop qemu-kvm sqlitebrowser sysfsutils tor-browser transcode ttf-ancient-fonts \
 unclutter utox vim-nox xfsprogs xscreensaver xscreensaver-data \
 xscreensaver-data-extra xscreensaver-gl xscreensaver-gl-extra xsltproc
+
 
 sudo aptitude install -y python-pip python-dev runsnakerun
 
