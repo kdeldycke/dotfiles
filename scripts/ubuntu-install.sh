@@ -102,7 +102,7 @@ sudo aptitude install -y steam mesa-utils
 
 
 # Install Popcorn Time
-[ ! -d ~/Popcorn-Time ] && wget -O - "https://cdn.popcorntime.io/build/Popcorn-Time-0.3.3-Linux64.tar.xz" | tar -xvJ --directory ~ -f -
+[ ! -d ~/Popcorn-Time ] && wget -O - "https://get.popcorntime.io/build/Popcorn-Time-0.3.6-Linux64.tar.xz" | tar -xvJ --directory ~ -f -
 [ ! -f /lib/x86_64-linux-gnu/libudev.so.0 ] && sudo ln -s /lib/x86_64-linux-gnu/libudev.so.1 /lib/x86_64-linux-gnu/libudev.so.0
 
 
