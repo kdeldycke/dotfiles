@@ -46,7 +46,7 @@ sudo gem install hub
 
 
 Sudo aptitude install -y libpq-dev
-sudo pip install pgcli
+sudo pip install --upgrade pgcli
 
 
 sudo aptitude install -y virt-manager

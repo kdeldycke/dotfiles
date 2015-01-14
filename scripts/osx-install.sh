@@ -67,7 +67,7 @@ brew install webkit2png
 
 # Install Cassandra
 brew install cassandra
-pip install cql
+pip install --upgrade cql
 
 # htop-osx requires root privileges to correctly display all running processes.
 sudo chown root:wheel "$(brew --prefix)/bin/htop"
