@@ -284,15 +284,17 @@ let g:syntastic_style_warning_symbol = '⚡'
 
 
 " PythonMode
-let g:pymode_lint_checkers = 'pylint,pep8,mccabe,pep257'
-let g:pymode_lint_cwindow = 0
 let g:pymode_doc = 0
+let g:pymode_lint_checkers = ['pylint', 'pep8', 'mccabe', 'pep257']
+let g:pymode_lint_ignore = ''
+let g:pymode_lint_cwindow = 0
 let g:pymode_lint_todo_symbol = '⚠'
 let g:pymode_lint_comment_symbol = '⑊'
 let g:pymode_lint_visual_symbol = '⑆'
 let g:pymode_lint_error_symbol = '✘'
 let g:pymode_lint_info_symbol = '●'
 let g:pymode_lint_pyflakes_symbol = '●'
+let g:pymode_rope = 0
 
 
 " FILETYPES  {{{ ==============================================================
