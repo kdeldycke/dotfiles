@@ -44,6 +44,10 @@ sudo aptitude install -y python-pip python-dev runsnakerun
 sudo gem install hub
 
 
+Sudo aptitude install -y libpq-dev
+sudo pip install pgcli
+
+
 sudo aptitude install -y virt-manager
 sudo usermod -a -G libvirtd kevin
 sudo usermod -a -G kvm kevin

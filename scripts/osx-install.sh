@@ -146,6 +146,9 @@ brew install wxmac
 brew install wxpython
 pip install --upgrade RunSnakeRun
 
+# Install pgcli
+brew install pgcli
+
 # Clean things up
 brew linkapps
 brew cleanup
