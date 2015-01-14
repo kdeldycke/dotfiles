@@ -63,9 +63,6 @@ do
     fi
 done
 
-# Create empty folders
-mkdir -p ~/.pip/cache
-
 # Configure everything.
 if $IS_OSX; then
     source ./scripts/osx-config.sh
