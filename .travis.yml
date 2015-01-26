@@ -3,4 +3,4 @@ os:
   - osx
   - linux
 script: 
-  - install.sh
+  - sh install.sh
