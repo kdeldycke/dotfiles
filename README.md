@@ -49,7 +49,7 @@ Install
 Upgrade
 -------
 
-Juste call the installation script again:
+I'm trying to make the install procedure indempotent so you'll just have to call the script again to upgrade your system:
 
     $ ./install.sh
 
