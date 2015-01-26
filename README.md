@@ -3,6 +3,8 @@ dotfiles
 
 Collection of dotfiles for Python developers working in vim.
 
+[![Build Status](https://img.shields.io/travis/kdeldycke/maildir-deduplicate/develop.svg?style=flat)](https://travis-ci.org/kdeldycke/dotfiles)
+
 Project is currently targetting:
 
   * **Kubuntu 14.10** (Utopic Unicorn)
