@@ -1,3 +1,6 @@
 language: bash
+os:
+  - osx
+  - linux
 script: 
   - install.sh
