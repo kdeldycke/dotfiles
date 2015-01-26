@@ -2,5 +2,8 @@ language: bash
 os:
   - osx
   - linux
+matrix:
+    allow_failures:
+        - os: osx
 script: 
   - sh install.sh
