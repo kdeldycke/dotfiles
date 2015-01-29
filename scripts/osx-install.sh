@@ -115,7 +115,9 @@ brew install lua --completion
 brew install cscope
 VIM_FLAGS="--with-python --with-lua --with-cscope --override-system-vim"
 brew install macvim "$VIM_FLAGS"
-brew install vim "$VIM_FLAGS"
+# Always reinstall vim to fix Python links.
+# See: https://github.com/yyuu/pyenv/issues/234
+brew reinstall vim "$VIM_FLAGS"
 
 # Remove previous install of refind bootloader first.
 mkdir /Volumes/esp
