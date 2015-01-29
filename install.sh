@@ -75,7 +75,7 @@ PYTHON_PACKAGES="pip setuptools virtualenv virtualenvwrapper autoenv pep8 pylint
 coverage rope autopep8 mccabe nose bumpversion tox httpie"
 for p in $PYTHON_PACKAGES
 do
-    sudo pip install --upgrade "$p"
+    pip install --upgrade "$p"
 done
 
 # Patch terminal font for Vim's Airline plugin

@@ -46,7 +46,7 @@ sudo gem install hub
 
 
 Sudo aptitude install -y libpq-dev
-sudo pip install --upgrade pgcli
+pip install --upgrade pgcli
 
 
 sudo aptitude install -y virt-manager
@@ -71,13 +71,13 @@ cabal install shellcheck
 
 
 # Install GMVault
-sudo pip install --allow-external IMAPClient --upgrade https://pypi.python.org/packages/source/g/gmvault/gmvault-1.8.1-beta.tar.gz#md5=a0b26d814506748deca8e2eee4086b31
+pip install --allow-external IMAPClient --upgrade https://pypi.python.org/packages/source/g/gmvault/gmvault-1.8.1-beta.tar.gz#md5=a0b26d814506748deca8e2eee4086b31
 
 
 # Install Pelican and its dependencies
 sudo aptitude install -y python-markdown python-pygments python-beautifulsoup pandoc \
 python-smartypants s3cmd
-sudo pip install --upgrade pelican mdx_video typogrify Fabric
+pip install --upgrade pelican mdx_video typogrify Fabric
 
 
 # Install Dropbox if not already there
