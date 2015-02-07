@@ -39,7 +39,7 @@ brew tap caskroom/cask
 brew install brew-cask
 
 # Install OSX system requirements
-brew cask install xquartz
+brew cask install --force xquartz
 
 # Install a brand new Python
 brew install python
@@ -76,37 +76,37 @@ sudo chmod u+s "$(brew --prefix)/bin/htop"
 # Install binary apps
 for PACKAGE in $BIN_PACKAGES
 do
-   brew cask install "$PACKAGE"
+   brew cask install --force "$PACKAGE"
 done
-brew cask install bitcoin-core
-brew cask install chromium
-brew cask install dropbox
-brew cask install flux
-brew cask install gitx
-brew cask install insync
-brew cask install libreoffice
-brew cask install sqlite-database-browser
-brew cask install steam
-brew cask install torbrowser
-brew cask install tunnelblick
+brew cask install --force bitcoin-core
+brew cask install --force chromium
+brew cask install --force dropbox
+brew cask install --force flux
+brew cask install --force gitx
+brew cask install --force insync
+brew cask install --force libreoffice
+brew cask install --force sqlite-database-browser
+brew cask install --force steam
+brew cask install --force torbrowser
+brew cask install --force tunnelblick
 
 # Install QuickLooks plugins
 # Source: https://github.com/sindresorhus/quick-look-plugins
-brew cask install betterzipql
-brew cask install cert-quicklook
-brew cask install epubquicklook
-brew cask install qlcolorcode
-brew cask install qlmarkdown
-brew cask install qlprettypatch
-brew cask install qlstephen
-brew cask install quicklook-csv
-brew cask install quicklook-json
-brew cask install suspicious-package
-brew cask install webp-quicklook
+brew cask install --force betterzipql
+brew cask install --force cert-quicklook
+brew cask install --force epubquicklook
+brew cask install --force qlcolorcode
+brew cask install --force qlmarkdown
+brew cask install --force qlprettypatch
+brew cask install --force qlstephen
+brew cask install --force quicklook-csv
+brew cask install --force quicklook-json
+brew cask install --force suspicious-package
+brew cask install --force webp-quicklook
 qlmanage -r
 
 # Add EXT support
-brew cask install osxfuse
+brew cask install --force osxfuse
 brew install ext2fuse
 brew install ext4fuse
 
