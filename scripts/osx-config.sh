@@ -399,17 +399,40 @@ sudo mdutil -i on /
 # Rebuild the index from scratch
 sudo mdutil -E /
 
-# Use a custom theme for Terminal.app
-# Force removal of theme first
-/usr/libexec/PlistBuddy -c "Delete :Window\ Settings:Solarized\ Dark" ~/Library/Preferences/com.apple.Terminal.plist 2> /dev/null
-/usr/libexec/PlistBuddy -c "Add :Window\ Settings:Solarized\ Dark dict" ~/Library/Preferences/com.apple.Terminal.plist
-/usr/libexec/PlistBuddy -c "Merge ./assets/Solarized\ Dark.terminal :Window\ Settings:Solarized\ Dark" ~/Library/Preferences/com.apple.Terminal.plist
-# Reinstall theme
-open "./assets/Solarized Dark.terminal"
-sleep 5 # Wait a bit to make sure the theme is loaded
-defaults write com.apple.Terminal "Default Window Settings" -string "Solarized Dark"
-defaults write com.apple.Terminal "Startup Window Settings" -string "Solarized Dark"
-defaults import com.apple.Terminal "$HOME/Library/Preferences/com.apple.Terminal.plist"
+# Use a custom theme for Terminal.
+# Source: https://github.com/mathiasbynens/dotfiles/pull/492
+osascript <<EOD
+tell application "Terminal"
+    local allOpenedWindows
+    local initialOpenedWindows
+    local windowID
+    set themeName to "Solarized Dark"
+    (* Store the IDs of all the open terminal windows *)
+    set initialOpenedWindows to id of every window
+    (* Open the custom theme so that it gets added to the list
+       of available terminal themes (note: this will open two
+       additional terminal windows) *)
+    do shell script "open './assets/" & themeName & ".terminal'"
+    (* Wait a little bit to ensure that the custom theme is added *)
+    delay 1
+    (* Set the custom theme as the default terminal theme *)
+    set default settings to settings set themeName
+    (* Get the IDs of all the currently opened terminal windows *)
+    set allOpenedWindows to id of every window
+    repeat with windowID in allOpenedWindows
+        (* Close the additional windows that were opened in order
+           to add the custom theme to the list of terminal themes *)
+        if initialOpenedWindows does not contain windowID then
+            close (every window whose id is windowID)
+        (* Change the theme for the initial opened terminal windows
+           to remove the need to close them in order for the custom
+           theme to be applied *)
+        else
+            set current settings of tabs of (every window whose id is windowID) to settings set themeName
+        end if
+    end repeat
+end tell
+EOD
 
 # Only use UTF-8 in Terminal.app
 defaults write com.apple.terminal StringEncodings -array 4
