@@ -135,14 +135,9 @@ sudo diskutil umount /Volumes/esp
 # Fix Yosemite boot. Source: http://www.rodsbooks.com/refind/yosemite.html
 mkdir /Volumes/esp
 sudo mount -t msdos /dev/disk0s1 /Volumes/esp
-sudo sed -i "" -e "s/#dont_scan_volumes \"Recovery HD\"/dont_scan_volumes/" /Volumes/esp/EFI/refind/refind.conf
 # Adjust personnal refind config
 sudo sed -i "" -e "s/timeout 20/timeout 1/" /Volumes/esp/EFI/refind/refind.conf
 sudo sed -i "" -e "s/#default_selection 1/default_selection linux/" /Volumes/esp/EFI/refind/refind.conf
-# Fix the 30-second delay before rEFInd appears when installed on ESP.
-# Source: http://askubuntu.com/a/543121
-sudo mv /Volumes/esp/EFI/refind/refind_x64.efi /Volumes/esp/EFI/refind/bootx64.efi
-sudo mv /Volumes/esp/EFI/refind /Volumes/esp/EFI/BOOT
 
 # Install runsnakeerun
 brew install wxmac
