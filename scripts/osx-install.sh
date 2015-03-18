@@ -67,7 +67,7 @@ brew install watch
 brew install webkit2png
 
 # Install Cassandra
-brew install cassandra
+brew install cassandra20
 pip install --upgrade cql
 
 # htop-osx requires root privileges to correctly display all running processes.
