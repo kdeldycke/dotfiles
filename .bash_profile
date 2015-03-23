@@ -47,10 +47,9 @@ shopt -s cdspell
 shopt -s checkwinsize
 
 bash_prompt_command() {
-    ## After each command, save and reload history
-    # Source: http://unix.stackexchange.com/a/18443
-    history -n
-    history -w
+    ## After each command, append to the history file and reread it.
+    # Source: http://unix.stackexchange.com/a/1292
+    history -a
     history -c
     history -r
     ## Fancy PWD display function, better than PROMPT_DIRTRIM
