@@ -5,7 +5,6 @@ sudo apt-get install -y aptitude
 
 sudo add-apt-repository -y ppa:sunab/kdenlive-release
 sudo add-apt-repository -y ppa:bitcoin/bitcoin
-sudo add-apt-repository -y ppa:webupd8team/tor-browser
 
 # Install tox repositories.
 # Source: https://wiki.tox.im/Binaries#Apt.2FAptitude_.28Debian.2C_Ubuntu.2C_Mint.2C_etc..29
@@ -34,7 +33,7 @@ exfat-fuse exfat-utils faad gimp-plugin-registry gitg gnome-themes-standard gtk-
 hfsplus hfsprogs hunspell-fr hunspell-fr-classical kdenlive kdesdk-scripts \
 kompare kscreensaver ksshaskpass kwrite libimage-exiftool-perl lm-sensors mbr \
 mkvtoolnix mkvtoolnix-gui mplayer2 network-manager-openvpn ntp p7zip-full picard \
-powertop qemu-kvm sqlitebrowser sysfsutils system-config-lvm tor-browser transcode ttf-ancient-fonts \
+powertop qemu-kvm sqlitebrowser sysfsutils system-config-lvm transcode ttf-ancient-fonts \
 unclutter utox vim-nox xfsprogs xscreensaver xscreensaver-data \
 xscreensaver-data-extra xscreensaver-gl xscreensaver-gl-extra xsltproc
 
@@ -104,6 +103,17 @@ sudo aptitude install -y insync insync-dolphin
 sudo dpkg --add-architecture i386
 sudo aptitude update
 sudo aptitude install -y steam mesa-utils
+
+
+# Clean-up previous Tor browser installs.
+rm -rf ~/.tor-browser
+mkdir -p ~/.tor-browser
+# Install Tor Browser.
+wget -O - "https://www.torproject.org/dist/torbrowser/4.0.8/tor-browser-linux64-4.0.8_en-US.tar.xz" \
+    | tar -xvJ --directory ~/.tor-browser --strip-components=1 -f -
+# Force installation of uBlock
+wget https://addons.mozilla.org/firefox/downloads/file/299918/ -O \
+    ~/.tor-browser/Browser/TorBrowser/Data/Browser/profile.default/extensions/{2b10c1c8-a11f-4bad-fe9c-1c11e82cac42}.xpi
 
 
 # Install Popcorn Time
