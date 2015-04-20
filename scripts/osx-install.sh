@@ -86,6 +86,7 @@ brew cask install --force flux
 brew cask install --force gitx
 brew cask install --force insync
 brew cask install --force libreoffice
+brew cask install --force spectacle
 brew cask install --force sqlite-database-browser
 brew cask install --force steam
 brew cask install --force torbrowser
