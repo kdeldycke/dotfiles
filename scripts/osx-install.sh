@@ -30,7 +30,7 @@ if [[ $? -ne 0 ]]; then
 fi
 brew update
 brew upgrade brew-cask
-brew upgrade
+brew upgrade --all
 
 # Include duplicates packages
 brew tap homebrew/dupes
