@@ -62,6 +62,7 @@ brew install faad2
 brew install hub
 brew install md5sha1sum
 brew install osxutils
+brew install pstree
 brew install ssh-copy-id
 brew install watch
 brew install webkit2png
