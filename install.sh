@@ -39,6 +39,7 @@ DOT_FILES=$(find . -maxdepth 1 \
     -not -name "*\.dmg" -and \
     -not -name "*\.swp" -and \
     -not -name "*\.md" -and \
+    -not -name "*\.yml" -and \
     -not -name "\.git" -and \
     -not -name "*~*" \
     -not -name "\." \
