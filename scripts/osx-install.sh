@@ -88,7 +88,7 @@ brew cask install --force gitx
 brew cask install --force insync
 brew cask install --force libreoffice
 brew cask install --force spectacle
-brew cask install --force sqlite-database-browser
+brew cask install --force sqlitebrowser
 brew cask install --force steam
 brew cask install --force torbrowser
 brew cask install --force tunnelblick
@@ -105,7 +105,7 @@ brew cask install --force qlstephen
 brew cask install --force quicklook-csv
 brew cask install --force quicklook-json
 brew cask install --force suspicious-package
-brew cask install --force webp-quicklook
+brew cask install --force webpquicklook
 qlmanage -r
 
 # Add EXT support
