@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# Increase limit of open files.
+sudo tee -a /etc/sysctl.conf <<-EOF
+kern.maxfiles=20480
+kern.maxfilesperproc=18000
+EOF
+
 # Turns off WakeOnMagicPacket
 sudo pmset -a womp 0
 # Automatic restart on power loss
