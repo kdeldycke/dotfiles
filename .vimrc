@@ -103,7 +103,7 @@ filetype plugin indent on      " Indent and plugins by filetype
 
 " VIM Setup {{{ ===============================================================
 
-let mapleader=','
+let mapleader = "\<Space>"
 let maplocalleader=' '
 
 scriptencoding utf-8
