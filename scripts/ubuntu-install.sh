@@ -111,9 +111,9 @@ mkdir -p ~/.tor-browser
 # Install Tor Browser.
 wget -O - "https://www.torproject.org/dist/torbrowser/4.5.2/tor-browser-linux64-4.5.2_en-US.tar.xz" \
     | tar -xvJ --directory ~/.tor-browser --strip-components=1 -f -
-# Force installation of uBlock
-wget https://addons.mozilla.org/firefox/downloads/file/299918/ -O \
-    ~/.tor-browser/Browser/TorBrowser/Data/Browser/profile.default/extensions/{2b10c1c8-a11f-4bad-fe9c-1c11e82cac42}.xpi
+# Force installation of uBlock origin
+wget https://addons.mozilla.org/firefox/downloads/file/319372/ -O \
+    ~/.tor-browser/Browser/TorBrowser/Data/Browser/profile.default/extensions/uBlock0@raymondhill.net.xpi
 
 
 # Install Popcorn Time
