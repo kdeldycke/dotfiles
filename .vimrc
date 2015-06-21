@@ -110,6 +110,23 @@ scriptencoding utf-8
 set encoding=utf-8              " setup the encoding to UTF-8
 set ls=2                        " status line always visible
 
+" Leader-based shortcuts {{{
+" Source: http://sheerun.net/2014/03/21/how-to-boost-your-vim-productivity/
+" Type <Space>o to open a new file
+nnoremap <Leader>o :CtrlP<CR>
+" Type <Space>w to save file
+nnoremap <Leader>w :w<CR>
+" Copy & paste to system clipboard with <Space>p and <Space>y
+vmap <Leader>y "+y
+vmap <Leader>d "+d
+nmap <Leader>p "+p
+nmap <Leader>P "+P
+vmap <Leader>p "+p
+vmap <Leader>P "+P
+" Enter visual line mode
+nmap <Leader><Leader> V
+"}}}
+
 " Copy & paste {{{
 if has ('x') && has ('gui') " On Linux use + register for copy-paste
     set clipboard=unnamedplus
