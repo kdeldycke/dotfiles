@@ -109,7 +109,7 @@ sudo aptitude install -y steam mesa-utils
 rm -rf ~/.tor-browser
 mkdir -p ~/.tor-browser
 # Install Tor Browser.
-wget -O - "https://www.torproject.org/dist/torbrowser/4.0.8/tor-browser-linux64-4.0.8_en-US.tar.xz" \
+wget -O - "https://www.torproject.org/dist/torbrowser/4.5.2/tor-browser-linux64-4.5.2_en-US.tar.xz" \
     | tar -xvJ --directory ~/.tor-browser --strip-components=1 -f -
 # Force installation of uBlock
 wget https://addons.mozilla.org/firefox/downloads/file/299918/ -O \
