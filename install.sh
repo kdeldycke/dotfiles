@@ -99,5 +99,8 @@ fi
 # Force vim plugin upgrades
 vim +NeoBundleUpdate +q
 
+# Force update of local submodules
+git submodule update --remote --merge
+
 # Reload Bash with new configuration
 source ~/.bash_profile
