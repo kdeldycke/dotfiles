@@ -22,7 +22,7 @@ if $IS_OSX; then
 fi
 
 # Setting history length
-export HISTCONTROL="erasedups"
+export HISTCONTROL="ignoredups:erasedups"
 export HISTTIMEFORMAT="[%F %T] "
 export HISTSIZE=99999
 export HISTFILESIZE=$HISTSIZE;
@@ -31,7 +31,7 @@ export HISTIGNORE="ls:cd:cd -:pwd:exit:date:* --help:history"
 
 # append to the history file, don't overwrite it
 shopt -s histappend
-# Allow use to re-edit a faild history substitution.
+# Allow use to re-edit a failed history substitution.
 shopt -s histreedit
 # History expansions will be verified before execution.
 shopt -s histverify
@@ -46,43 +46,17 @@ shopt -s cdspell
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
-bash_prompt_command() {
-    ## After each command, append to the history file and reread it.
+# Set user & root prompt
+function prompt_callback {
+    # After each command, append to the history file and reread it.
     # Source: http://unix.stackexchange.com/a/1292
     history -a
     history -c
     history -r
-    ## Fancy PWD display function, better than PROMPT_DIRTRIM
-    # Source: https://wiki.archlinux.org/index.php/Color_Bash_Prompt
-    # How many characters of the $PWD should be kept
-    local pwdmaxlen=25
-    # Indicate that there has been dir truncation
-    local trunc_symbol="…"
-    local dir=${PWD##*/}
-    pwdmaxlen=$(( ( pwdmaxlen < ${#dir} ) ? ${#dir} : pwdmaxlen ))
-    NEW_PWD=${PWD/#$HOME/\~}
-    local pwdoffset=$(( ${#NEW_PWD} - pwdmaxlen ))
-    if [ ${pwdoffset} -gt "0" ]; then
-        NEW_PWD=${NEW_PWD:$pwdoffset:$pwdmaxlen}
-        NEW_PWD=${trunc_symbol}/${NEW_PWD#*/}
-    fi
-    ## Set git contextual info
-    git_sha() {
-        git rev-parse --short HEAD 2>/dev/null
-    }
-    export PROMPT_GIT=$(__git_ps1 "(%s@$(git_sha))")
 }
-
-bash_prompt() {
-    PS1="\[\033[01;30m\]\u\[\e[m\] \[\e[1;34m\]\${NEW_PWD}\[\e[m\]\${PROMPT_GIT} \$(if [[ \$? == 0
-    ]]; then echo \"\[\033[01;32m\]\342\234\224\"; else echo \"\[\033[01;31m\]\342\234\230\"; fi)\[\e[m\] "
-}
-
-# Set user & root prompt
-export PROMPT_COMMAND=bash_prompt_command
+GIT_PROMPT_THEME=Solarized
+source ~/.bash-git-prompt/gitprompt.sh
 export SUDO_PS1='\[\e[31m\]\u\[\e[37m\]:\[\e[33m\]\w\[\e[31m\]\$\[\033[00m\] '
-bash_prompt
-unset bash_prompt
 
 # Make vim the default editor
 export EDITOR="vim"
