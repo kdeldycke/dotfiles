@@ -54,7 +54,7 @@ function prompt_callback {
     history -c
     history -r
 }
-GIT_PROMPT_THEME=Solarized
+GIT_PROMPT_THEME="Solarized"
 source ~/.bash-git-prompt/gitprompt.sh
 export SUDO_PS1='\[\e[31m\]\u\[\e[37m\]:\[\e[33m\]\w\[\e[31m\]\$\[\033[00m\] '
 
