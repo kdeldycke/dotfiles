@@ -182,7 +182,7 @@ export VIRTUALENVWRAPPER_HOOK_DIR=$HOME/.virtualenv
 # Use default Python. VIRTUALENVWRAPPER_PYTHON doesn't seems to be used by virtualenvwrapper, so
 # force it through venv's args.
 # export VIRTUALENVWRAPPER_PYTHON=`which python`
-export VIRTUALENVWRAPPER_VIRTUALENV_ARGS="--no-site-packages --python=$(which python)"
+export VIRTUALENVWRAPPER_VIRTUALENV_ARGS="--python=$(which python)"
 # Define a function for automatic virtualenv loading
 # Source: https://github.com/kennethreitz/autoenv/wiki/Cookbook
 use_env() {
