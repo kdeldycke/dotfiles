@@ -178,8 +178,6 @@ export PYTHONWARNINGS=d
 
 # Set virtualenv facilities
 export WORKON_HOME=$HOME/virtualenvs
-# virtualenv should use Distribute instead of legacy setuptools
-export VIRTUALENV_DISTRIBUTE=true
 export VIRTUALENVWRAPPER_HOOK_DIR=$HOME/.virtualenv
 # Use default Python. VIRTUALENVWRAPPER_PYTHON doesn't seems to be used by virtualenvwrapper, so
 # force it through venv's args.
