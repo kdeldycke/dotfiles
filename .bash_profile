@@ -185,8 +185,6 @@ export VIRTUALENVWRAPPER_HOOK_DIR=$HOME/.virtualenv
 # force it through venv's args.
 # export VIRTUALENVWRAPPER_PYTHON=`which python`
 export VIRTUALENVWRAPPER_VIRTUALENV_ARGS="--no-site-packages --python=$(which python)"
-# Centralized location for new virtual environments
-export PIP_VIRTUALENV_BASE=$WORKON_HOME
 # Define a function for automatic virtualenv loading
 # Source: https://github.com/kennethreitz/autoenv/wiki/Cookbook
 use_env() {
