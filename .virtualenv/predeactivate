@@ -1,3 +1,3 @@
 #!/bin/bash
-# This hook is run before every virtualenv is deactivated.
+# This hook is sourced before every virtualenv is deactivated.
 

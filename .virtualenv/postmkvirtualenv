@@ -1,5 +1,5 @@
 #!/bin/bash
-# This hook is run after a new virtualenv is activated.
+# This hook is sourced after a new virtualenv is activated.
 
 # Create a .env file at the base of the new virtualenv
 PROJECT_NAME=$(echo "$VIRTUAL_ENV" | awk -F '/' '{print $NF}')
