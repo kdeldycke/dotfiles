@@ -102,7 +102,7 @@ Third party assets:
     Source Code Pro 1.017
     Copyright (c) 2012 Adobe Systems
     Distributed under a SIL Open Font License version 1.1
-    Source: https://github.com/adobe/source-code-pro
+    Source: https://github.com/adobe-fonts/source-code-pro/releases/latest
 
     Solarized - OS X 10.7+ Terminal.App color theme
     Copyright (c) 2013 Tomislav Filipčić
