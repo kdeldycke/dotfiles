@@ -202,7 +202,7 @@ use_env() {
 }
 # Load shell helpers
 source /usr/local/bin/virtualenvwrapper.sh
-source /usr/local/bin/activate.sh
+source ~/.autoenv/activate.sh
 
 eval "$(pip completion --bash)"
 
