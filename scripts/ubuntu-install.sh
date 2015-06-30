@@ -127,7 +127,7 @@ sudo aptitude remove -y akregator kaddressbook knotes kontact korganizer dragonp
 kaccessible kdegraphics-strigi-analyzer kmag kpat rekonq quassel kmail unity-gtk2-module \
 unity-gtk3-module kde-telepathy telepathy-logger telepathy-indicator telepathy-salut \
 kde-config-telepathy-accounts kde-telepathy-approver kde-telepathy-data telepathy-gabble \
-libtelepathy-logger3 libtelepathy-glib0 libtelepathy-qt4-2
+libtelepathy-logger3 libtelepathy-glib0 libtelepathy-qt4-2 amarok amarok-utils
 
 sudo apt-file update
 
