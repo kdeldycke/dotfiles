@@ -8,8 +8,8 @@ sudo add-apt-repository -y ppa:bitcoin/bitcoin
 
 # Install tox repositories.
 # Source: https://wiki.tox.im/Binaries#Apt.2FAptitude_.28Debian.2C_Ubuntu.2C_Mint.2C_etc..29
-sudo sh -c 'echo "deb https://repo.tox.im/deb/ testing main" > /etc/apt/sources.list.d/toxrepo.list'
-curl -k https://repo.tox.im/toxbuild.pgp | sudo apt-key add -
+sudo sh -c 'echo "deb https://repo.tox.im/ nightly main" > /etc/apt/sources.list.d/tox.list'
+wget -qO - https://repo.tox.im/pubkey.gpg | sudo apt-key add -
 
 sudo aptitude update
 sudo aptitude upgrade -y
