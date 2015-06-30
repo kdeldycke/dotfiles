@@ -93,7 +93,7 @@ rm ./google-musicmanager-beta_current_amd64.deb
 wget -qO - https://d2t3ff60b2tol4.cloudfront.net/services@insynchq.com.gpg.key | sudo apt-key add -
 # TODO: don't add twice if config line already there
 sudo tee -a /etc/apt/sources.list <<-EOF
-    deb http://apt.insynchq.com/ubuntu saucy non-free contrib
+    deb http://apt.insynchq.com/ubuntu vivid non-free contrib
 EOF
 sudo aptitude update
 sudo aptitude install -y insync insync-dolphin
