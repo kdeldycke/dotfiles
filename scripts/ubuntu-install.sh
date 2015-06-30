@@ -44,7 +44,7 @@ sudo aptitude install -y python-pip python-dev runsnakerun
 sudo gem install hub
 
 
-Sudo aptitude install -y libpq-dev
+sudo aptitude install -y libpq-dev
 pip install --upgrade pgcli
 
 
