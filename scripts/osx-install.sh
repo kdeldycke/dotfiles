@@ -55,7 +55,6 @@ do
    brew install "$PACKAGE"
 done
 brew install ack
-brew install colorsvn
 brew install dockutil
 brew install exiftool
 brew install faad2
