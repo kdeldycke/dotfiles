@@ -31,7 +31,7 @@ bitcoin-qt bleachbit ca-certificates chromium-browser \
 chromium-codecs-ffmpeg-extra cpufrequtils deborphan dmg2img driftnet efibootmgr \
 exfat-fuse exfat-utils faad gimp-plugin-registry gitg \
 hfsplus hfsprogs hunspell-fr hunspell-fr-classical kdenlive kdesdk-scripts \
-kompare kscreensaver kwrite libimage-exiftool-perl lm-sensors mbr \
+kompare kscreensaver kwrite libavcodec-extra libimage-exiftool-perl lm-sensors mbr \
 mkvtoolnix mkvtoolnix-gui mplayer2 network-manager-openvpn ntp p7zip-full picard \
 powertop psmisc qemu-kvm sqlitebrowser sysfsutils system-config-lvm transcode ttf-ancient-fonts \
 unclutter utox vim-nox xfsprogs xscreensaver xscreensaver-data \
@@ -54,9 +54,6 @@ sudo usermod -a -G kvm kevin
 
 
 sudo aptitude install -y redshift gtk-redshift geoclue
-
-
-sudo aptitude install -y libavcodec-extra-53
 
 
 # Install libCSS to decode encrypted DVDs
