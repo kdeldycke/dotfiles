@@ -29,7 +29,7 @@ done
 sudo aptitude install -y ack-grep aegisub apt-file avidemux-common \
 bitcoin-qt bleachbit ca-certificates chromium-browser \
 chromium-codecs-ffmpeg-extra cpufrequtils deborphan dmg2img driftnet efibootmgr \
-exfat-fuse exfat-utils faad gimp-plugin-registry gitg gnome-themes-standard gtk-chtheme gtk2-engines \
+exfat-fuse exfat-utils faad gimp-plugin-registry gitg \
 hfsplus hfsprogs hunspell-fr hunspell-fr-classical kdenlive kdesdk-scripts \
 kompare kscreensaver kwrite libimage-exiftool-perl lm-sensors mbr \
 mkvtoolnix mkvtoolnix-gui mplayer2 network-manager-openvpn ntp p7zip-full picard \
@@ -122,12 +122,23 @@ wget https://addons.mozilla.org/firefox/downloads/file/319372/ -O \
 [ ! -f /lib/x86_64-linux-gnu/libudev.so.0 ] && sudo ln -s /lib/x86_64-linux-gnu/libudev.so.1 /lib/x86_64-linux-gnu/libudev.so.0
 
 
-# Clean-up
+# Remove all unused default KDE apps.
 sudo aptitude remove -y akregator kaddressbook knotes kontact korganizer dragonplayer kamera kcalc \
 kaccessible kdegraphics-strigi-analyzer kmag kpat rekonq quassel kmail unity-gtk2-module \
 unity-gtk3-module kde-telepathy telepathy-logger telepathy-indicator telepathy-salut \
 kde-config-telepathy-accounts kde-telepathy-approver kde-telepathy-data telepathy-gabble \
-libtelepathy-logger3 libtelepathy-glib0 libtelepathy-qt4-2 amarok amarok-utils
+libtelepathy-logger3 libtelepathy-glib0 libtelepathy-qt4-2 amarok amarok-utils amarok-common \
+akonadi-backend-mysql akonadi-server apturl-kde kdepim-kresources kdepim-runtime libcalendarsupport4 \
+libincidenceeditorsng4 libkdepim4 libkdepimdbusinterfaces4 libkleo4 libmailcommon4 libmailimporter4 \
+libmessagecomposer4 libmessagecore4 libmessageviewer4 libpimcommon4 libtemplateparser4 \
+python3-pykde4 mysql-server-core-5.6 mysql-common mysql-client-core-5.6 libmysqlclient18 \
+libqt4-sql-mysql konversation konversation-data khelpcenter kde-telepathy-legacy-presence-applet
+
+# Remove unused default system apps.
+sudo aptitude remove -y nano kubuntu-web-shortcuts
+
+# Remove Canonical crash reporters.
+sudo aptitude remove -y apport apport-kde apport-symptoms kde-config-whoopsie python3-apport whoopsie
 
 sudo apt-file update
 
