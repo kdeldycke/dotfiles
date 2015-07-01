@@ -26,8 +26,8 @@ do
 done
 
 # Install Ubuntu specific packages
-sudo aptitude install -y ack-grep aegisub apt-file audacious avidemux-common \
-bitcoin-qt bleachbit bzrtools ca-certificates chromium-browser \
+sudo aptitude install -y ack-grep aegisub apt-file avidemux-common \
+bitcoin-qt bleachbit ca-certificates chromium-browser \
 chromium-codecs-ffmpeg-extra cpufrequtils deborphan dmg2img driftnet efibootmgr \
 exfat-fuse exfat-utils faad gimp-plugin-registry gitg gnome-themes-standard gtk-chtheme gtk2-engines \
 hfsplus hfsprogs hunspell-fr hunspell-fr-classical kdenlive kdesdk-scripts \
