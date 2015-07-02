@@ -24,7 +24,7 @@ fi
 # Setting history length
 export HISTCONTROL="ignoredups:erasedups"
 export HISTTIMEFORMAT="[%F %T] "
-export HISTSIZE=99999
+export HISTSIZE=999999
 export HISTFILESIZE=$HISTSIZE;
 # Make some commands not show up in history
 export HISTIGNORE="ls:cd:cd -:pwd:exit:date:* --help:history"
