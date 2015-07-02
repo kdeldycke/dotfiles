@@ -5,6 +5,7 @@ sudo apt-get install -y aptitude
 
 sudo add-apt-repository -y ppa:sunab/kdenlive-release
 sudo add-apt-repository -y ppa:bitcoin/bitcoin
+sudo add-apt-repository -y ppa:subsurface/subsurface
 
 # Install tox repositories.
 # Source: https://wiki.tox.im/Binaries#Apt.2FAptitude_.28Debian.2C_Ubuntu.2C_Mint.2C_etc..29
