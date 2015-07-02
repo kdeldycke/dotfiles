@@ -29,17 +29,17 @@ export HISTFILESIZE=$HISTSIZE;
 # Make some commands not show up in history
 export HISTIGNORE="ls:cd:cd -:pwd:exit:date:* --help:history"
 
-# append to the history file, don't overwrite it
+# Append to the history file, don't overwrite it.
 shopt -s histappend
-# Allow use to re-edit a failed history substitution.
+# Allow us to re-edit a failed history substitution.
 shopt -s histreedit
 # History expansions will be verified before execution.
 shopt -s histverify
 
-# Case-insensitive globbing (used in pathname expansion)
+# Case-insensitive globbing (used in pathname expansion).
 shopt -s nocaseglob
 
-# Autocorrect typos in path names when using `cd`
+# Autocorrect typos in path names when using `cd`.
 shopt -s cdspell
 
 # Check the window size after each command and, if necessary,
