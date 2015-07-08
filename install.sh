@@ -25,7 +25,7 @@ pdftk prey stellarium subsurface thunderbird virtualbox vlc wireshark"
 if $IS_OSX; then
     source ./scripts/osx-install.sh
 else
-    source ./scripts/ubuntu-install.sh
+    source ./scripts/kubuntu-install.sh
 fi
 
 # Search local dotfiles
@@ -68,7 +68,7 @@ done
 if $IS_OSX; then
     source ./scripts/osx-config.sh
 else
-    source ./scripts/ubuntu-config.sh
+    source ./scripts/kubuntu-config.sh
 fi
 
 # Install & upgrade all global python modules
