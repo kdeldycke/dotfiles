@@ -6,6 +6,7 @@ sudo apt-get install -y aptitude
 sudo add-apt-repository -y ppa:sunab/kdenlive-release
 sudo add-apt-repository -y ppa:bitcoin/bitcoin
 sudo add-apt-repository -y ppa:subsurface/subsurface
+sudo add-apt-repository -y ppa:micahflee/ppa
 
 # Install tox repositories.
 # Source: https://wiki.tox.im/Binaries#Apt.2FAptitude_.28Debian.2C_Ubuntu.2C_Mint.2C_etc..29
@@ -103,15 +104,18 @@ sudo aptitude update
 sudo aptitude install -y steam mesa-utils
 
 
-# Clean-up previous Tor browser installs.
-rm -rf ~/.tor-browser
-mkdir -p ~/.tor-browser
 # Install Tor Browser.
-wget -O - "https://www.torproject.org/dist/torbrowser/4.5.2/tor-browser-linux64-4.5.2_en-US.tar.xz" \
-    | tar -xvJ --directory ~/.tor-browser --strip-components=1 -f -
+sudo aptitude install -y torbrowser-launcher
+torbrowser-launcher
+# The launcher package above starts tor service by default to download the
+# initial browser binary. See:
+# https://github.com/micahflee/torbrowser-launcher/issues/188#issuecomment-114574424
+# Deactive tor service once the browser is installed.
+#sudo systemctl stop tor.service
+#sudo systemctl disable tor.service
 # Force installation of uBlock origin
 wget https://addons.mozilla.org/firefox/downloads/file/319372/ -O \
-    ~/.tor-browser/Browser/TorBrowser/Data/Browser/profile.default/extensions/uBlock0@raymondhill.net.xpi
+    ~/.local/share/torbrowser/tbb/x86_64/tor-browser_en-US/Browser/TorBrowser/Data/Browser/profile.default/extensions/uBlock0@raymondhill.net.xpi
 
 
 # Install Popcorn Time
