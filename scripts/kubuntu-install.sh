@@ -130,7 +130,8 @@ akonadi-backend-mysql akonadi-server apturl-kde kdepim-kresources kdepim-runtime
 libincidenceeditorsng4 libkdepim4 libkdepimdbusinterfaces4 libkleo4 libmailcommon4 libmailimporter4 \
 libmessagecomposer4 libmessagecore4 libmessageviewer4 libpimcommon4 libtemplateparser4 \
 python3-pykde4 mysql-server-core-5.6 mysql-common mysql-client-core-5.6 libmysqlclient18 \
-libqt4-sql-mysql konversation konversation-data khelpcenter kde-telepathy-legacy-presence-applet
+libqt4-sql-mysql konversation konversation-data khelpcenter kde-telepathy-legacy-presence-applet \
+libakonadiprotocolinternals1 baloo-utils libakonadi-kde4 libakonadi-kmime4 baloo-kf5 libbaloopim4
 
 # Remove unused default system apps.
 sudo aptitude remove -y nano kubuntu-web-shortcuts
