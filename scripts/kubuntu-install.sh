@@ -147,3 +147,6 @@ sudo apt-file update
 
 sudo deborphan | xargs sudo apt-get -y remove --purge
 sudo apt-get -y autoremove
+
+# Clean the whole system based on preset.
+sudo bleachbit --clean --preset
