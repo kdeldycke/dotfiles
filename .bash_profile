@@ -46,14 +46,11 @@ shopt -s cdspell
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
+# After each command, append to the history file and reread it.
+# Source: http://unix.stackexchange.com/a/1292
+export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
+
 # Set user & root prompt
-function prompt_callback {
-    # After each command, append to the history file and reread it.
-    # Source: http://unix.stackexchange.com/a/1292
-    history -a
-    history -c
-    history -r
-}
 if $IS_OSX; then
     GIT_PROMPT_THEME="Solarized"
 else
