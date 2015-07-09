@@ -43,9 +43,6 @@ xscreensaver-data-extra xscreensaver-gl xscreensaver-gl-extra xsltproc
 sudo aptitude install -y python-pip python-dev runsnakerun
 
 
-sudo gem install hub
-
-
 sudo aptitude install -y libpq-dev
 pip install --upgrade pgcli
 

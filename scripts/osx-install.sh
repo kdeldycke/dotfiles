@@ -58,7 +58,6 @@ brew install ack
 brew install dockutil
 brew install exiftool
 brew install faad2
-brew install hub
 brew install md5sha1sum
 brew install osxutils
 brew install pstree
