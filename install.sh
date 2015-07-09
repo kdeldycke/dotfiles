@@ -73,7 +73,7 @@ fi
 
 # Install & upgrade all global python modules
 PYTHON_PACKAGES="pip setuptools virtualenv virtualenvwrapper pep8 pylint pyflakes
-coverage rope autopep8 mccabe nose wheel bumpversion tox httpie"
+coverage rope autopep8 mccabe nose nose-progressive wheel bumpversion tox httpie"
 for p in $PYTHON_PACKAGES
 do
     pip install --upgrade "$p"

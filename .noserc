@@ -7,3 +7,4 @@ logging-filter =
     -sqlalchemy
     -factory
     -pycountry
+with-progressive = True
