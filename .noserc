@@ -1,7 +1,6 @@
 [nosetests]
 verbosity = 3
 nocapture = True
-#with-color = True
 nologcapture = True
 logging-filter =
     -sqlalchemy
