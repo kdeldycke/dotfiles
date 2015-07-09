@@ -102,11 +102,17 @@ alias vi='vim'
 alias v="vim"
 alias g="git"
 alias h="history"
-
-alias c='clear'
-alias cls='clear'
-
 alias q='exit'
+
+function cls {
+    if $IS_OSX; then
+        # Source: http://stackoverflow.com/a/2198403
+        osascript -e 'tell application "System Events" to keystroke "k" using command down'
+    else
+        clear
+    fi
+}
+alias c='cls'
 
 # Use GRC for additionnal colorization
 GRC=$(which grc)
