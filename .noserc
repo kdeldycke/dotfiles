@@ -8,3 +8,4 @@ logging-filter =
     -factory
     -pycountry
 with-progressive = True
+progressive-advisories = True
