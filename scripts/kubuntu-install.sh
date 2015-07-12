@@ -87,8 +87,7 @@ rm ./google-musicmanager-beta_current_amd64.deb
 
 # Install insync
 wget -qO - https://d2t3ff60b2tol4.cloudfront.net/services@insynchq.com.gpg.key | sudo apt-key add -
-# TODO: don't add twice if config line already there
-sudo tee -a /etc/apt/sources.list <<-EOF
+sudo tee /etc/apt/sources.list.d/insync-vivid.list <<-EOF
     deb http://apt.insynchq.com/ubuntu vivid non-free contrib
 EOF
 sudo aptitude update
