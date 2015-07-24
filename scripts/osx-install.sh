@@ -95,7 +95,7 @@ brew cask install --force tunnelblick
 # Source: https://github.com/sindresorhus/quick-look-plugins
 brew cask install --force betterzipql
 brew cask install --force cert-quicklook
-brew cask install --force epubquicklooki
+brew cask install --force epubquicklook
 brew cask install --force java
 brew cask install --force qlcolorcode
 brew cask install --force qlmarkdown
