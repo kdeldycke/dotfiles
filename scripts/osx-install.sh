@@ -18,7 +18,7 @@ if [[ $? -ne 0 ]]; then
 fi
 
 # Update all OSX packages
-sudo softwareupdate -i -a
+sudo softwareupdate -i -acassa
 
 # Install Homebrew if not found
 brew --version
@@ -55,6 +55,7 @@ do
    brew install "$PACKAGE"
 done
 brew install ack
+brew install cassandra
 brew install dockutil
 brew install exiftool
 brew install faad2
@@ -64,10 +65,6 @@ brew install pstree
 brew install ssh-copy-id
 brew install watch
 brew install webkit2png
-
-# Install Cassandra
-brew install cassandra20
-pip install --upgrade cql
 
 # htop-osx requires root privileges to correctly display all running processes.
 sudo chown root:wheel "$(brew --prefix)/bin/htop"
