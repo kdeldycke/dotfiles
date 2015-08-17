@@ -182,8 +182,8 @@ set autoindent                 " set on the auto-indent
 set foldmethod=indent          " automatically fold by indent level
 set nofoldenable               " ... but have folds open by default"
 set virtualedit=all
-set textwidth=99
-set colorcolumn=100
+set textwidth=79
+set colorcolumn=80
 " highlight tabs and trailing spaces
 " source: https://wincent.com/blog/making-vim-highlight-suspicious-characters
 set listchars=nbsp:¬,eol:¶,tab:→\ ,extends:»,precedes:«,trail:•
