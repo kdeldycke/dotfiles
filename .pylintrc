@@ -16,5 +16,4 @@ ignore=.svn
 output-format=colorized
 
 [FORMAT]
-# Encourage modern programming
-#max-line-length=99
+max-line-length=79
