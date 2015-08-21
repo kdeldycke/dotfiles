@@ -313,6 +313,9 @@ let g:pymode_lint_info_symbol = '●'
 let g:pymode_lint_pyflakes_symbol = '●'
 let g:pymode_rope = 0
 
+" Git gutter
+let g:gitgutter_max_signs = 10000
+
 
 " FILETYPES  {{{ ==============================================================
 
