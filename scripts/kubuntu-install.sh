@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 sudo apt-get update
-sudo apt-get install -y aptitude apt-transport-https
+sudo apt-get install -y aptitude apt-transport-https software-properties-common
 
 sudo add-apt-repository -y ppa:sunab/kdenlive-release
 sudo add-apt-repository -y ppa:bitcoin/bitcoin
