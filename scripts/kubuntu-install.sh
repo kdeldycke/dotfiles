@@ -9,9 +9,9 @@ sudo add-apt-repository -y ppa:subsurface/subsurface
 sudo add-apt-repository -y ppa:micahflee/ppa
 
 # Install tox repositories.
-# Source: https://wiki.tox.im/Binaries#Apt.2FAptitude_.28Debian.2C_Ubuntu.2C_Mint.2C_etc..29
-sudo sh -c 'echo "deb https://repo.tox.im/ nightly main" > /etc/apt/sources.list.d/tox.list'
-wget -qO - https://repo.tox.im/pubkey.gpg | sudo apt-key add -
+# Source: https://wiki.tox.chat/binaries#debian_ubuntu_mint_etc
+echo "deb https://pkg.tox.chat/debian nightly release" | sudo tee /etc/apt/sources.list.d/tox.list
+wget -qO - https://pkg.tox.chat/debian/pkg.gpg.key | sudo apt-key add -
 
 sudo aptitude update
 sudo aptitude upgrade -y
