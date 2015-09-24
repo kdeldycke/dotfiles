@@ -18,7 +18,7 @@ if [[ $? -ne 0 ]]; then
 fi
 
 # Update all OSX packages
-sudo softwareupdate -i -acassa
+sudo softwareupdate -i -a
 
 # Install Homebrew if not found
 brew --version
