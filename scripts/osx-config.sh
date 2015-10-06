@@ -489,7 +489,6 @@ done
 
 # Kill affected applications
 for app in "Activity Monitor" "Address Book" "Calendar" "Contacts" "cfprefsd" \
-	"Dock" "Finder" "Mail" "Messages" "Safari" "SystemUIServer" \
-        "iCal"; do
+        "Finder" "Mail" "Messages" "Safari" "SystemUIServer" "iCal"; do
 	killall "${app}" > /dev/null 2>&1
 done
