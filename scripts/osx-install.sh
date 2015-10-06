@@ -21,7 +21,7 @@ fi
 sudo softwareupdate -i -a
 
 # Install Homebrew if not found
-brew --version
+brew --version 2>&1 >/dev/null
 if [[ $? -ne 0 ]]; then
     # Clean-up failed Homebrew install
     rm -rf "/usr/local/Cellar" "/usr/local/.git"
