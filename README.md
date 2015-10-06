@@ -24,6 +24,15 @@ Features
   * Keeps OSes fast and lean.
 
 
+Screenshots
+-----------
+
+OSX 10.11 El Capitan solarized terminal and vim:
+
+![OSX 10.11 El Capitan screenshot
+](https://raw.githubusercontent.com/kdeldycke/dotfiles/master/osx-10.11.png)
+
+
 Install
 -------
 
@@ -70,7 +79,7 @@ TODO
 ----
 
   * Auto-install Xcode on OSX.
-  * Add terminal & vim screenshot on both OSX and Kubuntu.
+  * Add terminal & vim screenshot on Kubuntu.
 
 
 Old versions

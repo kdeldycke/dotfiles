@@ -32,6 +32,7 @@ fi
 DOT_FILES=$(find . -maxdepth 1 \
     -not -name "assets" -and \
     -not -name "scripts" -and \
+    -not -name "screenshots" -and \
     -not -name "install.sh" -and \
     -not -name "\.DS_Store" -and \
     -not -name "\.gitignore" -and \
