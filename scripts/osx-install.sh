@@ -105,8 +105,8 @@ qlmanage -r
 
 # Add EXT support
 brew cask install --force osxfuse
-brew install ext2fuse
-brew install ext4fuse
+brew install homebrew/fuse/ext2fuse
+brew install homebrew/fuse/ext4fuse
 
 # Install vim
 brew install lua --completion
