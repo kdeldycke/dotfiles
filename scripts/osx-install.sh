@@ -29,13 +29,12 @@ if [[ $? -ne 0 ]]; then
     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 fi
 brew update
-brew upgrade brew-cask
 brew upgrade --all
 
 # Include duplicates packages
 brew tap homebrew/dupes
 
-# Install Cask
+# Install or upgrade Cask
 brew tap caskroom/cask
 brew install brew-cask
 
