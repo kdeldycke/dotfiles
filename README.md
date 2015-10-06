@@ -8,7 +8,7 @@ Collection of dotfiles for Python developers working in vim.
 Project is currently targetting:
 
   * **Kubuntu 15.04** (Vivid Vervet)
-  * **OSX 10.10** (Yosemite)
+  * **OSX 10.11** (El Capitan)
 
 All running on a [`MacBookAir5,2`](http://www.amazon.com/dp/B008GV6QV2/?tag=kevideld-20).
 
@@ -82,7 +82,8 @@ Snapshots of older distributions are available as branches:
   * [Kubuntu 14.04 (Trusty Tahr)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-14.04)
   * [Kubuntu 13.10 (Saucy Salamander)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-13.10)
   * [Kubuntu 13.04 (Raring Ringtail)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-13.04)
-  * [OSX 10.9 (Yosemite)](https://github.com/kdeldycke/dotfiles/tree/osx-10.9)
+  * [OSX 10.10 (Yosemite)](https://github.com/kdeldycke/dotfiles/tree/osx-10.10)
+  * [OSX 10.9 (Mavericks)](https://github.com/kdeldycke/dotfiles/tree/osx-10.9)
   * [OSX 10.8 (Mountain Lion)](https://github.com/kdeldycke/dotfiles/tree/osx-10.8)
 
 
