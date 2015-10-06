@@ -6,17 +6,6 @@ if [[ $? -ne 0 ]]; then
     xcode-select --install
 fi
 
-# A full installation of Xcode.app is required to compile macvim.
-# Installing just the Command Line Tools is not sufficient.
-xcodebuild -version
-if [[ $? -ne 0 ]]; then
-    # TODO: find a way to install Xcode.app automatticaly
-    # See: http://stackoverflow.com/a/18244349
-
-    # Accept Xcode license
-    sudo xcodebuild -license
-fi
-
 # Update all OSX packages
 sudo softwareupdate -i -a
 

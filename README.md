@@ -78,7 +78,6 @@ Note that if there was not an original version, the installed links will not be 
 TODO
 ----
 
-  * Auto-install Xcode on OSX.
   * Add terminal & vim screenshot on Kubuntu.
 
 
