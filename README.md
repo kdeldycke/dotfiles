@@ -30,7 +30,7 @@ Screenshots
 OSX 10.11 El Capitan solarized terminal and vim:
 
 ![OSX 10.11 El Capitan screenshot
-](https://raw.githubusercontent.com/kdeldycke/dotfiles/master/osx-10.11.png)
+](https://raw.githubusercontent.com/kdeldycke/dotfiles/master/screenshots/osx-10.11.png)
 
 
 Install
