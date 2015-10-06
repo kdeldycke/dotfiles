@@ -476,7 +476,7 @@ rm -rf ~/Downloads/About\ Downloads.lpdf
 # Remove apps I don't use from the dock.
 for shortcut_label in "Launchpad" "Calendar" "Contacts" "Mail" \
     "Safari" "Maps" "FaceTime" "iTunes" "iBooks" "App Store" "Reminders" \
-    "Photo"; do
+    "Photos"; do
     dockutil --remove "${shortcut_label}" --allhomes
 done
 # Add new app shortcuts to the dock.
