@@ -124,10 +124,10 @@ sudo rm -rf /Volumes/esp/EFI/refind
 sudo rm -rf /Volumes/esp/EFI/BOOT
 sudo diskutil umount /Volumes/esp
 # Install custom bootloader.
-curl -O http://freefr.dl.sourceforge.net/project/refind/0.9.0/refind-bin-0.9.0.zip
-unzip ./refind-bin-0.9.0.zip
-./refind-bin-0.9.0/install.sh --alldrivers
-rm -rf ./refind-bin-0.9.0*
+curl -O http://freefr.dl.sourceforge.net/project/refind/0.9.2/refind-bin-0.9.2.zip
+unzip ./refind-bin-0.9.2.zip
+./refind-bin-0.9.2/install.sh --alldrivers
+rm -rf ./refind-bin-0.9.2*
 sudo diskutil umount /Volumes/esp
 # Fix Yosemite boot. Source: http://www.rodsbooks.com/refind/yosemite.html
 mkdir /Volumes/esp
