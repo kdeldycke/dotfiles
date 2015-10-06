@@ -18,7 +18,7 @@ faac fdupes findutils flac fontforge git git-extras graphviz grc grep hfsutils h
 jnettop lame legit mercurial optipng p7zip pngcrush recode rename rtmpdump
 shntool testdisk tree unrar x264"
 
-BIN_PACKAGES="audacity avidemux blender darktable firefox gimp hugin inkscape
+BIN_PACKAGES="audacity avidemux darktable firefox gimp hugin inkscape
 pdftk prey stellarium subsurface thunderbird virtualbox vlc wireshark"
 
 # Install all software first.
