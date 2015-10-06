@@ -76,7 +76,7 @@ TODO
 Old versions
 ------------
 
-Snapshots of older distributions may be found as tags of the current repository:
+Snapshots of older distributions are available as branches:
 
   * [Kubuntu 14.10 (Utopic Unicorn)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-14.10)
   * [Kubuntu 14.04 (Trusty Tahr)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-14.04)
