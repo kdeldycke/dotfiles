@@ -140,8 +140,8 @@ brew cask install popcorn-time
 # Install uBlock for Safari.
 defaults read ~/Library/Safari/Extensions/extensions | grep --quiet "net.gorhill.uBlock"
 if [[ $? -ne 0 ]]; then
-    curl -o /tmp/ublock-safari.safariextz -O https://cloud.delosent.com/ublock-safari-0.9.5.2.safariextz
-    open /tmp/ublock-safari.safariextz
+    curl -o "$TMPDIR/ublock-safari.safariextz" -O https://cloud.delosent.com/ublock-safari-0.9.5.2.safariextz
+    open "$TMPDIR/ublock-safari.safariextz"
 fi
 
 # Clean things up
