@@ -303,6 +303,9 @@ find ~/Library/Application\ Support/Dock -name "*-*.db" -maxdepth 1 -delete
 defaults write com.apple.dock wvous-tl-corner -int 5
 defaults write com.apple.dock wvous-tl-modifier -int 0
 
+# Show AppStore debug menu.
+defaults write com.apple.appstore ShowDebugMenu -bool true
+
 # Enable Continuous Spellchecking and Disabled Auto-correct
 defaults write com.apple.Safari WebContinuousSpellCheckingEnabled -bool true
 defaults write com.apple.Safari WebAutomaticSpellingCorrectionEnabled -bool false
