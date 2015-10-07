@@ -25,7 +25,7 @@ brew tap homebrew/dupes
 
 # Install or upgrade Cask
 brew tap caskroom/cask
-brew install brew-cask
+brew install caskroom/cask/brew-cask
 
 # Install OSX system requirements
 brew cask install --force xquartz
