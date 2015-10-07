@@ -11,7 +11,7 @@ sudo pmset -a womp 0
 # Automatic restart on power loss
 sudo pmset -a autorestart 1
 # Sets displaysleep to 10 minutes
-sudo pmset -a displaysleep 10Privacy
+sudo pmset -a displaysleep 10
 # Set standby delay to default 1 hour
 # See: http://www.ewal.net/2012/09/09/slow-wake-for-macbook-pro-retina/
 sudo pmset -a standbydelay 3600
