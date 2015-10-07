@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env bash -x
 
 sudo apt-get update
 sudo apt-get install -y aptitude apt-transport-https software-properties-common

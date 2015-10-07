@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env bash -x
 
 # Detect distribution
 if [ "$(uname -s)" == "Darwin" ]; then

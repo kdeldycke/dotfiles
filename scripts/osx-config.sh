@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env bash -x
 
 # Increase limit of open files.
 sudo tee -a /etc/sysctl.conf <<-EOF
