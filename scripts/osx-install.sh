@@ -133,6 +133,13 @@ pip install --upgrade RunSnakeRun
 # Install pgcli
 brew install pgcli
 
+# Install uBlock for Safari.
+defaults read ~/Library/Safari/Extensions/extensions | grep --quiet "net.gorhill.uBlock"
+if [[ $? -ne 0 ]]; then
+    curl -o /tmp/ublock-safari.safariextz -O https://cloud.delosent.com/ublock-safari-0.9.5.2.safariextz
+    open /tmp/ublock-safari.safariextz
+fi
+
 # Clean things up
 brew linkapps
 brew cleanup
