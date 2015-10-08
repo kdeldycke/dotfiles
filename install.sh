@@ -16,7 +16,7 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 COMMON_PACKAGES="apg bash bash-completion colordiff colortail coreutils
 faac fdupes findutils flac fontforge git git-extras graphviz grc grep hfsutils
 htop jnettop lame legit mercurial optipng p7zip pngcrush recode rename rtmpdump
-shntool testdisk tree unrar x264"
+shntool testdisk tree unrar wget x264"
 
 BIN_PACKAGES="audacity avidemux darktable firefox gimp hugin inkscape
 pdftk prey stellarium subsurface thunderbird virtualbox vlc wireshark"
