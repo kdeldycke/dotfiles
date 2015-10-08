@@ -7,9 +7,10 @@ else
     IS_OSX=false
 fi
 
-# Ask for the administrator password upfront
+# Ask for the administrator password upfront.
 sudo -v
-# Keep-alive: update existing `sudo` time stamp until script has finished
+
+# Keep-alive: update existing `sudo` time stamp until script has finished.
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 # We need to distinguish sources and binary packages for Brew & Cask on OSX
