@@ -150,10 +150,10 @@ if [ -n GRC ]; then
 fi
 
 # Detect which `ls` flavor is in use
-if $IS_OSX; then
+if ls --color > /dev/null 2>&1; then # GNU `ls`
+        lsflags="--color --group-directories-first"
+else # OS X `ls`
     lsflags="-G"
-else
-    lsflags="--color --group-directories-first"
 fi
 alias ll='ls -lah ${lsflags}'
 alias ls='ls -hFp ${lsflags}'
