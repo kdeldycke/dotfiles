@@ -106,25 +106,6 @@ VIM_FLAGS="--with-python --with-lua --with-cscope --override-system-vim"
 # See: https://github.com/yyuu/pyenv/issues/234
 brew reinstall vim "$VIM_FLAGS"
 
-# Remove previous install of refind bootloader first.
-mkdir /Volumes/esp
-sudo mount -t msdos /dev/disk0s1 /Volumes/esp
-sudo rm -rf /Volumes/esp/EFI/refind
-sudo rm -rf /Volumes/esp/EFI/BOOT
-sudo diskutil umount /Volumes/esp
-# Install custom bootloader.
-curl -O http://freefr.dl.sourceforge.net/project/refind/0.9.2/refind-bin-0.9.2.zip
-unzip ./refind-bin-0.9.2.zip
-./refind-bin-0.9.2/install.sh --alldrivers
-rm -rf ./refind-bin-0.9.2*
-sudo diskutil umount /Volumes/esp
-# Fix Yosemite boot. Source: http://www.rodsbooks.com/refind/yosemite.html
-mkdir /Volumes/esp
-sudo mount -t msdos /dev/disk0s1 /Volumes/esp
-# Adjust personnal refind config
-sudo sed -i "" -e "s/timeout 20/timeout 1/" /Volumes/esp/EFI/refind/refind.conf
-sudo sed -i "" -e "s/#default_selection 1/default_selection linux/" /Volumes/esp/EFI/refind/refind.conf
-
 # Install runsnakeerun
 brew install wxmac
 brew install wxpython

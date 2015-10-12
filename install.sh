@@ -25,6 +25,7 @@ pdftk prey stellarium subsurface thunderbird virtualbox vlc wireshark"
 # Install all software first.
 if $IS_OSX; then
     source ./scripts/osx-install.sh
+    source ./scripts/osx-install-refind.sh
 else
     source ./scripts/kubuntu-install.sh
 fi
