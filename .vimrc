@@ -253,6 +253,8 @@ autocmd BufWritePre,FileWritePost * :%s/\s\+$//e
 " Replace all non-breakable spaces by simple spaces
 " Source: http://nathan.vertile.com/find-and-replace-non-breaking-spaces-in-vim/
 autocmd BufWritePre,FileWritePost * silent! :%s/\%xa0/ /g
+" Remove Byte Order Mark at the beginning
+autocmd BufWritePre,FileWritePost * setlocal nobomb
 
 
 " Execution permissions by default to shebang (#!) files
