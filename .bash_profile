@@ -50,7 +50,7 @@ shopt -s checkwinsize
 # * `autocd`, e.g. `**/qux` will enter `./foo/bar/baz/qux`
 # * Recursive globbing, e.g. `echo **/*.txt`
 for option in autocd globstar; do
-        shopt -s "$option" 2> /dev/null;
+    shopt -s "$option" 2> /dev/null;
 done;
 
 # After each command, append to the history file and reread it.
@@ -151,7 +151,7 @@ fi
 
 # Detect which `ls` flavor is in use
 if ls --color > /dev/null 2>&1; then # GNU `ls`
-        lsflags="--color --group-directories-first"
+    lsflags="--color --group-directories-first"
 else # OS X `ls`
     lsflags="-G"
 fi
