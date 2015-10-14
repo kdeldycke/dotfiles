@@ -197,23 +197,7 @@ export VIRTUALENVWRAPPER_HOOK_DIR=$HOME/.virtualenv
 # force it through venv's args.
 # export VIRTUALENVWRAPPER_PYTHON=`which python`
 export VIRTUALENVWRAPPER_VIRTUALENV_ARGS="--python=$(which python)"
-# Define a function for automatic virtualenv loading
-# Source: https://github.com/kennethreitz/autoenv/wiki/Cookbook
-use_env() {
-  typeset venv
-  venv="$1"
-  if [[ "${VIRTUAL_ENV:t}" != "$venv" ]]; then
-    if workon | grep -q "$venv"; then
-      workon "$venv"
-    else
-      echo -n "Create virtualenv $venv now? (Yn) "
-      read answer
-      if [[ "$answer" == "Y" ]]; then
-        mkvirtualenv "$venv"
-      fi
-    fi
-  fi
-}
+
 # Load shell helpers
 which virtualenvwrapper.sh 2>&1 >/dev/null
 if [[ $? -ne 0 ]]; then
