@@ -18,7 +18,9 @@ fi
 # If possible, add tab completion for many more commands
 [ -f /etc/bash_completion ] && source /etc/bash_completion
 if $IS_OSX; then
-    [ -f "$(brew --prefix)/etc/bash_completion" ] && source "$(brew --prefix)/etc/bash_completion"
+    for COMPLETION in $(brew --prefix)/etc/bash_completion.d/*; do
+        source $COMPLETION
+    done
 fi
 
 # Setting history length
