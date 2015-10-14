@@ -215,7 +215,7 @@ use_env() {
   fi
 }
 # Load shell helpers
-source /usr/local/bin/virtualenvwrapper.sh
+source "$(python -m site --user-base)"/bin/virtualenvwrapper.sh
 source ~/.autoenv/activate.sh
 
 eval "$(pip completion --bash)"
