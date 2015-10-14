@@ -1,5 +1,13 @@
 #!/usr/bin/env bash -x
 
+# Check
+csrutil status | grep --quiet "disabled"
+if [[ $? -ne 0 ]]; then
+    echo "System Integrity Protection is enabled. Can't install rEFInd."
+    echo "See: http://mattjanik.ca/blog/2015/10/01/refind-on-el-capitan/"
+    exit 1
+fi
+
 # Remove previous install of refind bootloader first.
 mkdir /Volumes/esp
 sudo mount -t msdos /dev/disk0s1 /Volumes/esp
