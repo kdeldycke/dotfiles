@@ -764,6 +764,6 @@ defaults write com.divisiblebyzero.Spectacle UndoLastMove -data 62706c6973743030
 for app in "Activity Monitor" "Address Book" "Calendar" "Contacts" "cfprefsd" \
 	"Dock" "Finder" "Google Chrome" "Mail" "Messages" "Safari" "Spectacle" \
     "SystemUIServer" "Terminal" "iCal"; do
-	killall "${app}" > /dev/null 2>&1
+	killall "${app}" &> /dev/null
 done
 echo "Done. Note that some of these changes require a logout/restart to take effect."
