@@ -74,6 +74,7 @@ brew cask install --force spectacle
 brew cask install --force sqlitebrowser
 brew cask install --force steam
 brew cask install --force torbrowser
+brew cask install --force transmission
 brew cask install --force tunnelblick
 
 # Install QuickLooks plugins
