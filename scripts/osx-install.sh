@@ -25,7 +25,7 @@ sudo softwareupdate -i -a
 brew --version 2>&1 >/dev/null
 if [[ $? -ne 0 ]]; then
     # Clean-up failed Homebrew install
-    rm -rf "/usr/local/Cellar" "/usr/local/.git"
+    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)"
     # Install Homebrew
     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 fi
