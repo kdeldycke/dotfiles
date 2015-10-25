@@ -1,4 +1,5 @@
-#!/usr/bin/env bash -x
+#!/usr/bin/env bash
+set -x
 
 # Install command line tools
 xcode-select -p

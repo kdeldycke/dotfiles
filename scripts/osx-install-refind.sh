@@ -1,4 +1,5 @@
-#!/usr/bin/env bash -x
+#!/usr/bin/env bash
+set -x
 
 # Check if SIP is going to let us mess with boot process.
 csrutil status | grep --quiet "disabled"
