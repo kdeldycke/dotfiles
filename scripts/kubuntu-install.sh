@@ -70,12 +70,6 @@ cabal install shellcheck
 pip install --allow-external IMAPClient --upgrade https://pypi.python.org/packages/source/g/gmvault/gmvault-1.8.1-beta.tar.gz#md5=a0b26d814506748deca8e2eee4086b31
 
 
-# Install Pelican and its dependencies
-sudo aptitude install -y python-markdown python-pygments python-beautifulsoup pandoc \
-python-smartypants s3cmd
-pip install --upgrade pelican mdx_video typogrify Fabric
-
-
 # Install Dropbox if not already there
 [ ! -f ~/.dropbox-dist/dropbox ] && wget -O - "http://www.dropbox.com/download?plat=lnx.x86_64" | tar -xvz --directory ~ -f -
 
