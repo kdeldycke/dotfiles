@@ -31,6 +31,10 @@ else
     source ./scripts/kubuntu-install.sh
 fi
 
+# Force initialization and update of local submodules.
+git submodule init
+git submodule update --remote --merge
+
 # Search local dotfiles
 if $IS_OSX; then
     DOT_FILES=$(find ./dotfiles-common ./dotfiles-osx -maxdepth 1 \
@@ -116,10 +120,6 @@ fi
 
 # Force vim plugin upgrades
 vim +NeoBundleUpdate +q
-
-# Force initialization and update of local submodules.
-git submodule init
-git submodule update --remote --merge
 
 # Reload Bash with new configuration
 source ~/.bash_profile
