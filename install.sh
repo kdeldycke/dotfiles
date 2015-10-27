@@ -32,39 +32,38 @@ else
 fi
 
 # Search local dotfiles
-DOT_FILES=$(find . -maxdepth 1 \
-    -not -name "assets" -and \
-    -not -name "scripts" -and \
-    -not -name "screenshots" -and \
-    -not -name "install.sh" -and \
-    -not -name "\.DS_Store" -and \
-    -not -name "\.gitignore" -and \
-    -not -name "\.gitmodules" -and \
-    -not -name "*\.dmg" -and \
-    -not -name "*\.swp" -and \
-    -not -name "*\.md" -and \
-    -not -name "*\.yml" -and \
-    -not -name "\.git" -and \
-    -not -name "*~*" \
-    -not -name "\." \
-    -exec basename {} \;)
+if $IS_OSX; then
+    DOT_FILES=$(find ./dotfiles-common ./dotfiles-osx -maxdepth 1 \
+        -not -path "./dotfiles-common" \
+        -not -path "./dotfiles-osx" \
+        -not -name "\.DS_Store" -and \
+        -not -name "*\.swp" -and \
+        -not -name "*~*" )
+else
+    DOT_FILES=$(find ./dotfiles-common ./dotfiles-linux -maxdepth 1 \
+        -not -path "./dotfiles-common" \
+        -not -path "./dotfiles-linux" \
+        -not -name "\.DS_Store" -and \
+        -not -name "*\.swp" -and \
+        -not -name "*~*" )
+fi
 
-for f in $DOT_FILES
+for FILEPATH in $DOT_FILES
 do
-    source="${PWD}/$f"
-    target="${HOME}/$f"
+    SOURCE="${PWD}/$FILEPATH"
+    TARGET="${HOME}/$(basename "${FILEPATH}")"
     if [ "$1" = "restore" ]; then
         # Restore backups if found
-        if [ -e "${target}.dotfiles.bak" ] && [ -L "${target}" ]; then
-            unlink "${target}"
-            mv "$target.dotfiles.bak" "$target"
+        if [ -e "${TARGET}.dotfiles.bak" ] && [ -L "${TARGET}" ]; then
+            unlink "${TARGET}"
+            mv "$TARGET.dotfiles.bak" "$TARGET"
         fi
     else
         # Link files
-        if [ -e "${target}" ] && [ ! -L "${target}" ]; then
-            mv "$target" "$target.dotfiles.bak"
+        if [ -e "${TARGET}" ] && [ ! -L "${TARGET}" ]; then
+            mv "$TARGET" "$TARGET.dotfiles.bak"
         fi
-        ln -sf "${source}" "$(dirname "${target}")"
+        ln -sf "${SOURCE}" "$(dirname "${TARGET}")"
     fi
 done
 
