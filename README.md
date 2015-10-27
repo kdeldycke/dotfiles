@@ -27,12 +27,12 @@ Install
 
 1. First, you need a local copy of this project.
 
-   If you're lucky and have Git already installed on your machine, do:
+   If you're lucky and have `git` already installed on your machine, do:
 
         $ cd ~
         $ git clone --recursive https://github.com/kdeldycke/dotfiles.git
 
-   If you don't have Git, do:
+   If you don't have `git` yet, fetch an archive of the repository:
 
         $ mkdir ~/dotfiles
         $ cd ~/dotfiles
