@@ -187,7 +187,6 @@ export PYTHONDONTWRITEBYTECODE=true
 
 # Python shell auto-completion and history
 export PYTHONSTARTUP="$HOME/.python_startup.py"
-export PYTHON_HISTORY_FILE="$HOME/.python_history"
 
 # Display DeprecationWarning
 #export PYTHONWARNINGS=d

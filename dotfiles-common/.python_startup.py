@@ -25,7 +25,7 @@ else:
     # Enable History File
     history_file = os.environ.get("PYTHON_HISTORY_FILE",
                                   os.path.join(os.environ['HOME'],
-                                               '.pythonhistory'))
+                                               '.python_history'))
 
     if os.path.isfile(history_file):
         readline.read_history_file(history_file)
