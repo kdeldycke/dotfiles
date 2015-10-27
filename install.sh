@@ -16,7 +16,7 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 # We need to distinguish sources and binary packages for Brew & Cask on OSX
 COMMON_PACKAGES="apg bash bash-completion colordiff colortail coreutils
-faac fdupes findutils flac fontforge git git-extras graphviz grc grep hfsutils
+faac fdupes findutils flac fontforge git git-extras graphviz grc hfsutils
 htop jnettop lame legit mercurial optipng p7zip pngcrush recode rename rtmpdump
 shntool testdisk tree unrar wget x264"
 

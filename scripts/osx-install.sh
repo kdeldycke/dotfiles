@@ -106,6 +106,13 @@ brew cask install --force suspicious-package
 brew cask install --force webpquicklook
 qlmanage -r
 
+# Install GNU `sed`, overwriting the built-in `sed`.
+brew install gnu-sed --with-default-names
+
+# Install more recent versions of some OS X tools.
+brew install homebrew/dupes/grep
+brew install homebrew/dupes/openssh
+
 # Add EXT support
 brew cask install --force osxfuse
 brew install homebrew/fuse/ext2fuse
@@ -119,6 +126,9 @@ VIM_FLAGS="--with-python --with-lua --with-cscope --override-system-vim"
 # Always reinstall vim to fix Python links.
 # See: https://github.com/yyuu/pyenv/issues/234
 brew reinstall vim "$VIM_FLAGS"
+
+# Use sha256sum from coreutils
+sudo ln -s /usr/local/bin/gsha256sum /usr/local/bin/sha256sum
 
 # Install runsnakeerun
 brew install wxmac
