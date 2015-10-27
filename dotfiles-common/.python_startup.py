@@ -21,8 +21,8 @@ else:
         readline.parse_and_bind("tab: complete")
 
     # Enable History File
-    history_file = os.environ.get("PYTHON_HISTORY_FILE", 
-                                  os.path.join(os.environ['HOME'], 
+    history_file = os.environ.get("PYTHON_HISTORY_FILE",
+                                  os.path.join(os.environ['HOME'],
                                                '.pythonhistory'))
 
     if os.path.isfile(history_file):
