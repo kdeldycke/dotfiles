@@ -43,6 +43,16 @@
     rb = rbranch
     rv = review
     st = status
+    # Legit addons
+    branches = !legit branches
+    graft = !legit graft
+    harvest = !legit harvest
+    publish = !legit publish
+    unpublish = !legit unpublish
+    sprout = !legit sprout
+    sync = !legit sync
+    switch = !legit switch
+    resync = !legit resync
     # View abbreviated SHA, description, and history graph of the latest 20 commits
     l = log --pretty=oneline -n 20 --graph --abbrev-commit --decorate
     # View the current working tree status using the short format
@@ -59,9 +69,8 @@
     ca = !git add -A && git commit -av
     # Switch to a branch, creating it if necessary
     go = git checkout -b "$1" || git checkout "$1"
-    # Show verbose output about tags, branches or remotes
+    # Show verbose output about tags and remotes
     tags = tag -l
-    branches = branch -a
     remotes = remote -v
     # Credit an author on the latest commit
     credit = "!f() { git commit --amend --author \"$1 <$2>\" -C HEAD; }; f"
