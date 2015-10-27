@@ -86,19 +86,26 @@
     fm = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short --grep=$1; }; f"
     # Remove already merged branches
     dm = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
+
 [url "git@github.com:"]
     insteadOf = "gh:"
     pushInsteadOf = "github:"
+    pushInsteadOf = "https://github.com/"
     pushInsteadOf = "git://github.com/"
 [url "git://github.com/"]
     insteadOf = "github:"
+
 [url "git@gist.github.com:"]
     insteadOf = "gst:"
     pushInsteadOf = "gist:"
     pushInsteadOf = "git://gist.github.com/"
 [url "git://gist.github.com/"]
-    insteadOf = "gist:"
-[url "ssh://git@github.com/"]
-    insteadOf = https://github.com/
-[url "ssh://git@bitbucket.org/"]
-    insteadOf = https://bitbucket.org/
+    pushInsteadOf = "gist:"
+
+[url "git@bitbucket.org:"]
+    insteadOf = "bb:"
+    pushInsteadOf = "bitbucket:"
+    pushInsteadOf = "https://bitbucket.org/"
+    pushInsteadOf = "git://bitbucket.org/"
+[url "git://bitbucket.org/"]
+    insteadOf = "bitbucket:"
