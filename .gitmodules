@@ -1,5 +1,5 @@
 [submodule ".bash-git-prompt"]
-	path = .bash-git-prompt
+	path = dotfiles-common/.bash-git-prompt
 	url = https://github.com/magicmonty/bash-git-prompt.git
 [submodule ".autoenv"]
 	path = dotfiles-common/.autoenv
