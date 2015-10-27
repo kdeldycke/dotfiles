@@ -1,36 +1,25 @@
 dotfiles
 ========
 
-Collection of dotfiles for Python developers working in vim.
-
 [![Build Status](https://img.shields.io/travis/kdeldycke/maildir-deduplicate/develop.svg?style=flat)](https://travis-ci.org/kdeldycke/dotfiles)
 
-Project is currently targetting:
+Dot-files and system configuration for Python developers working in `vim`, currently targetting **OSX 10.11** (El Capitan) and **Kubuntu 15.04** (Vivid Vervet).
 
-  * **Kubuntu 15.04** (Vivid Vervet)
-  * **OSX 10.11** (El Capitan)
-
-All running on a [`MacBookAir5,2`](http://www.amazon.com/dp/B008GV6QV2/?tag=kevideld-20).
+![OSX 10.11 El Capitan solarized terminal and vim
+](https://raw.githubusercontent.com/kdeldycke/dotfiles/master/screenshots/osx-10.11.png)
 
 
 Features
 --------
 
-  * Aimed at Python programmers using vim.
-  * Common configuration for both OSX and Kubuntu.
-  * Produce colored output for most of shell commands.
-  * All color schemes are based on [Solarized](http://ethanschoonover.com/solarized).
-  * All Terminal font is [Source Code Pro](https://en.wikipedia.org/wiki/Source_Code_Pro).
-  * Keeps OSes fast and lean.
-
-
-Screenshots
------------
-
-OSX 10.11 El Capitan solarized terminal and vim:
-
-![OSX 10.11 El Capitan screenshot
-](https://raw.githubusercontent.com/kdeldycke/dotfiles/master/screenshots/osx-10.11.png)
+* Aimed at Python programmers using `vim`.
+* Common configuration for both OSX and Kubuntu.
+* Produce colored output for most of shell commands.
+* All color schemes are based on [Solarized](http://ethanschoonover.com/solarized).
+* All Terminal font is [Source Code Pro](https://en.wikipedia.org/wiki/Source_Code_Pro).
+* Keeps OSes fast and lean.
+* Custom configuration for [`MacBookAir5,2`](http://www.amazon.com/dp/B008GV6QV2/?tag=kevideld-20) 
+and [`MacBookPro11,1`](http://www.amazon.com/dp/B0096VBXQE/?tag=kevideld-20).
 
 
 Install
