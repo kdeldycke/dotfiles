@@ -44,10 +44,9 @@ sudo nvram SystemAudioVolume=" "
 # Disable transparency in the menu bar and elsewhere on Yosemite
 defaults write com.apple.universalaccess reduceTransparency -bool true
 
-# Menu bar: hide the Time Machine, AirPort and User icons
+# Menu bar: hide the AirPort and User icons
 for domain in ~/Library/Preferences/ByHost/com.apple.systemuiserver.*; do
         defaults write "${domain}" dontAutoLoad -array \
-                "/System/Library/CoreServices/Menu Extras/TimeMachine.menu" \
                 "/System/Library/CoreServices/Menu Extras/AirPort.menu" \
                 "/System/Library/CoreServices/Menu Extras/User.menu"
 done
