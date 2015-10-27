@@ -55,14 +55,14 @@ do
     target="${HOME}/$f"
     if [ "$1" = "restore" ]; then
         # Restore backups if found
-        if [ -e "${target}.dotfile.bak" ] && [ -L "${target}" ]; then
+        if [ -e "${target}.dotfiles.bak" ] && [ -L "${target}" ]; then
             unlink "${target}"
-            mv "$target.dotfile.bak" "$target"
+            mv "$target.dotfiles.bak" "$target"
         fi
     else
         # Link files
         if [ -e "${target}" ] && [ ! -L "${target}" ]; then
-            mv "$target" "$target.dotfile.bak"
+            mv "$target" "$target.dotfiles.bak"
         fi
         ln -sf "${source}" "$(dirname "${target}")"
     fi
