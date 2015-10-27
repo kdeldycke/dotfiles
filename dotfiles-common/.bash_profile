@@ -186,7 +186,7 @@ export LESS_TERMCAP_ZW=$(tput rsupm)
 export PYTHONDONTWRITEBYTECODE=true
 
 # Python shell auto-completion and history
-export PYTHONSTARTUP="$HOME/python-shell-enhancement/pythonstartup.py"
+export PYTHONSTARTUP="$HOME/.python_startup.py"
 export PYTHON_HISTORY_FILE="$HOME/.python_history"
 
 # Display DeprecationWarning

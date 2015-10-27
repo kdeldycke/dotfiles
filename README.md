@@ -122,3 +122,8 @@ Third party assets:
     Copyright (c) 2013 Sebastian Tramp
     Distributed under a Do What The Fuck You Want To Public License (WTFPL)
     Source: https://github.com/seebi/dircolors-solarized/blob/master/dircolors.256dark
+
+    Python shell enhancement
+    Copyright (c) 2013 Jeff Bisbee
+    Distributed under an MIT license
+    Source: https://github.com/jbisbee/python-shell-enhancement
