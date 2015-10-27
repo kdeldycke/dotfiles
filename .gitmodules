@@ -5,5 +5,5 @@
 	path = .bash-git-prompt
 	url = https://github.com/magicmonty/bash-git-prompt.git
 [submodule ".autoenv"]
-	path = .autoenv
+	path = dotfiles-common/.autoenv
 	url = https://github.com/kennethreitz/autoenv.git
