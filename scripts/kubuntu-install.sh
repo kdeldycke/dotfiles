@@ -9,11 +9,6 @@ sudo add-apt-repository -y ppa:bitcoin/bitcoin
 sudo add-apt-repository -y ppa:subsurface/subsurface
 sudo add-apt-repository -y ppa:micahflee/ppa
 
-# Install tox repositories.
-# Source: https://wiki.tox.chat/binaries#debian_ubuntu_mint_etc
-echo "deb https://pkg.tox.chat/debian nightly release" | sudo tee /etc/apt/sources.list.d/tox.list
-wget -qO - https://pkg.tox.chat/debian/pkg.gpg.key | sudo apt-key add -
-
 sudo aptitude update
 sudo aptitude upgrade -y
 
@@ -37,7 +32,7 @@ hfsplus hfsprogs hunspell-fr hunspell-fr-classical kdenlive kdesdk-scripts \
 kompare kscreensaver kwrite libavcodec-extra libimage-exiftool-perl lm-sensors mbr \
 mkvtoolnix mkvtoolnix-gui mplayer2 network-manager-openvpn ntp p7zip-full picard \
 powertop psmisc sqlitebrowser sysfsutils system-config-lvm transcode ttf-ancient-fonts \
-unclutter utox vim-nox xfsprogs xscreensaver xscreensaver-data \
+unclutter vim-nox xfsprogs xscreensaver xscreensaver-data \
 xscreensaver-data-extra xscreensaver-gl xscreensaver-gl-extra xsltproc
 
 
