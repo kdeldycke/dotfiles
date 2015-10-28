@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
 set -x
 
+# We need to distinguish sources and binary packages for Brew & Cask on OSX
+COMMON_PACKAGES="apg bash bash-completion colordiff colortail coreutils
+faac fdupes findutils flac fontforge git git-extras graphviz grc hfsutils
+htop jnettop lame legit mercurial optipng p7zip pngcrush recode rename rtmpdump
+shntool testdisk tree unrar wget x264"
+
+BIN_PACKAGES="audacity avidemux darktable firefox gimp hugin inkscape
+pdftk prey stellarium subsurface thunderbird virtualbox vlc wireshark"
+
 # Detect distribution
 if [ "$(uname -s)" == "Darwin" ]; then
     IS_OSX=true
@@ -14,22 +23,7 @@ sudo -v
 # Keep-alive: update existing `sudo` time stamp until script has finished.
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
-# We need to distinguish sources and binary packages for Brew & Cask on OSX
-COMMON_PACKAGES="apg bash bash-completion colordiff colortail coreutils
-faac fdupes findutils flac fontforge git git-extras graphviz grc hfsutils
-htop jnettop lame legit mercurial optipng p7zip pngcrush recode rename rtmpdump
-shntool testdisk tree unrar wget x264"
-
-BIN_PACKAGES="audacity avidemux darktable firefox gimp hugin inkscape
-pdftk prey stellarium subsurface thunderbird virtualbox vlc wireshark"
-
-# Install all software first.
-if $IS_OSX; then
-    source ./scripts/osx-install.sh
-    source ./scripts/osx-install-refind.sh
-else
-    source ./scripts/kubuntu-install.sh
-fi
+# TODO: install git here.
 
 # Force initialization and update of local submodules.
 git submodule init
@@ -70,6 +64,14 @@ do
         ln -sf "${SOURCE}" "$(dirname "${TARGET}")"
     fi
 done
+
+# Install all software first.
+if $IS_OSX; then
+    source ./scripts/osx-install.sh
+    source ./scripts/osx-install-refind.sh
+else
+    source ./scripts/kubuntu-install.sh
+fi
 
 # Configure everything.
 if $IS_OSX; then
