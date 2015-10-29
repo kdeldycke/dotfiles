@@ -9,10 +9,12 @@ matrix:
         - os: osx
 
 install:
-    - ./build/install.sh
+    # Only install shellcheck on Linux.
+    - test x$TRAVIS_OS_NAME = "xlinux" && ./build/install.sh
 
 script:
-    - ./build/build.sh
+    # Only run shellcheck on Linux.
+    - test x$TRAVIS_OS_NAME = "xlinux" && ./build/build.sh
     - ./install.sh
 
 sudo: required
