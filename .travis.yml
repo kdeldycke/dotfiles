@@ -1,22 +1,18 @@
 language: bash
 
 os:
-  - osx
-  - linux
+    - osx
+    - linux
 
 matrix:
     allow_failures:
         - os: osx
 
-before_script:
-  - test x$TRAVIS_OS_NAME = "xlinux" && \
-    sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu/ trusty-backports restricted main universe"
-  - test x$TRAVIS_OS_NAME = "xlinux" && \
-    sudo apt-get update -qq
-  - test x$TRAVIS_OS_NAME = "xlinux" && \
-    sudo apt-get install -qq shellcheck
+install:
+    - ./build/install.sh
 
 script:
-  - shellcheck install.sh
-  - shellcheck scripts/*.sh
-  - sh install.sh
+    - ./build/build.sh
+    - ./install.sh
+
+sudo: required

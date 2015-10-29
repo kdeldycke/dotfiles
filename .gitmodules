@@ -4,3 +4,6 @@
 [submodule ".autoenv"]
 	path = dotfiles-common/.autoenv
 	url = https://github.com/kennethreitz/autoenv.git
+[submodule "build"]
+	path = build
+	url = https://github.com/caarlos0/shell-ci-build.git
