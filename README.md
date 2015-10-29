@@ -10,6 +10,9 @@ Werewolf).
 ![OSX 10.11 El Capitan solarized terminal and vim
 ](https://raw.githubusercontent.com/kdeldycke/dotfiles/master/screenshots/osx-10.11.png)
 
+![Kubuntu 15.10 Wily Werewolf solarized terminal and vim
+](https://raw.githubusercontent.com/kdeldycke/dotfiles/master/screenshots/kubuntu-15.10.png)
+
 
 Features
 --------
