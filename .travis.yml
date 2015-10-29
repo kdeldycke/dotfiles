@@ -9,11 +9,11 @@ matrix:
         - os: osx
 
 before_script:
-  - [[ $TRAVIS_OS_NAME == "linux"]] && \
+  - test x$TRAVIS_OS_NAME = "xlinux" && \
     sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu/ trusty-backports restricted main universe"
-  - [[ $TRAVIS_OS_NAME == "linux"]] && \
+  - test x$TRAVIS_OS_NAME = "xlinux" && \
     sudo apt-get update -qq
-  - [[ $TRAVIS_OS_NAME == "linux"]] && \
+  - test x$TRAVIS_OS_NAME = "xlinux" && \
     sudo apt-get install -qq shellcheck
 
 script:
