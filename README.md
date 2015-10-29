@@ -49,7 +49,7 @@ Install
 2. Now you can install the dotfiles on your system:
 
         $ cd ~/dotfiles
-        $ ./install.sh
+        $ ./install.sh 2>&1 | tee ./install.log
 
 
 Upgrade
@@ -58,7 +58,7 @@ Upgrade
 I'm trying to make the install procedure indempotent so you'll just have to
 call the script again to upgrade your system:
 
-    $ ./install.sh
+    $ ./install.sh 2>&1 | tee ./install.log
 
 
 Restore
