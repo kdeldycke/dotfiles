@@ -20,11 +20,14 @@ Features
 * Aimed at Python programmers using `vim`.
 * Common configuration for both OSX and Kubuntu.
 * Produce colored output for most of shell commands.
-* All color schemes are based on [Solarized](http://ethanschoonover.com/solarized).
-* All Terminal font is [Source Code Pro](https://en.wikipedia.org/wiki/Source_Code_Pro).
+* All color schemes are based on [Solarized
+](http://ethanschoonover.com/solarized).
+* All Terminal font is [Source Code Pro
+](https://en.wikipedia.org/wiki/Source_Code_Pro).
 * Keeps OSes fast and lean.
-* Custom configuration for [`MacBookAir5,2`](http://www.amazon.com/dp/B008GV6QV2/?tag=kevideld-20)
-and [`MacBookPro11,1`](http://www.amazon.com/dp/B0096VBXQE/?tag=kevideld-20).
+* Custom configuration for [`MacBookAir5,2`
+](http://www.amazon.com/dp/B008GV6QV2/?tag=kevideld-20) and [`MacBookPro11,1`
+](http://www.amazon.com/dp/B0096VBXQE/?tag=kevideld-20).
 
 
 Install
@@ -52,7 +55,8 @@ Install
 Upgrade
 -------
 
-I'm trying to make the install procedure indempotent so you'll just have to call the script again to upgrade your system:
+I'm trying to make the install procedure indempotent so you'll just have to
+call the script again to upgrade your system:
 
     $ ./install.sh
 
@@ -66,13 +70,8 @@ To restore the originals, run:
 
     $ ./install.sh restore
 
-Note that if there was not an original version, the installed links will not be removed.
-
-
-TODO
-----
-
-  * Add terminal & vim screenshot on Kubuntu.
+Note that if there was not an original version, the installed links will not be
+removed.
 
 
 Old versions
