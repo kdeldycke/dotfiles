@@ -1,9 +1,22 @@
 language: bash
+
 os:
   - osx
   - linux
+
 matrix:
     allow_failures:
         - os: osx
-script: 
+
+before_script:
+  - test $TRAVIS_OS_NAME = "linux" && \
+    sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu/ trusty-backports restricted main universe"
+  - test $TRAVIS_OS_NAME = "linux" && \
+    sudo apt-get update -qq
+  - test $TRAVIS_OS_NAME = "linux" && \
+    sudo apt-get install -qq shellcheck
+
+script:
+  - shellcheck install.sh
+  - shellcheck scripts/*.sh
   - sh install.sh
