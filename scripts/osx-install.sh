@@ -76,6 +76,7 @@ for PACKAGE in $BIN_PACKAGES
 do
    brew cask install --force "$PACKAGE"
 done
+brew cask install --force aerial
 brew cask install --force bitcoin-core
 brew cask install --force chromium
 brew cask install --force dropbox
