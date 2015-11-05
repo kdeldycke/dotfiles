@@ -106,14 +106,6 @@ torbrowser-launcher
 wget https://addons.mozilla.org/firefox/downloads/file/319372/ -O \
     ~/.local/share/torbrowser/tbb/x86_64/tor-browser_en-US/Browser/TorBrowser/Data/Browser/profile.default/extensions/uBlock0@raymondhill.net.xpi
 
-
-# Install Popcorn Time
-rm -rf ~/Popcorn-Time
-mkdir -p ~/Popcorn-Time
-wget -O - "http://178.62.189.137/build/Popcorn-Time-0.3.8-0-Linux-64.tar.xz" | tar -xvJ --directory ~/Popcorn-Time -f -
-[ ! -f /lib/x86_64-linux-gnu/libudev.so.0 ] && sudo ln -s /lib/x86_64-linux-gnu/libudev.so.1 /lib/x86_64-linux-gnu/libudev.so.0
-
-
 # Remove all unused default KDE apps.
 sudo aptitude remove -y akregator kaddressbook knotes kontact korganizer dragonplayer kamera kcalc \
 kaccessible kdegraphics-strigi-analyzer kmag kpat rekonq quassel kmail unity-gtk2-module \

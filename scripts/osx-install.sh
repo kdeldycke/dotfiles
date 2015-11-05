@@ -139,10 +139,6 @@ pip install --upgrade RunSnakeRun
 # Install pgcli
 brew install pgcli
 
-# Install popcorntime
-brew tap popcorn-time/homebrew-cask https://git.popcorntime.io/caskroom/homebrew-cask.git
-brew cask install popcorn-time
-
 # Install uBlock for Safari.
 defaults read ~/Library/Safari/Extensions/extensions | grep --quiet "net.gorhill.uBlock"
 if [[ $? -ne 0 ]]; then
