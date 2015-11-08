@@ -91,10 +91,6 @@ sudo aptitude install -y steam mesa-utils
 
 # Install Tor Browser.
 sudo aptitude install -y torbrowser-launcher
-# Launcher is buggy. Patch it.
-# See: https://github.com/micahflee/torbrowser-launcher/issues/192
-wget -O - "https://patch-diff.githubusercontent.com/raw/micahflee/torbrowser-launcher/pull/196.diff" \
-    | sudo patch -b -u --directory="/usr/lib/python2.7/dist-packages/" -p1
 torbrowser-launcher
 # The launcher package above starts tor service by default to download the
 # initial browser binary. See:
