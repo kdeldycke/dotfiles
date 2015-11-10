@@ -499,9 +499,6 @@ defaults write com.apple.Safari InstallExtensionUpdatesAutomatically -bool true
 # iTunes                                                                      #
 ###############################################################################
 
-# Disable automatic device syncing
-defaults write com.apple.iTunes dontAutomaticallySyncIPods -bool true
-
 # Stop iTunes from responding to the keyboard media keys
 launchctl unload -w /System/Library/LaunchAgents/com.apple.rcd.plist 2> /dev/null
 
