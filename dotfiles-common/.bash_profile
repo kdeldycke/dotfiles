@@ -99,6 +99,7 @@ alias diff="colordiff -ru"
 alias svn="colorsvn"
 alias dmesg="dmesg --color"
 alias tree='tree -Csh'
+alias cat='pygmentize -g'
 
 alias top="htop"
 alias gr='grep -RIi --no-messages'
@@ -164,8 +165,9 @@ alias ...="cd ../.."
 alias ....="cd ../../.."
 alias .....="cd ../../../.."
 
+export LESS="-eRX"
+export LESSOPEN='| pygmentize -g %s'
 # Tip from http://sourceforge.net/apps/trac/qlc/wiki/InstallationSubversionLinux#Optionalhelpers
-export LESS="-erX"
 export LESS_TERMCAP_mb=$(tput bold; tput setaf 2) # green
 export LESS_TERMCAP_md=$(tput bold; tput setaf 6) # cyan
 export LESS_TERMCAP_me=$(tput sgr0)

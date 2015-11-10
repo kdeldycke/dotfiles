@@ -91,6 +91,7 @@ nose-progressive
 pep8
 pip
 pyflakes
+pygments
 pylint
 rope
 setuptools
