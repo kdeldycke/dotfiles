@@ -2,7 +2,8 @@
 # XXX Should we use GNU utilities on OSX ? See:
 # https://github.com/mxcl/homebrew/blob/master/Library/Formula/coreutils.rb#L41
 # https://github.com/mathiasbynens/dotfiles/issues/182#issuecomment-26945081
-export PATH="/usr/local/bin:/usr/local/sbin:$PATH:~/.cabal/bin"
+PYTHON_LOCAL_BIN="$(python -m site --user-base)/bin"
+export PATH="$PYTHON_LOCAL_BIN:/usr/local/bin:/usr/local/sbin:$PATH:~/.cabal/bin"
 
 # Prefer US English and use UTF-8
 export LANG="en_US"
@@ -200,12 +201,7 @@ export VIRTUALENVWRAPPER_HOOK_DIR=$HOME/.virtualenv
 export VIRTUALENVWRAPPER_VIRTUALENV_ARGS="--python=$(which python)"
 
 # Load shell helpers
-which virtualenvwrapper.sh 2>&1 >/dev/null
-if [[ $? -ne 0 ]]; then
-    source "$(python -m site --user-base)"/bin/virtualenvwrapper.sh
-else
-    source virtualenvwrapper.sh
-fi
+source virtualenvwrapper.sh
 source ~/.autoenv/activate.sh
 
 eval "$(pip completion --bash)"
