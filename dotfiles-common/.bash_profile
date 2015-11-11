@@ -100,7 +100,7 @@ alias diff="colordiff -ru"
 alias svn="colorsvn"
 alias dmesg="dmesg --color"
 alias tree='tree -Csh'
-alias cat='pygmentize -g'
+alias ccat='pygmentize -g'
 
 alias top="htop"
 alias gr='grep -RIi --no-messages'
