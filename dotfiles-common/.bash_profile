@@ -1,7 +1,4 @@
 # Force Homebrew binaries to take precedence on OSX default
-# XXX Should we use GNU utilities on OSX ? See:
-# https://github.com/mxcl/homebrew/blob/master/Library/Formula/coreutils.rb#L41
-# https://github.com/mathiasbynens/dotfiles/issues/182#issuecomment-26945081
 PYTHON_LOCAL_BIN="$(python -m site --user-base)/bin"
 export PATH="$PYTHON_LOCAL_BIN:/usr/local/bin:/usr/local/sbin:$PATH:~/.cabal/bin"
 
