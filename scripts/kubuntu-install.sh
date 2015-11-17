@@ -103,23 +103,93 @@ wget https://addons.mozilla.org/firefox/downloads/file/319372/ -O \
     ~/.local/share/torbrowser/tbb/x86_64/tor-browser_en-US/Browser/TorBrowser/Data/Browser/profile.default/extensions/uBlock0@raymondhill.net.xpi
 
 # Remove all unused default KDE apps.
-sudo aptitude remove -y akregator kaddressbook knotes kontact korganizer dragonplayer kamera kcalc \
-kaccessible kdegraphics-strigi-analyzer kmag kpat rekonq quassel kmail unity-gtk2-module \
-unity-gtk3-module kde-telepathy telepathy-logger telepathy-indicator telepathy-salut \
-kde-config-telepathy-accounts kde-telepathy-approver kde-telepathy-data telepathy-gabble \
-libtelepathy-logger3 libtelepathy-glib0 libtelepathy-qt4-2 amarok amarok-utils amarok-common \
-akonadi-backend-mysql akonadi-server apturl-kde kdepim-kresources kdepim-runtime libcalendarsupport4 \
-libincidenceeditorsng4 libkdepim4 libkdepimdbusinterfaces4 libkleo4 libmailcommon4 libmailimporter4 \
-libmessagecomposer4 libmessagecore4 libmessageviewer4 libpimcommon4 libtemplateparser4 \
-python3-pykde4 mysql-server-core-5.6 mysql-common mysql-client-core-5.6 libmysqlclient18 \
-libqt4-sql-mysql konversation konversation-data khelpcenter kde-telepathy-legacy-presence-applet \
-libakonadiprotocolinternals1 baloo-utils libakonadi-kde4 libakonadi-kmime4 baloo-kf5 libbaloopim4
+UNUSED_PACKAGES="
+akregator
+kaddressbook
+knotes
+kontact
+korganizer
+dragonplayer
+kamera
+kcalc
+kaccessible
+kdegraphics-strigi-analyzer
+kmag
+kpat
+rekonq
+quassel
+kmail
+krdc
+unity-gtk2-module
+unity-gtk3-module
+kde-telepathy
+telepathy-logger
+telepathy-indicator
+telepathy-salut
+kde-telepathy-minimal
+kde-config-telepathy-accounts
+kde-telepathy-approver
+kde-telepathy-auth-handler
+kde-telepathy-contact-list
+kde-telepathy-filetransfer-handler
+kde-telepathy-integration-module
+kde-telepathy-send-file
+kde-telepathy-text-ui
+kde-telepathy-data
+kde-telepathy-desktop-applets
+kde-telepathy-kpeople
+qml-module-org-kde-telepathy
+libktplogger9
+libtelepathy-logger-qt5
+libtelepathy-logger3
+libktpotr9
+libktpwidgets9
+libktpmodels9
+libktpcommoninternals9
+telepathy-accounts-signon
+telepathy-mission-control-5
+libmission-control-plugins0
+libtelepathy-glib0
+libtelepathy-qt4-2
+kde-telepathy-legacy-presence-applet
+amarok-utils
+amarok-common
+amarok
+accountwizard
+akonadi-backend-mysql
+akonadi-server
+apturl-kde
+kdepim-runtime
+libkdepim4
+libmessageviewer4
+python3-pykde4
+mysql-server-core-5.6
+mysql-common
+mysql-client-core-5.6
+libmysqlclient18
+libqt5sql5-mysql
+libqt4-sql-mysql
+konversation
+konversation-data
+khelpcenter
+libakonadiprotocolinternals1
+baloo-utils
+libakonadi-kde4
+libakonadi-kmime4
+libbaloopim4
+"
+# Remove packages one by one for debug.
+#for p in $UNUSED_PACKAGES
+#do
+#    sudo aptitude remove "$p"
+#done
+sudo aptitude remove -y $UNUSED_PACKAGES
 
 # Remove unused default system apps.
 sudo aptitude remove -y nano kubuntu-web-shortcuts
 
 # Remove Canonical crash reporters.
-sudo aptitude remove -y apport apport-kde apport-symptoms kde-config-whoopsie python3-apport whoopsie
+sudo aptitude remove -y apport apport-kde apport-symptoms kde-config-whoopsie python3-apport whoopsie whoopsie-preferences libwhoopsie-preferences0
 
 sudo apt-file update
 
