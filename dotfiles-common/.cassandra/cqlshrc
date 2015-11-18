@@ -1,0 +1,7 @@
+[connection]
+# Timeout in minutes.
+client_timeout=100
+
+[ui]
+# Display microseconds.
+time_format=%Y-%m-%d %H:%M:%S.%f%z
