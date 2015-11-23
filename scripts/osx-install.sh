@@ -146,6 +146,10 @@ if [[ $? -ne 0 ]]; then
     open "$TMPDIR/ublock-safari.safariextz"
 fi
 
+# Set chromium as the default browser.
+brew install duti
+duti -s org.chromium.Chromium http
+
 # Clean things up
 brew linkapps
 brew cleanup
