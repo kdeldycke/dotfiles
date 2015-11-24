@@ -16,7 +16,7 @@ else
     unzip ./refind-bin-0.10.0.zip
 
     # Remove previous installation.
-    ./refind-bin-0.10.0/mountesp
+    sudo ./refind-bin-0.10.0/mountesp
     sudo rm -rf /Volumes/esp/EFI/refind
     sudo rm -rf /Volumes/esp/EFI/BOOT
 
@@ -24,8 +24,9 @@ else
     ./refind-bin-0.10.0/refind-install --alldrivers
 
     # Adjust personnal refind config.
-    sudo sed -i "" -e "s/timeout 20/timeout 1/" /Volumes/esp/EFI/refind/refind.conf
-    sudo sed -i "" -e "s/#default_selection 1/default_selection linux/" /Volumes/esp/EFI/refind/refind.conf
+    sudo ./refind-bin-0.10.0/mountesp
+    sudo sed -i "s/timeout 20/timeout 1/" /Volumes/esp/EFI/refind/refind.conf
+    sudo sed -i "s/#default_selection 1/default_selection linux/" /Volumes/esp/EFI/refind/refind.conf
 
     # Cleanup.
     rm -rf ./refind-bin-0.10.0*
