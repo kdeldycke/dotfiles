@@ -100,6 +100,7 @@ but also draws from others:
   * https://github.com/mathiasbynens/dotfiles
   * https://github.com/sontek/dotfiles
   * https://github.com/reinout/tools
+  * https://github.com/18F/laptop
 
 Third party assets:
 
