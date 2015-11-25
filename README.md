@@ -133,3 +133,8 @@ Third party assets:
     Copyright (c) 2013 Jeff Bisbee
     Distributed under an MIT license
     Source: https://github.com/jbisbee/python-shell-enhancement
+
+    diff-so-fancy
+    Copyright (c) 2015 Paul Irish
+    Distributed under an unknown open-source license
+    Source: https://github.com/paulirish/dotfiles/blob/master/bin/diff-so-fancy
