@@ -272,7 +272,6 @@ if $IS_OSX; then
 
     # Opens current directory in apps
     alias f='open -a Finder ./'
-    alias gitx='open -a ~/Applications/GitX.app ./'
 
     # Replace netstat command on OSX to find ports used by apps
     alias netstat="sudo lsof -i -P"

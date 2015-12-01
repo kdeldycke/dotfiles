@@ -410,7 +410,7 @@ for shortcut_label in "Launchpad" "Calendar" "Contacts" "Mail" \
 done
 
 # Add new app shortcuts to the dock.
-for app in "Chromium" "Firefox" "GitX" "Dropbox" "LibreOffice" "TorBrowser"; do
+for app in "Chromium" "Firefox" "GitUp" "Dropbox" "LibreOffice" "TorBrowser"; do
     dockutil --find "${shortcut}"
     if [ $? -ne 0 ]; then
         dockutil --add "~/Applications/${app}.app"

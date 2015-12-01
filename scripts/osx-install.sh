@@ -81,7 +81,7 @@ brew cask install --force bitcoin-core
 brew cask install --force chromium
 brew cask install --force dropbox
 brew cask install --force flux
-brew cask install --force gitx
+brew cask install --force gitup
 brew cask install --force insync
 brew cask install --force libreoffice
 brew cask install --force spectacle
