@@ -30,7 +30,7 @@ exfat-fuse exfat-utils faad gimp-plugin-registry gitg \
 hfsplus hfsprogs hunspell-fr hunspell-fr-classical kdenlive kdesdk-scripts \
 kompare kscreensaver kwrite libavcodec-extra libimage-exiftool-perl lm-sensors mbr \
 mkvtoolnix mkvtoolnix-gui mplayer2 network-manager-openvpn ntp p7zip-full picard \
-powertop psmisc sqlitebrowser sysfsutils system-config-lvm transcode ttf-ancient-fonts \
+powertop psmisc sysfsutils system-config-lvm transcode ttf-ancient-fonts \
 unclutter vim-nox xfsprogs xscreensaver xscreensaver-data \
 xscreensaver-data-extra xscreensaver-gl xscreensaver-gl-extra xsltproc
 

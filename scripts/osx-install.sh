@@ -84,7 +84,6 @@ brew cask install --force gitup
 brew cask install --force insync
 brew cask install --force libreoffice
 brew cask install --force spectacle
-brew cask install --force sqlitebrowser
 brew cask install --force steam
 brew cask install --force torbrowser
 brew cask install --force transmission
