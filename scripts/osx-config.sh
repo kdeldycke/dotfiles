@@ -503,6 +503,13 @@ defaults write com.apple.Safari InstallExtensionUpdatesAutomatically -bool true
 launchctl unload -w /System/Library/LaunchAgents/com.apple.rcd.plist 2> /dev/null
 
 ###############################################################################
+# Photos                                                                      #
+###############################################################################
+
+# Disable Photos show up when devices are plugged (OS X 10.11 and earlier)
+defaults -currentHost write com.apple.ImageCapture disableHotPlug -bool true
+
+###############################################################################
 # Mail                                                                        #
 ###############################################################################
 
