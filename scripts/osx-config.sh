@@ -134,6 +134,36 @@ defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -bool false
 #sudo rm -rf /System/Library/CoreServices/DefaultDesktop.jpg
 #sudo ln -s /path/to/your/image /System/Library/CoreServices/DefaultDesktop.jpg
 
+##############################################################################
+# Security                                                                   #
+##############################################################################
+
+# Enable Firewall. Possible values: 0 = off, 1 = on for specific sevices, 2 =
+# on for essential services.
+#sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 1
+
+# Enable stealth mode
+# https://support.apple.com/kb/PH18642
+#sudo defaults write /Library/Preferences/com.apple.alf stealthenabled -int 1
+
+# Enable firewall logging
+#sudo defaults write /Library/Preferences/com.apple.alf loggingenabled -int 1
+
+# Reload the firewall
+# (uncomment if above is not commented out)
+#launchctl unload /System/Library/LaunchAgents/com.apple.alf.useragent.plist
+#sudo launchctl unload /System/Library/LaunchDaemons/com.apple.alf.agent.plist
+#sudo launchctl load /System/Library/LaunchDaemons/com.apple.alf.agent.plist
+#launchctl load /System/Library/LaunchAgents/com.apple.alf.useragent.plist
+
+# Disable IR remote control
+sudo defaults write /Library/Preferences/com.apple.driver.AppleIRController DeviceEnabled -bool false
+
+# Turn Bluetooth off completely
+sudo defaults write /Library/Preferences/com.apple.Bluetooth ControllerPowerState -int 0
+sudo launchctl unload /System/Library/LaunchDaemons/com.apple.blued.plist
+sudo launchctl load /System/Library/LaunchDaemons/com.apple.blued.plist
+
 ###############################################################################
 # Trackpad, mouse, keyboard, Bluetooth accessories, and input                 #
 ###############################################################################
@@ -471,8 +501,12 @@ defaults write NSGlobalDomain WebKitDeveloperExtras -bool true
 defaults write com.apple.Safari WebContinuousSpellCheckingEnabled -bool true
 defaults write com.apple.Safari WebAutomaticSpellingCorrectionEnabled -bool false
 
-# Don't remember passwords
-defaults write com.apple.Safari AutoFillPasswords -bool false
+# Disable AutoFill in Safari.
+defaults write com.apple.Safari AllowBypassOfAutocompleteOff -int false
+defaults write com.apple.Safari AutoFillFromAddressBook -int false
+defaults write com.apple.Safari AutoFillPasswords -int false
+defaults write com.apple.Safari AutoFillCreditCardData -int false
+defaults write com.apple.Safari AutoFillMiscellaneousForms -int false
 
 # Warn About Fraudulent Websites
 defaults write com.apple.Safari WarnAboutFraudulentWebsites -bool true
