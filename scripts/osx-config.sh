@@ -505,11 +505,11 @@ defaults write com.apple.Safari WebContinuousSpellCheckingEnabled -bool true
 defaults write com.apple.Safari WebAutomaticSpellingCorrectionEnabled -bool false
 
 # Disable AutoFill in Safari.
-defaults write com.apple.Safari AllowBypassOfAutocompleteOff -int false
-defaults write com.apple.Safari AutoFillFromAddressBook -int false
-defaults write com.apple.Safari AutoFillPasswords -int false
-defaults write com.apple.Safari AutoFillCreditCardData -int false
-defaults write com.apple.Safari AutoFillMiscellaneousForms -int false
+defaults write com.apple.Safari AllowBypassOfAutocompleteOff -bool false
+defaults write com.apple.Safari AutoFillFromAddressBook -bool false
+defaults write com.apple.Safari AutoFillPasswords -bool false
+defaults write com.apple.Safari AutoFillCreditCardData -bool false
+defaults write com.apple.Safari AutoFillMiscellaneousForms -bool false
 
 # Warn About Fraudulent Websites
 defaults write com.apple.Safari WarnAboutFraudulentWebsites -bool true
