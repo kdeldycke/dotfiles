@@ -258,8 +258,7 @@ function ghc-pkg-reset() {
         read -p 'Erasing all your user ghc and cabal packages - are you sure (y/N)? ' ans
     fi
     [[ x$ans =~ "xy" ]] && ( \
-        echo 'erasing directories under $HOME/.ghc'; command rm -rf `find $HOME/.ghc/* -maxdepth 1
-    -type d`; \
+        echo 'erasing directories under $HOME/.ghc'; command rm -rf `find $HOME/.ghc/* -maxdepth 1 -type d`; \
         echo 'erasing $HOME/.cabal/lib'; command rm -rf $HOME/.cabal/lib; \
     )
 }
