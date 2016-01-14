@@ -184,7 +184,7 @@ export LESS_TERMCAP_ZW=$(tput rsupm)
 if $IS_OSX; then
     DIFF_HIGHLIGHT_FOLDER="$(brew --prefix)/share/git-core/contrib/diff-highlight/"
 else
-    DIFF_HIGHLIGHT_FOLDER="/usr/local/bin/contrib/diff-highlight/"
+    DIFF_HIGHLIGHT_FOLDER="/usr/share/doc/git/contrib/diff-highlight/"
 fi
 export PATH="$PATH:$DIFF_HIGHLIGHT_FOLDER:$HOME/.git-contribs/"
 
