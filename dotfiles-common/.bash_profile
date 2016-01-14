@@ -1,6 +1,6 @@
 # Force Homebrew binaries to take precedence on OSX default
 PYTHON_LOCAL_BIN="$(python -m site --user-base)/bin"
-export PATH="$PYTHON_LOCAL_BIN:/usr/local/bin:/usr/local/sbin:$PATH:~/.cabal/bin"
+export PATH="$PYTHON_LOCAL_BIN:/usr/local/bin:/usr/local/sbin:$PATH:$HOME/.cabal/bin"
 
 # Prefer US English and use UTF-8
 export LANG="en_US"
@@ -80,9 +80,9 @@ fi
 if $IS_OSX; then
     alias dircolors='gdircolors'
 fi
-if [ -f ~/.dircolors ]
+if [ -f $HOME/.dircolors ]
 then
-    eval "$(dircolors -b ~/.dircolors)"
+    eval "$(dircolors -b $HOME/.dircolors)"
 else
     eval "$(dircolors -b)"
 fi
@@ -186,7 +186,7 @@ if $IS_OSX; then
 else
     DIFF_HIGHLIGHT_FOLDER="/usr/local/bin/contrib/diff-highlight/"
 fi
-export PATH="$PATH:$DIFF_HIGHLIGHT_FOLDER:~/.git-contribs/"
+export PATH="$PATH:$DIFF_HIGHLIGHT_FOLDER:$HOME/.git-contribs/"
 
 # Don't let Python produce .pyc or .pyo. Left-overs can produce strange side-effects.
 export PYTHONDONTWRITEBYTECODE=true
@@ -258,9 +258,9 @@ function ghc-pkg-reset() {
         read -p 'Erasing all your user ghc and cabal packages - are you sure (y/N)? ' ans
     fi
     [[ x$ans =~ "xy" ]] && ( \
-        echo 'erasing directories under ~/.ghc'; command rm -rf `find ~/.ghc/* -maxdepth 1
+        echo 'erasing directories under $HOME/.ghc'; command rm -rf `find $HOME/.ghc/* -maxdepth 1
     -type d`; \
-        echo 'erasing ~/.cabal/lib'; command rm -rf ~/.cabal/lib; \
+        echo 'erasing $HOME/.cabal/lib'; command rm -rf $HOME/.cabal/lib; \
     )
 }
 
