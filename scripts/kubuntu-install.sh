@@ -63,7 +63,7 @@ cabal install shellcheck
 
 
 # Install GMVault
-pip install --allow-external IMAPClient --upgrade https://pypi.python.org/packages/source/g/gmvault/gmvault-1.8.1-beta.tar.gz#md5=a0b26d814506748deca8e2eee4086b31
+pip install --upgrade https://pypi.python.org/packages/source/g/gmvault/gmvault-1.8.1-beta.tar.gz#md5=a0b26d814506748deca8e2eee4086b31
 
 
 # Install Dropbox if not already there
