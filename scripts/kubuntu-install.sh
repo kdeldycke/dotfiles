@@ -63,7 +63,7 @@ cabal install shellcheck
 
 
 # Install GMVault
-pip install --upgrade 'gmvault > 1.9'
+pip install --upgrade 'gmvault >= 1.9'
 
 
 # Install Dropbox if not already there
