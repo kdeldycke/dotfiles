@@ -7,3 +7,6 @@
 [submodule "build"]
 	path = build
 	url = https://github.com/caarlos0/shell-ci-build.git
+[submodule ".diff-so-fancy"]
+	path = dotfiles-common/.diff-so-fancy
+	url = https://github.com/stevemao/diff-so-fancy.git

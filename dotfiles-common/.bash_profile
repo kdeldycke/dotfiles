@@ -180,13 +180,8 @@ export LESS_TERMCAP_ZV=$(tput rsubm)
 export LESS_TERMCAP_ZO=$(tput ssupm)
 export LESS_TERMCAP_ZW=$(tput rsupm)
 
-# Expose some git contrib scripts.
-if $IS_OSX; then
-    DIFF_HIGHLIGHT_FOLDER="$(brew --prefix)/share/git-core/contrib/diff-highlight"
-else
-    DIFF_HIGHLIGHT_FOLDER="/usr/share/doc/git/contrib/diff-highlight"
-fi
-export PATH="$PATH:$DIFF_HIGHLIGHT_FOLDER:$HOME/.git-contribs"
+# Expose diff-so-fancy and dependencies.
+export PATH="$PATH:$HOME/.diff-so-fancy/third_party/diff-highlight:$HOME/.diff-so-fancy"
 
 # Don't let Python produce .pyc or .pyo. Left-overs can produce strange side-effects.
 export PYTHONDONTWRITEBYTECODE=true
