@@ -25,7 +25,7 @@ export HISTTIMEFORMAT="[%F %T] "
 export HISTSIZE=999999
 export HISTFILESIZE=$HISTSIZE;
 # Make some commands not show up in history
-export HISTIGNORE="ls:cd:cd -:pwd:exit:date:* --help:history"
+export HISTIGNORE="ls:cd:cd -:pwd:exit:date:history"
 
 # Append to the history file, don't overwrite it.
 shopt -s histappend
