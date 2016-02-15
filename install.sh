@@ -7,8 +7,7 @@ faac fdupes findutils flac fontforge git git-extras graphviz grc hfsutils
 htop jnettop lame legit mercurial optipng p7zip pngcrush recode rename rtmpdump
 shntool sqlitebrowser testdisk tree unrar wget wireshark x264"
 
-BIN_PACKAGES="audacity darktable firefox gimp hugin inkscape
-pdftk prey stellarium subsurface thunderbird virtualbox vlc"
+BIN_PACKAGES="audacity firefox gimp hugin inkscape pdftk prey subsurface vlc"
 
 # Detect distribution
 if [ "$(uname -s)" == "Darwin" ]; then
