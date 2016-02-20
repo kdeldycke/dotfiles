@@ -97,7 +97,8 @@ setuptools
 tox
 virtualenv
 virtualenvwrapper
-wheel"
+wheel
+youtube-dl"
 for p in $PYTHON_PACKAGES
 do
     pip install --upgrade "$p"
