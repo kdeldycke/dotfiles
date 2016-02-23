@@ -5,7 +5,7 @@ set -x
 COMMON_PACKAGES="apg avidemux bash bash-completion colordiff colortail coreutils
 faac fdupes findutils flac fontforge git git-extras graphviz grc hfsutils
 htop jnettop lame legit mercurial optipng p7zip pngcrush recode rename rtmpdump
-shntool sqlitebrowser testdisk tree unrar wget wireshark x264"
+shntool sqlitebrowser testdisk tree unrar wget wireshark x264 youtube-dl"
 
 BIN_PACKAGES="audacity firefox gimp hugin inkscape prey subsurface vlc"
 
@@ -97,8 +97,7 @@ setuptools
 tox
 virtualenv
 virtualenvwrapper
-wheel
-youtube-dl"
+wheel"
 for p in $PYTHON_PACKAGES
 do
     pip install --upgrade "$p"
