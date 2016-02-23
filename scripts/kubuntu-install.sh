@@ -47,8 +47,6 @@ sudo usermod -a -G libvirtd kevin
 sudo usermod -a -G kvm kevin
 
 
-sudo chmod +x /usr/share/doc/git/contrib/diff-highlight/diff-highlight
-
 sudo aptitude install -y redshift gtk-redshift geoclue
 
 
