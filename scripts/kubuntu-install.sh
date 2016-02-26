@@ -101,6 +101,7 @@ torbrowser-launcher
 wget https://addons.mozilla.org/firefox/downloads/file/319372/ -O \
     ~/.local/share/torbrowser/tbb/x86_64/tor-browser_en-US/Browser/TorBrowser/Data/Browser/profile.default/extensions/uBlock0@raymondhill.net.xpi
 
+
 # Remove all unused default KDE apps.
 UNUSED_PACKAGES="
 akregator
