@@ -102,6 +102,12 @@ wget https://addons.mozilla.org/firefox/downloads/file/319372/ -O \
     ~/.local/share/torbrowser/tbb/x86_64/tor-browser_en-US/Browser/TorBrowser/Data/Browser/profile.default/extensions/uBlock0@raymondhill.net.xpi
 
 
+# Install Popcorn Time
+rm -rf ~/Popcorn-Time
+mkdir -p ~/Popcorn-Time
+wget -O - "https://get.popcorntime.sh/build/Popcorn-Time-0.3.9-Linux-64.tar.xz" | tar -xvJ --directory ~/Popcorn-Time -f -
+
+
 # Remove all unused default KDE apps.
 UNUSED_PACKAGES="
 akregator
