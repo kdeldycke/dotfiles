@@ -2,12 +2,53 @@
 set -x
 
 # We need to distinguish sources and binary packages for Brew & Cask on OSX
-COMMON_PACKAGES="apg avidemux bash bash-completion colordiff colortail coreutils
-faac fdupes findutils flac fontforge git git-extras graphviz grc hfsutils
-htop jnettop lame legit mercurial mpv optipng p7zip pngcrush recode rename rtmpdump
-shntool sqlitebrowser testdisk tree unrar wget wireshark x264 youtube-dl"
+COMMON_PACKAGES="apg
+avidemux
+bash
+bash-completion
+colordiff
+colortail
+coreutils
+faac
+fdupes
+findutils
+flac
+fontforge
+git
+git-extras
+graphviz
+grc
+hfsutils
+htop
+jnettop
+lame
+legit
+mercurial
+mpv
+optipng
+p7zip
+pngcrush
+recode
+rename
+rtmpdump
+shntool
+sqlitebrowser
+testdisk
+tree
+unrar
+wget
+wireshark
+x264
+youtube-dl"
 
-BIN_PACKAGES="audacity firefox gimp hugin inkscape prey subsurface vlc"
+BIN_PACKAGES="audacity
+firefox
+gimp
+hugin
+inkscape
+prey
+subsurface
+vlc"
 
 # Detect distribution
 if [ "$(uname -s)" == "Darwin" ]; then
