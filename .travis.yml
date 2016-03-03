@@ -1,20 +1,17 @@
 language: bash
-
-os:
-    - osx
-    - linux
+sudo: required
 
 matrix:
     allow_failures:
         - os: osx
 
+os:
+    - linux
+    - osx
+
 install:
-    # Only install shellcheck on Linux.
-    - test x$TRAVIS_OS_NAME = "xlinux" && ./build/install.sh
+    - ./build/install.sh
 
 script:
-    # Only run shellcheck on Linux.
-    - test x$TRAVIS_OS_NAME = "xlinux" && ./build/build.sh
+    - ./build/build.sh
     - ./install.sh
-
-sudo: required
