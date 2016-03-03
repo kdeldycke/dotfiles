@@ -1,7 +1,4 @@
-dotfiles
-========
-
-[![Build Status](https://img.shields.io/travis/kdeldycke/maildir-deduplicate/develop.svg?style=flat)](https://travis-ci.org/kdeldycke/dotfiles)
+# dotfiles [![Build Status](https://img.shields.io/travis/kdeldycke/maildir-deduplicate/develop.svg?style=flat)](https://travis-ci.org/kdeldycke/dotfiles)
 
 Dot-files and system configuration for Python developers working in `vim`,
 currently targetting **OSX 10.11** (El Capitan) and **Kubuntu 15.10** (Wily
