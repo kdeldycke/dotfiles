@@ -82,6 +82,7 @@ brew cask install --force dropbox
 brew cask install --force flux
 brew cask install --force gitup
 brew cask install --force insync
+brew cask install --force kiwix
 brew cask install --force libreoffice
 brew cask install --force spectacle
 brew cask install --force steam
