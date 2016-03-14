@@ -124,6 +124,7 @@ fi
 PYTHON_PACKAGES="autopep8
 bumpversion
 coverage
+gmvault
 httpie
 mccabe
 nose

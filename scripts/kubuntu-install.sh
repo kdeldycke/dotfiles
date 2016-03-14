@@ -59,10 +59,6 @@ cabal update
 cabal install shellcheck
 
 
-# Install GMVault
-pip install --upgrade 'gmvault >= 1.9'
-
-
 # Install Dropbox if not already there
 [ ! -f ~/.dropbox-dist/dropbox ] && wget -O - "http://www.dropbox.com/download?plat=lnx.x86_64" | tar -xvz --directory ~ -f -
 
