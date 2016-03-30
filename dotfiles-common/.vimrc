@@ -72,7 +72,8 @@ NeoBundle 'tpope/vim-commentary'
 NeoBundle 'terryma/vim-multiple-cursors'
 
 " GUI
-NeoBundle 'bling/vim-airline'
+NeoBundle 'vim-airline/vim-airline'
+NeoBundle 'vim-airline/vim-airline-themes'
 
 call neobundle#end()
 
