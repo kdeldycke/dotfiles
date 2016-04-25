@@ -82,6 +82,7 @@ brew cask install --force dropbox
 brew cask install --force flux
 brew cask install --force gitup
 brew cask install --force insync
+brew cask install --force java
 brew cask install --force kiwix
 brew cask install --force libreoffice
 brew cask install --force spectacle
@@ -96,7 +97,6 @@ brew cask install --force xbox360-controller-driver
 brew cask install --force betterzipql
 brew cask install --force cert-quicklook
 brew cask install --force epubquicklook
-brew cask install --force java
 brew cask install --force qlcolorcode
 brew cask install --force qlmarkdown
 brew cask install --force qlprettypatch
