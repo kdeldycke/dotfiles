@@ -28,11 +28,23 @@ rm -rf ~/Downloads/About\ Downloads.lpdf
 # Turns off WakeOnMagicPacket
 sudo pmset -a womp 0
 
+# Turns off Modem wakeup
+sudo pmset -a ring 0
+
+# Turns on lid wakeup
+sudo pmset -a lidwake 1
+
 # Automatic restart on power loss
 sudo pmset -a autorestart 1
 
-# Sets displaysleep to 10 minutes
-sudo pmset -a displaysleep 10
+# Sets displaysleep to 5 minutes
+sudo pmset -a displaysleep 5
+
+# Set machine sleep to 10 minutes on charger
+sudo pmset -c sleep 10
+
+# Set machine sleep to 10 minutes on battery
+sudo pmset -b sleep 5
 
 # Set standby delay to default 1 hour
 # See: http://www.ewal.net/2012/09/09/slow-wake-for-macbook-pro-retina/
