@@ -98,7 +98,6 @@ brew cask install --force cert-quicklook
 brew cask install --force epubquicklook
 brew cask install --force qlcolorcode
 brew cask install --force qlmarkdown
-brew cask install --force qlprettypatch
 brew cask install --force qlstephen
 brew cask install --force quicklook-json
 brew cask install --force suspicious-package
