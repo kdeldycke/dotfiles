@@ -96,6 +96,7 @@ brew cask install --force xbox360-controller-driver
 # Source: https://github.com/sindresorhus/quick-look-plugins
 brew cask install --force epubquicklook
 brew cask install --force qlcolorcode
+brew cask install --force qlimagesize
 brew cask install --force qlmarkdown
 brew cask install --force qlstephen
 brew cask install --force quicklook-json
