@@ -111,10 +111,11 @@ brew install gnu-sed --with-default-names
 brew install homebrew/dupes/grep
 brew install homebrew/dupes/openssh
 
-# Add EXT support
+# Add linux filesystem support.
 brew cask install --force osxfuse
 brew install homebrew/fuse/ext2fuse
 brew install homebrew/fuse/ext4fuse
+brew install homebrew/fuse/btfs
 
 # Install vim
 brew install lua --completion
