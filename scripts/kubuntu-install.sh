@@ -4,7 +4,7 @@ set -x
 sudo apt-get update
 sudo apt-get install -y aptitude apt-transport-https software-properties-common
 
-sudo add-apt-repository -y ppa:sunab/kdenlive-svn
+sudo add-apt-repository -y ppa:kdenlive/kdenlive-testing
 sudo add-apt-repository -y ppa:bitcoin/bitcoin
 sudo add-apt-repository -y ppa:subsurface/subsurface
 sudo add-apt-repository -y ppa:micahflee/ppa
