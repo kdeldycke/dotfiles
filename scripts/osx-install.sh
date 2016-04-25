@@ -94,14 +94,12 @@ brew cask install --force xbox360-controller-driver
 
 # Install QuickLooks plugins
 # Source: https://github.com/sindresorhus/quick-look-plugins
-brew cask install --force betterzipql
 brew cask install --force cert-quicklook
 brew cask install --force epubquicklook
 brew cask install --force qlcolorcode
 brew cask install --force qlmarkdown
 brew cask install --force qlprettypatch
 brew cask install --force qlstephen
-brew cask install --force quicklook-csv
 brew cask install --force quicklook-json
 brew cask install --force suspicious-package
 brew cask install --force webpquicklook
