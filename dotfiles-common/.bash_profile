@@ -13,6 +13,12 @@ else
     IS_OSX=false
 fi
 
+# Do not let homebrew send stats to Google Analytics.
+# See: https://github.com/Homebrew/brew/blob/master/share/doc/homebrew/Analytics.md#opting-out
+if $IS_OSX; then
+    export HOMEBREW_NO_ANALYTICS=1
+fi
+
 # If possible, add tab completion for many more commands
 [ -f /etc/bash_completion ] && source /etc/bash_completion
 if $IS_OSX; then
