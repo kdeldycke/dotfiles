@@ -40,13 +40,13 @@ sudo pmset -a lidwake 1
 # Automatic restart on power loss
 sudo pmset -a autorestart 1
 
-# Sets displaysleep to 5 minutes
-sudo pmset -a displaysleep 5
+# Sets displaysleep to 15 minutes
+sudo pmset -a displaysleep 15
 
-# Set machine sleep to 10 minutes on charger
-sudo pmset -c sleep 10
+# Do not allow machine to sleep on charger
+sudo pmset -c sleep 0
 
-# Set machine sleep to 10 minutes on battery
+# Set machine sleep to 5 minutes on battery
 sudo pmset -b sleep 5
 
 # Set standby delay to default 1 hour
@@ -243,11 +243,14 @@ defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
 # Screen                                                                      #
 ###############################################################################
 
+# Start screen savec after 10 minutes
+defaults -currentHost write com.apple.screensaver idleTime -int 600
+
 # Require password immediately after sleep or screen saver begins
 defaults write com.apple.screensaver askForPassword -int 1
 defaults write com.apple.screensaver askForPasswordDelay -int 0
 
-# Screen Saver: Flurry
+# Screen Saver: Aerial
 defaults -currentHost write com.apple.screensaver moduleDict -dict moduleName -string "Aerial" path -string "${HOME}/Library/Screen Savers/Aerial.saver" type -int 0
 
 # Save screenshots to the desktop
