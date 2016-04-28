@@ -3,6 +3,9 @@ set -x
 
 # ~/.osx — https://mths.be/osx
 
+# Kill system preferences to not have it overrides our config
+osascript -e "tell application \"System Preferences\" to quit"
+
 ###############################################################################
 # General UI/UX                                                               #
 ###############################################################################
