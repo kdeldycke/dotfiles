@@ -155,21 +155,21 @@ defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -bool false
 
 # Enable Firewall. Possible values: 0 = off, 1 = on for specific sevices, 2 =
 # on for essential services.
-#sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 1
+sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 1
 
 # Enable stealth mode
 # https://support.apple.com/kb/PH18642
-#sudo defaults write /Library/Preferences/com.apple.alf stealthenabled -int 1
+sudo defaults write /Library/Preferences/com.apple.alf stealthenabled -int 1
 
 # Enable firewall logging
-#sudo defaults write /Library/Preferences/com.apple.alf loggingenabled -int 1
+sudo defaults write /Library/Preferences/com.apple.alf loggingenabled -int 1
 
 # Reload the firewall
 # (uncomment if above is not commented out)
-#launchctl unload /System/Library/LaunchAgents/com.apple.alf.useragent.plist
-#sudo launchctl unload /System/Library/LaunchDaemons/com.apple.alf.agent.plist
-#sudo launchctl load /System/Library/LaunchDaemons/com.apple.alf.agent.plist
-#launchctl load /System/Library/LaunchAgents/com.apple.alf.useragent.plist
+launchctl unload /System/Library/LaunchAgents/com.apple.alf.useragent.plist
+sudo launchctl unload /System/Library/LaunchDaemons/com.apple.alf.agent.plist
+sudo launchctl load /System/Library/LaunchDaemons/com.apple.alf.agent.plist
+launchctl load /System/Library/LaunchAgents/com.apple.alf.useragent.plist
 
 # Disable IR remote control
 sudo defaults write /Library/Preferences/com.apple.driver.AppleIRController DeviceEnabled -bool false
