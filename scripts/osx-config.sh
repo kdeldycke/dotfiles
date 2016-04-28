@@ -179,6 +179,22 @@ sudo defaults write /Library/Preferences/com.apple.Bluetooth ControllerPowerStat
 sudo launchctl unload /System/Library/LaunchDaemons/com.apple.blued.plist
 sudo launchctl load /System/Library/LaunchDaemons/com.apple.blued.plist
 
+# Disable remote apple events
+sudo systemsetup -setremoteappleevents off
+
+# Disable remote login
+sudo systemsetup -setremotelogin off
+
+# Disable wake-on modem
+sudo systemsetup -setwakeonmodem off
+
+# Disable wake-on LAN
+systemsetup -setwakeonnetworkaccess off
+
+# Disable file-sharing via AFP or SMB
+sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.AppleFileServer.plist
+sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.smbd.plist
+
 ###############################################################################
 # Trackpad, mouse, keyboard, Bluetooth accessories, and input                 #
 ###############################################################################
