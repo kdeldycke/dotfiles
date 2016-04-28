@@ -70,7 +70,7 @@ brew install webkit2png
 sudo chown root:wheel "$(brew --prefix)/bin/htop"
 sudo chmod u+s "$(brew --prefix)/bin/htop"
 
-# Install binary apps
+# Install binary apps from homebrew.
 for PACKAGE in $BIN_PACKAGES
 do
    brew cask install --force "$PACKAGE"
