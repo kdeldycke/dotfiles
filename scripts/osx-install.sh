@@ -148,7 +148,11 @@ fi
 brew install duti
 duti -s org.chromium.Chromium http
 
-# Clean things up
+# Install Popcorn Time.
+rm -rf ~/Applications/Popcorn-Time.app
+wget -O - "https://get.popcorntime.sh/build/Popcorn-Time-0.3.9-Mac.tar.xz" | tar -xvJ --directory ~/Applications -f -
+
+# Clean things up.
 brew linkapps
 brew cleanup
 brew prune
