@@ -44,6 +44,7 @@ youtube-dl"
 BIN_PACKAGES="audacity
 firefox
 gimp
+handbrake
 hugin
 inkscape
 prey
