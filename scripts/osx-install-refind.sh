@@ -23,7 +23,7 @@ else
     sudo rm -rf /Volumes/esp/EFI/BOOT
 
     # Install custom bootloader.
-    ./refind-bin-$REFIND_VERSION/refind-install --alldrivers
+    ./refind-bin-$REFIND_VERSION/refind-install
 
     # Adjust personnal refind config.
     sudo ./refind-bin-$REFIND_VERSION/mountesp
