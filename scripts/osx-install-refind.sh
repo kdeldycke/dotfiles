@@ -11,7 +11,7 @@ if [[ $? -ne 0 ]]; then
 
 else
 
-    REFIND_VERSION="0.10.2"
+    REFIND_VERSION="0.10.3"
 
     # Download refind.
     curl -O http://netcologne.dl.sourceforge.net/project/refind/$REFIND_VERSION/refind-bin-$REFIND_VERSION.zip
