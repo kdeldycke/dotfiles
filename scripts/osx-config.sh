@@ -179,6 +179,9 @@ sudo defaults write /Library/Preferences/com.apple.Bluetooth ControllerPowerStat
 sudo launchctl unload /System/Library/LaunchDaemons/com.apple.blued.plist
 sudo launchctl load /System/Library/LaunchDaemons/com.apple.blued.plist
 
+# Disable wifi captive portal
+sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.captive.control Active -bool false
+
 # Disable remote apple events
 sudo systemsetup -setremoteappleevents off
 
