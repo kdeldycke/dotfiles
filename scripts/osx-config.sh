@@ -710,6 +710,10 @@ defaults write com.apple.terminal FocusFollowsMouse -bool true
 defaults write org.x.X11 wm_ffm -bool true
 defaults write org.x.X11 wm_click_through -bool true
 
+# Enable Secure Keyboard Entry in terminal.app.
+# See: http://security.stackexchange.com/q/47749
+defaults write com.apple.terminal SecureKeyboardEntry -bool true
+
 ###############################################################################
 # Time Machine                                                                #
 ###############################################################################
