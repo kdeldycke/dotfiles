@@ -201,6 +201,15 @@ systemsetup -setwakeonnetworkaccess off
 sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.AppleFileServer.plist
 sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.smbd.plist
 
+# Automatically lock the login keychain for inactivity after 6 hours.
+security set-keychain-settings -t 21600 -l ~/Library/Keychains/login.keychain
+
+# Disable Bonjour multicast advertisements
+sudo defaults write /Library/Preferences/com.apple.mDNSResponder.plist NoMulticastAdvertisements -bool YES
+
+# Disable diagnostic reports.
+sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.SubmitDiagInfo.plist
+
 ###############################################################################
 # Trackpad, mouse, keyboard, Bluetooth accessories, and input                 #
 ###############################################################################
