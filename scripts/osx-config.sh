@@ -164,6 +164,9 @@ sudo defaults write /Library/Preferences/com.apple.alf stealthenabled -int 1
 # Enable firewall logging
 sudo defaults write /Library/Preferences/com.apple.alf loggingenabled -int 1
 
+# Do not automatically allow signed software to receive incoming connections
+sudo defaults write /Library/Preferences/com.apple.alf allowsignedenabled -bool false
+
 # Reload the firewall
 # (uncomment if above is not commented out)
 launchctl unload /System/Library/LaunchAgents/com.apple.alf.useragent.plist
