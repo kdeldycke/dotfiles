@@ -56,6 +56,8 @@ do
 done
 brew install ack
 brew install cassandra
+brew install curl
+brew link --force curl
 brew install dockutil
 brew install exiftool
 brew install faad2
