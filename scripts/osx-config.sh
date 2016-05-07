@@ -23,7 +23,7 @@ kern.maxfilesperproc=18000
 EOF
 
 # Enable secure virtual memory
-sudo defaults write /Library/Preferences/com.apple.virtualMemory UseEncryptedSwap -bool yes
+sudo defaults write /Library/Preferences/com.apple.virtualMemory UseEncryptedSwap -bool true
 
 # Remove default content
 rm -rf ~/Downloads/About\ Downloads.lpdf
@@ -209,7 +209,7 @@ security set-keychain-settings -t 21600 -l ~/Library/Keychains/login.keychain
 sudo pmset destroyfvkeyonstandby 1
 
 # Disable Bonjour multicast advertisements
-sudo defaults write /Library/Preferences/com.apple.mDNSResponder.plist NoMulticastAdvertisements -bool YES
+sudo defaults write /Library/Preferences/com.apple.mDNSResponder.plist NoMulticastAdvertisements -bool true
 
 # Disable diagnostic reports.
 sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.SubmitDiagInfo.plist
