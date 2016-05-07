@@ -94,6 +94,7 @@ brew cask install --force steam
 brew cask install --force torbrowser
 brew cask install --force transmission
 brew cask install --force tunnelblick
+brew cask install --force virtualbox-extension-pack
 brew cask install --force xbox360-controller-driver
 
 # Install QuickLooks plugins
