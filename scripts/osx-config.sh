@@ -201,6 +201,15 @@ systemsetup -setwakeonnetworkaccess off
 sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.AppleFileServer.plist
 sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.smbd.plist
 
+# Display login window as name and password
+sudo defaults write /Library/Preferences/com.apple.loginwindow SHOWFULLNAME -bool true
+
+# Do not show password hints
+sudo defaults write /Library/Preferences/com.apple.loginwindow RetriesUntilHint -int 0
+
+# Disable guest account login
+sudo defaults write /Library/Preferences/com.apple.loginwindow GuestEnabled -bool false
+
 # Automatically lock the login keychain for inactivity after 6 hours.
 security set-keychain-settings -t 21600 -l ~/Library/Keychains/login.keychain
 
