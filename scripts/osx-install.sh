@@ -89,6 +89,7 @@ brew cask install --force insync
 brew cask install --force java
 brew cask install --force kiwix
 brew cask install --force libreoffice
+brew cask install --force openzfs
 brew cask install --force spectacle
 brew cask install --force steam
 brew cask install --force torbrowser

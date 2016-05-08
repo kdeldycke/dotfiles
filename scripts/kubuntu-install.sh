@@ -32,7 +32,7 @@ hfsplus hfsprogs hunspell-fr hunspell-fr-classical kdenlive kdesdk-scripts \
 kompare kwrite libavcodec-extra libimage-exiftool-perl lm-sensors mbr \
 mkvtoolnix mkvtoolnix-gui network-manager-openvpn ntfs-3g ntp p7zip-full pdftk picard \
 powertop psmisc sysfsutils system-config-lvm transcode ttf-ancient-fonts \
-unclutter vim-nox xfsprogs xsltproc
+unclutter vim-nox xfsprogs xsltproc zfs-dkms zfsutils-linux
 
 
 sudo aptitude install -y python-pip python-dev runsnakerun
