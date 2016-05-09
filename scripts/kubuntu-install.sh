@@ -24,15 +24,64 @@ do
 done
 
 # Install Ubuntu specific packages
-sudo aptitude install -y ack-grep aegisub apt-file avidemux-common \
-bitcoin-qt bleachbit ca-certificates chromium-browser \
-chromium-codecs-ffmpeg-extra cpufrequtils deborphan dmg2img driftnet efibootmgr \
-exfat-fuse exfat-utils faad gimp-plugin-registry gitg \
-hfsplus hfsprogs hunspell-fr hunspell-fr-classical kdenlive kdesdk-scripts \
-kompare kwrite libavcodec-extra libimage-exiftool-perl lm-sensors mbr \
-mkvtoolnix mkvtoolnix-gui network-manager-openvpn ntfs-3g ntp p7zip-full pdftk picard \
-powertop psmisc sysfsutils system-config-lvm transcode ttf-ancient-fonts \
-unclutter vim-nox xfsprogs xsltproc zfs-dkms zfsutils-linux
+PACKAGES="
+aegisub
+apt-file
+avidemux-common
+bitcoin-qt
+bleachbit
+ca-certificates
+chromium-browser
+chromium-codecs-ffmpeg-extra
+cpufrequtils
+deborphan
+dmg2img
+driftnet
+efibootmgr
+exfat-fuse
+exfat-utils
+faad
+gimp-plugin-registry
+gitg
+hfsplus
+hfsprogs
+hunspell-fr
+hunspell-fr-classical
+kdenlive
+kdesdk-scripts
+kompare
+kwrite
+libavcodec-extra
+libimage-exiftool-perl
+lm-sensors
+mbr
+mkvtoolnix
+mkvtoolnix-gui
+network-manager-openvpn
+ntfs-3g
+ntp
+p7zip-full
+pdftk
+picard
+powertop
+psmisc
+sysfsutils
+system-config-lvm
+transcode
+ttf-ancient-fonts
+unclutter
+vim-nox
+xfsprogs
+xsltproc
+zfs-dkms
+zfsutils-linux
+"
+# Install packages one by one for debug.
+#for p in $PACKAGES
+#do
+#    sudo aptitude install -y "$p"
+#done
+sudo aptitude install -y $PACKAGES
 
 
 sudo aptitude install -y python-pip python-dev runsnakerun

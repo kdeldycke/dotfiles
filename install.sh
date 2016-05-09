@@ -2,7 +2,8 @@
 set -x
 
 # We need to distinguish sources and binary packages for Brew & Cask on OSX
-COMMON_PACKAGES="apg
+COMMON_PACKAGES="
+apg
 avidemux
 bash
 bash-completion
@@ -39,9 +40,11 @@ unrar
 wget
 wireshark
 x264
-youtube-dl"
+youtube-dl
+"
 
-BIN_PACKAGES="audacity
+BIN_PACKAGES="
+audacity
 firefox
 gimp
 handbrake
@@ -50,7 +53,8 @@ inkscape
 prey
 subsurface
 virtualbox
-vlc"
+vlc
+"
 
 # Detect distribution
 if [ "$(uname -s)" == "Darwin" ]; then
@@ -123,7 +127,8 @@ else
 fi
 
 # Install & upgrade all global python modules
-PYTHON_PACKAGES="autopep8
+PYTHON_PACKAGES="
+autopep8
 bumpversion
 coverage
 gmvault
@@ -141,7 +146,8 @@ setuptools
 tox
 virtualenv
 virtualenvwrapper
-wheel"
+wheel
+"
 for p in $PYTHON_PACKAGES
 do
     pip install --upgrade "$p"
