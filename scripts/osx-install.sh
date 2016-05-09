@@ -167,6 +167,7 @@ wget -O "${HOME}/.bitbar/cask.1d.sh" https://github.com/matryer/bitbar-plugins/r
 wget -O "${HOME}/.bitbar/netinfo.3m.sh" https://github.com/matryer/bitbar-plugins/raw/master/Network/netinfo.60s.sh
 wget -O "${HOME}/.bitbar/disk.13m.sh" https://github.com/matryer/bitbar-plugins/raw/master/System/mdf.1m.sh
 chmod +x ${HOME}/.bitbar/*.sh
+open -a BitBar
 
 # Clean things up.
 brew linkapps
