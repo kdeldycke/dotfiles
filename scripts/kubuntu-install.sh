@@ -87,10 +87,6 @@ sudo aptitude install -y $PACKAGES
 sudo aptitude install -y python-pip python-dev runsnakerun
 
 
-sudo aptitude install -y libpq-dev
-pip install --upgrade pgcli
-
-
 sudo aptitude install -y virt-manager
 sudo usermod -a -G libvirtd kevin
 sudo usermod -a -G kvm kevin

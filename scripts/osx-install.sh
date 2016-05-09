@@ -140,9 +140,6 @@ brew install wxmac
 brew install wxpython
 pip install --upgrade RunSnakeRun
 
-# Install pgcli
-brew install pgcli
-
 # Install uBlock for Safari.
 defaults read ~/Library/Safari/Extensions/extensions | grep --quiet "net.gorhill.uBlock"
 if [[ $? -ne 0 ]]; then

@@ -28,6 +28,7 @@ mercurial
 mpv
 optipng
 p7zip
+pgcli
 pngcrush
 recode
 rename
