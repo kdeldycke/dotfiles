@@ -159,7 +159,7 @@ rm -rf ~/Applications/Popcorn-Time.app
 wget -O - "https://get.popcorntime.sh/build/Popcorn-Time-0.3.9-Mac.tar.xz" | tar -xvJ --directory ~/Applications -f -
 
 # Install and configure bitbar.
-brew cask installi --force bitbar
+brew cask install --force bitbar
 defaults write com.matryer.BitBar pluginsDirectory "~/.bitbar"
 wget -O "${HOME}/.bitbar/btc.17m.sh" https://github.com/matryer/bitbar-plugins/raw/master/Bitcoin/bitfinex.com/bitfinex_btcusd.sh
 wget -O "${HOME}/.bitbar/brew.1d.sh" https://github.com/matryer/bitbar-plugins/raw/master/Dev/Homebrew/brew-updates.1h.sh
