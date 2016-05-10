@@ -40,7 +40,7 @@ brew tap homebrew/dupes
 brew tap caskroom/cask
 
 # Install OSX system requirements
-brew cask install --force xquartz
+brew cask install xquartz
 
 # Install a brand new Python
 brew install python
@@ -77,37 +77,37 @@ sudo chmod u+s "$(brew --prefix)/bin/htop"
 # Install binary apps from homebrew.
 for PACKAGE in $BIN_PACKAGES
 do
-   brew cask install --force "$PACKAGE"
+   brew cask install "$PACKAGE"
 done
-brew cask install --force aerial
-brew cask install --force bitcoin-core
-brew cask install --force chromium
-brew cask install --force dropbox
-brew cask install --force flux
-brew cask install --force gitup
-brew cask install --force insync
-brew cask install --force java
-brew cask install --force kiwix
-brew cask install --force libreoffice
-brew cask install --force openzfs
-brew cask install --force spectacle
-brew cask install --force steam
-brew cask install --force torbrowser
-brew cask install --force transmission
-brew cask install --force tunnelblick
-brew cask install --force virtualbox-extension-pack
-brew cask install --force xbox360-controller-driver
+brew cask install aerial
+brew cask install bitcoin-core
+brew cask install chromium
+brew cask install dropbox
+brew cask install flux
+brew cask install gitup
+brew cask install insync
+brew cask install java
+brew cask install kiwix
+brew cask install libreoffice
+brew cask install openzfs
+brew cask install spectacle
+brew cask install steam
+brew cask install torbrowser
+brew cask install transmission
+brew cask install tunnelblick
+brew cask install virtualbox-extension-pack
+brew cask install xbox360-controller-driver
 
 # Install QuickLooks plugins
 # Source: https://github.com/sindresorhus/quick-look-plugins
-brew cask install --force epubquicklook
-brew cask install --force qlcolorcode
-brew cask install --force qlimagesize
-brew cask install --force qlmarkdown
-brew cask install --force qlstephen
-brew cask install --force quicklook-json
-brew cask install --force suspicious-package
-brew cask install --force webpquicklook
+brew cask install epubquicklook
+brew cask install qlcolorcode
+brew cask install qlimagesize
+brew cask install qlmarkdown
+brew cask install qlstephen
+brew cask install quicklook-json
+brew cask install suspicious-package
+brew cask install webpquicklook
 qlmanage -r
 
 # Install GNU `sed`, overwriting the built-in `sed`.
@@ -118,7 +118,7 @@ brew install homebrew/dupes/grep
 brew install homebrew/dupes/openssh
 
 # Add extra filesystem support.
-brew cask install --force osxfuse
+brew cask install osxfuse
 brew install homebrew/fuse/ext2fuse
 brew install homebrew/fuse/ext4fuse
 brew install homebrew/fuse/ntfs-3g
@@ -156,7 +156,7 @@ rm -rf ~/Applications/Popcorn-Time.app
 wget -O - "https://get.popcorntime.sh/build/Popcorn-Time-0.3.9-Mac.tar.xz" | tar -xvJ --directory ~/Applications -f -
 
 # Install and configure bitbar.
-brew cask install --force bitbar
+brew cask install bitbar
 defaults write com.matryer.BitBar pluginsDirectory "~/.bitbar"
 wget -O "${HOME}/.bitbar/btc.17m.sh" https://github.com/matryer/bitbar-plugins/raw/master/Bitcoin/bitfinex.com/bitfinex_btcusd.sh
 wget -O "${HOME}/.bitbar/brew.1d.sh" https://github.com/matryer/bitbar-plugins/raw/master/Dev/Homebrew/brew-updates.1h.sh
