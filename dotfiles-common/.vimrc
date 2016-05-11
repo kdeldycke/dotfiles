@@ -49,6 +49,7 @@ NeoBundle 'altercation/vim-colors-solarized.git'
 
 " Syntax
 NeoBundleLazy 'vim-scripts/JSON.vim', {'autoload': {'filetypes': ['json']}}
+NeoBundleLazy 'kchmck/vim-coffee-script', {'autoload': {'filetypes': ['coffee']}}
 NeoBundleLazy 'vim-scripts/po.vim--gray', {'autoload': {'filetypes': ['po']}}
 NeoBundleLazy 'vim-scripts/plist.vim', {'autoload': {'filetypes': ['plist']}}
 NeoBundleLazy 'hunner/vim-plist', {'autoload': {'filetypes': ['plist']}}
