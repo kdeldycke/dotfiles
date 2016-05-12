@@ -14,23 +14,23 @@ else
     REFIND_VERSION="0.10.3"
 
     # Download refind.
-    curl -O http://netcologne.dl.sourceforge.net/project/refind/$REFIND_VERSION/refind-bin-$REFIND_VERSION.zip
-    unzip ./refind-bin-$REFIND_VERSION.zip
+    wget http://netcologne.dl.sourceforge.net/project/refind/$REFIND_VERSION/refind-bin-$REFIND_VERSION.zip -O "$TMPDIR/refind-bin-$REFIND_VERSION.zip"
+    unzip "$TMPDIR/refind-bin-$REFIND_VERSION.zip" -d "$TMPDIR"
 
     # Remove previous installation.
-    sudo ./refind-bin-$REFIND_VERSION/mountesp
+    sudo $TMPDIR/refind-bin-$REFIND_VERSION/mountesp
     sudo rm -rf /Volumes/esp/EFI/refind
     sudo rm -rf /Volumes/esp/EFI/BOOT
 
     # Install custom bootloader.
-    ./refind-bin-$REFIND_VERSION/refind-install
+    $TMPDIR/refind-bin-$REFIND_VERSION/refind-install --yes
 
     # Adjust personnal refind config.
-    sudo ./refind-bin-$REFIND_VERSION/mountesp
+    sudo $TMPDIR/refind-bin-$REFIND_VERSION/mountesp
     sudo sed -i "s/timeout 20/timeout 1/" /Volumes/esp/EFI/refind/refind.conf
     sudo sed -i "s/#default_selection 1/default_selection linux/" /Volumes/esp/EFI/refind/refind.conf
 
     # Cleanup.
-    rm -rf ./refind-bin-$REFIND_VERSION*
+    rm -rf $TMPDIR/refind-bin-$REFIND_VERSION*
 
 fi
