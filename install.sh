@@ -4,7 +4,6 @@ set -x
 # We need to distinguish sources and binary packages for Brew & Cask on OSX
 COMMON_PACKAGES="
 apg
-avidemux
 bash
 bash-completion
 colordiff

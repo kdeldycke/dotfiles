@@ -55,6 +55,7 @@ do
    brew install "$PACKAGE"
 done
 brew install ack
+brew install avidemux
 brew install cassandra
 brew install curl
 brew link --force curl

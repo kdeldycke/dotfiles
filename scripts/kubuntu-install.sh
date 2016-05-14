@@ -26,7 +26,6 @@ done
 # Install Ubuntu specific packages
 PACKAGES="
 apt-file
-avidemux-common
 bitcoin-qt
 bleachbit
 ca-certificates
