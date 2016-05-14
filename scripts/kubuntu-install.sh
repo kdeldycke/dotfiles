@@ -25,7 +25,6 @@ done
 
 # Install Ubuntu specific packages
 PACKAGES="
-aegisub
 apt-file
 avidemux-common
 bitcoin-qt
