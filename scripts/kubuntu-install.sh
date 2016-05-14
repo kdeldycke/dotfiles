@@ -101,7 +101,7 @@ cabal install shellcheck
 
 
 # Install Dropbox if not already there
-[ ! -f ~/.dropbox-dist/dropbox ] && wget -O - "http://www.dropbox.com/download?plat=lnx.x86_64" | tar -xvz --directory ~ -f -
+[ ! -f ~/.dropbox-dist/dropbox ] && wget -O - "https://www.dropbox.com/download?plat=lnx.x86_64" | tar -xvz --directory ~ -f -
 
 
 # Install google music manager
