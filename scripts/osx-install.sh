@@ -91,6 +91,7 @@ brew cask install insync
 brew cask install java
 brew cask install kiwix
 brew cask install libreoffice
+brew cask install musicbrainz-picard
 brew cask install openzfs
 brew cask install spectacle
 brew cask install steam
