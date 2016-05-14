@@ -1,26 +1,26 @@
 #!/usr/bin/env bash
 set -x
 
-sudo apt-get update
-sudo apt-get install -y aptitude apt-transport-https software-properties-common
+sudo apt update
+sudo apt install -y apt-transport-https software-properties-common
 
 sudo add-apt-repository -y ppa:kdenlive/kdenlive-testing
 sudo add-apt-repository -y ppa:bitcoin/bitcoin
 sudo add-apt-repository -y ppa:subsurface/subsurface
 sudo add-apt-repository -y ppa:micahflee/ppa
 
-sudo aptitude update
-sudo aptitude upgrade -y
+sudo apt update
+sudo apt upgrade -y
 
 
 # Install common packages
 for p in $COMMON_PACKAGES
 do
-    sudo aptitude install -y "$p"
+    sudo apt install -y "$p"
 done
 for p in $BIN_PACKAGES
 do
-    sudo aptitude install -y "$p"
+    sudo apt install -y "$p"
 done
 
 # Install Ubuntu specific packages
@@ -79,20 +79,20 @@ zfsutils-linux
 # Install packages one by one for debug.
 #for p in $PACKAGES
 #do
-#    sudo aptitude install -y "$p"
+#    sudo apt install -y "$p"
 #done
-sudo aptitude install -y $PACKAGES
+sudo apt install -y $PACKAGES
 
 
-sudo aptitude install -y python-pip python-dev runsnakerun
+sudo apt install -y python-pip python-dev runsnakerun
 
 
-sudo aptitude install -y virt-manager
+sudo apt install -y virt-manager
 sudo usermod -a -G libvirtd kevin
 sudo usermod -a -G kvm kevin
 
 
-sudo aptitude install -y redshift gtk-redshift geoclue
+sudo apt install -y redshift gtk-redshift geoclue
 
 
 # Install libCSS to decode encrypted DVDs
@@ -100,7 +100,7 @@ sudo /usr/share/doc/libdvdread4/install-css.sh
 
 
 # Install cabal and shellcheck
-sudo aptitude install -y cabal-install
+sudo apt install -y cabal-install
 cabal update
 cabal install shellcheck
 
@@ -120,18 +120,18 @@ wget -qO - https://d2t3ff60b2tol4.cloudfront.net/services@insynchq.com.gpg.key |
 sudo tee /etc/apt/sources.list.d/insync-wily.list <<-EOF
     deb http://apt.insynchq.com/ubuntu wily non-free contrib
 EOF
-sudo aptitude update
-sudo aptitude install -y insync insync-dolphin
+sudo apt update
+sudo apt install -y insync insync-dolphin
 
 
 # Install Steam
 sudo dpkg --add-architecture i386
-sudo aptitude update
-sudo aptitude install -y steam mesa-utils
+sudo apt update
+sudo apt install -y steam mesa-utils
 
 
 # Install Tor Browser.
-sudo aptitude install -y torbrowser-launcher
+sudo apt install -y torbrowser-launcher
 torbrowser-launcher
 # The launcher package above starts tor service by default to download the
 # initial browser binary. See:
@@ -235,20 +235,20 @@ libbaloopim4
 # Remove packages one by one for debug.
 #for p in $UNUSED_PACKAGES
 #do
-#    sudo aptitude remove "$p"
+#    sudo apt remove "$p"
 #done
-sudo aptitude remove -y $UNUSED_PACKAGES
+sudo apt remove -y $UNUSED_PACKAGES
 
 # Remove unused default system apps.
-sudo aptitude remove -y nano kubuntu-web-shortcuts
+sudo apt remove -y nano kubuntu-web-shortcuts
 
 # Remove Canonical crash reporters.
-sudo aptitude remove -y apport apport-kde apport-symptoms kde-config-whoopsie python3-apport whoopsie whoopsie-preferences libwhoopsie-preferences0
+sudo apt remove -y apport apport-kde apport-symptoms kde-config-whoopsie python3-apport whoopsie whoopsie-preferences libwhoopsie-preferences0
 
 sudo apt-file update
 
-sudo deborphan | xargs sudo apt-get -y remove --purge
-sudo apt-get -y autoremove
+sudo deborphan | xargs sudo apt -y remove --purge
+sudo apt -y autoremove
 
 # Clean the whole system based on preset.
 sudo bleachbit --clean --preset
