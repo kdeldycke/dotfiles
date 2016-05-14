@@ -105,9 +105,10 @@ cabal install shellcheck
 
 
 # Install google music manager
-wget "https://dl.google.com/linux/direct/google-musicmanager-beta_current_amd64.deb"
-sudo dpkg -i ./google-musicmanager-beta_current_amd64.deb
-rm ./google-musicmanager-beta_current_amd64.deb
+wget -qO - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+wget -P /tmp "https://dl.google.com/linux/direct/google-musicmanager-beta_current_amd64.deb"
+sudo dpkg -i /tmp/google-musicmanager-beta_current_amd64.deb
+rm /tmp/google-musicmanager-beta_current_amd64.deb
 
 
 # Install insync
