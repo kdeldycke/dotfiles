@@ -50,6 +50,7 @@ kdesdk-scripts
 kompare
 kwrite
 libavcodec-extra
+libdvd-pkg
 libimage-exiftool-perl
 lm-sensors
 mbr
@@ -91,10 +92,6 @@ sudo usermod -a -G kvm kevin
 
 
 sudo apt install -y redshift gtk-redshift geoclue
-
-
-# Install libCSS to decode encrypted DVDs
-sudo /usr/share/doc/libdvdread4/install-css.sh
 
 
 # Install cabal and shellcheck
