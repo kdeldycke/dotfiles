@@ -53,7 +53,6 @@ inkscape
 prey
 subsurface
 virtualbox
-vlc
 "
 
 # Detect distribution
