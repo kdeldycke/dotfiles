@@ -149,7 +149,7 @@ wget -O - "https://get.popcorntime.sh/build/Popcorn-Time-0.3.9-Linux-64.tar.xz" 
 # Install local copy of wikipedia.
 rm -rf ~/wikipedia
 mkdir -p ~/wikipedia
-wget -O - "http://download.kiwix.org/bin/kiwix-linux-x86_64.tar.bz2" | tar -xvj --directory ~/wikipedia -f -
+wget -O - "https://download.kiwix.org/bin/kiwix-linux-x86_64.tar.bz2" | tar -xvj --directory ~/wikipedia -f -
 
 
 # Remove all unused default KDE apps.
