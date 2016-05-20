@@ -84,6 +84,7 @@ brew cask install aerial
 brew cask install bitcoin-core
 brew cask install chromium
 brew cask install dropbox
+brew cask install dupeguru
 brew cask install flux
 brew cask install gitup
 brew cask install google-play-music-desktop-player

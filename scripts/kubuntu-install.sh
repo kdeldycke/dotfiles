@@ -8,6 +8,7 @@ sudo add-apt-repository -y ppa:kdenlive/kdenlive-testing
 sudo add-apt-repository -y ppa:bitcoin/bitcoin
 sudo add-apt-repository -y ppa:subsurface/subsurface
 sudo add-apt-repository -y ppa:micahflee/ppa
+sudo add-apt-repository -y ppa:hsoft/ppa
 
 sudo apt update
 sudo apt upgrade -y
@@ -35,6 +36,7 @@ cpufrequtils
 deborphan
 dmg2img
 driftnet
+dupeguru-se
 efibootmgr
 exfat-fuse
 exfat-utils
