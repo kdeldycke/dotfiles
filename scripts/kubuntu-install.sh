@@ -145,7 +145,7 @@ wget https://addons.mozilla.org/firefox/downloads/file/319372/ -O \
 # Install Popcorn Time
 rm -rf ~/Popcorn-Time
 mkdir -p ~/Popcorn-Time
-wget -O - "https://get.popcorntime.sh/build/Popcorn-Time-0.3.9-Linux-64.tar.xz" | tar -xvJ --directory ~/Popcorn-Time -f -
+wget -O - "https://get.popcorntime.sh/build/Popcorn-Time-0.3.9-Linux-64.tar.xz" | tar -xvJ --strip-components 1 --directory ~/Popcorn-Time -f -
 
 
 # Install local copy of wikipedia.
