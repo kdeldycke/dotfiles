@@ -28,7 +28,8 @@ else
     # Adjust personnal refind config.
     sudo $TMPDIR/refind-bin-$REFIND_VERSION/mountesp
     sudo sed -i "s/timeout 20/timeout 1/" /Volumes/esp/EFI/refind/refind.conf
-    sudo sed -i "s/#default_selection 1/default_selection linux/" /Volumes/esp/EFI/refind/refind.conf
+    # See: http://www.rodsbooks.com/refind/configfile.html#default
+    # sudo sed -i "s/#default_selection 1/default_selection linux/" /Volumes/esp/EFI/refind/refind.conf
 
     # Cleanup.
     rm -rf $TMPDIR/refind-bin-$REFIND_VERSION*
