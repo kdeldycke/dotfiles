@@ -81,18 +81,21 @@ do
    brew cask install "$PACKAGE"
 done
 brew cask install aerial
+brew cask install android-file-transfer
 brew cask install bitcoin-core
 brew cask install chromium
 brew cask install dropbox
 brew cask install dupeguru
 brew cask install flux
 brew cask install gitup
+brew cask install google-drive
 brew cask install google-play-music-desktop-player
 brew cask install insync
 brew cask install java
 brew cask install kiwix
 brew cask install libreoffice
 brew cask install musicbrainz-picard
+brew cask install music-manager
 brew cask install openzfs
 brew cask install spectacle
 brew cask install steam
