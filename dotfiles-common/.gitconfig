@@ -37,6 +37,8 @@
     log = true
 [branch]
     autosetuprebase = remote
+[rebase]
+    autostash = true
 [alias]
     br = branch
     ci = commit
