@@ -21,6 +21,8 @@
     renames = copies
     # Source: http://blog.apiaxle.com/post/handy-git-tips-to-stop-you-getting-fired/
     algorithm = patience
+    # Source: https://github.com/blog/2188-git-2-9-has-been-released/#beautiful-diffs
+    compactionHeuristic = true
 [pull]
     # Source: http://stackoverflow.com/a/18756102/487610
     rebase = preserve
