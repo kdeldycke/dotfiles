@@ -30,6 +30,9 @@
     # Prevent accidental pushes to branches which you’re not ready to push yet.
     # Source: http://mislav.uniqpath.com/2010/07/git-tips/
     default = tracking
+[submodule]
+    # Source: https://github.com/blog/2188-git-2-9-has-been-released/#faster-and-more-flexible-submodules
+    fetchJobs = 2
 [merge]
     log = true
 [branch]
