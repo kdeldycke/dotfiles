@@ -82,6 +82,7 @@ do
 done
 brew cask install aerial
 brew cask install android-file-transfer
+brew cask install atom
 brew cask install bitcoin-core
 brew cask install chromium
 brew cask install dropbox
