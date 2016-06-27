@@ -1,4 +1,4 @@
-language: bash
+language: generic
 sudo: required
 
 matrix:
