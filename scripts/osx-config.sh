@@ -79,6 +79,9 @@ defaults write com.apple.systemuiserver menuExtras -array \
         "/System/Library/CoreServices/Menu Extras/Battery.menu" \
         "/System/Library/CoreServices/Menu Extras/Clock.menu"
 
+# Set highlight color to green
+#defaults write NSGlobalDomain AppleHighlightColor -string "0.764700 0.976500 0.568600"
+
 # Set sidebar icon size to medium
 defaults write NSGlobalDomain NSTableViewDefaultSizeMode -int 2
 
@@ -314,6 +317,9 @@ sudo systemsetup -setusingnetworktime on
 # Disable auto-correct
 defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
 
+# Stop iTunes from responding to the keyboard media keys
+launchctl unload -w /System/Library/LaunchAgents/com.apple.rcd.plist 2> /dev/null
+
 ###############################################################################
 # Screen                                                                      #
 ###############################################################################
@@ -394,6 +400,11 @@ defaults write NSGlobalDomain com.apple.springing.delay -float 0
 # Avoid creating .DS_Store files on network volumes
 defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 
+# Disable disk image verification
+#defaults write com.apple.frameworks.diskimages skip-verify -bool true
+#defaults write com.apple.frameworks.diskimages skip-verify-locked -bool true
+#defaults write com.apple.frameworks.diskimages skip-verify-remote -bool true
+
 # Automatically open a new Finder window when a volume is mounted
 defaults write com.apple.frameworks.diskimages auto-open-ro-root -bool true
 defaults write com.apple.frameworks.diskimages auto-open-rw-root -bool true
@@ -431,6 +442,9 @@ defaults write com.apple.finder WarnOnEmptyTrash -bool false
 
 # Enable AirDrop over Ethernet and on unsupported Macs running Lion
 defaults write com.apple.NetworkBrowser BrowseAllInterfaces -bool true
+
+# Enable the MacBook Air SuperDrive on any Mac
+#sudo nvram boot-args="mbasd=1"
 
 # Show the ~/Library folder
 chflags nohidden ~/Library
@@ -514,6 +528,10 @@ defaults write com.apple.dock showhidden -bool true
 
 # Reset Launchpad, but keep the desktop wallpaper intact
 find "${HOME}/Library/Application Support/Dock" -name "*-*.db" -maxdepth 1 -delete
+
+# Add iOS & Watch Simulator to Launchpad
+#sudo ln -sf "/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app" "/Applications/Simulator.app"
+#sudo ln -sf "/Applications/Xcode.app/Contents/Developer/Applications/Simulator (Watch).app" "/Applications/Simulator (Watch).app"
 
 # Add a spacer to the left side of the Dock (where the applications are)
 #defaults write com.apple.dock persistent-apps -array-add '{tile-data={}; tile-type="spacer-tile";}'
@@ -602,18 +620,19 @@ defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebK
 # Add a context menu item for showing the Web Inspector in web views
 defaults write NSGlobalDomain WebKitDeveloperExtras -bool true
 
-# Enable Continuous Spellchecking and Disabled Auto-correct
+# Enable continuous spellchecking
 defaults write com.apple.Safari WebContinuousSpellCheckingEnabled -bool true
+# Disable auto-correct
 defaults write com.apple.Safari WebAutomaticSpellingCorrectionEnabled -bool false
 
-# Disable AutoFill in Safari.
+# Disable AutoFill
 defaults write com.apple.Safari AllowBypassOfAutocompleteOff -bool false
 defaults write com.apple.Safari AutoFillFromAddressBook -bool false
 defaults write com.apple.Safari AutoFillPasswords -bool false
 defaults write com.apple.Safari AutoFillCreditCardData -bool false
 defaults write com.apple.Safari AutoFillMiscellaneousForms -bool false
 
-# Warn About Fraudulent Websites
+# Warn about fraudulent websites
 defaults write com.apple.Safari WarnAboutFraudulentWebsites -bool true
 
 # Disable plug-ins
@@ -628,18 +647,11 @@ defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebK
 defaults write com.apple.Safari WebKitJavaScriptCanOpenWindowsAutomatically -bool false
 defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2JavaScriptCanOpenWindowsAutomatically -bool false
 
-# Do not track
+# Enable “Do Not Track”
 defaults write com.apple.Safari SendDoNotTrackHTTPHeader -bool true
 
 # Update extensions automatically
 defaults write com.apple.Safari InstallExtensionUpdatesAutomatically -bool true
-
-###############################################################################
-# iTunes                                                                      #
-###############################################################################
-
-# Stop iTunes from responding to the keyboard media keys
-launchctl unload -w /System/Library/LaunchAgents/com.apple.rcd.plist 2> /dev/null
 
 ###############################################################################
 # Mail                                                                        #
@@ -774,8 +786,8 @@ defaults write com.apple.terminal FocusFollowsMouse -bool true
 defaults write org.x.X11 wm_ffm -bool true
 defaults write org.x.X11 wm_click_through -bool true
 
-# Enable Secure Keyboard Entry in terminal.app.
-# See: http://security.stackexchange.com/q/47749
+# Enable Secure Keyboard Entry in Terminal.app
+# See: https://security.stackexchange.com/a/47786/8918
 defaults write com.apple.terminal SecureKeyboardEntry -bool true
 
 ###############################################################################
@@ -832,11 +844,10 @@ defaults write com.apple.DiskUtility advanced-image-options -bool true
 sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.efax.plist
 
 # Auto-play videos when opened with QuickTime Player
-defaults write com.apple.QuickTimePlayerX MGPlayMovieOnOpen 1
+defaults write com.apple.QuickTimePlayerX MGPlayMovieOnOpen -bool true
 
 ###############################################################################
 # Mac App Store                                                               #
-# Source: https://discussions.apple.com/message/27585476#27585476             #
 ###############################################################################
 
 # Enable the WebKit Developer Tools in the Mac App Store
@@ -860,10 +871,10 @@ defaults write com.apple.SoftwareUpdate CriticalUpdateInstall -int 1
 # Automatically download apps purchased on other Macs
 defaults write com.apple.SoftwareUpdate ConfigDataInstall -int 1
 
-# Turn on apps auto-update
+# Turn on app auto-update
 defaults write com.apple.commerce AutoUpdate -bool true
 
-# Allow the App Store to reboot machine on OSX updates
+# Allow the App Store to reboot machine on macOS updates
 defaults write com.apple.commerce AutoUpdateRestartRequired -bool true
 
 ###############################################################################
