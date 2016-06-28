@@ -97,6 +97,7 @@ brew cask install libreoffice
 brew cask install musicbrainz-picard
 brew cask install music-manager
 brew cask install openzfs
+brew cask install rowanj-gitx
 brew cask install spectacle
 brew cask install steam
 brew cask install torbrowser
