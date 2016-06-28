@@ -324,7 +324,7 @@ launchctl unload -w /System/Library/LaunchAgents/com.apple.rcd.plist 2> /dev/nul
 # Screen                                                                      #
 ###############################################################################
 
-# Start screen savec after 10 minutes
+# Start screen saver after 10 minutes
 defaults -currentHost write com.apple.screensaver idleTime -int 600
 
 # Require password immediately after sleep or screen saver begins
