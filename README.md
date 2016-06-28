@@ -76,9 +76,12 @@ Maintenance
 
 Once in a while, compare `scripts/osx-config.sh` file with its upstream
 template from [Mathias Bynens `.macos`
-](https://github.com/mathiasbynens/dotfiles/blob/master/.macos) dotfile. Then
-merge differences to reduce the differences. This is going to greatly improve
-the maintenance of OSX configuration.
+](https://github.com/mathiasbynens/dotfiles/blob/master/.macos) dotfile:
+
+    $ curl https://raw.githubusercontent.com/mathiasbynens/dotfiles/master/.macos | diff -ru - ./scripts/osx-config.sh
+
+Then merge differences to reduce the differences. This is going to greatly
+improve the maintenance of OSX configuration.
 
 
 Old versions
