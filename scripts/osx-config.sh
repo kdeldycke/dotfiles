@@ -985,8 +985,9 @@ open ~/Applications/Flux.app
 ###############################################################################
 
 for app in "Activity Monitor" "Address Book" "Calendar" "Contacts" "cfprefsd" \
-	"Dock" "Finder" "Google Chrome" "Mail" "Messages" "Safari" "Spectacle" \
-    "SystemUIServer" "Terminal" "iCal"; do
+    "Dock" "Finder" "Google Chrome" "Mail" "Messages" \
+    "Photos" "Safari" "Spectacle" "SystemUIServer" "Terminal" \
+    "Transmission" "iCal"; do
 	killall "${app}" &> /dev/null
 done
 echo "Done. Note that some of these changes require a logout/restart to take effect."
