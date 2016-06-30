@@ -132,6 +132,7 @@ bumpversion
 coverage
 gmvault
 httpie
+jupyter
 mccabe
 nose
 nose-progressive
