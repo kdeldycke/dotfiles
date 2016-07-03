@@ -88,6 +88,7 @@ brew cask install chromium
 brew cask install dropbox
 brew cask install dupeguru
 brew cask install flux
+brew cask install ftdi-vcp-driver
 brew cask install gitup
 brew cask install google-drive
 brew cask install google-play-music-desktop-player
