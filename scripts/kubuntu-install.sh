@@ -58,6 +58,7 @@ lm-sensors
 mbr
 mkvtoolnix
 mkvtoolnix-gui
+mpv
 network-manager-openvpn
 ntfs-3g
 ntp

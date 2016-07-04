@@ -24,7 +24,6 @@ jnettop
 lame
 legit
 mercurial
-mpv
 optipng
 p7zip
 pgcli

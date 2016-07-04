@@ -159,6 +159,13 @@ fi
 brew install duti
 duti -s org.chromium.Chromium http
 
+# Install mpv.app so we can set it as default player
+brew install mpv --with-bundle
+brew linkapps mpv
+duti -s io.mpv api
+duti -s io.mpv mkv
+duti -s io.mpv mp4
+
 # Install Popcorn Time.
 rm -rf ~/Applications/Popcorn-Time.app
 wget -O - "https://get.popcorntime.sh/build/Popcorn-Time-0.3.9-Mac.tar.xz" | tar -xvJ --directory ~/Applications -f -
