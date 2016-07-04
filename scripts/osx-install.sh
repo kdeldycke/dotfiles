@@ -159,7 +159,8 @@ fi
 brew install duti
 duti -s org.chromium.Chromium http
 
-# Install mpv.app so we can set it as default player
+# Install mpv.app so we can set it as default player.
+# Source: https://github.com/mpv-player/mpv/wiki/FAQ#how-can-i-make-mpv-the-default-application-to-open-movie-files-on-osx
 brew install mpv --with-bundle
 brew linkapps mpv
 duti -s io.mpv api
