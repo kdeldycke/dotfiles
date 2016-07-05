@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# <bitbar.title>PackageManager</bitbar.title>
-# <bitbar.version>v1.0.0</bitbar.version>
+# <bitbar.title>Package Manager</bitbar.title>
+# <bitbar.version>v1.0</bitbar.version>
 # <bitbar.author>Kevin Deldycke</bitbar.author>
 # <bitbar.author.github>kdeldycke</bitbar.author.github>
-# <bitbar.desc>List available updates and allows individual or full upgrades.
-# </bitbar.desc>
-# <bitbar.dependencies>python,homebrew</bitbar.dependencies>
-# <bitbar.image></bitbar.image>
+# <bitbar.desc>List package updates available from Homebrew and Cask.
+# Allows individual or full upgrades (if available).</bitbar.desc>
+# <bitbar.dependencies>python,homebrew,cask</bitbar.dependencies>
+# <bitbar.image>https://github.com/kdeldycke/dotfiles/tree/master/dotfiles-osx/.bitbar/package_manager_screenshot.png</bitbar.image>
+# <bitbar.abouturl>https://github.com/kdeldycke/dotfiles/blob/master/dotfiles-osx/.bitbar/package_manager.7h.py</bitbar.abouturl>
 
 from __future__ import print_function, unicode_literals
 
