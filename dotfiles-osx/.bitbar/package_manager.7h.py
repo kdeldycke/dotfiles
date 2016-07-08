@@ -39,12 +39,12 @@ Changelog
 
 from __future__ import print_function, unicode_literals
 
-from subprocess import Popen, PIPE
-import sys
 import json
 import os
-from operator import methodcaller
 import re
+import sys
+from operator import methodcaller
+from subprocess import PIPE, Popen
 
 
 # TODO: add cleanup commands.
