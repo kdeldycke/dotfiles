@@ -18,6 +18,7 @@ Changelog
 
 * Add changelog.
 * Add reference to package manager's issues.
+* Force Cask update before evaluating available packages.
 
 1.1 (2016-07-07)
 ----------------
