@@ -17,6 +17,7 @@ Changelog
 --------------------
 
 * Add changelog.
+* Add reference to package manager's issues.
 
 1.1 (2016-07-07)
 ----------------
@@ -142,22 +143,28 @@ class Cask(Homebrew):
         # List installed packages.
         output = self.run(self.cli, 'cask', 'list', '--versions')
 
+        # Inspect package one by one as `brew cask list` is not reliable. See:
+        # https://github.com/caskroom/homebrew-cask/blob/master/doc
+        # /reporting_bugs/brew_cask_list_shows_wrong_information.md
         for installed_pkg in output.strip().split('\n'):
             name, versions = installed_pkg.split(' ', 1)
 
-            # `brew cask list` is broken. Use heuristics to guess the currently
-            # installed version.
-            # See: https://github.com/caskroom/homebrew-cask/issues/14058
+            # Use heuristics to guess installed version.
             versions = sorted([
                 v.strip() for v in versions.split(',') if v.strip()])
             if len(versions) > 1 and 'latest' in versions:
                 versions.remove('latest')
             version = versions[-1] if versions else '?'
 
-            # Look closer to the package to guess its state.
+            # TODO: Support packages removed from repository (reported with a
+            # `(!)` flag). See: https://github.com/caskroom/homebrew-cask/blob
+            # /master/doc/reporting_bugs
+            # /uninstall_wrongly_reports_cask_as_not_installed.md
+
+            # Inspect the package closer to evaluate its state.
             output = self.run(self.cli, 'cask', 'info', name)
 
-            # Package is up-to-date.
+            # Consider package as up-to-date if installed.
             if output.find('Not installed') == -1:
                 continue
 
@@ -169,11 +176,20 @@ class Cask(Homebrew):
                 'latest_version': latest_version})
 
     def update_cli(self, package_name):
+        """ Install a package.
+
+        TODO: wait for https://github.com/caskroom/homebrew-cask/issues/22647
+        so we can force a cleanup in one go, as we do above with vanilla
+        Homebrew.
+        """
         return self.bitbar_cli_format(
             "{} cask install {}".format(self.cli, package_name))
 
     def update_all_cli(self):
-        """ Cask has no way to update all outdated packages. """
+        """ Cask has no way to update all outdated packages.
+
+        See: https://github.com/caskroom/homebrew-cask/issues/4678
+        """
         return
 
 
@@ -208,7 +224,11 @@ class Pip(PackageManager):
             "{} install --upgrade {}".format(self.cli, package_name))
 
     def update_all_cli(self):
-        """ Pip doesn't support full upgrade yet. """
+        """ Produce a long CLI with all upgradeable package names.
+
+        This work around the lack of proper full upgrade command in Pip.
+        See: https://github.com/pypa/pip/issues/59
+        """
         return
 
 
