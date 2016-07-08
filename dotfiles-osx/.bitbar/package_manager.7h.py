@@ -1,13 +1,39 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # <bitbar.title>Package Manager</bitbar.title>
-# <bitbar.version>v1.1</bitbar.version>
+# <bitbar.version>v1.2.dev</bitbar.version>
 # <bitbar.author>Kevin Deldycke</bitbar.author>
 # <bitbar.author.github>kdeldycke</bitbar.author.github>
 # <bitbar.desc>List package updates available from Homebrew, Cask and Pip. Allows individual or full upgrades (if available).</bitbar.desc>
 # <bitbar.dependencies>python,homebrew,cask,pip</bitbar.dependencies>
 # <bitbar.image>https://i.imgur.com/oXL2Nyn.png</bitbar.image>
 # <bitbar.abouturl>https://github.com/kdeldycke/dotfiles/blob/master/dotfiles-osx/.bitbar/package_manager.7h.py</bitbar.abouturl>
+
+"""
+Changelog
+=========
+
+1.2.dev (unreleased)
+--------------------
+
+* Add changelog.
+
+1.1 (2016-07-07)
+----------------
+
+* Add support for Python's pip.
+
+1.0 (2016-07-05)
+----------------
+
+* Initial public release.
+* Add support for Homebrew and Cask.
+
+0.0 (2016-07-05)
+-----------------
+
+* First commit.
+"""
 
 from __future__ import print_function, unicode_literals
 
