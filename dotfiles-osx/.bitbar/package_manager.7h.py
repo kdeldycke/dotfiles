@@ -138,7 +138,9 @@ class Cask(Homebrew):
 
     def sync(self):
         """ Fetch latest formulas and their metadata. """
-        # No need to update formulas if Homebrew is synced first.
+        # `brew cask update` is just an alias to `brew update`. Perform the
+        # action anyway to make it future proof.
+        self.run(self.cli, 'cask', 'update')
 
         # List installed packages.
         output = self.run(self.cli, 'cask', 'list', '--versions')
