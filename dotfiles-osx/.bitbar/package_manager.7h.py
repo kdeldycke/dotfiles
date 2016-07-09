@@ -255,10 +255,18 @@ class Pip2(Pip):
 
     cli = '/usr/local/bin/pip2'
 
+    @property
+    def name(self):
+        return "Python 2 pip"
+
 
 class Pip3(Pip):
 
     cli = '/usr/local/bin/pip3'
+
+    @property
+    def name(self):
+        return "Python 3 pip"
 
 
 class NPM(PackageManager):
