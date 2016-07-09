@@ -20,6 +20,14 @@ Changelog
 * Add reference to package manager's issues.
 * Force Cask update before evaluating available packages.
 
+1.2 (2016-07-08)
+----------------
+
+* Add support for both pip2 and pip3, Node's npm, Atom's apm, Ruby's gem.
+  Thanks @tresni.
+* Fixup brew cask checking. Thanks @tresni.
+* Don't die on errors. Thanks @tresni.
+
 1.1 (2016-07-07)
 ----------------
 
