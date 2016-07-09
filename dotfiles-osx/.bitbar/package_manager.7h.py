@@ -325,6 +325,7 @@ class APM(PackageManager):
 
 
 class Gems(PackageManager):
+
     @property
     def cli(self):
         if os.path.exists('/usr/local/bin/gem'):
