@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # <bitbar.title>Package Manager</bitbar.title>
-# <bitbar.version>v1.2.dev</bitbar.version>
+# <bitbar.version>v1.3.dev</bitbar.version>
 # <bitbar.author>Kevin Deldycke</bitbar.author>
 # <bitbar.author.github>kdeldycke</bitbar.author.github>
-# <bitbar.desc>List package updates available from Homebrew, Cask and Pip. Allows individual or full upgrades (if available).</bitbar.desc>
-# <bitbar.dependencies>python,homebrew,cask,pip</bitbar.dependencies>
+# <bitbar.desc>List package updates available from Homebrew, Cask, Python's pip2 and pip3, Node's npm, Atom's apm and Rebuy's gem. Allows individual or full upgrades (if available).</bitbar.desc>
+# <bitbar.dependencies>python,homebrew,cask,pip,npm,apm,gem</bitbar.dependencies>
 # <bitbar.image>https://i.imgur.com/oXL2Nyn.png</bitbar.image>
 # <bitbar.abouturl>https://github.com/kdeldycke/dotfiles/blob/master/dotfiles-osx/.bitbar/package_manager.7h.py</bitbar.abouturl>
 
@@ -13,7 +13,7 @@
 Changelog
 =========
 
-1.2.dev (unreleased)
+1.3.dev (unreleased)
 --------------------
 
 * Add changelog.
