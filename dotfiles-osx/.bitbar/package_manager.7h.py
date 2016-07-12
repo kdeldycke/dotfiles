@@ -298,6 +298,7 @@ class Pip(PackageManager):
         Sample of pip output:
 
             $ pip list --outdated
+            ccm (2.1.8, /Users/kdeldycke/ccm) - Latest: 2.1.11 [sdist]
             coverage (4.0.3) - Latest: 4.1 [wheel]
             IMAPClient (0.13) - Latest: 1.0.1 [wheel]
             Logbook (0.10.1) - Latest: 1.0.0 [sdist]
