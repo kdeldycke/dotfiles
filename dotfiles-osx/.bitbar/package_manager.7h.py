@@ -202,6 +202,7 @@ class Cask(Homebrew):
             flux 37.3, 37.2, 37.1, 36.8, 36.6
             gimp 2.8.16-x86_64
             java 1.8.0_92-b14
+            prey
 
             $ brew cask info aerial
             aerial: 1.2beta5
@@ -220,6 +221,15 @@ class Cask(Homebrew):
             https://github.com/caskroom/homebrew-cask/blob/master/Casks/firefox.rb
             ==> Contents
               Firefox.app (app)
+
+            $ brew cask info prey
+            prey: 1.5.1
+            Prey
+            https://preyproject.com
+            Not installed
+            https://github.com/caskroom/homebrew-cask/blob/master/Casks/prey.rb
+            ==> Contents
+              prey-mac-1.5.1-x86.pkg (pkg)
         """
         # `brew cask update` is just an alias to `brew update`. Perform the
         # action anyway to make it future proof.
