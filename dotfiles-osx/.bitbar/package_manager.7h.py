@@ -10,6 +10,15 @@
 # <bitbar.abouturl>https://github.com/kdeldycke/dotfiles/blob/master/dotfiles-osx/.bitbar/package_manager.7h.py</bitbar.abouturl>
 
 """
+Default update cycle is set to 7 hours so we have a chance to get user's
+attention once a day. Higher frequency might ruin the system as all checks are
+quite resource intensive.
+
+If you're bored, feel free to add support for new package manager. A list of
+good candidates is available at:
+https://en.wikipedia.org/wiki/List_of_software_package_management_systems
+
+
 Changelog
 =========
 
