@@ -25,7 +25,7 @@ Changelog
 1.4.dev (unreleased)
 --------------------
 
-* No changes yet.
+* Workaround lacks of full pip upgrade command.
 
 1.3 (2016-07-09)
 ----------------
@@ -65,7 +65,7 @@ from __future__ import print_function, unicode_literals
 import json
 import os
 import re
-from operator import methodcaller
+from operator import itemgetter, methodcaller
 from subprocess import PIPE, Popen
 
 
@@ -345,7 +345,7 @@ class Pip(PackageManager):
         This work around the lack of proper full upgrade command in Pip.
         See: https://github.com/pypa/pip/issues/59
         """
-        return
+        return self.update_cli(' '.join(map(itemgetter('name'), self.updates)))
 
 
 class Pip2(Pip):
