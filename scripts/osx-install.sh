@@ -180,6 +180,9 @@ wget -O "${HOME}/.bitbar/disk.13m.sh" https://github.com/matryer/bitbar-plugins/
 chmod +x ${HOME}/.bitbar/*.sh
 open -a BitBar
 
+# Show TorBrowser bookmark toolbar.
+TB_CONFIG_DIR=$(find "${HOME}/Library/Application Support/TorBrowser-Data/Browser" -depth 1 -iname "*.default")
+sed -i "s/\"PersonalToolbar\":{\"collapsed\":\"true\"}/\"PersonalToolbar\":{\"collapsed\":\"false\"}/" "$TB_CONFIG_DIR/xulstore.json"
 # Set TorBrowser bookmarks in toolbar.
 # Source: https://yro.slashdot.org/story/16/06/08/151245/kickasstorrents-enters-the-dark-web-adds-official-tor-address
 BOOKMARKS="
