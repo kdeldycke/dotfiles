@@ -189,9 +189,9 @@ BOOKMARKS="
 http://lsuzvpko6w6hzpnn.onion,KickAss,ehmwyurmkort,eqeiuuEyivna
 http://uj3wazyk5u4hnvtk.onion,PirateBay,nnypemktnpya,dvzeeooowsgx
 "
-TORBROWSER_BOOKMARK_DB=$(find "${HOME}/Library/Application Support/TorBrowser-Data/Browser" -name "places.sqlite")
+TB_BOOKMARK_DB="$TB_CONFIG_DIR/places.sqlite"
 # Remove all bookmarks from the toolbar.
-sqlite3 -echo -header -column "$TORBROWSER_BOOKMARK_DB" "DELETE FROM moz_bookmarks WHERE parent=(SELECT id FROM moz_bookmarks WHERE guid='toolbar_____'); SELECT * FROM moz_bookmarks;"
+sqlite3 -echo -header -column "$TB_BOOKMARK_DB" "DELETE FROM moz_bookmarks WHERE parent=(SELECT id FROM moz_bookmarks WHERE guid='toolbar_____'); SELECT * FROM moz_bookmarks;"
 # Add bookmarks one by one.
 for BM_INFO in $BOOKMARKS
 do
@@ -199,9 +199,9 @@ do
     BM_TITLE=$(echo $BM_INFO | cut -d',' -f2)
     BM_GUID1=$(echo $BM_INFO | cut -d',' -f3)
     BM_GUID2=$(echo $BM_INFO | cut -d',' -f4)
-    sqlite3 -echo -header -column "$TORBROWSER_BOOKMARK_DB" "INSERT OR REPLACE INTO moz_places(url, hidden, guid, foreign_count) VALUES('$BM_URL', 0, '$BM_GUID1', 1); INSERT OR REPLACE INTO moz_bookmarks(type, fk, parent, title, guid) VALUES(1, (SELECT id FROM moz_places WHERE guid='$BM_GUID1'), (SELECT id FROM moz_bookmarks WHERE guid='toolbar_____'), '$BM_TITLE', '$BM_GUID2');"
+    sqlite3 -echo -header -column "$TB_BOOKMARK_DB" "INSERT OR REPLACE INTO moz_places(url, hidden, guid, foreign_count) VALUES('$BM_URL', 0, '$BM_GUID1', 1); INSERT OR REPLACE INTO moz_bookmarks(type, fk, parent, title, guid) VALUES(1, (SELECT id FROM moz_places WHERE guid='$BM_GUID1'), (SELECT id FROM moz_bookmarks WHERE guid='toolbar_____'), '$BM_TITLE', '$BM_GUID2');"
 done
-sqlite3 -echo -header -column "$TORBROWSER_BOOKMARK_DB" "SELECT * FROM moz_bookmarks; SELECT * FROM moz_places;"
+sqlite3 -echo -header -column "$TB_BOOKMARK_DB" "SELECT * FROM moz_bookmarks; SELECT * FROM moz_places;"
 
 # Clean things up.
 brew linkapps
