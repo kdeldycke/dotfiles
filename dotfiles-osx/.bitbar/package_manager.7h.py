@@ -79,9 +79,6 @@ from operator import itemgetter, methodcaller
 from subprocess import PIPE, Popen
 
 
-# TODO: add cleanup commands.
-
-
 class PackageManager(object):
     """ Generic class for a package manager. """
 
