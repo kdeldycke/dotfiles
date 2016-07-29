@@ -82,7 +82,6 @@ do
 done
 brew cask install aerial
 brew cask install android-file-transfer
-brew cask install atom
 brew cask install bitcoin-core
 brew cask install chromium
 brew cask install dropbox
@@ -140,6 +139,26 @@ VIM_FLAGS="--with-python --with-lua --with-cscope --override-system-vim"
 # Always reinstall vim to fix Python links.
 # See: https://github.com/yyuu/pyenv/issues/234
 brew reinstall vim "$VIM_FLAGS"
+
+# Install Atom and its plugins.
+brew cask install atom
+ATOM_PACKAGES="
+atom-beautify
+autocomplete-paths
+autocomplete-python
+color-picker
+docblockr
+file-icons
+linter-flake8
+minimap
+python-tools
+tag
+trailing-spaces
+"
+for PACKAGE in $ATOM_PACKAGES
+do
+   apm install "$PACKAGE"
+done
 
 # Use sha256sum from coreutils
 sudo ln -s /usr/local/bin/gsha256sum /usr/local/bin/sha256sum
