@@ -140,7 +140,6 @@ pip
 pyflakes
 pygments
 pylint
-rope
 setuptools
 tox
 virtualenv
