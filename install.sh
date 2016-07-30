@@ -136,6 +136,7 @@ mccabe
 nose
 nose-progressive
 pycodestyle
+pydocstyle
 pip
 pyflakes
 pygments
