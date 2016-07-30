@@ -135,7 +135,7 @@ jupyter
 mccabe
 nose
 nose-progressive
-pep8
+pycodestyle
 pip
 pyflakes
 pygments
