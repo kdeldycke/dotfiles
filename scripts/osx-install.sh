@@ -151,6 +151,7 @@ docblockr
 file-icons
 linter-flake8
 minimap
+python-isort
 python-tools
 tag
 trailing-spaces
