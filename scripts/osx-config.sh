@@ -207,6 +207,7 @@ sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.captive.c
 sudo systemsetup -setremoteappleevents off
 
 # Disable remote login
+# TODO: is waiting for user input. Make it unattended.
 sudo systemsetup -setremotelogin off
 
 # Disable wake-on modem
