@@ -18,7 +18,7 @@ Features
 * Produce colored output for most of shell commands.
 * All color schemes are based on [Solarized
 ](http://ethanschoonover.com/solarized).
-* All Terminal font is [Source Code Pro
+* All terminal font is [Source Code Pro
 ](https://en.wikipedia.org/wiki/Source_Code_Pro).
 * Keeps OSes fast and lean.
 * Custom configuration for [`MacBookAir5,2`
