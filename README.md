@@ -100,47 +100,48 @@ Snapshots of older distributions are available as branches:
   * [OSX 10.8 (Mountain Lion)](https://github.com/kdeldycke/dotfiles/tree/osx-10.8)
 
 
-Sources
+License
 -------
 
-This repository contain configuration I accumulated over years of daily usage,
-but also draws from others:
+For convenience, some third party code and assets are hard-copied in place.
+These particular items have their own license and copyright:
 
-  * http://kevin.deldycke.com/2006/12/all-my-command-lines/
-  * https://github.com/joedicastro/dotfiles/tree/master/vim
-  * https://github.com/mathiasbynens/dotfiles
-  * https://github.com/sontek/dotfiles
-  * https://github.com/reinout/tools
-  * https://github.com/18F/laptop
+* Source Code Pro 1.017
+Copyright (c) 2012 Adobe Systems
+Distributed under a SIL Open Font License version 1.1
+Source: https://github.com/adobe-fonts/source-code-pro/releases/latest
 
-Third party assets:
+* Solarized - OS X 10.7+ Terminal.App color theme
+Copyright (c) 2013 Tomislav Filipčić
+Distributed under an unknown open-source license
+Source: https://github.com/tomislav/osx-terminal.app-colors-solarized
 
-    Source Code Pro 1.017
-    Copyright (c) 2012 Adobe Systems
-    Distributed under a SIL Open Font License version 1.1
-    Source: https://github.com/adobe-fonts/source-code-pro/releases/latest
+* Solarized - KDE Konsole Settings
+Copyright (c) 2012 Pete Higgins
+Distributed under an unknown open-source license
+Source: https://github.com/phiggins/konsole-colors-solarized
 
-    Solarized - OS X 10.7+ Terminal.App color theme
-    Copyright (c) 2013 Tomislav Filipčić
-    Distributed under an unknown open-source license
-    Source: https://github.com/tomislav/osx-terminal.app-colors-solarized
+* Solarized Xresources Color Scheme
+Copyright (c) 2011 Ethan Schoonover
+Distributed under an open-source license
+Source: https://github.com/solarized/xresources
 
-    Solarized - KDE Konsole Settings
-    Copyright (c) 2012 Pete Higgins
-    Distributed under an unknown open-source license
-    Source: https://github.com/phiggins/konsole-colors-solarized
+* Solarized Color Theme for GNU ls
+Copyright (c) 2013 Sebastian Tramp
+Distributed under a Do What The Fuck You Want To Public License (WTFPL)
+Source: https://github.com/seebi/dircolors-solarized/blob/master/dircolors.256dark
 
-    Solarized Xresources Color Scheme
-    Copyright (c) 2011 Ethan Schoonover
-    Distributed under an open-source license
-    Source: https://github.com/solarized/xresources
+* Python shell enhancement
+Copyright (c) 2013 Jeff Bisbee
+Distributed under an MIT license
+Source: https://github.com/jbisbee/python-shell-enhancement
 
-    Solarized Color Theme for GNU ls
-    Copyright (c) 2013 Sebastian Tramp
-    Distributed under a Do What The Fuck You Want To Public License (WTFPL)
-    Source: https://github.com/seebi/dircolors-solarized/blob/master/dircolors.256dark
+The rest of the content is configuration and code I accumulated over years.
+Some was heavily inspired by other dotfiles repositories. But each time I
+borrow  something, I try to credit the author and/or point to the source. You
+should be able to trace back the origin of things by looking at the commit
+history.
 
-    Python shell enhancement
-    Copyright (c) 2013 Jeff Bisbee
-    Distributed under an MIT license
-    Source: https://github.com/jbisbee/python-shell-enhancement
+If you can't find any clue about an external source, then assume it is original
+content I produced, which I released under the [BSD 2-Clause License
+](LICENSE.md).
