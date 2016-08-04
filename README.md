@@ -1,8 +1,7 @@
 # Kevin's dotfiles [![Build Status](https://img.shields.io/travis/kdeldycke/maildir-deduplicate/develop.svg?style=flat)](https://travis-ci.org/kdeldycke/dotfiles)
 
-Dot-files and system configuration for Python developers working in `vim`,
-currently targetting **OSX 10.11** (El Capitan) and **Kubuntu 16.04** (Xenial
-Xerus).
+Dot-files and system configuration for Python developers, currently targetting
+**OSX 10.11** (El Capitan) and **Kubuntu 16.04** (Xenial Xerus).
 
 ![OSX 10.11 El Capitan solarized terminal and vim
 ](https://raw.githubusercontent.com/kdeldycke/dotfiles/master/screenshots/osx-10.11.png)
