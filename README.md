@@ -105,35 +105,24 @@ License
 For convenience, some third party code and assets are hard-copied in place.
 These particular items have their own license and copyright:
 
-* Source Code Pro 1.017
-Copyright (c) 2012 Adobe Systems
-Distributed under a SIL Open Font License version 1.1
-Source: https://github.com/adobe-fonts/source-code-pro/releases/latest
-
-* Solarized - OS X 10.7+ Terminal.App color theme
-Copyright (c) 2013 Tomislav Filipčić
-Distributed under an unknown open-source license
-Source: https://github.com/tomislav/osx-terminal.app-colors-solarized
-
-* Solarized - KDE Konsole Settings
-Copyright (c) 2012 Pete Higgins
-Distributed under an unknown open-source license
-Source: https://github.com/phiggins/konsole-colors-solarized
-
-* Solarized Xresources Color Scheme
-Copyright (c) 2011 Ethan Schoonover
-Distributed under an open-source license
-Source: https://github.com/solarized/xresources
-
-* Solarized Color Theme for GNU ls
-Copyright (c) 2013 Sebastian Tramp
-Distributed under a Do What The Fuck You Want To Public License (WTFPL)
-Source: https://github.com/seebi/dircolors-solarized/blob/master/dircolors.256dark
-
-* Python shell enhancement
-Copyright (c) 2013 Jeff Bisbee
-Distributed under an MIT license
-Source: https://github.com/jbisbee/python-shell-enhancement
+* [Source Code Pro](https://github.com/adobe-fonts/source-code-pro/releases/latest) 1.017.
+© 2012 Adobe Systems.
+SIL Open Font License version 1.1.
+* [Solarized for Terminal.App](https://github.com/tomislav/osx-terminal.app-colors-solarized).
+© 2013 Tomislav Filipčić.
+Unspecified open-source license.
+* [Solarized for Konsole](https://github.com/phiggins/konsole-colors-solarized).
+© 2012 Pete Higgins.
+Unspecified open-source license.
+* [Solarized for Xresources](https://github.com/solarized/xresources).
+© 2011 Ethan Schoonover.
+Unspecified open-source license.
+* [Solarized for GNU ls](https://github.com/seebi/dircolors-solarized/blob/master/dircolors.256dark).
+© 2013 Sebastian Tramp.
+Do What The Fuck You Want To Public License (WTFPL).
+* [Python shell enhancement](https://github.com/jbisbee/python-shell-enhancement).
+© 2013 Jeff Bisbee.
+MIT license.
 
 The rest of the content is configuration and code I accumulated over years.
 Some was heavily inspired by other dotfiles repositories. But each time I
