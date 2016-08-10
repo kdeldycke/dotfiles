@@ -29,11 +29,13 @@ Changelog
 
 1.5 (2016-07-25)
 ----------------
+
 * Add support for [mas](https://github.com/argon/mas).
 * Don't show all stderr as err (check return code for error state).
 
 1.4 (2016-07-10)
 ----------------
+
 * Don't attempt to parse empty lines.
 * Check for linked npm packages.
 * Support System or Homebrew Ruby Gems (with proper sudo setup).
