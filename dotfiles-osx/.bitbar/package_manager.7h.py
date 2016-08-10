@@ -83,6 +83,8 @@ from subprocess import PIPE, Popen
 class PackageManager(object):
     """ Generic class for a package manager. """
 
+    cli = None
+
     def __init__(self):
         # List all available updates and their versions.
         self.updates = []
