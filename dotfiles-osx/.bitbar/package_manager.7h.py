@@ -25,6 +25,7 @@ Changelog
 1.6.dev (unreleased)
 --------------------
 * Work around the lacks of full pip upgrade command.
+* Fix UnicodeDecodeError on parsing CLI output.
 
 1.5 (2016-07-25)
 ----------------
@@ -85,6 +86,7 @@ class PackageManager(object):
     def __init__(self):
         # List all available updates and their versions.
         self.updates = []
+        self.error = None
 
     @property
     def name(self):
@@ -103,12 +105,12 @@ class PackageManager(object):
     def run(self, *args):
         """ Run a shell command, return the output and keep error message.
         """
-        self.error = None
-        process = Popen(args, stdout=PIPE, stderr=PIPE)
+        process = Popen(
+            args, stdout=PIPE, stderr=PIPE, universal_newlines=True)
         output, error = process.communicate()
         if process.returncode != 0 and error:
-            self.error = error
-        return output
+            self.error = error.decode('utf-8')
+        return output.decode('utf-8')
 
     def sync(self):
         """ Fetch latest versions of installed packages.
@@ -222,6 +224,7 @@ class Cask(Homebrew):
             gimp 2.8.16-x86_64
             java 1.8.0_92-b14
             prey
+            ubersicht
 
             $ brew cask info aerial
             aerial: 1.2beta5
@@ -249,6 +252,15 @@ class Cask(Homebrew):
             https://github.com/caskroom/homebrew-cask/blob/master/Casks/prey.rb
             ==> Contents
               prey-mac-1.5.1-x86.pkg (pkg)
+
+            $ brew cask info ubersicht
+            ubersicht: 1.0.42
+            Übersicht
+            http://tracesof.net/uebersicht
+            Not installed
+            https://github.com/caskroom/homebrew-cask/blob/master/Casks/ubersicht.rb
+            ==> Contents
+              Übersicht.app (app)
         """
         # `brew cask update` is just an alias to `brew update`. Perform the
         # action anyway to make it future proof.
