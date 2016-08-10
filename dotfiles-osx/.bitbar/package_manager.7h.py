@@ -12,7 +12,7 @@
 """
 Default update cycle is set to 7 hours so we have a chance to get user's
 attention once a day. Higher frequency might ruin the system as all checks are
-quite resource intensive.
+quite resource intensive, and Homebrew might hit GitHub's API calls quota.
 
 If you're bored, feel free to add support for new package manager. A list of
 good candidates is available at:
@@ -24,7 +24,7 @@ Changelog
 
 1.6.dev (unreleased)
 --------------------
-* Workaround lacks of full pip upgrade command.
+* Work around the lacks of full pip upgrade command.
 
 1.5 (2016-07-25)
 ----------------
