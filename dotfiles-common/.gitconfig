@@ -75,7 +75,7 @@
     # Commit all changes
     ca = !git add -A && git commit -av
     # Switch to a branch, creating it if necessary
-    go = git checkout -b "$1" || git checkout "$1"
+    go = !git checkout -b "$1" || git checkout "$1"
     # Show verbose output about tags and remotes
     tags = tag -l
     remotes = remote -v
