@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # <bitbar.title>Package Manager</bitbar.title>
-# <bitbar.version>v1.7.dev</bitbar.version>
+# <bitbar.version>v1.7</bitbar.version>
 # <bitbar.author>Kevin Deldycke</bitbar.author>
 # <bitbar.author.github>kdeldycke</bitbar.author.github>
 # <bitbar.desc>List package updates available from Homebrew, Cask, Python's pip2 and pip3, Node's npm, Atom's apm, Rebuy's gem and Mac AppStore via mas CLI. Allows individual or full upgrades (if available).</bitbar.desc>
@@ -22,10 +22,10 @@ https://en.wikipedia.org/wiki/List_of_software_package_management_systems
 Changelog
 =========
 
-1.7.dev (unreleased)
---------------------
+1.7 (2016-08-11)
+----------------
 
-* No changes yet.
+* Fix issue where npm packages are in weird state because of user permissions.
 
 1.6 (2016-08-10)
 ----------------
@@ -437,7 +437,8 @@ class NPM(PackageManager):
                 continue
             self.updates.append({
                 'name': package,
-                'installed_version': values['current'],
+                'installed_version':
+                    values['current'] if 'current' in values else '',
                 'latest_version': values['latest']
             })
 
