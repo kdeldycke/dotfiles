@@ -39,6 +39,10 @@ brew tap homebrew/dupes
 # Install or upgrade Cask
 brew tap caskroom/cask
 
+# Install Mac App Store CLI and upgrade all apps.
+brew install argon/mas/mas
+mas upgrade
+
 # Install OSX system requirements
 brew cask install xquartz
 
