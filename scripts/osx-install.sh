@@ -40,7 +40,7 @@ brew tap homebrew/dupes
 brew tap caskroom/cask
 
 # Install Mac App Store CLI and upgrade all apps.
-brew install argon/mas/mas
+brew install mas
 mas upgrade
 
 # Install OSX system requirements
