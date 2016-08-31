@@ -232,6 +232,9 @@ do
 done
 sqlite3 -echo -header -column "$TB_BOOKMARK_DB" "SELECT * FROM moz_bookmarks; SELECT * FROM moz_places;"
 
+# Force installation of uBlock origin
+wget https://addons.mozilla.org/firefox/downloads/file/319372/ -O "$TB_CONFIG_DIR/extensions/uBlock0@raymondhill.net.xpi"
+
 # Clean things up.
 brew linkapps
 brew cleanup
