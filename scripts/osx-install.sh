@@ -67,6 +67,7 @@ brew link --force curl
 brew install dockutil
 brew install exiftool
 brew install faad2
+brew install keybase
 brew install md5sha1sum
 brew install --with-qt5 mkvtoolnix
 brew install openssl
@@ -97,6 +98,7 @@ brew cask install gitup
 brew cask install google-drive
 brew cask install google-play-music-desktop-player
 brew cask install java
+brew cask install keybase
 brew cask install kiwix
 brew cask install libreoffice
 brew cask install musicbrainz-picard
