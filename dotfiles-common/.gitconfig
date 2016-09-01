@@ -9,6 +9,7 @@
 [user]
     name = Kevin Deldycke
     email = kevin@deldycke.com
+    signingkey = B1ED5A3A
 [color]
     diff = auto
     status = auto
@@ -23,6 +24,9 @@
     algorithm = patience
     # Source: https://github.com/blog/2188-git-2-9-has-been-released/#beautiful-diffs
     compactionHeuristic = true
+[commit]
+    # Source: https://github.com/pstadler/keybase-gpg-github
+    gpgsign = true
 [pull]
     # Source: http://stackoverflow.com/a/18756102/487610
     rebase = preserve

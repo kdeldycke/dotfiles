@@ -67,11 +67,13 @@ brew link --force curl
 brew install dockutil
 brew install exiftool
 brew install faad2
+brew install gpg-agent
 brew install keybase
 brew install md5sha1sum
 brew install --with-qt5 mkvtoolnix
 brew install openssl
 brew install osxutils
+brew install pinentry-mac
 brew install pstree
 brew install ssh-copy-id
 brew install watch
