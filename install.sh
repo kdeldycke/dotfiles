@@ -16,6 +16,7 @@ flac
 fontforge
 git
 git-extras
+gpg
 graphviz
 grc
 hfsutils
