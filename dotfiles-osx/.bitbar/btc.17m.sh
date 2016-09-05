@@ -1,15 +1,15 @@
 #!/bin/bash
 
-# Shows last BTC price (in USD) on Bitfinex BTCUSD Order Book.
+# Shows last BTC price (in USD) on Bitstamp exchange.
 #
-# <bitbar.title>Bitfinex BTCUSD last price</bitbar.title>
+# <bitbar.title>Bitstamp last price</bitbar.title>
 # <bitbar.version>v1.0</bitbar.version>
-# <bitbar.author>Roberto Santacroce Martins</bitbar.author>
-# <bitbar.author.github>mileschet</bitbar.author.github>
-# <bitbar.desc>Shows last BTC price (in USD) on Bitfinex BTCUSD Order Book.</bitbar.desc>
-# <bitbar.image>http://i.imgur.com/AJU4wmc.png</bitbar.image>
+# <bitbar.author>Damien Lajarretie</bitbar.author>
+# <bitbar.author.github>dlajarretie</bitbar.author.github>
+# <bitbar.desc>Shows last BTC price (in USD) on Bitstamp exchange.</bitbar.desc>
+# <bitbar.image>http://i.imgur.com/aQCqOW6.png</bitbar.image>
 #
-# by Roberto Santacroce Martins
+# by Damien Lajarretie
 # Based on Coinbase bitbar plugin by Mat Ryer
 
-echo -n "Ƀ$"; curl -s "https://api.bitfinex.com/v1/pubticker/BTCUSD" | egrep -o '"last_price":"[0-9]+(\.)?([0-9]{0,2}")?' | sed 's/"last_price"://' | sed 's/\"//g'
+echo -n "Ƀ$"; curl -s "https://www.bitstamp.net/api/ticker/" | egrep -o '"last": "[0-9]+(\.)?([0-9]{0,2}")?' | sed 's/"last": //' | sed 's/\"//g'
