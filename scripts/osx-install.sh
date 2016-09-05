@@ -210,6 +210,7 @@ defaults write com.matryer.BitBar pluginsDirectory "~/.bitbar"
 wget -O "${HOME}/.bitbar/btc.17m.sh" https://github.com/matryer/bitbar-plugins/raw/master/Bitcoin/bitfinex.com/bitfinex_btcusd.sh
 wget -O "${HOME}/.bitbar/netinfo.3m.sh" https://github.com/matryer/bitbar-plugins/raw/master/Network/netinfo.60s.sh
 wget -O "${HOME}/.bitbar/disk.13m.sh" https://github.com/matryer/bitbar-plugins/raw/master/System/mdf.1m.sh
+wget -O "${HOME}/.bitbar/package_manager.7h.py" https://github.com/matryer/bitbar-plugins/raw/master/Dev/PackageManager/package_manager.7h.py
 chmod +x ${HOME}/.bitbar/*.sh
 open -a BitBar
 
