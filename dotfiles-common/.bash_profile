@@ -65,7 +65,7 @@ export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; histor
 if $IS_OSX; then
     GIT_PROMPT_THEME="Solarized"
 else
-    GIT_PROMPT_THEME="Solarized Ubuntu"
+    GIT_PROMPT_THEME="Solarized_Ubuntu"
 fi
 source ~/.bash-git-prompt/gitprompt.sh
 export SUDO_PS1='\[\e[31m\]\u\[\e[37m\]:\[\e[33m\]\w\[\e[31m\]\$\[\033[00m\] '
