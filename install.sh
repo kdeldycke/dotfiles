@@ -73,8 +73,7 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 # Force initialization and update of local submodules.
 git submodule init
 # XXX Do not auto-update submodules. Current upstream autoenv is stuck in
-# infinite loops. But looks like the
-# https://github.com/kennethreitz/autoenv/pull/136 PR doesn't solve anything.
+# infinite loops. See: https://github.com/kennethreitz/autoenv/issues/139
 # git submodule update --remote --merge
 
 # Search local dotfiles
