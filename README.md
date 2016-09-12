@@ -1,7 +1,7 @@
 # Kevin's dotfiles [![Build Status](https://img.shields.io/travis/kdeldycke/maildir-deduplicate/develop.svg?style=flat)](https://travis-ci.org/kdeldycke/dotfiles)
 
 Dot-files and system configuration for Python developers, currently targetting
-**OSX 10.11** (El Capitan) and **Kubuntu 16.04** (Xenial Xerus).
+**OSX 10.11** (El Capitan) and **Kubuntu 16.04 LTS** (Xenial Xerus).
 
 ![OSX 10.11 El Capitan solarized terminal and vim
 ](https://raw.githubusercontent.com/kdeldycke/dotfiles/master/screenshots/osx-10.11.png)
@@ -91,7 +91,7 @@ Snapshots of older distributions are available as branches:
   * [Kubuntu 15.10 (Wily Werewolf)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-15.10)
   * [Kubuntu 15.04 (Vivid Vervet)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-15.04)
   * [Kubuntu 14.10 (Utopic Unicorn)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-14.10)
-  * [Kubuntu 14.04 (Trusty Tahr)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-14.04)
+  * [Kubuntu 14.04 LTS (Trusty Tahr)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-14.04)
   * [Kubuntu 13.10 (Saucy Salamander)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-13.10)
   * [Kubuntu 13.04 (Raring Ringtail)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-13.04)
   * [OSX 10.10 (Yosemite)](https://github.com/kdeldycke/dotfiles/tree/osx-10.10)
