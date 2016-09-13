@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
 set -x
 
-# Install command line tools
-xcode-select -p
-if [[ $? -ne 0 ]]; then
-    xcode-select --install
-fi
+# Install command line tools.
+xcode-select --install
 
 # A full installation of Xcode.app is required to compile some formulas like
 # macvim. Installing the Command Line Tools only is not enough.
