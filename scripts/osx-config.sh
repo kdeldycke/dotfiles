@@ -9,7 +9,8 @@ sudo -v
 # Keep-alive: update existing `sudo` time stamp until `.macos` has finished
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
-# Kill system preferences to not have it overrides our config
+# Kill system preferences to not have it trying to override config we're about
+# to change.
 osascript -e "tell application \"System Preferences\" to quit"
 
 ###############################################################################
