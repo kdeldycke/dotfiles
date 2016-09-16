@@ -113,6 +113,13 @@ brew cask install tunnelblick
 brew cask install virtualbox-extension-pack
 brew cask install xbox360-controller-driver
 
+# Install binary apps from the Mac App Store.
+mas install 747648890  # Telegram
+
+# Open apps so I'll not forget to login
+open -a Dropbox
+open -a Telegram
+
 # Install QuickLooks plugins
 # Source: https://github.com/sindresorhus/quick-look-plugins
 brew cask install epubquicklook
