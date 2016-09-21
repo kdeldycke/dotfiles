@@ -27,7 +27,6 @@ if [[ $? -ne 0 ]]; then
     # Install Homebrew
     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 fi
-sudo chown -R $(whoami) /usr/local
 brew update
 brew upgrade --all
 
