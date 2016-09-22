@@ -942,7 +942,8 @@ defaults write org.m0k.transmission BlocklistAutoUpdate -bool true
 # Configuration produced with 'karabiner export' CLI.
 
 # Reset to default config first.
-karabiner be_careful_to_use__clear_all_values_by_name
+karabiner select_by_name 'Default Profile'
+karabiner be_careful_to_use__clear_all_values_by_name 'Default Profile'
 
 # Do not remap any Apple and laptop internal devices.
 karabiner set general.dont_remap_apple_keyboard 1
