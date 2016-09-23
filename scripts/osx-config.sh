@@ -962,8 +962,15 @@ karabiner set remap.optionrcommandr 1
 karabiner set remap.pc_application2optionR 1
 
 # Set keyboard input speed.
-karabiner set repeat.initial_wait 250
-karabiner set repeat.wait 33
+defaults write org.pqrs.Karabiner kIsOverwriteKeyRepeat -bool true
+karabiner set repeat.initial_wait 200
+karabiner set repeat.wait 20
+
+# Do not show status message.
+defaults write org.pqrs.Karabiner isStatusWindowEnabled -bool false
+
+# Do not allow application or widget-specific remapping.
+defaults write org.pqrs.Karabiner kIsAXNotifierEnabled -bool false
 
 ###############################################################################
 # Spectacle.app                                                               #
