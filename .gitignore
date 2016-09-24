@@ -5,6 +5,9 @@
 **/.ssh/*_id_*
 **/.ssh/known_hosts
 
+### GPG keys ###
+**/.gnupg/*.gpg
+
 ### Python ###
 *.py[cod]
 
