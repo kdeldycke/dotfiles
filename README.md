@@ -83,20 +83,28 @@ Then merge differences to reduce the differences. This is going to greatly
 improve the maintenance of OSX configuration.
 
 
-Old versions
-------------
+Versions
+--------
 
-Snapshots of older distributions are available as branches:
+Only the current `master` branch is supported and actively maintained. Older
+branches are available for archive.
 
-  * [Kubuntu 15.10 (Wily Werewolf)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-15.10)
-  * [Kubuntu 15.04 (Vivid Vervet)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-15.04)
-  * [Kubuntu 14.10 (Utopic Unicorn)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-14.10)
-  * [Kubuntu 14.04 LTS (Trusty Tahr)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-14.04)
-  * [Kubuntu 13.10 (Saucy Salamander)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-13.10)
-  * [Kubuntu 13.04 (Raring Ringtail)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-13.04)
-  * [OSX 10.10 (Yosemite)](https://github.com/kdeldycke/dotfiles/tree/osx-10.10)
-  * [OSX 10.9 (Mavericks)](https://github.com/kdeldycke/dotfiles/tree/osx-10.9)
-  * [OSX 10.8 (Mountain Lion)](https://github.com/kdeldycke/dotfiles/tree/osx-10.8)
+OSX:
+
+* [OSX 10.11 (El Capitan)](https://github.com/kdeldycke/dotfiles/tree/master) (current)
+* [OSX 10.10 (Yosemite)](https://github.com/kdeldycke/dotfiles/tree/osx-10.10)
+* [OSX 10.9 (Mavericks)](https://github.com/kdeldycke/dotfiles/tree/osx-10.9)
+* [OSX 10.8 (Mountain Lion)](https://github.com/kdeldycke/dotfiles/tree/osx-10.8)
+
+Kubuntu:
+
+* [Kubuntu 16.04 LTS (Xenial Xerus)](https://github.com/kdeldycke/dotfiles/tree/master) (current)
+* [Kubuntu 15.10 (Wily Werewolf)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-15.10)
+* [Kubuntu 15.04 (Vivid Vervet)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-15.04)
+* [Kubuntu 14.10 (Utopic Unicorn)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-14.10)
+* [Kubuntu 14.04 LTS (Trusty Tahr)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-14.04)
+* [Kubuntu 13.10 (Saucy Salamander)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-13.10)
+* [Kubuntu 13.04 (Raring Ringtail)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-13.04)
 
 
 License
