@@ -95,7 +95,7 @@ fi
 
 # Force colored output and good defaults
 alias du='du -csh'
-alias df='df -Th'
+alias df='df -h'
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
