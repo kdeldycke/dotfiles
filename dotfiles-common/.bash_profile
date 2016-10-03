@@ -100,7 +100,6 @@ alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 alias diff="colordiff -ru"
-alias svn="colorsvn"
 alias dmesg="dmesg --color"
 alias tree='tree -Csh'
 alias ccat='pygmentize -g'

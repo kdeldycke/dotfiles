@@ -48,7 +48,6 @@ hfsprogs
 hunspell-fr
 hunspell-fr-classical
 kdenlive
-kdesdk-scripts
 kompare
 kwrite
 libavcodec-extra
