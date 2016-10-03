@@ -1,7 +1,7 @@
 # Force Python, then Homebrew binaries to take precedence on OSX default
 PYTHON_LOCAL_BIN="$(python -m site --user-base)/bin"
 GNU_CORE_UTILS_BIN="$(brew --prefix coreutils)/libexec/gnubin"
-export PATH="$PYTHON_LOCAL_BIN:$GNU_CORE_UTILS_BIN:/usr/local/bin:/usr/local/sbin:$PATH:$HOME/.cabal/bin"
+export PATH="$PYTHON_LOCAL_BIN:$GNU_CORE_UTILS_BIN:/usr/local/bin:/usr/local/sbin:$PATH"
 
 # Prefer US English and use UTF-8
 export LANG="en_US"
@@ -239,35 +239,6 @@ extract () {
         echo "'$1' is not a valid file"
     fi
 }
-
-
-# Cabal utils. Source: https://gist.github.com/timmytofu/7417408
-
-# Unregister broken GHC packages. Run this a few times to resolve dependency rot in installed
-# packages. ghc-pkg-clean -f cabal/dev/packages*.conf also works.
-function ghc-pkg-clean() {
-    for p in `ghc-pkg check $* 2>&1  | grep problems | awk '{print $6}' | sed -e 's/:$//'`
-    do
-        echo unregistering $p; ghc-pkg $* unregister $p
-    done
-}
-
-# Remove all installed GHC/cabal packages, leaving ~/.cabal binaries and docs in place.
-# When all else fails, use this to get out of dependency hell and start over.
-function ghc-pkg-reset() {
-    if [[ $(readlink -f /proc/$$/exe) =~ zsh ]]; then
-        read 'ans?Erasing all your user ghc and cabal packages - are you sure (y/N)? '
-    else # assume bash/bash compatible otherwise
-        read -p 'Erasing all your user ghc and cabal packages - are you sure (y/N)? ' ans
-    fi
-    [[ x$ans =~ "xy" ]] && ( \
-        echo 'erasing directories under $HOME/.ghc'; command rm -rf `find $HOME/.ghc/* -maxdepth 1 -type d`; \
-        echo 'erasing $HOME/.cabal/lib'; command rm -rf $HOME/.cabal/lib; \
-    )
-}
-
-alias cabalupgrades="cabal list --installed  | egrep -iv '(synopsis|homepage|license)'"
-
 
 # Distribution-specific commands
 if $IS_OSX; then
