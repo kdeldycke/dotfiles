@@ -1,6 +1,7 @@
-# Force Homebrew binaries to take precedence on OSX default
+# Force Python, then Homebrew binaries to take precedence on OSX default
 PYTHON_LOCAL_BIN="$(python -m site --user-base)/bin"
-export PATH="$PYTHON_LOCAL_BIN:/usr/local/bin:/usr/local/sbin:$PATH:$HOME/.cabal/bin"
+GNU_CORE_UTILS_BIN="$(brew --prefix coreutils)/libexec/gnubin"
+export PATH="$PYTHON_LOCAL_BIN:$GNU_CORE_UTILS_BIN:/usr/local/bin:/usr/local/sbin:$PATH:$HOME/.cabal/bin"
 
 # Prefer US English and use UTF-8
 export LANG="en_US"

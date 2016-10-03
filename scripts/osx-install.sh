@@ -177,9 +177,6 @@ do
    apm install "$PACKAGE"
 done
 
-# Use sha256sum from coreutils
-sudo ln -s /usr/local/bin/gsha256sum /usr/local/bin/sha256sum
-
 # Install runsnakeerun
 brew install wxmac
 brew install wxpython
