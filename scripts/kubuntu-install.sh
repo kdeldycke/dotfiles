@@ -96,11 +96,6 @@ sudo usermod -a -G kvm kevin
 sudo apt install -y redshift gtk-redshift geoclue
 
 
-# Install cabal and shellcheck
-sudo apt install -y cabal-install
-cabal update
-cabal install shellcheck
-
 
 # Install Dropbox if not already there
 [ ! -f ~/.dropbox-dist/dropbox ] && wget -O - "https://www.dropbox.com/download?plat=lnx.x86_64" | tar -xvz --directory ~ -f -

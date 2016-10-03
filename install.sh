@@ -32,6 +32,7 @@ pngcrush
 recode
 rename
 rtmpdump
+shellcheck
 shntool
 sqlitebrowser
 testdisk
