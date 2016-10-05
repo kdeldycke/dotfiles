@@ -172,7 +172,7 @@ else
 fi
 
 # Force vim plugin upgrades
-vim +NeoBundleUpdate +q
+vim +NeoBundleUpdate +qall
 
 # Reload Bash with new configuration
 source ~/.bash_profile
