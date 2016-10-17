@@ -22,8 +22,8 @@ sudo softwareupdate -i -a
 # Install Homebrew if not found
 brew --version 2>&1 >/dev/null
 if [[ $? -ne 0 ]]; then
-    # Clean-up failed Homebrew install
-    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)"
+    # Clean-up failed Homebrew installs first without prompting the user.
+    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)" -- "--force"
     # Install Homebrew without prompting for user confirmation.
     # See: https://github.com/Homebrew/install/blob
     # /7ff54f50f73170a51c11b0dda74b663806cb6cef/install#L184
