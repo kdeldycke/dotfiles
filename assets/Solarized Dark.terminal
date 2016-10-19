@@ -162,9 +162,11 @@
 	AAAAAAAAAM4=
 	</data>
 	<key>BackgroundSettingsForInactiveWindows</key>
-	<true/>
+        <false/>
 	<key>BlinkText</key>
 	<false/>
+        <key>BookmarkRestorations</key>
+        <false/>
 	<key>CommandString</key>
 	<string></string>
 	<key>CursorBlink</key>
@@ -208,10 +210,16 @@
 	</data>
 	<key>ShowCommandKeyInTitle</key>
 	<true/>
+        <key>ShowComponentsWhenTabHasCustomTitle</key>
+        <false/>
 	<key>ShowDimensionsInTitle</key>
 	<false/>
 	<key>ShowRepresentedURLPathInTitle</key>
 	<true/>
+        <key>ShowShellCommandInTitle</key>
+        <false/>
+        <key>ShowTTYNameInTitle</key>
+        <false/>
 	<key>ShowWindowSettingsNameInTitle</key>
 	<false/>
 	<key>TextBoldColor</key>
