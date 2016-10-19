@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # <bitbar.title>Meta Package Manager</bitbar.title>
-# <bitbar.version>v1.10.1</bitbar.version>
+# <bitbar.version>v1.11.0</bitbar.version>
 # <bitbar.author>Kevin Deldycke</bitbar.author>
 # <bitbar.author.github>kdeldycke</bitbar.author.github>
 # <bitbar.desc>List package updates from several managers.</bitbar.desc>
@@ -24,7 +24,7 @@ import sys
 from operator import methodcaller
 from subprocess import PIPE, Popen, call
 
-# OS X does not put /usr/local/bin or /opt/local/bin in the PATH for GUI apps.
+# macOS does not put /usr/local/bin or /opt/local/bin in the PATH for GUI apps.
 # For some package managers this is a problem. Additioanlly Homebrew and
 # Macports are using different pathes.  So, to make sure we can always get to
 # the necessary binaries, we overload the path.  Current preference order would
