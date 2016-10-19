@@ -73,11 +73,11 @@ removed.
 Maintenance
 -----------
 
-Once in a while, compare `scripts/osx-config.sh` file with its upstream
+Once in a while, compare `scripts/macos-config.sh` file with its upstream
 template from [Mathias Bynens `.macos`
 ](https://github.com/mathiasbynens/dotfiles/blob/master/.macos) dotfile:
 
-    $ curl https://raw.githubusercontent.com/mathiasbynens/dotfiles/master/.macos | diff -ru - ./scripts/osx-config.sh
+    $ curl https://raw.githubusercontent.com/mathiasbynens/dotfiles/master/.macos | diff -ru - ./scripts/macos-config.sh
 
 Then merge differences to reduce the differences. This is going to greatly
 improve the maintenance of macOS configuration.

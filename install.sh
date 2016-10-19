@@ -77,9 +77,9 @@ git submodule update --remote --merge
 
 # Search local dotfiles
 if $IS_MACOS; then
-    DOT_FILES=$(find ./dotfiles-common ./dotfiles-osx -maxdepth 1 \
+    DOT_FILES=$(find ./dotfiles-common ./dotfiles-macos -maxdepth 1 \
         -not -path "./dotfiles-common" \
-        -not -path "./dotfiles-osx" \
+        -not -path "./dotfiles-macos" \
         -not -name "\.DS_Store" -and \
         -not -name "*\.swp" -and \
         -not -name "*~*" )
@@ -113,15 +113,15 @@ done
 
 # Install all software first.
 if $IS_MACOS; then
-    source ./scripts/osx-install.sh
-    source ./scripts/osx-install-refind.sh
+    source ./scripts/macos-install.sh
+    source ./scripts/macos-install-refind.sh
 else
     source ./scripts/kubuntu-install.sh
 fi
 
 # Configure everything.
 if $IS_MACOS; then
-    source ./scripts/osx-config.sh
+    source ./scripts/macos-config.sh
 else
     source ./scripts/kubuntu-config.sh
 fi
