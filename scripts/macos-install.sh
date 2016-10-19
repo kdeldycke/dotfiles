@@ -58,7 +58,6 @@ do
    brew install "$PACKAGE"
 done
 brew install ack
-brew install avidemux
 brew install cassandra
 brew install curl
 brew link --force curl
@@ -88,6 +87,7 @@ do
 done
 brew cask install aerial
 brew cask install android-file-transfer
+brew cask install avidemux
 brew cask install bitcoin-core
 brew cask install chromium
 brew cask install dropbox
