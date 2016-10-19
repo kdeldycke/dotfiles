@@ -3,7 +3,7 @@
 Dot-files and system configuration for Python developers, currently targetting
 **macOS 10.12** (Sierra) and **Kubuntu 16.04 LTS** (Xenial Xerus).
 
-![OSX 10.11 El Capitan solarized terminal and vim
+![Mac OS X 10.11 El Capitan solarized terminal and vim
 ](https://raw.githubusercontent.com/kdeldycke/dotfiles/master/screenshots/osx-10.11.png)
 
 ![Kubuntu 15.10 Wily Werewolf solarized terminal and vim
@@ -92,10 +92,10 @@ branches are available for archive.
 macOS:
 
 * [macOS 10.12 (Sierra)](https://github.com/kdeldycke/dotfiles/tree/master) (current)
-* [OSX 10.11 (El Capitan)](https://github.com/kdeldycke/dotfiles/tree/osx-10.11)
-* [OSX 10.10 (Yosemite)](https://github.com/kdeldycke/dotfiles/tree/osx-10.10)
-* [OSX 10.9 (Mavericks)](https://github.com/kdeldycke/dotfiles/tree/osx-10.9)
-* [OSX 10.8 (Mountain Lion)](https://github.com/kdeldycke/dotfiles/tree/osx-10.8)
+* [Mac OS X 10.11 (El Capitan)](https://github.com/kdeldycke/dotfiles/tree/osx-10.11)
+* [Mac OS X 10.10 (Yosemite)](https://github.com/kdeldycke/dotfiles/tree/osx-10.10)
+* [Mac OS X 10.9 (Mavericks)](https://github.com/kdeldycke/dotfiles/tree/osx-10.9)
+* [Mac OS X 10.8 (Mountain Lion)](https://github.com/kdeldycke/dotfiles/tree/osx-10.8)
 
 Kubuntu:
 
