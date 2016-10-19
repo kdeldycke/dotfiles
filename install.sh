@@ -34,7 +34,6 @@ rename
 rtmpdump
 shellcheck
 shntool
-sqlitebrowser
 testdisk
 tree
 unrar
@@ -52,6 +51,7 @@ handbrake
 hugin
 inkscape
 prey
+sqlitebrowser
 subsurface
 virtualbox
 "
