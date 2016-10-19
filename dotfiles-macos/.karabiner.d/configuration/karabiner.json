@@ -1,0 +1,28 @@
+{
+  "profiles" : [
+    {
+      "fn_function_keys" : {
+        "f12" : "volume_up",
+        "f9" : "vk_consumer_next",
+        "f5" : "vk_consumer_illumination_down",
+        "f10" : "mute",
+        "f1" : "vk_consumer_brightness_down",
+        "f6" : "vk_consumer_illumination_up",
+        "f2" : "vk_consumer_brightness_up",
+        "f7" : "vk_consumer_previous",
+        "f11" : "volume_down",
+        "f3" : "vk_mission_control",
+        "f8" : "vk_consumer_play",
+        "f4" : "vk_launchpad"
+      },
+      "selected" : true,
+      "simple_modifications" : {
+        "left_command" : "left_option",
+        "right_option" : "right_command",
+        "application" : "right_option",
+        "left_option" : "left_command"
+      },
+      "name" : "Default profile"
+    }
+  ]
+}

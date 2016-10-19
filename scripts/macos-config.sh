@@ -942,42 +942,6 @@ defaults write org.m0k.transmission BlocklistURL -string "http://john.bitsurge.n
 defaults write org.m0k.transmission BlocklistAutoUpdate -bool true
 
 ###############################################################################
-# Karabiner.app                                                               #
-###############################################################################
-# Configuration produced with 'karabiner export' CLI.
-
-# Reset to default config first.
-karabiner select_by_name 'Default Profile'
-karabiner be_careful_to_use__clear_all_values_by_name 'Default Profile'
-
-# Do not remap any Apple and laptop internal devices.
-karabiner set general.dont_remap_apple_keyboard 1
-karabiner set general.dont_remap_apple_pointing 1
-karabiner set general.dont_remap_internal 1
-karabiner set ignore_devices.apple_devices 1
-karabiner set ignore_devices.magic_mouse 1
-
-# Mapping for Microsoft Sclupt Ergonomic Mouse.
-karabiner set remap.button4_to_mission_control 1
-
-# Mapping for Microsoft Sclupt Ergonomic Keyboard.
-karabiner set remap.commandL2optionL 1
-karabiner set remap.optionL2commandL 1
-karabiner set remap.optionrcommandr 1
-karabiner set remap.pc_application2optionR 1
-
-# Set keyboard input speed.
-defaults write org.pqrs.Karabiner kIsOverwriteKeyRepeat -bool true
-karabiner set repeat.initial_wait 200
-karabiner set repeat.wait 20
-
-# Do not show status message.
-defaults write org.pqrs.Karabiner isStatusWindowEnabled -bool false
-
-# Do not allow application or widget-specific remapping.
-defaults write org.pqrs.Karabiner kIsAXNotifierEnabled -bool false
-
-###############################################################################
 # Spectacle.app                                                               #
 ###############################################################################
 
