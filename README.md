@@ -1,7 +1,7 @@
 # Kevin's dotfiles [![Build Status](https://img.shields.io/travis/kdeldycke/maildir-deduplicate/develop.svg?style=flat)](https://travis-ci.org/kdeldycke/dotfiles)
 
 Dot-files and system configuration for Python developers, currently targetting
-**OSX 10.11** (El Capitan) and **Kubuntu 16.04 LTS** (Xenial Xerus).
+**macOS 10.12** (Sierra) and **Kubuntu 16.04 LTS** (Xenial Xerus).
 
 ![OSX 10.11 El Capitan solarized terminal and vim
 ](https://raw.githubusercontent.com/kdeldycke/dotfiles/master/screenshots/osx-10.11.png)
@@ -14,7 +14,7 @@ Features
 --------
 
 * Aimed at Python programmers using `vim`.
-* Common configuration for both OSX and Kubuntu.
+* Common configuration for both macOS and Kubuntu.
 * Produce colored output for most of shell commands.
 * All color schemes are based on [Solarized
 ](http://ethanschoonover.com/solarized).
@@ -80,7 +80,7 @@ template from [Mathias Bynens `.macos`
     $ curl https://raw.githubusercontent.com/mathiasbynens/dotfiles/master/.macos | diff -ru - ./scripts/osx-config.sh
 
 Then merge differences to reduce the differences. This is going to greatly
-improve the maintenance of OSX configuration.
+improve the maintenance of macOS configuration.
 
 
 Versions
@@ -89,9 +89,10 @@ Versions
 Only the current `master` branch is supported and actively maintained. Older
 branches are available for archive.
 
-OSX:
+macOS:
 
-* [OSX 10.11 (El Capitan)](https://github.com/kdeldycke/dotfiles/tree/master) (current)
+* [macOS 10.12 (Sierra)](https://github.com/kdeldycke/dotfiles/tree/master) (current)
+* [OSX 10.11 (El Capitan)](https://github.com/kdeldycke/dotfiles/tree/osx-10.11)
 * [OSX 10.10 (Yosemite)](https://github.com/kdeldycke/dotfiles/tree/osx-10.10)
 * [OSX 10.9 (Mavericks)](https://github.com/kdeldycke/dotfiles/tree/osx-10.9)
 * [OSX 10.8 (Mountain Lion)](https://github.com/kdeldycke/dotfiles/tree/osx-10.8)

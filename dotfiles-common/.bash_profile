@@ -1,4 +1,4 @@
-# Force Python, then Homebrew binaries to take precedence on OSX default
+# Force Python, then Homebrew binaries to take precedence on macOS default
 PYTHON_LOCAL_BIN="$(python -m site --user-base)/bin"
 GNU_CORE_UTILS_BIN="$(brew --prefix coreutils)/libexec/gnubin"
 export PATH="$PYTHON_LOCAL_BIN:$GNU_CORE_UTILS_BIN:/usr/local/bin:/usr/local/sbin:$PATH"
@@ -9,20 +9,20 @@ export LC_ALL="en_US.UTF-8"
 
 # Detect distribution
 if [ "$(uname -s)" == "Darwin" ]; then
-    IS_OSX=true
+    IS_MACOS=true
 else
-    IS_OSX=false
+    IS_MACOS=false
 fi
 
 # Do not let homebrew send stats to Google Analytics.
 # See: https://github.com/Homebrew/brew/blob/master/share/doc/homebrew/Analytics.md#opting-out
-if $IS_OSX; then
+if $IS_MACOS; then
     export HOMEBREW_NO_ANALYTICS=1
 fi
 
 # If possible, add tab completion for many more commands
 [ -f /etc/bash_completion ] && source /etc/bash_completion
-if $IS_OSX; then
+if $IS_MACOS; then
     [ -f "$(brew --prefix)/etc/bash_completion" ] && source "$(brew --prefix)/etc/bash_completion"
 fi
 
@@ -63,7 +63,7 @@ done;
 export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
 
 # Set user & root prompt
-if $IS_OSX; then
+if $IS_MACOS; then
     GIT_PROMPT_THEME="Solarized"
 else
     GIT_PROMPT_THEME="Solarized_Ubuntu"
@@ -75,8 +75,8 @@ export SUDO_PS1='\[\e[31m\]\u\[\e[37m\]:\[\e[33m\]\w\[\e[31m\]\$\[\033[00m\] '
 export EDITOR="vim"
 
 # Set default ls color schemes (source: https://github.com/seebi/dircolors-solarized/issues/10 ).
-# OSX/Linux color translations generated with http://geoff.greer.fm/lscolors/
-if $IS_OSX; then
+# macOS/Linux color translations generated with http://geoff.greer.fm/lscolors/
+if $IS_MACOS; then
     export CLICOLOR=1
     export LSCOLORS="gxfxbEaEBxxEhEhBaDaCaD"
 else
@@ -84,7 +84,7 @@ else
 fi
 
 # Activate global dir colors if found.
-if $IS_OSX; then
+if $IS_MACOS; then
     alias dircolors='gdircolors'
 fi
 if [ -f $HOME/.dircolors ]
@@ -114,7 +114,7 @@ alias h="history"
 alias q='exit'
 
 function cls {
-    if $IS_OSX; then
+    if $IS_MACOS; then
         # Source: http://stackoverflow.com/a/2198403
         osascript -e 'tell application "System Events" to keystroke "k" using command down'
     else
@@ -157,7 +157,7 @@ fi
 # Detect which `ls` flavor is in use
 if ls --color > /dev/null 2>&1; then # GNU `ls`
     lsflags="--color --group-directories-first"
-else # OS X `ls`
+else # macOS `ls`
     lsflags="-G"
 fi
 alias ll='ls -lah ${lsflags}'
@@ -241,12 +241,12 @@ extract () {
 }
 
 # Distribution-specific commands
-if $IS_OSX; then
+if $IS_MACOS; then
 
     # Opens current directory in apps
     alias f='open -a Finder ./'
 
-    # Replace netstat command on OSX to find ports used by apps
+    # Replace netstat command on macOS to find ports used by apps
     alias netstat="sudo lsof -i -P"
 
     # Add tab completion for `defaults read|write NSGlobalDomain`

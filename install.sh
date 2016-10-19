@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -x
 
-# We need to distinguish sources and binary packages for Brew & Cask on OSX
+# We need to distinguish sources and binary packages for Brew & Cask on macOS
 COMMON_PACKAGES="
 apg
 bash
@@ -58,9 +58,9 @@ virtualbox
 
 # Detect distribution
 if [ "$(uname -s)" == "Darwin" ]; then
-    IS_OSX=true
+    IS_MACOS=true
 else
-    IS_OSX=false
+    IS_MACOS=false
 fi
 
 # Ask for the administrator password upfront.
@@ -76,7 +76,7 @@ git submodule init
 git submodule update --remote --merge
 
 # Search local dotfiles
-if $IS_OSX; then
+if $IS_MACOS; then
     DOT_FILES=$(find ./dotfiles-common ./dotfiles-osx -maxdepth 1 \
         -not -path "./dotfiles-common" \
         -not -path "./dotfiles-osx" \
@@ -112,7 +112,7 @@ do
 done
 
 # Install all software first.
-if $IS_OSX; then
+if $IS_MACOS; then
     source ./scripts/osx-install.sh
     source ./scripts/osx-install-refind.sh
 else
@@ -120,7 +120,7 @@ else
 fi
 
 # Configure everything.
-if $IS_OSX; then
+if $IS_MACOS; then
     source ./scripts/osx-config.sh
 else
     source ./scripts/kubuntu-config.sh
@@ -161,7 +161,7 @@ curl -fsSL https://github.com/Lokaltog/powerline-fontpatcher/tarball/develop | t
 fontforge -script ./powerline-fontpatcher/scripts/powerline-fontpatcher --no-rename ./assets/SourceCodePro-Regular.otf
 rm -rf ./powerline-fontpatcher
 # Install the patched font
-if $IS_OSX; then
+if $IS_MACOS; then
     mkdir -p ~/Library/Fonts/
     mv ./Source\ Code\ Pro.otf ~/Library/Fonts/
 else

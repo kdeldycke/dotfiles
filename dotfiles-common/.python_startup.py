@@ -20,7 +20,7 @@ except ImportError as exception:
 else:
 
     # Enable tab completion.
-    # OSX's bind should only be applied with legacy readline.
+    # macOS's bind should only be applied with legacy readline.
     if sys.platform == 'darwin' and 'libedit' in readline.__doc__:
         readline.parse_and_bind("bind ^I rl_complete")
     else:

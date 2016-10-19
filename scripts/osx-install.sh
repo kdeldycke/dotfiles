@@ -16,7 +16,7 @@ if [[ $? -ne 0 ]]; then
     sudo xcodebuild -license
 fi
 
-# Update all OSX packages
+# Update all macOS packages
 sudo softwareupdate -i -a
 
 # Install Homebrew if not found
@@ -42,7 +42,7 @@ brew tap caskroom/cask
 brew install mas
 mas upgrade
 
-# Install OSX system requirements
+# Install macOS system requirements
 brew cask install xquartz
 
 # Install a brand new Python
@@ -139,7 +139,7 @@ qlmanage -r
 # Install GNU `sed`, overwriting the built-in `sed`.
 brew install gnu-sed --with-default-names
 
-# Install more recent versions of some OS X tools.
+# Install more recent versions of some macOS tools.
 brew install homebrew/dupes/grep
 brew install homebrew/dupes/openssh
 
