@@ -564,7 +564,7 @@ defaults write com.apple.dock wvous-tl-modifier -int 0
 for shortcut_label in "Launchpad" "Calendar" "Contacts" "Mail" \
     "Safari" "Siri" "Maps" "FaceTime" "iTunes" "iBooks" "App Store" "Reminders" \
     "Photos" "Messages"; do
-    dockutil --remove "${shortcut_label}" --allhomes
+    dockutil --remove "${shortcut_label}" --allhomes --no-restart
 done
 
 # Add new app shortcuts to the dock.
@@ -572,7 +572,7 @@ for app in "Chromium" "Firefox" "GitUp" "Transmission" "LibreOffice" \
     "TorBrowser" "Steam" "Popcorn-Time"; do
     dockutil --find "${shortcut}"
     if [ $? -ne 0 ]; then
-        dockutil --add "/Applications/${app}.app" --replacing "${app}"
+        dockutil --add "/Applications/${app}.app" --replacing "${app}" --no-restart
     fi
 done
 
