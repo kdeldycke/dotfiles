@@ -572,7 +572,7 @@ for app in "Chromium" "Firefox" "GitUp" "Transmission" "LibreOffice" \
     "TorBrowser" "Steam" "Popcorn-Time"; do
     dockutil --find "${shortcut}"
     if [ $? -ne 0 ]; then
-        dockutil --add "/Applications/${app}.app"
+        dockutil --add "/Applications/${app}.app" --replacing "${app}"
     fi
 done
 
