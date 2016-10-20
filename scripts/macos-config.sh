@@ -562,7 +562,7 @@ defaults write com.apple.dock wvous-tl-modifier -int 0
 
 # Remove apps I don't use from the dock.
 for shortcut_label in "Launchpad" "Calendar" "Contacts" "Mail" \
-    "Safari" "Maps" "FaceTime" "iTunes" "iBooks" "App Store" "Reminders" \
+    "Safari" "Siri" "Maps" "FaceTime" "iTunes" "iBooks" "App Store" "Reminders" \
     "Photos" "Messages"; do
     dockutil --remove "${shortcut_label}" --allhomes
 done
