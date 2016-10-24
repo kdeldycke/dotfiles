@@ -162,11 +162,11 @@
 	AAAAAAAAAM4=
 	</data>
 	<key>BackgroundSettingsForInactiveWindows</key>
-        <false/>
+	<false/>
 	<key>BlinkText</key>
 	<false/>
-        <key>BookmarkRestorations</key>
-        <false/>
+	<key>BookmarkRestorations</key>
+	<false/>
 	<key>CommandString</key>
 	<string></string>
 	<key>CursorBlink</key>
@@ -196,7 +196,7 @@
 	<key>FontAntialias</key>
 	<true/>
 	<key>ProfileCurrentVersion</key>
-	<real>2.04</real>
+	<real>2.0499999999999998</real>
 	<key>RunCommandAsShell</key>
 	<true/>
 	<key>SelectionColor</key>
@@ -210,16 +210,16 @@
 	</data>
 	<key>ShowCommandKeyInTitle</key>
 	<true/>
-        <key>ShowComponentsWhenTabHasCustomTitle</key>
-        <false/>
+	<key>ShowComponentsWhenTabHasCustomTitle</key>
+	<false/>
 	<key>ShowDimensionsInTitle</key>
 	<false/>
 	<key>ShowRepresentedURLPathInTitle</key>
 	<true/>
-        <key>ShowShellCommandInTitle</key>
-        <false/>
-        <key>ShowTTYNameInTitle</key>
-        <false/>
+	<key>ShowShellCommandInTitle</key>
+	<false/>
+	<key>ShowTTYNameInTitle</key>
+	<false/>
 	<key>ShowWindowSettingsNameInTitle</key>
 	<false/>
 	<key>TextBoldColor</key>
@@ -252,5 +252,7 @@
 	<integer>1</integer>
 	<key>type</key>
 	<string>Window Settings</string>
+	<key>warnOnShellCloseAction</key>
+	<integer>0</integer>
 </dict>
 </plist>
