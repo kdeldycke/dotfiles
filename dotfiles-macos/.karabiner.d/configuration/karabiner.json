@@ -1,6 +1,19 @@
 {
   "profiles" : [
     {
+      "name" : "Microsoft Sculpt Ergonomic Keyboard and Mouse",
+      "devices" : [
+        {
+          "identifiers" : {
+            "product_id" : 592,
+            "vendor_id" : 1452,
+            "is_keyboard" : true,
+            "is_pointing_device" : false
+          },
+          "ignore" : true
+        }
+      ],
+      "selected" : true,
       "fn_function_keys" : {
         "f12" : "volume_up",
         "f9" : "vk_consumer_next",
@@ -15,14 +28,12 @@
         "f8" : "vk_consumer_play",
         "f4" : "vk_launchpad"
       },
-      "selected" : true,
       "simple_modifications" : {
         "left_command" : "left_option",
         "right_option" : "right_command",
         "application" : "right_option",
         "left_option" : "left_command"
-      },
-      "name" : "Microsoft Sculpt Ergonomic Keyboard and Mouse"
+      }
     }
   ]
 }
