@@ -35,7 +35,7 @@ brew upgrade
 # Include duplicates packages
 brew tap homebrew/dupes
 
-# Install or upgrade Cask
+# Add Cask
 brew tap caskroom/cask
 
 # Add services
