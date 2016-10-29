@@ -9,7 +9,8 @@
                         "product_id": 592,
                         "vendor_id": 1452
                     },
-                    "ignore": true
+                    "ignore": true,
+                    "keyboard_type": 0
                 },
                 {
                     "identifiers": {
@@ -18,7 +19,18 @@
                         "product_id": 589,
                         "vendor_id": 1452
                     },
-                    "ignore": true
+                    "ignore": true,
+                    "keyboard_type": 0
+                },
+                {
+                    "identifiers": {
+                        "is_keyboard": true,
+                        "is_pointing_device": false,
+                        "product_id": 1957,
+                        "vendor_id": 1118
+                    },
+                    "ignore": false,
+                    "keyboard_type": 0
                 }
             ],
             "fn_function_keys": {
