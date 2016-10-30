@@ -8,8 +8,3 @@ bb.prefix = bitbucket.org
 bb.username = USER
 bb.password = PASSWORD
 bb.schemes = https
-# Google code creds
-gc.prefix = googlecode.com 
-gc.username = USER
-gc.password = PASSWORD
-gc.schemes = https
