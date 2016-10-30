@@ -107,7 +107,6 @@ brew cask install kiwix
 brew cask install libreoffice
 brew cask install musicbrainz-picard
 brew cask install music-manager
-brew cask install openemu
 brew cask install openzfs
 brew cask install rowanj-gitx
 brew cask install spectacle
