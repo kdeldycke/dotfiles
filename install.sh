@@ -119,13 +119,6 @@ else
     source ./scripts/kubuntu-install.sh
 fi
 
-# Configure everything.
-if $IS_MACOS; then
-    source ./scripts/macos-config.sh
-else
-    source ./scripts/kubuntu-config.sh
-fi
-
 # Install & upgrade all global python modules
 PYTHON_PACKAGES="
 autopep8
@@ -173,6 +166,13 @@ fi
 
 # Force vim plugin upgrades
 vim +NeoBundleUpdate +qall
+
+# Configure everything.
+if $IS_MACOS; then
+    source ./scripts/macos-config.sh
+else
+    source ./scripts/kubuntu-config.sh
+fi
 
 # Reload Bash with new configuration
 source ~/.bash_profile
