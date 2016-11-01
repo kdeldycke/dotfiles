@@ -227,7 +227,6 @@ sed -i "s/\"PersonalToolbar\":{\"collapsed\":\"true\"}/\"PersonalToolbar\":{\"co
 # Set TorBrowser bookmarks in toolbar.
 # Source: https://yro.slashdot.org/story/16/06/08/151245/kickasstorrents-enters-the-dark-web-adds-official-tor-address
 BOOKMARKS="
-http://lsuzvpko6w6hzpnn.onion,KickAss,ehmwyurmkort,eqeiuuEyivna
 http://uj3wazyk5u4hnvtk.onion,PirateBay,nnypemktnpya,dvzeeooowsgx
 "
 TB_BOOKMARK_DB="$TB_CONFIG_DIR/places.sqlite"
