@@ -76,6 +76,7 @@ brew install openssl
 brew install osxutils
 brew install pinentry-mac
 brew install pstree
+brew install rmlint
 brew install ssh-copy-id
 brew install watch
 brew install webkit2png
