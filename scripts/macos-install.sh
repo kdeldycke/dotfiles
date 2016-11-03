@@ -94,12 +94,12 @@ brew cask install aerial
 brew cask install android-file-transfer
 brew cask install avidemux
 brew cask install bitcoin-core
-brew cask install chromium
 brew cask install dropbox
 brew cask install dupeguru
 brew cask install flux
 brew cask install ftdi-vcp-driver
 brew cask install gitup
+brew cask install google-chrome
 brew cask install google-drive
 brew cask install google-play-music-desktop-player
 brew cask install java
@@ -195,9 +195,9 @@ if [[ $? -ne 0 ]]; then
     open "$TMPDIR/ublock-safari.safariextz"
 fi
 
-# Set chromium as the default browser.
+# Set Chrome as the default browser.
 brew install duti
-duti -s org.chromium.Chromium http
+duti -s org.google.Chrome http
 
 # Install mpv.app so we can set it as default player.
 # Source: https://github.com/mpv-player/mpv/wiki/FAQ#how-can-i-make-mpv-the-default-application-to-open-movie-files-on-osx
