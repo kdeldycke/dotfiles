@@ -22,7 +22,7 @@ else
 
     else
 
-        REFIND_VERSION="0.10.3"
+        REFIND_VERSION="0.10.4"
 
         # Download refind.
         wget http://netcologne.dl.sourceforge.net/project/refind/$REFIND_VERSION/refind-bin-$REFIND_VERSION.zip -O "$TMPDIR/refind-bin-$REFIND_VERSION.zip"
