@@ -34,6 +34,8 @@ sudo defaults write /Library/Preferences/com.apple.virtualMemory UseEncryptedSwa
 
 # Remove default content
 rm -rf ~/Downloads/About\ Downloads.lpdf
+rm -rf ~/Public/Drop\ Box
+rm -rf ~/Public/.com.apple.timemachine.supported
 
 # Turns off WakeOnMagicPacket
 sudo pmset -a womp 0
