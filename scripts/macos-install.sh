@@ -95,6 +95,7 @@ brew cask install aerial
 brew cask install android-file-transfer
 brew cask install avidemux
 brew cask install bitcoin-core
+brew cask install borgbackup
 brew cask install dropbox
 brew cask install dupeguru
 brew cask install flux
