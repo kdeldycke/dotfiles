@@ -991,9 +991,9 @@ defaults write com.divisiblebyzero.Spectacle UndoLastMove -data 62706c6973743030
 ###############################################################################
 
 defaults write org.herf.Flux location -string "48.856614,2.352222"
-defaults write org.herf.Flux locationTextField -string Paris
+defaults write org.herf.Flux locationTextField -string "Paris"
 defaults write org.herf.Flux moveToApplicationsFolderAlertSuppress -bool true
-defaults write org.herf.Flux locationType -string L
+defaults write org.herf.Flux locationType -string "L"
 defaults write org.herf.Flux version -int 3
 defaults write org.herf.Flux wakeTime -int 480
 
