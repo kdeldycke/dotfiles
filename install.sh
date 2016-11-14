@@ -125,6 +125,7 @@ autopep8
 bumpversion
 coverage
 gmvault
+gsutil
 httpie
 jupyter
 mccabe

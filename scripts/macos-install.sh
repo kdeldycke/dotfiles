@@ -67,7 +67,6 @@ brew link --force curl
 brew install dockutil
 brew install exiftool
 brew install faad2
-brew install gcsfuse
 brew install gpg-agent
 brew install keybase
 brew install md5sha1sum
@@ -154,6 +153,15 @@ brew cask install osxfuse
 brew install homebrew/fuse/ext2fuse
 brew install homebrew/fuse/ext4fuse
 brew install homebrew/fuse/ntfs-3g
+
+# Install and configure Google Cloud Storage bucket mount point.
+brew install homebrew/fuse/gcsfuse
+mkdir -p "${HOME}/gcs"
+GOOGLE_APPLICATION_CREDENTIALS=~/.google-cloud-auth.json gcsfuse backup-imac-borg ./gcs
+# Mount doesn't work as macOS doesn't let us register a new filesystem plugin.
+# See: https://github.com/GoogleCloudPlatform/gcsfuse/issues/188
+# sudo ln -s /usr/local/sbin/mount_gcsfuse /sbin/
+# mount -t gcsfuse -o rw,user,keyfile="${HOME}/.google-cloud-auth.json" backup-imac-borg "${HOME}/gcs"
 
 # Install vim
 brew install lua --completion
