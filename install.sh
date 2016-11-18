@@ -21,6 +21,7 @@ graphviz
 grc
 hfsutils
 htop
+id3v2
 jnettop
 lame
 legit
