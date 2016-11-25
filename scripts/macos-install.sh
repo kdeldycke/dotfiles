@@ -133,8 +133,6 @@ brew cask install epubquicklook
 brew cask install qlcolorcode
 brew cask install qlimagesize
 brew cask install qlmarkdown
-pip install docutils pygments
-brew cask install qlrest
 brew cask install qlstephen
 brew cask install qlvideo
 brew cask install quicklook-json
