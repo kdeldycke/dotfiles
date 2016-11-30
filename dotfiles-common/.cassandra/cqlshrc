@@ -1,6 +1,7 @@
 [connection]
-# Timeout in minutes.
-client_timeout=100
+# Timeout in seconds.
+timeout=100
+request_timeout=100
 
 [ui]
 # Display microseconds.
