@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # <bitbar.title>Meta Package Manager</bitbar.title>
-# <bitbar.version>v1.11.0</bitbar.version>
+# <bitbar.version>v1.12.0</bitbar.version>
 # <bitbar.author>Kevin Deldycke</bitbar.author>
 # <bitbar.author.github>kdeldycke</bitbar.author.github>
 # <bitbar.desc>List package updates from several managers.</bitbar.desc>
@@ -68,8 +68,8 @@ class PackageManager(object):
             args, stdout=PIPE, stderr=PIPE, universal_newlines=True)
         output, error = process.communicate()
         if process.returncode != 0 and error:
-            self.error = error.decode('utf-8')
-        return output.decode('utf-8')
+            self.error = error.decode('utf-8').strip()
+        return output.decode('utf-8').strip()
 
     def sync(self):
         """ Fetch latest versions of installed packages.
@@ -181,18 +181,20 @@ class HomebrewCask(Homebrew):
             $ brew cask list --versions
             aerial 1.2beta5
             android-file-transfer latest
-            audacity 2.1.2
+            audacity 2.1.2-1453294898 2.1.2
             bitbar 1.9.2
             firefox 49.0.1
             flux 37.7
             gimp 2.8.18-x86_64
             java 1.8.0_112-b16
+            tunnelblick 3.6.8_build_4625 3.6.9_build_4685
+            virtualbox 5.1.8-111374 5.1.10-112026
 
             $ brew cask info aerial
             aerial: 1.2beta5
             https://github.com/JohnCoates/Aerial
             /usr/local/Caskroom/aerial/1.2beta5 (18 files, 6.6M)
-            From: https://github.com/caskroom/homebrew-cask/blob/master/Casks/aerial.rb
+            From: https://github.com/(...)/blob/master/Casks/aerial.rb
             ==> Name
             Aerial Screensaver
             ==> Artifacts
@@ -202,17 +204,28 @@ class HomebrewCask(Homebrew):
             firefox: 50.0.1
             https://www.mozilla.org/firefox/
             /usr/local/Caskroom/firefox/49.0.1 (107 files, 185.3M)
-            From: https://github.com/caskroom/homebrew-cask/blob/master/Casks/firefox.rb
+            From: https://github.com/(...)/blob/master/Casks/firefox.rb
             ==> Name
             Mozilla Firefox
             ==> Artifacts
             Firefox.app (app)
 
+            $ brew cask info virtualbox
+            virtualbox: 5.1.10-112026
+            https://www.virtualbox.org
+            /usr/local/Caskroom/virtualbox/5.1.8-111374 (3 files, 88.8M)
+            /usr/local/Caskroom/virtualbox/5.1.10-112026 (3 files, 89.3M)
+            From: https://github.com/(...)/blob/master/Casks/virtualbox.rb
+            ==> Name
+            Oracle VirtualBox
+            ==> Artifacts
+            VirtualBox.pkg (pkg)
+
             $ brew cask info prey
             prey: 1.6.3
             https://preyproject.com/
             Not installed
-            From: https://github.com/caskroom/homebrew-cask/blob/master/Casks/prey.rb
+            From: https://github.com/(...)/blob/master/Casks/prey.rb
             ==> Name
             Prey
             ==> Artifacts
@@ -228,7 +241,7 @@ class HomebrewCask(Homebrew):
             ubersicht: 1.0.44
             http://tracesof.net/uebersicht/
             Not installed
-            From: https://github.com/caskroom/homebrew-cask/blob/master/Casks/ubersicht.rb
+            From: https://github.com/(...)/blob/master/Casks/ubersicht.rb
             ==> Name
             Übersicht
             ==> Artifacts
@@ -244,16 +257,14 @@ class HomebrewCask(Homebrew):
         # Inspect package one by one as `brew cask list` is not reliable. See:
         # https://github.com/caskroom/homebrew-cask/blob/master/doc
         # /reporting_bugs/brew_cask_list_shows_wrong_information.md
-        for installed_pkg in output.strip().split('\n'):
+        for installed_pkg in output.split('\n'):
             if not installed_pkg:
                 continue
-            infos = installed_pkg.split(' ', 1)
+            infos = installed_pkg.split()
             name = infos[0]
+            versions = sorted(infos[1:])
 
             # Use heuristics to guess installed version.
-            versions = infos[1] if len(infos) > 1 else ''
-            versions = sorted([
-                v.strip() for v in versions.split(',') if v.strip()])
             if len(versions) > 1 and 'latest' in versions:
                 versions.remove('latest')
             version = versions[-1] if versions else '?'
@@ -317,7 +328,7 @@ class Pip(PackageManager):
             mercurial (3.8.3) - Latest: 3.8.4 [sdist]
             pylint (1.5.6) - Latest: 1.6.1 [wheel]
         """
-        output = self.run(self.cli, 'list', '--outdated').strip()
+        output = self.run(self.cli, 'list', '--outdated')
         if not output:
             return
 
@@ -594,7 +605,7 @@ def print_menu():
         print("---")
 
         if manager.error:
-            for line in manager.error.strip().split("\n"):
+            for line in manager.error.split("\n"):
                 print("{} | color=red".format(line))
 
         print("{} {} package{}".format(
@@ -612,6 +623,7 @@ def print_menu():
                 "{cli} terminal=false refresh=true".format(
                     cli=manager.update_cli(pkg_info['name']),
                     **pkg_info)).encode('utf-8'))
+
 
 if __name__ == '__main__':
     import argparse
