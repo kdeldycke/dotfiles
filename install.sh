@@ -122,6 +122,7 @@ fi
 
 # Install & upgrade all global python modules
 PYTHON_PACKAGES="
+pip
 autopep8
 bumpversion
 coverage
@@ -134,7 +135,6 @@ nose
 nose-progressive
 pycodestyle
 pydocstyle
-pip
 pyflakes
 pygments
 pylint
