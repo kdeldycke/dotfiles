@@ -580,7 +580,7 @@ done
 # Add new app shortcuts to the dock.
 for app in "Google Chrome" "Firefox" "GitUp" "Transmission" "LibreOffice" \
     "TorBrowser" "Steam" "Popcorn-Time"; do
-    dockutil --find "${shortcut}"
+    dockutil --find "${app}"
     if [ $? -ne 0 ]; then
         dockutil --add "/Applications/${app}.app" --replacing "${app}" --no-restart
     fi
