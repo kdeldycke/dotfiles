@@ -226,7 +226,7 @@ wget -O "${HOME}/.bitbar/btc.17m.sh" https://github.com/matryer/bitbar-plugins/r
 sed -i "s/Bitstamp: /Ƀ/" "${HOME}/.bitbar/btc.17m.sh"
 wget -O "${HOME}/.bitbar/netinfo.3m.sh" https://github.com/matryer/bitbar-plugins/raw/master/Network/netinfo.60s.sh
 wget -O "${HOME}/.bitbar/disk.13m.sh" https://github.com/matryer/bitbar-plugins/raw/master/System/mdf.1m.sh
-wget -O "${HOME}/.bitbar/meta_package_manager.7h.py" https://github.com/kdeldycke/meta-package-manager/raw/develop/meta_package_manager.7h.py
+wget -O "${HOME}/.bitbar/meta_package_manager.7h.py" https://github.com/kdeldycke/meta-package-manager/raw/develop/meta_package_manager/bitbar/meta_package_manager.7h.py
 wget -O "${HOME}/.bitbar/brew-services.7m.rb" https://github.com/matryer/bitbar-plugins/raw/master/Dev/Homebrew/brew-services.10m.rb
 chmod +x ${HOME}/.bitbar/*.{sh,py,rb}
 open -a BitBar
