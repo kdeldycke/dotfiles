@@ -131,6 +131,7 @@ gsutil
 httpie
 jupyter
 mccabe
+meta-package-manager
 nose
 nose-progressive
 pycodestyle
