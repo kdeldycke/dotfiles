@@ -12,7 +12,7 @@ xcodebuild -version
 # Accept Xcode license
 if [[ $? -ne 0 ]]; then
     # TODO: find a way to install Xcode.app automatticaly
-    # See: http://stackoverflow.com/a/18244349
+    # See: https://stackoverflow.com/a/18244349
     sudo xcodebuild -license
 fi
 

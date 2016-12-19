@@ -59,7 +59,7 @@ for option in autocd globstar; do
 done;
 
 # After each command, append to the history file and reread it.
-# Source: http://unix.stackexchange.com/a/1292
+# Source: https://unix.stackexchange.com/a/1292
 export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
 
 # Set user & root prompt
@@ -115,7 +115,7 @@ alias q='exit'
 
 function cls {
     if $IS_MACOS; then
-        # Source: http://stackoverflow.com/a/2198403
+        # Source: https://stackoverflow.com/a/2198403
         osascript -e 'tell application "System Events" to keystroke "k" using command down'
     else
         clear

@@ -59,7 +59,7 @@ sudo pmset -c sleep 0
 sudo pmset -b sleep 5
 
 # Set standby delay to default 1 hour
-# See: http://www.ewal.net/2012/09/09/slow-wake-for-macbook-pro-retina/
+# See: https://www.ewal.net/2012/09/09/slow-wake-for-macbook-pro-retina/
 sudo pmset -a standbydelay 3600
 
 # Disable the sound effects on boot
@@ -236,7 +236,7 @@ sudo defaults write /Library/Preferences/com.apple.loginwindow GuestEnabled -boo
 security set-keychain-settings -t 21600 -l ~/Library/Keychains/login.keychain
 
 # Destroy FileVault key when going into standby mode, forcing a re-auth.
-# Source: https://web.archive.org/web/20160114141929/http://training.apple.com/pdf/WP_FileVault2.pdf
+# Source: https://web.archive.org/web/20160114141929/https://training.apple.com/pdf/WP_FileVault2.pdf
 sudo pmset destroyfvkeyonstandby 1
 
 # Disable Bonjour multicast advertisements

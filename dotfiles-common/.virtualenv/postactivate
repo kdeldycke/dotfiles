@@ -2,7 +2,7 @@
 # This hook is sourced after every virtualenv is activated.
 
 # Override cd to go to the venv root
-# Source: http://virtualenvwrapper.readthedocs.org/en/latest/tips.html#changing-the-default-behavior-of-cd
+# Source: https://virtualenvwrapper.readthedocs.org/en/latest/tips.html#changing-the-default-behavior-of-cd
 cd () {
     if (( $# == 0 ))
     then

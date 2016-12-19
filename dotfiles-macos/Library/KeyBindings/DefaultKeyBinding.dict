@@ -1,7 +1,7 @@
 {
 
 /* Deactivate non-breakable spaces.
- * See: http://linuxtoosx.blogspot.fr/2010/10/disabling-option-space-and-altgr-space.html
+ * See: https://linuxtoosx.blogspot.fr/2010/10/disabling-option-space-and-altgr-space.html
  */
 
 "~ " = ("insertText:", " ");

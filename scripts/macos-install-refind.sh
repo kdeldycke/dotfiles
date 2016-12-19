@@ -25,7 +25,7 @@ else
         REFIND_VERSION="0.10.4"
 
         # Download refind.
-        wget http://netcologne.dl.sourceforge.net/project/refind/$REFIND_VERSION/refind-bin-$REFIND_VERSION.zip -O "$TMPDIR/refind-bin-$REFIND_VERSION.zip"
+        wget https://netcologne.dl.sourceforge.net/project/refind/$REFIND_VERSION/refind-bin-$REFIND_VERSION.zip -O "$TMPDIR/refind-bin-$REFIND_VERSION.zip"
         unzip "$TMPDIR/refind-bin-$REFIND_VERSION.zip" -d "$TMPDIR"
 
         # Remove previous installation.

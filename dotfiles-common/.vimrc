@@ -113,7 +113,7 @@ set encoding=utf-8              " setup the encoding to UTF-8
 set ls=2                        " status line always visible
 
 " Leader-based shortcuts {{{
-" Source: http://sheerun.net/2014/03/21/how-to-boost-your-vim-productivity/
+" Source: https://sheerun.net/2014/03/21/how-to-boost-your-vim-productivity/
 " Type <Space>o to open a new file
 nnoremap <Leader>o :CtrlP<CR>
 " Type <Space>w to save file
@@ -135,7 +135,7 @@ if has ('x') && has ('gui') " On Linux use + register for copy-paste
 elseif has ('gui')          " On mac and Windows, use * register for copy-paste
     set clipboard=unnamed
 endif
-" Enable "bracketed paste mode". See: http://stackoverflow.com/a/7053522/31493
+" Enable "bracketed paste mode". See: https://stackoverflow.com/a/7053522/31493
 if &term =~ "xterm.*"
     let &t_ti = &t_ti . "\e[?2004h"
     let &t_te = "\e[?2004l" . &t_te

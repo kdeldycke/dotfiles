@@ -4,7 +4,7 @@
     autocrlf = input
     whitespace = fix,space-before-tab,tab-in-indent,trailing-space
     # Prevent macOS's revisiond daemon to mess up with our files.
-    # See: http://www.git-tower.com/blog/make-git-rebase-safe-on-osx/
+    # See: https://www.git-tower.com/blog/make-git-rebase-safe-on-osx/
     trustctime = false
 [user]
     name = Kevin Deldycke
@@ -28,7 +28,7 @@
     # Source: https://github.com/pstadler/keybase-gpg-github
     gpgsign = true
 [pull]
-    # Source: http://stackoverflow.com/a/18756102/487610
+    # Source: https://stackoverflow.com/a/18756102/487610
     rebase = preserve
 [push]
     # Prevent accidental pushes to branches which you’re not ready to push yet.

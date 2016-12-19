@@ -2,9 +2,9 @@
 
 """
 Pulled these three examples together for the following code:
-* http://docs.python.org/2/library/rlcompleter.html#module-rlcompleter
-* http://geoffford.wordpress.com/2009/01/20/python-repl-enhancement/
-* http://www.sontek.net/blog/2010/12/28/tips_and_tricks_for_the_python_interpreter.html
+* https://docs.python.org/2/library/rlcompleter.html#module-rlcompleter
+* https://geoffford.wordpress.com/2009/01/20/python-repl-enhancement/
+* https://www.sontek.net/blog/2010/12/28/tips_and_tricks_for_the_python_interpreter.html
 """
 
 try:
