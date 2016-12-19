@@ -171,8 +171,8 @@ defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -bool false
 ##############################################################################
 # Security                                                                   #
 ##############################################################################
-# Also see: https://github.com/drduh/OS-X-Security-and-Privacy-Guide
-# https://benchmarks.cisecurity.org/tools2/osx/CIS_Apple_OSX_10.11_Benchmark_v1.0.0.pdf
+# Also see: https://github.com/drduh/macOS-Security-and-Privacy-Guide
+# https://benchmarks.cisecurity.org/tools2/osx/CIS_Apple_OSX_10.12_Benchmark_v1.0.0.pdf
 
 # Enable Firewall. Possible values: 0 = off, 1 = on for specific sevices, 2 =
 # on for essential services.
