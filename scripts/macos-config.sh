@@ -1047,9 +1047,9 @@ defaults write com.musicbrainz.Picard setting.acoustid_apikey -string "lP2ph5Sm"
 defaults write net.limechat.LimeChat Preferences.General.auto_join_on_invited -bool true
 defaults write net.limechat.LimeChat Preferences.General.auto_rejoin -bool true
 defaults write net.limechat.LimeChat Preferences.General.connect_on_doubleclick -bool true
-defaults write net.limechat.LimeChat Preferences.General.disconnect_on_doubleclick -bool true
+defaults write net.limechat.LimeChat Preferences.General.disconnect_on_doubleclick -bool false
 defaults write net.limechat.LimeChat Preferences.General.join_on_doubleclick -bool true
-defaults write net.limechat.LimeChat Preferences.General.leave_on_doubleclick -bool true
+defaults write net.limechat.LimeChat Preferences.General.leave_on_doubleclick -bool false
 defaults write net.limechat.LimeChat Preferences.General.confirm_quit -bool false
 
 # Log history.
