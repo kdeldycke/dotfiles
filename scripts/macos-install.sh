@@ -198,10 +198,10 @@ brew install wxpython
 pip install --upgrade RunSnakeRun
 
 # Install uBlock for Safari.
-defaults read ~/Library/Safari/Extensions/extensions | grep --quiet "net.gorhill.uBlock"
+defaults read ~/Library/Safari/Extensions/extensions | grep --quiet "com.el1t.uBlock"
 if [[ $? -ne 0 ]]; then
-    curl -o "$TMPDIR/ublock-safari.safariextz" -O https://cloud.delosent.com/ublock-safari-0.9.5.2.safariextz
-    open "$TMPDIR/ublock-safari.safariextz"
+    curl -o "$TMPDIR/uBlock.safariextz" -O https://github.com/el1t/uBlock-Safari/releases/download/1.10.0-alpha.4/uBlock.safariextz
+    open "$TMPDIR/uBlock.safariextz"
 fi
 
 # Set Chrome as the default browser.
