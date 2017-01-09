@@ -218,7 +218,7 @@ duti -s io.mpv mp4
 
 # Install Popcorn Time.
 rm -rf /Applications/Popcorn-Time.app
-wget -O - "https://get.popcorntime.sh/repo/build/Popcorn-Time-0.3.10-Mac.zip" | tar -xvz --directory /Applications -f -
+wget -O - "https://get.popcorntime.sh/repo/build/Popcorn-Time-0.3.10-Mac.zip" | tar -xz --directory /Applications -f -
 
 # Install and configure bitbar.
 brew cask install bitbar
