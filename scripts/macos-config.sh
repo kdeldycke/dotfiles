@@ -670,6 +670,12 @@ defaults write com.apple.Safari SendDoNotTrackHTTPHeader -bool true
 # Update extensions automatically
 defaults write com.apple.Safari InstallExtensionUpdatesAutomatically -bool true
 
+# Deny location services access from websites
+# 0: Deny without Prompting
+# 1: Prompt for each website once each day
+# 2: Prompt for each website one time only
+defaults write com.apple.Safari SafariGeolocationPermissionPolicy -int 0
+
 ###############################################################################
 # Mail                                                                        #
 ###############################################################################
