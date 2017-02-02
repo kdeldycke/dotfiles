@@ -62,6 +62,10 @@ sudo pmset -b sleep 5
 # See: https://www.ewal.net/2012/09/09/slow-wake-for-macbook-pro-retina/
 sudo pmset -a standbydelay 3600
 
+# Copy RAM to disk so the system state can still be restored in case of a power
+# failure.
+sudo pmset -a hibernatemode 3
+
 # Disable the sound effects on boot
 sudo nvram SystemAudioVolume=" "
 
