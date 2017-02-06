@@ -170,8 +170,7 @@ else
     sudo fc-cache -f -v
 fi
 
-# Force vim plugin upgrades
-vim +NeoBundleUpdate +qall
+# TODO: Force Neovim plugin upgrades
 
 # Configure everything.
 if $IS_MACOS; then

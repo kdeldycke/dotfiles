@@ -159,15 +159,6 @@ GOOGLE_APPLICATION_CREDENTIALS=~/.google-cloud-auth.json gcsfuse backup-imac-bor
 # sudo ln -s /usr/local/sbin/mount_gcsfuse /sbin/
 # mount -t gcsfuse -o rw,user,keyfile="${HOME}/.google-cloud-auth.json" backup-imac-borg "${HOME}/gcs"
 
-# Install vim
-brew install lua --completion
-brew install cscope
-VIM_FLAGS="--with-python --with-lua --with-cscope --override-system-vim"
-#brew install macvim "$VIM_FLAGS"
-# Always reinstall vim to fix Python links.
-# See: https://github.com/yyuu/pyenv/issues/234
-brew reinstall vim "$VIM_FLAGS"
-
 # Install Atom and its plugins.
 brew cask install atom
 ATOM_PACKAGES="

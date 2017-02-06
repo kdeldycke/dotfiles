@@ -71,8 +71,8 @@ fi
 source ~/.bash-git-prompt/gitprompt.sh
 export SUDO_PS1='\[\e[31m\]\u\[\e[37m\]:\[\e[33m\]\w\[\e[31m\]\$\[\033[00m\] '
 
-# Make vim the default editor
-export EDITOR="vim"
+# Make Neovim the default editor
+export EDITOR="nvim"
 
 # Set default ls color schemes (source: https://github.com/seebi/dircolors-solarized/issues/10 ).
 # macOS/Linux color translations generated with http://geoff.greer.fm/lscolors/
@@ -107,8 +107,8 @@ alias ccat='pygmentize -g'
 
 alias top="htop"
 alias gr='grep -RIi --no-messages'
-alias vi='vim'
-alias v="vim"
+alias vi='nvim'
+alias v="nvim"
 alias g="git"
 alias h="history"
 alias q='exit'

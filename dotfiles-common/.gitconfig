@@ -1,5 +1,5 @@
 [core]
-    editor = vim
+    editor = nvim
     pager = diff-so-fancy
     autocrlf = input
     whitespace = fix,space-before-tab,tab-in-indent,trailing-space

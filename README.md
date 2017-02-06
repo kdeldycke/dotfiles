@@ -13,7 +13,7 @@ Dot-files and system configuration for Python developers, currently targetting
 Features
 --------
 
-* Aimed at Python programmers using `vim`.
+* Aimed at Python programmers using `Neovim`.
 * Common configuration for both macOS and Kubuntu.
 * Produce colored output for most of shell commands.
 * All color schemes are based on [Solarized

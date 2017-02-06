@@ -72,7 +72,6 @@ system-config-lvm
 transcode
 ttf-ancient-fonts
 unclutter
-vim-nox
 xfsprogs
 xsltproc
 zfs-dkms
