@@ -9,6 +9,7 @@ sudo add-apt-repository -y ppa:bitcoin/bitcoin
 sudo add-apt-repository -y ppa:subsurface/subsurface
 sudo add-apt-repository -y ppa:micahflee/ppa
 sudo add-apt-repository -y ppa:hsoft/ppa
+sudo add-apt-repository -y ppa:neovim-ppa/stable
 
 sudo apt update
 sudo apt upgrade -y

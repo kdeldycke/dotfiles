@@ -27,6 +27,7 @@ jnettop
 lame
 legit
 mercurial
+neovim
 optipng
 p7zip
 pgcli
@@ -133,6 +134,7 @@ httpie
 jupyter
 mccabe
 meta-package-manager
+neovim
 nose
 nose-progressive
 pycodestyle
