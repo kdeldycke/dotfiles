@@ -41,6 +41,9 @@ brew tap caskroom/cask
 # Add services
 brew tap homebrew/services
 
+# Add Neovim.
+brew tap neovim/neovim
+
 # Install Mac App Store CLI and upgrade all apps.
 brew install mas
 mas upgrade
