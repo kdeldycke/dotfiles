@@ -1,16 +1,15 @@
-[MESSAGES CONTROL]
+# Source: https://github.com/PyCQA/pylint/blob/master/examples/pylintrc
 
+[MASTER]
+# Ignore Python code in VCS metadata
+ignore=CVS,.bzr,.svn,.git
+
+[MESSAGES CONTROL]
 # Disable the message(s) with the given id(s).
 # W0142: Used * or ** magic
 # W0511: Warning notes in code comments
 # C0111: Missing docstring
-disable-msg=W0142,W0511,C0111
-
-# Ignore Python code in VCS metadata
-ignore=CVS
-ignore=.bzr
-ignore=.svn
-
+disable=W0142,W0511,C0111
 
 [REPORTS]
 output-format=colorized
