@@ -1,109 +1,60 @@
-" NEOBUNDLE {{{ ===============================================================
+" Drop total compatibility with ancient vi.
+set nocompatible
 
-set nocompatible             " No to the total compatibility with the ancient vi
+
+" figure out our config directory
+let config_dir = has("nvim") ? '~/.config/nvim' : '~/.vim'
 
 
-" NeoBundle auto-installation and setup {{{
-
-" Auto installing NeoBundle
-let iCanHazNeoBundle=1
-let neobundle_readme=expand($HOME.'/.vim/bundle/neobundle.vim/README.md')
-if !filereadable(neobundle_readme)
-    echo "Installing NeoBundle.."
-    echo ""
-    silent !mkdir -p $HOME/.vim/bundle
-    silent !git clone https://github.com/Shougo/neobundle.vim $HOME/.vim/bundle/neobundle.vim
-    let iCanHazNeoBundle=0
+" Auto-install package manager. Sources:
+" https://github.com/junegunn/vim-plug/wiki/faq#automatic-installation
+" https://github.com/jzelinskie/dotfiles/blob/master/.vimrc#L9-L12
+if empty(glob(config_dir . '/autoload/plug.vim'))
+  silent execute '!curl -fLo ' . config_dir . '/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  autocmd VimEnter * PlugInstall --sync
 endif
 
-" Call NeoBundle
-if has('vim_starting')
-    set rtp+=$HOME/.vim/bundle/neobundle.vim/
-endif
-call neobundle#begin(expand($HOME.'/.vim/bundle/'))
 
-" is better if NeoBundle rules NeoBundle (needed!)
-NeoBundle 'Shougo/neobundle.vim'
-
-" }}}
-
-
-" BUNDLES (plugins administrated by NeoBundle) {{{
-
-" Vimproc to asynchronously run commands (NeoBundle, Unite)
-NeoBundle 'Shougo/vimproc', {
-      \ 'build' : {
-      \     'windows' : 'make -f make_mingw32.mak',
-      \     'cygwin' : 'make -f make_cygwin.mak',
-      \     'mac' : 'make -f make_mac.mak',
-      \     'unix' : 'make -f make_unix.mak',
-      \    },
-      \ }
-
-" Git
-NeoBundle 'tpope/vim-fugitive'
-NeoBundle 'airblade/vim-gitgutter'
+call plug#begin('~/.config/nvim/plugged')
 
 " Color scheme
-NeoBundle 'altercation/vim-colors-solarized.git'
-
-" Syntax
-NeoBundleLazy 'vim-scripts/JSON.vim', {'autoload': {'filetypes': ['json']}}
-NeoBundleLazy 'kchmck/vim-coffee-script', {'autoload': {'filetypes': ['coffee']}}
-NeoBundleLazy 'vim-scripts/po.vim--gray', {'autoload': {'filetypes': ['po']}}
-NeoBundleLazy 'vim-scripts/plist.vim', {'autoload': {'filetypes': ['plist']}}
-NeoBundleLazy 'hunner/vim-plist', {'autoload': {'filetypes': ['plist']}}
-NeoBundleLazy 'joedicastro/vim-markdown', {'autoload': {'filetypes': ['markdown']}}
-NeoBundleLazy 'sophacles/vim-bundle-mako', {'autoload': {'filetypes': ['mako']}}
-NeoBundle 'scrooloose/syntastic'
-
-" Python
-NeoBundle 'Shougo/neocomplete.vim'
-NeoBundleLazy 'klen/python-mode', {'autoload': {'filetypes': ['python']}}
-NeoBundle 'jmcantrell/vim-virtualenv'
-NeoBundleLazy 'Yggdroot/indentLine', {'autoload': {'filetypes': ['python']}}
-NeoBundleLazy 'alfredodeza/coveragepy.vim', {'autoload': {'filetypes': ['python']}}
-
-" Text edition
-NeoBundle 'delimitMate.vim'
-NeoBundle 'tpope/vim-speeddating'
-NeoBundle 'tpope/vim-surround'
-NeoBundle 'tpope/vim-repeat'
-NeoBundle 'tpope/vim-commentary'
-NeoBundle 'terryma/vim-multiple-cursors'
+Plug 'altercation/vim-colors-solarized'
 
 " GUI
-NeoBundle 'vim-airline/vim-airline'
-NeoBundle 'vim-airline/vim-airline-themes'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 
-call neobundle#end()
+" Syntax
+Plug 'digitaltoad/vim-jade'
+Plug 'hail2u/vim-css3-syntax'
+Plug 'kchmck/vim-coffee-script'
+Plug 'othree/html5.vim'
+Plug 'pangloss/vim-javascript'
+Plug 'tpope/vim-markdown'
+Plug 'vim-scripts/JSON.vim'
+Plug 'vim-scripts/po.vim--gray'
+Plug 'vim-scripts/plist.vim', {'for': 'plist'}
+Plug 'hunner/vim-plist', {'for': 'plist'}
+Plug 'sophacles/vim-bundle-mako'
+Plug 'cakebaker/scss-syntax.vim'
+Plug 'groenewege/vim-less'
+Plug 'tpope/vim-git'
 
-" END BUNDLES }}}
+" Linters
+Plug 'w0rp/ale'
 
+"" Git
+Plug 'airblade/vim-gitgutter'
 
-" Auto install the plugins {{{
-
-" First-time plugins installation
-if iCanHazNeoBundle == 0
-    echo "Installing Bundles, please ignore key map error messages"
-    echo ""
-    :NeoBundleInstall
+if has('nvim') == 0
+  Plug 'tpope/vim-sensible'
 endif
 
-" Check if all of the plugins are already installed, in other case ask if we
-" want to install them (useful to add plugins in the .vimrc)
-NeoBundleCheck
-
-" }}}
+call plug#end()
 
 
 filetype plugin indent on      " Indent and plugins by filetype
 
-" END NEOBUNDLE }}}
-
-
-
-" VIM Setup {{{ ===============================================================
 
 let mapleader = "\<Space>"
 let maplocalleader=' '
@@ -127,15 +78,15 @@ vmap <Leader>p "+p
 vmap <Leader>P "+P
 " Enter visual line mode
 nmap <Leader><Leader> V
-"}}}
 
-" Copy & paste {{{
+
+" Copy & paste
 if has ('x') && has ('gui') " On Linux use + register for copy-paste
     set clipboard=unnamedplus
 elseif has ('gui')          " On mac and Windows, use * register for copy-paste
     set clipboard=unnamed
 endif
-" Enable "bracketed paste mode". See: https://stackoverflow.com/a/7053522/31493
+" Enable 'bracketed paste mode'. See: https://stackoverflow.com/a/7053522/31493
 if &term =~ "xterm.*"
     let &t_ti = &t_ti . "\e[?2004h"
     let &t_te = "\e[?2004l" . &t_te
@@ -149,10 +100,9 @@ if &term =~ "xterm.*"
     cmap <Esc>[200~ <nop>
     cmap <Esc>[201~ <nop>
 endif
-"}}}
 
 
-" GUI {{{
+" GUI
 set number
 set mouse=a
 set mousehide
@@ -171,10 +121,9 @@ set noerrorbells
 set novisualbell
 set t_vb=
 set tm=500
-"}}}
 
 
-" Editing {{{
+" Editing
 set expandtab                  " spaces instead of tabs
 set tabstop=4                  " a tab = four spaces
 set shiftwidth=4               " number of spaces for auto-indent
@@ -192,62 +141,52 @@ set listchars=nbsp:¬,eol:¶,tab:→\ ,extends:»,precedes:«,trail:•
 " Leave Ex Mode, For Good
 " source: http://www.bestofvim.com/tip/leave-ex-mode-good/
 nnoremap Q <nop>
-" }}}
 
 
-" Searching {{{
-set incsearch                   " incremental searching
-set showmatch                   " show pairs match
-set hlsearch                    " highlight search results
-set smartcase                   " smart case ignore
-set ignorecase                  " ignore case letters
-" }}}
+" Searching
+set incsearch      " incremental searching
+set showmatch      " show pairs match
+set hlsearch       " highlight search results
+set smartcase      " smart case ignore
+set ignorecase     " ignore case letters
 
 
-" History and permanent undo levels {{{
+" History and permanent undo levels
 set history=1000
 set undofile
 set undoreload=1000
-" }}}
 
 
-" Colorscheme {{{
-syntax enable                  " enable the syntax highlight
-set background=dark            " set a dark background
+" Color scheme.
+syntax enable
+set background=dark
 let g:solarized_termtrans = 1
 colorscheme solarized
-" }}}
 
 
 " Font
 set guifont=Source\ Code\ Pro:h11
 
 
-" Make a dir if no exists {{{
+" Make a dir if no exists
 function! MakeDirIfNoExists(path)
     if !isdirectory(expand(a:path))
         call mkdir(expand(a:path), "p")
     endif
 endfunction
-" }}}
 
 
-" Backups {{{
+" Backups
 set backup
 set noswapfile
-set backupdir=$HOME/.vim/tmp/backup/
-set undodir=$HOME/.vim/tmp/undo/
-set directory=$HOME/.vim/tmp/swap/
-set viminfo+=n$HOME/.vim/tmp/viminfo
+set backupdir=~/.config/nvim/tmp/backup/
+set undodir=~/.config/nvim/tmp/undo/
+set directory=~/.config/nvim/tmp/swap/
+set viminfo+=n~/.config/nvim/tmp/viminfo
 " Make this dirs if no exists previously
 silent! call MakeDirIfNoExists(&undodir)
 silent! call MakeDirIfNoExists(&backupdir)
 silent! call MakeDirIfNoExists(&directory)
-" }}}
-
-
-" Autoload configuration when this file changes ($MYVIMRC)
-autocmd! BufWritePost vimrc source %
 
 
 " Delete trailing whitespaces
@@ -293,33 +232,18 @@ let g:indentLine_char = '┊'
 let g:indentLine_color_term = 239
 
 
-" Syntastic
-let g:syntastic_python_pylint_exe = "pylint2"
-let g:syntastic_sh_checkers = ['shellcheck', 'sh']
-let g:syntastic_error_symbol = '✘'
-let g:syntastic_warning_symbol = '⚠'
-let g:syntastic_style_error_symbol = '⚡'
-let g:syntastic_style_warning_symbol = '⚡'
+" ALE config for linting.
+let g:ale_sign_error = '✘'
+let g:ale_sign_warning = '⚠'
+let g:ale_lint_on_save = 1
+let g:ale_lint_on_text_changed = 1
+let g:ale_sign_column_always = 1
+let g:ale_echo_msg_format = '[%linter%] %s'
 
-
-" PythonMode
-let g:pymode_doc = 0
-let g:pymode_lint_checkers = ['pylint', 'pep8', 'mccabe', 'pep257']
-let g:pymode_lint_ignore = ''
-let g:pymode_lint_cwindow = 0
-let g:pymode_lint_todo_symbol = '⚠'
-let g:pymode_lint_comment_symbol = '⑊'
-let g:pymode_lint_visual_symbol = '⑆'
-let g:pymode_lint_error_symbol = '✘'
-let g:pymode_lint_info_symbol = '●'
-let g:pymode_lint_pyflakes_symbol = '●'
-let g:pymode_rope = 0
 
 " Git gutter
 let g:gitgutter_max_signs = 10000
 
-
-" FILETYPES  {{{ ==============================================================
 
 " JSON
 autocmd BufNewFile,BufRead *.json set ft=json
@@ -333,17 +257,6 @@ augroup json_autocmd
   autocmd FileType json set foldmethod=syntax
 augroup END
 
+
 " Plist
 au BufRead,BufNewFile *.plist set filetype=plist
-autocmd FileType plist NeoBundleSource vim-plist
-autocmd FileType plist NeoBundleSource plist.vim
-
-" Git commit
-autocmd Filetype gitcommit setlocal spell textwidth=72
-
-" END FILETYPES }}}
-
-
-
-" END VIM SETUP }}}
-" vim:foldmethod=marker

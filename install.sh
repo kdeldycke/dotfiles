@@ -125,21 +125,19 @@ fi
 # Install & upgrade all global python modules
 PYTHON_PACKAGES="
 pip
-autopep8
 bumpversion
 coverage
+flake8
 gmvault
 gsutil
 httpie
 jupyter
-mccabe
 meta-package-manager
 neovim
 nose
 nose-progressive
 pycodestyle
 pydocstyle
-pyflakes
 pygments
 pylint
 setuptools
