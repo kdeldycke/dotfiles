@@ -171,6 +171,7 @@ autocomplete-python
 color-picker
 docblockr
 file-icons
+hydrogen
 linter-flake8
 minimap
 python-isort
