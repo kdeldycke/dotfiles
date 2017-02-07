@@ -236,6 +236,10 @@ sudo defaults write /Library/Preferences/com.apple.loginwindow RetriesUntilHint 
 # Disable guest account login
 sudo defaults write /Library/Preferences/com.apple.loginwindow GuestEnabled -bool false
 
+# A lost machine might be lucky and stumble upon a Good Samaritan.
+sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText \
+    "Found this computer? Please contact Kevin Deldycke at kevin@deldycke.com ."
+
 # Automatically lock the login keychain for inactivity after 6 hours.
 security set-keychain-settings -t 21600 -l ~/Library/Keychains/login.keychain
 
