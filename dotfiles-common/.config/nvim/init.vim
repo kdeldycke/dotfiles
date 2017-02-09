@@ -34,28 +34,34 @@ call dein#add('altercation/vim-colors-solarized')
 " GUI
 call dein#add('vim-airline/vim-airline')
 call dein#add('vim-airline/vim-airline-themes')
+call dein#add('Yggdroot/indentLine')
+call dein#add('airblade/vim-gitgutter')
+call dein#add('alfredodeza/coveragepy.vim')
+call dein#add('ervandew/supertab')
 
 " Syntax
+call dein#add('sheerun/vim-polyglot')
 call dein#add('digitaltoad/vim-jade')
 call dein#add('hail2u/vim-css3-syntax')
-call dein#add('kchmck/vim-coffee-script')
-call dein#add('othree/html5.vim')
-call dein#add('pangloss/vim-javascript')
-call dein#add('tpope/vim-markdown')
-call dein#add('vim-scripts/JSON.vim')
 call dein#add('vim-scripts/po.vim--gray')
 call dein#add('vim-scripts/plist.vim', {'on_ft': 'plist'})
 call dein#add('hunner/vim-plist', {'on_ft': 'plist'})
-call dein#add('sophacles/vim-bundle-mako')
-call dein#add('cakebaker/scss-syntax.vim')
-call dein#add('groenewege/vim-less')
-call dein#add('tpope/vim-git')
 
 " Linters
 call dein#add('w0rp/ale')
 
-" Git
-call dein#add('airblade/vim-gitgutter')
+" Edition
+call dein#add('Shougo/deoplete.nvim')
+call dein#add('Raimondi/delimitMate')
+call dein#add('terryma/vim-multiple-cursors')
+call dein#add('haya14busa/incsearch.vim')
+call dein#add('junegunn/vim-easy-align')
+call dein#add('tpope/vim-surround')
+call dein#add('tpope/vim-repeat')
+
+if has('nvim') == 0
+  call dein#add('tpope/vim-sensible')
+endif
 
 call dein#end()
 
@@ -257,16 +263,8 @@ let g:gitgutter_max_signs = 10000
 
 
 " JSON
-autocmd BufNewFile,BufRead *.json set ft=json
-augroup json_autocmd
-  autocmd!
-  autocmd FileType json set autoindent
-  autocmd FileType json set formatoptions=tcq2l
-  autocmd FileType json set textwidth=79 shiftwidth=2
-  autocmd FileType json set softtabstop=2 tabstop=8
-  autocmd FileType json set expandtab
-  autocmd FileType json set foldmethod=syntax
-augroup END
+" Disable concealing mode altogether.
+let g:vim_json_syntax_conceal = 0
 
 
 " Plist
