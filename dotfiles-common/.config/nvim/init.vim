@@ -2,57 +2,66 @@
 set nocompatible
 
 
+" Use enhanced cursors. See: https://imgur.com/a/Bx0VE
+let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
+
+
 " Figure out our config directory.
 let config_dir = has("nvim") ? '~/.config/nvim' : '~/.vim'
-let plug_dir = config_dir . '/autoload/plug.vim'
-let plugins_dir = config_dir . '/plugins'
+let dein_repo = 'github.com/Shougo/dein.vim'
+let dein_url = 'https://' . dein_repo . '.git'
+let plugins_dir = config_dir . '/dein'
+let dein_dir = plugins_dir . '/repos/' . dein_repo
 
 
 " Auto-install package manager. Sources:
-" https://github.com/junegunn/vim-plug/wiki/faq#automatic-installation
-" https://github.com/jzelinskie/dotfiles/blob/master/.vimrc#L9-L12
-if empty(glob(plug_dir))
-  silent execute '!curl -fLo ' . plug_dir . ' --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-  autocmd VimEnter * PlugInstall --sync
+" https://github.com/Shougo/dein.vim#quick-start
+" https://github.com/stuarthicks/dotfiles/blob/master/neovim/.config/nvim/init.vim
+if empty(glob(dein_dir))
+  exec 'silent !mkdir -p ' . dein_dir
+  exec '!git clone ' . dein_url . ' ' . dein_dir
 endif
+exec 'set runtimepath^=' . dein_dir
 
+call dein#begin(expand(plugins_dir))
 
-call plug#begin(expand(plugins_dir))
+" Package manager
+call dein#add('Shougo/dein.vim')
 
 " Color scheme
-Plug 'altercation/vim-colors-solarized'
+call dein#add('altercation/vim-colors-solarized')
 
 " GUI
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
+call dein#add('vim-airline/vim-airline')
+call dein#add('vim-airline/vim-airline-themes')
 
 " Syntax
-Plug 'digitaltoad/vim-jade'
-Plug 'hail2u/vim-css3-syntax'
-Plug 'kchmck/vim-coffee-script'
-Plug 'othree/html5.vim'
-Plug 'pangloss/vim-javascript'
-Plug 'tpope/vim-markdown'
-Plug 'vim-scripts/JSON.vim'
-Plug 'vim-scripts/po.vim--gray'
-Plug 'vim-scripts/plist.vim', {'for': 'plist'}
-Plug 'hunner/vim-plist', {'for': 'plist'}
-Plug 'sophacles/vim-bundle-mako'
-Plug 'cakebaker/scss-syntax.vim'
-Plug 'groenewege/vim-less'
-Plug 'tpope/vim-git'
+call dein#add('digitaltoad/vim-jade')
+call dein#add('hail2u/vim-css3-syntax')
+call dein#add('kchmck/vim-coffee-script')
+call dein#add('othree/html5.vim')
+call dein#add('pangloss/vim-javascript')
+call dein#add('tpope/vim-markdown')
+call dein#add('vim-scripts/JSON.vim')
+call dein#add('vim-scripts/po.vim--gray')
+call dein#add('vim-scripts/plist.vim', {'on_ft': 'plist'})
+call dein#add('hunner/vim-plist', {'on_ft': 'plist'})
+call dein#add('sophacles/vim-bundle-mako')
+call dein#add('cakebaker/scss-syntax.vim')
+call dein#add('groenewege/vim-less')
+call dein#add('tpope/vim-git')
 
 " Linters
-Plug 'w0rp/ale'
+call dein#add('w0rp/ale')
 
 " Git
-Plug 'airblade/vim-gitgutter'
+call dein#add('airblade/vim-gitgutter')
 
-if has('nvim') == 0
-  Plug 'tpope/vim-sensible'
+call dein#end()
+
+if dein#check_install()
+  call dein#install()
 endif
-
-call plug#end()
 
 
 filetype plugin indent on      " Indent and plugins by filetype
