@@ -2,20 +2,22 @@
 set nocompatible
 
 
-" figure out our config directory
+" Figure out our config directory.
 let config_dir = has("nvim") ? '~/.config/nvim' : '~/.vim'
+let plug_dir = config_dir . '/autoload/plug.vim'
+let plugins_dir = config_dir . '/plugins'
 
 
 " Auto-install package manager. Sources:
 " https://github.com/junegunn/vim-plug/wiki/faq#automatic-installation
 " https://github.com/jzelinskie/dotfiles/blob/master/.vimrc#L9-L12
-if empty(glob(config_dir . '/autoload/plug.vim'))
-  silent execute '!curl -fLo ' . config_dir . '/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+if empty(glob(plug_dir))
+  silent execute '!curl -fLo ' . plug_dir . ' --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
   autocmd VimEnter * PlugInstall --sync
 endif
 
 
-call plug#begin('~/.config/nvim/plugged')
+call plug#begin(expand(plugins_dir))
 
 " Color scheme
 Plug 'altercation/vim-colors-solarized'
@@ -43,7 +45,7 @@ Plug 'tpope/vim-git'
 " Linters
 Plug 'w0rp/ale'
 
-"" Git
+" Git
 Plug 'airblade/vim-gitgutter'
 
 if has('nvim') == 0
