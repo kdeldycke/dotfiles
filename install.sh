@@ -145,6 +145,7 @@ tox
 virtualenv
 virtualenvwrapper
 wheel
+yapf
 "
 for p in $PYTHON_PACKAGES
 do
