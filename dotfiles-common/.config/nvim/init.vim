@@ -51,6 +51,7 @@ call dein#add('hunner/vim-plist', {'on_ft': 'plist'})
 call dein#add('w0rp/ale')
 
 " Edition
+call dein#add('Chiel92/vim-autoformat')
 call dein#add('Shougo/deoplete.nvim')
 call dein#add('Raimondi/delimitMate')
 call dein#add('terryma/vim-multiple-cursors')
@@ -58,6 +59,7 @@ call dein#add('haya14busa/incsearch.vim')
 call dein#add('junegunn/vim-easy-align')
 call dein#add('tpope/vim-surround')
 call dein#add('tpope/vim-repeat')
+call dein#add('fisadev/vim-isort')
 
 if has('nvim') == 0
   call dein#add('tpope/vim-sensible')
