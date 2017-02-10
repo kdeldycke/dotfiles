@@ -1,36 +1,41 @@
 {
+    "global": {
+        "check_for_updates_on_startup": true,
+        "show_in_menu_bar": true,
+        "show_profile_name_in_menu_bar": false
+    },
     "profiles": [
         {
             "devices": [
                 {
+                    "disable_built_in_keyboard_if_exists": false,
                     "identifiers": {
                         "is_keyboard": true,
                         "is_pointing_device": false,
                         "product_id": 592,
                         "vendor_id": 1452
                     },
-                    "ignore": true,
-                    "keyboard_type": 0
+                    "ignore": true
                 },
                 {
+                    "disable_built_in_keyboard_if_exists": false,
                     "identifiers": {
                         "is_keyboard": true,
                         "is_pointing_device": false,
                         "product_id": 589,
                         "vendor_id": 1452
                     },
-                    "ignore": true,
-                    "keyboard_type": 0
+                    "ignore": true
                 },
                 {
+                    "disable_built_in_keyboard_if_exists": false,
                     "identifiers": {
                         "is_keyboard": true,
                         "is_pointing_device": false,
                         "product_id": 1957,
                         "vendor_id": 1118
                     },
-                    "ignore": false,
-                    "keyboard_type": 0
+                    "ignore": false
                 }
             ],
             "fn_function_keys": {
@@ -54,6 +59,10 @@
                 "left_command": "left_option",
                 "left_option": "left_command",
                 "right_option": "right_command"
+            },
+            "virtual_hid_keyboard": {
+                "caps_lock_delay_milliseconds": 0,
+                "keyboard_type": "ansi"
             }
         }
     ]
