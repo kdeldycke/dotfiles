@@ -270,8 +270,8 @@ let g:vim_json_syntax_conceal = 0
 
 
 " Markdown
-" Disable link folding.
-let g:vim_markdown_folding_disabled = 1
+" Disable element concealing.
+let g:vim_markdown_conceal = 0
 
 
 " Plist
