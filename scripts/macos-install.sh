@@ -156,7 +156,7 @@ brew install homebrew/fuse/ntfs-3g
 # Install and configure Google Cloud Storage bucket mount point.
 brew install homebrew/fuse/gcsfuse
 mkdir -p "${HOME}/gcs"
-GOOGLE_APPLICATION_CREDENTIALS=~/.google-cloud-auth.json gcsfuse backup-imac-borg ./gcs
+GOOGLE_APPLICATION_CREDENTIALS=~/.google-cloud-auth.json gcsfuse --implicit-dirs backup-imac-borg ./gcs
 # Mount doesn't work as macOS doesn't let us register a new filesystem plugin.
 # See: https://github.com/GoogleCloudPlatform/gcsfuse/issues/188
 # sudo ln -s /usr/local/sbin/mount_gcsfuse /sbin/
