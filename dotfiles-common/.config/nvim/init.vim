@@ -269,5 +269,10 @@ let g:gitgutter_max_signs = 10000
 let g:vim_json_syntax_conceal = 0
 
 
+" Markdown
+" Disable link folding.
+let g:vim_markdown_folding_disabled = 1
+
+
 " Plist
 au BufRead,BufNewFile *.plist set filetype=plist
