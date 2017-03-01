@@ -170,7 +170,8 @@ else
     sudo fc-cache -f -v
 fi
 
-# TODO: Force Neovim plugin upgrades
+# Force Neovim plugin upgrades
+nvim -c ':call dein#update()'
 
 # Configure everything.
 if $IS_MACOS; then
