@@ -22,6 +22,7 @@ grc
 hfsutils
 htop
 id3v2
+imagemagick
 jq
 jnettop
 lame
