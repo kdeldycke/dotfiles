@@ -60,11 +60,26 @@ subsurface
 virtualbox
 "
 
-# Detect distribution
+# Detect platform.
 if [ "$(uname -s)" == "Darwin" ]; then
     IS_MACOS=true
 else
     IS_MACOS=false
+fi
+
+# Detect if Linux system is either a Plasma/KDE desktop or headless server.
+IS_DESKTOP=true
+if ! $IS_MACOS; then
+    # Good candidates of installed packages hinting at a desktop are:
+    # kde-baseapps, kde-runtime, plasma-desktop, plasma-framework,
+    # plasma-workspace, xorg and xserver-common.
+    # Among those, I choosed plasma-desktop as it is more generic than
+    # Kubuntu-specifi packages. And removing the plasma-desktop package is
+    # going to make your system unusable.
+    apt list --installed --quiet | grep --quiet "^plasma-desktop"
+    if [[ $? -ne 0 ]]; then
+        IS_DESKTOP=false
+    fi
 fi
 
 # Ask for the administrator password upfront.
