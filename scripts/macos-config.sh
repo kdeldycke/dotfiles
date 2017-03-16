@@ -1096,10 +1096,23 @@ defaults write net.limechat.LimeChat Preferences.Theme.timestamp_format -string 
 # Kill affected applications                                                  #
 ###############################################################################
 
-for app in "Activity Monitor" "Address Book" "Calendar" "Contacts" "cfprefsd" \
-    "Dock" "Finder" "Google Chrome" "Mail" "Messages" \
-    "Photos" "Safari" "Spectacle" "SystemUIServer" "Terminal" \
-    "Transmission" "iCal"; do
+for app in "Activity Monitor" \
+        "Address Book" \
+        "Calendar" \
+        "cfprefsd" \
+        "Contacts" \
+        "Dock" \
+        "Finder" \
+        "Google Chrome" \
+        "Mail" \
+        "Messages" \
+        "Photos" \
+        "Safari" \
+        "Spectacle" \
+        "SystemUIServer" \
+        "Terminal" \
+        "Transmission" \
+        "iCal"; do
 	killall "${app}" &> /dev/null
 done
 echo "Done. Note that some of these changes require a logout/restart to take effect."
