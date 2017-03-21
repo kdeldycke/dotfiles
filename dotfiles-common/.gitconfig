@@ -22,8 +22,8 @@
     renames = copies
     # Source: http://blog.apiaxle.com/post/handy-git-tips-to-stop-you-getting-fired/
     algorithm = patience
-    # Source: https://github.com/blog/2188-git-2-9-has-been-released/#beautiful-diffs
-    compactionHeuristic = true
+    # Source: https://github.com/git/git/commit/3cde4e02ee891bff53bac7f6a7d977f50418a4b5
+    indentHeuristic = true
 [commit]
     # Source: https://github.com/pstadler/keybase-gpg-github
     gpgsign = true
