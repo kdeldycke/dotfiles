@@ -34,12 +34,6 @@ rm -rf ~/Downloads/About\ Downloads.lpdf
 rm -rf ~/Public/Drop\ Box
 rm -rf ~/Public/.com.apple.timemachine.supported
 
-# Turns off WakeOnMagicPacket
-sudo pmset -a womp 0
-
-# Turns off Modem wakeup
-sudo pmset -a ring 0
-
 # Turns on lid wakeup
 sudo pmset -a lidwake 1
 
@@ -223,9 +217,11 @@ sudo systemsetup -setremotelogin off
 
 # Disable wake-on modem
 sudo systemsetup -setwakeonmodem off
+sudo pmset -a ring 0
 
 # Disable wake-on LAN
 systemsetup -setwakeonnetworkaccess off
+sudo pmset -a womp 0
 
 # Disable file-sharing via AFP or SMB
 sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.AppleFileServer.plist
