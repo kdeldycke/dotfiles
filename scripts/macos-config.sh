@@ -34,29 +34,6 @@ rm -rf ~/Downloads/About\ Downloads.lpdf
 rm -rf ~/Public/Drop\ Box
 rm -rf ~/Public/.com.apple.timemachine.supported
 
-# Turns on lid wakeup
-sudo pmset -a lidwake 1
-
-# Automatic restart on power loss
-sudo pmset -a autorestart 1
-
-# Sets displaysleep to 15 minutes
-sudo pmset -a displaysleep 15
-
-# Do not allow machine to sleep on charger
-sudo pmset -c sleep 0
-
-# Set machine sleep to 5 minutes on battery
-sudo pmset -b sleep 5
-
-# Set standby delay to default 1 hour
-# See: https://www.ewal.net/2012/09/09/slow-wake-for-macbook-pro-retina/
-sudo pmset -a standbydelay 3600
-
-# Copy RAM to disk so the system state can still be restored in case of a power
-# failure.
-sudo pmset -a hibernatemode 3
-
 # Disable the sound effects on boot
 sudo nvram SystemAudioVolume=" "
 
@@ -339,6 +316,48 @@ sudo systemsetup -setusingnetworktime on
 
 # Stop iTunes from responding to the keyboard media keys
 launchctl unload -w /System/Library/LaunchAgents/com.apple.rcd.plist 2> /dev/null
+
+###############################################################################
+# Energy saving                                                               #
+###############################################################################
+
+# Turns on lid wakeup
+sudo pmset -a lidwake 1
+
+# Automatic restart on power loss
+sudo pmset -a autorestart 1
+
+# Restart automatically if the computer freezes
+sudo systemsetup -setrestartfreeze on
+
+# Sets displaysleep to 15 minutes
+sudo pmset -a displaysleep 15
+
+# Do not allow machine to sleep on charger
+sudo pmset -c sleep 0
+
+# Set machine sleep to 5 minutes on battery
+sudo pmset -b sleep 5
+
+# Set standby delay to default 1 hour
+# See: https://www.ewal.net/2012/09/09/slow-wake-for-macbook-pro-retina/
+sudo pmset -a standbydelay 3600
+
+# Never go into computer sleep mode
+#sudo systemsetup -setcomputersleep Off > /dev/null
+
+# Hibernation mode
+# 0: Disable hibernation (speeds up entering sleep mode)
+# 3: Copy RAM to disk so the system state can still be restored in case of a
+#    power failure.
+sudo pmset -a hibernatemode 3
+
+# Remove the sleep image file to save disk space
+#sudo rm /private/var/vm/sleepimage
+# Create a zero-byte file instead…
+#sudo touch /private/var/vm/sleepimage
+# …and make sure it can’t be rewritten
+#sudo chflags uchg /private/var/vm/sleepimage
 
 ###############################################################################
 # Screen                                                                      #
