@@ -29,9 +29,6 @@ kern.maxfiles=20480
 kern.maxfilesperproc=18000
 EOF
 
-# Enable secure virtual memory
-sudo defaults write /Library/Preferences/com.apple.virtualMemory UseEncryptedSwap -bool true
-
 # Remove default content
 rm -rf ~/Downloads/About\ Downloads.lpdf
 rm -rf ~/Public/Drop\ Box
@@ -253,6 +250,9 @@ security set-keychain-settings -t 21600 -l ~/Library/Keychains/login.keychain
 # Destroy FileVault key when going into standby mode, forcing a re-auth.
 # Source: https://web.archive.org/web/20160114141929/https://training.apple.com/pdf/WP_FileVault2.pdf
 sudo pmset destroyfvkeyonstandby 1
+
+# Enable secure virtual memory
+sudo defaults write /Library/Preferences/com.apple.virtualMemory UseEncryptedSwap -bool true
 
 # Disable Bonjour multicast advertisements
 sudo defaults write /Library/Preferences/com.apple.mDNSResponder.plist NoMulticastAdvertisements -bool true
