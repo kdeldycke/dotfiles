@@ -27,6 +27,8 @@
 [commit]
     # Source: https://github.com/pstadler/keybase-gpg-github
     gpgsign = true
+[log]
+    decorate = full
 [pull]
     # Source: https://stackoverflow.com/a/18756102/487610
     rebase = preserve
@@ -34,6 +36,9 @@
     # Prevent accidental pushes to branches which you’re not ready to push yet.
     # Source: http://mislav.uniqpath.com/2010/07/git-tips/
     default = tracking
+[stash]
+    # Shows the diff of a stash.
+    showPatch = true
 [submodule]
     # Source: https://github.com/blog/2188-git-2-9-has-been-released/#faster-and-more-flexible-submodules
     fetchJobs = 2
@@ -42,6 +47,8 @@
 [branch]
     autosetuprebase = remote
 [rebase]
+    # Automatically stash and unstash the working directory before and after
+    # rebases.
     autostash = true
 [alias]
     br = branch
@@ -66,6 +73,7 @@
     resync = !legit resync
     # View abbreviated SHA, description, and history graph of the latest 20 commits
     l = log --pretty=oneline -n 20 --graph --abbrev-commit --decorate
+    hist = log --pretty=format:\"%C(yellow)%h%C(reset) %C(green)%ad%C(reset) %C(red)|%C(reset) %s %C(bold blue)[%an]%C(reset)%C(yellow)%d%C(reset)\" --graph --date=short
     # View the current working tree status using the short format
     s = status -sb
     # Show the diff between the latest commit and the current state
