@@ -30,11 +30,3 @@ devices/system/cpu/cpufreq/conservative/sampling_down_factor = 10
 EOF
 
 fi
-
-if [ "$(sudo dmidecode -s system-product-name)" == "MacBookPro11,1" ]; then
-
-# Install wireless drivers.
-# Source: https://help.ubuntu.com/community/MacBookPro11-1/Saucy#Wireless
-sudo aptitude install bcmwl-kernel-source
-
-fi

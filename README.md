@@ -22,8 +22,7 @@ Features
 ](https://en.wikipedia.org/wiki/Source_Code_Pro).
 * Keeps OSes fast and lean.
 * Custom configuration for [`MacBookAir5,2`
-](https://www.amazon.com/dp/B008GV6QV2/?tag=kevideld-20) and [`MacBookPro11,1`
-](https://www.amazon.com/dp/B0096VBXQE/?tag=kevideld-20).
+](https://www.amazon.com/dp/B008GV6QV2/?tag=kevideld-20).
 
 
 Install
