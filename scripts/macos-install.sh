@@ -32,9 +32,6 @@ fi
 brew update
 brew upgrade
 
-# Include duplicates packages
-brew tap homebrew/dupes
-
 # Add Cask
 brew tap caskroom/cask
 
