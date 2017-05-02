@@ -186,7 +186,7 @@ else
 fi
 
 # Force Neovim plugin upgrades
-nvim -c ':call dein#update()'
+nvim -c "try | call dein#update() | finally | qall! | endtry"
 
 # Configure everything.
 if $IS_MACOS; then
