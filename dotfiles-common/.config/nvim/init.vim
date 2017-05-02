@@ -2,10 +2,6 @@
 set nocompatible
 
 
-" Use enhanced cursors. See: https://imgur.com/a/Bx0VE
-let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
-
-
 " Figure out our config directory.
 let config_dir = has("nvim") ? '~/.config/nvim' : '~/.vim'
 let dein_repo = 'github.com/Shougo/dein.vim'
