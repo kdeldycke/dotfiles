@@ -97,7 +97,6 @@ brew cask install bitcoin-core
 brew cask install borgbackup
 brew cask install dropbox
 brew cask install dupeguru
-brew cask install flux
 brew cask install ftdi-vcp-driver
 brew cask install gitup
 brew cask install google-chrome
