@@ -200,7 +200,6 @@ duti -s org.google.Chrome http
 # Install mpv.app so we can set it as default player.
 # Source: https://github.com/mpv-player/mpv/wiki/FAQ#how-can-i-make-mpv-the-default-application-to-open-movie-files-on-osx
 brew install mpv --with-bundle
-brew linkapps mpv
 duti -s io.mpv api
 duti -s io.mpv mkv
 duti -s io.mpv mp4
@@ -247,7 +246,6 @@ sqlite3 -echo -header -column "$TB_BOOKMARK_DB" "SELECT * FROM moz_bookmarks; SE
 wget https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/addon-607454-latest.xpi -O "$TB_CONFIG_DIR/extensions/uBlock0@raymondhill.net.xpi"
 
 # Clean things up.
-brew linkapps
 brew cleanup
 brew prune
 brew cask cleanup
