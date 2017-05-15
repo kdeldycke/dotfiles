@@ -1,15 +1,11 @@
 #!/usr/bin/env bash
 set -x
 
-sudo apt update
-sudo apt install -y apt-transport-https software-properties-common
-
 sudo add-apt-repository -y ppa:kdenlive/kdenlive-testing
 sudo add-apt-repository -y ppa:bitcoin/bitcoin
 sudo add-apt-repository -y ppa:subsurface/subsurface
 sudo add-apt-repository -y ppa:micahflee/ppa
 sudo add-apt-repository -y ppa:hsoft/ppa
-sudo add-apt-repository -y ppa:neovim-ppa/stable
 
 sudo apt update
 # Force yes so that package maintainer's version of config files always prevail.
@@ -17,76 +13,22 @@ sudo apt upgrade -y --force-yes
 
 
 # Install common packages
-for p in $COMMON_PACKAGES
+for p in $COMMON_DESKTOP_PACKAGES
 do
     sudo apt install -y "$p"
 done
-for p in $BIN_PACKAGES
+for p in $COMMON_BIN_PACKAGES
 do
     sudo apt install -y "$p"
 done
 
 # Install Ubuntu specific packages
-PACKAGES="
-apt-file
-bitcoin-qt
-bleachbit
-ca-certificates
-chromium-browser
-chromium-codecs-ffmpeg-extra
-cpufrequtils
-deborphan
-dmg2img
-driftnet
-dupeguru-se
-efibootmgr
-exfat-fuse
-exfat-utils
-faad
-gimp-plugin-registry
-gitg
-hfsplus
-hfsprogs
-hunspell-fr
-hunspell-fr-classical
-kdenlive
-kompare
-kwrite
-libavcodec-extra
-libdvd-pkg
-libimage-exiftool-perl
-lm-sensors
-mbr
-mkvtoolnix
-mkvtoolnix-gui
-mpv
-network-manager-openvpn
-ntfs-3g
-ntp
-p7zip-full
-pdftk
-picard
-powertop
-psmisc
-sysfsutils
-system-config-lvm
-transcode
-ttf-ancient-fonts
-unclutter
-xfsprogs
-xsltproc
-zfs-dkms
-zfsutils-linux
-"
 # Install packages one by one for debug.
-#for p in $PACKAGES
+#for p in $KUBUNTU_DESKTOP_PACKAGES
 #do
 #    sudo apt install -y "$p"
 #done
-sudo apt install -y $PACKAGES
-
-
-sudo apt install -y python-pip python-dev runsnakerun
+sudo apt install -y $KUBUNTU_DESKTOP_PACKAGES
 
 
 sudo apt install -y virt-manager

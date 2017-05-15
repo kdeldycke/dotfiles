@@ -56,7 +56,11 @@ brew install python3
 
 # Install common packages
 brew install apple-gcc42
-for PACKAGE in $COMMON_PACKAGES
+for PACKAGE in $COMMON_SERVER_PACKAGES
+do
+   brew install "$PACKAGE"
+done
+for PACKAGE in $COMMON_DESKTOP_PACKAGES
 do
    brew install "$PACKAGE"
 done
@@ -86,7 +90,7 @@ sudo chown root:wheel "$(brew --prefix)/bin/htop"
 sudo chmod u+s "$(brew --prefix)/bin/htop"
 
 # Install binary apps from homebrew.
-for PACKAGE in $BIN_PACKAGES
+for PACKAGE in $COMMON_BIN_PACKAGES
 do
    brew cask install "$PACKAGE"
 done

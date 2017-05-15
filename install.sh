@@ -1,65 +1,6 @@
 #!/usr/bin/env bash
 set -x
 
-# We need to distinguish sources and binary packages for Brew & Cask on macOS
-COMMON_PACKAGES="
-apg
-bash
-bash-completion
-colordiff
-colortail
-coreutils
-faac
-fdupes
-findutils
-flac
-fontforge
-git
-git-extras
-gpg
-graphviz
-grc
-hfsutils
-htop
-id3v2
-imagemagick
-jq
-jnettop
-lame
-legit
-mercurial
-neovim
-optipng
-p7zip
-pgcli
-pngcrush
-recode
-rename
-rtmpdump
-shellcheck
-shntool
-testdisk
-tree
-unrar
-wget
-wireshark
-x264
-youtube-dl
-"
-
-BIN_PACKAGES="
-audacity
-firefox
-gimp
-handbrake
-hugin
-inkscape
-prey
-sqlitebrowser
-subsurface
-virtualbox
-"
-
 # Detect platform.
 if [ "$(uname -s)" == "Darwin" ]; then
     IS_MACOS=true
@@ -130,6 +71,9 @@ do
     fi
 done
 
+# Load package lists to install.
+source ~/packages.sh
+
 # Install all software first.
 if $IS_MACOS; then
     source ./scripts/macos-install.sh
@@ -142,30 +86,6 @@ else
 fi
 
 # Install & upgrade all global python modules
-PYTHON_PACKAGES="
-pip
-bumpversion
-coverage
-flake8
-gmvault
-gsutil
-httpie
-jupyter
-meta-package-manager
-neovim
-nose
-nose-progressive
-pycodestyle
-pydocstyle
-pygments
-pylint
-setuptools
-tox
-virtualenv
-virtualenvwrapper
-wheel
-yapf
-"
 for p in $PYTHON_PACKAGES
 do
     pip install --upgrade "$p"
