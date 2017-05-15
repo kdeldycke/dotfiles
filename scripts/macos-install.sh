@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -x
 
+# Load package lists to install.
+source ~/packages.sh
+
 # Install command line tools.
 xcode-select --install
 
