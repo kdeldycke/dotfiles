@@ -171,21 +171,23 @@ do
     pip install --upgrade "$p"
 done
 
-# Patch terminal font for Vim's Airline plugin
+# Patch terminal font on desktops for Vim's Airline plugin.
 # See: https://powerline.readthedocs.org/en/latest/fontpatching.html
-mkdir ./powerline-fontpatcher
-curl -fsSL https://github.com/Lokaltog/powerline-fontpatcher/tarball/develop | tar -xvz --strip-components 1 --directory ./powerline-fontpatcher -f -
-fontforge -script ./powerline-fontpatcher/scripts/powerline-fontpatcher --no-rename ./assets/SourceCodePro-Regular.otf
-rm -rf ./powerline-fontpatcher
-# Install the patched font
-if $IS_MACOS; then
-    mkdir -p ~/Library/Fonts/
-    mv ./Source\ Code\ Pro.otf ~/Library/Fonts/
-else
-    mkdir -p ~/.fonts/
-    mv ./Source\ Code\ Pro.otf ~/.fonts/
-    # Refresh font cache
-    sudo fc-cache -f -v
+if $IS_DESKTOP; then
+    mkdir ./powerline-fontpatcher
+    curl -fsSL https://github.com/Lokaltog/powerline-fontpatcher/tarball/develop | tar -xvz --strip-components 1 --directory ./powerline-fontpatcher -f -
+    fontforge -script ./powerline-fontpatcher/scripts/powerline-fontpatcher --no-rename ./assets/SourceCodePro-Regular.otf
+    rm -rf ./powerline-fontpatcher
+    # Install the patched font
+    if $IS_MACOS; then
+        mkdir -p ~/Library/Fonts/
+        mv ./Source\ Code\ Pro.otf ~/Library/Fonts/
+    else
+        mkdir -p ~/.fonts/
+        mv ./Source\ Code\ Pro.otf ~/.fonts/
+        # Refresh font cache
+        sudo fc-cache -f -v
+    fi
 fi
 
 # Force Neovim plugin upgrades
