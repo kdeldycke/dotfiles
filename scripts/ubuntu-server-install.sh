@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 set -x
 
-# Load package lists to install.
-source ~/packages.sh
-
 sudo apt update
 sudo apt install -y apt-transport-https software-properties-common
 

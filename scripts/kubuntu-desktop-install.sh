@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 set -x
 
-# Load package lists to install.
-source ~/packages.sh
-
 sudo add-apt-repository -y ppa:kdenlive/kdenlive-testing
 sudo add-apt-repository -y ppa:bitcoin/bitcoin
 sudo add-apt-repository -y ppa:subsurface/subsurface

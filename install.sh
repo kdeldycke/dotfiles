@@ -72,7 +72,7 @@ do
 done
 
 # Load package lists to install.
-source ~/packages.sh
+source ./packages.sh
 
 # Install all software first.
 if $IS_MACOS; then
