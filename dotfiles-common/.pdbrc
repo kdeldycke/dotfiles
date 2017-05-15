@@ -10,4 +10,5 @@
 # hurt).
 
 import os
-execfile(os.path.expanduser("~/.pdbrc.py"))
+# execfile(os.path.expanduser("~/.pdbrc.py"))
+exec(compile(open(os.path.expanduser("~/.pdbrc.py"), "rb").read(), os.path.expanduser("~/.pdbrc.py"), 'exec'))
