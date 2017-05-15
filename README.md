@@ -1,7 +1,8 @@
 # Kevin's dotfiles [![Build Status](https://img.shields.io/travis/kdeldycke/maildir-deduplicate/develop.svg?style=flat)](https://travis-ci.org/kdeldycke/dotfiles)
 
 Dot-files and system configuration for Python developers, currently targetting
-**macOS 10.12** (Sierra) and **Kubuntu 16.04 LTS** (Xenial Xerus).
+**macOS 10.12** (Sierra), **Kubuntu** and **Ubuntu Server 16.04 LTS** (Xenial
+Xerus)
 
 ![Mac OS X 10.11 El Capitan solarized terminal and vim
 ](https://raw.githubusercontent.com/kdeldycke/dotfiles/master/screenshots/osx-10.11.png)
@@ -14,7 +15,7 @@ Features
 --------
 
 * Aimed at Python programmers using `Neovim`.
-* Common configuration for both macOS and Kubuntu.
+* Common configuration for both macOS, Kubuntu and Ubuntu Server.
 * [Installs rEFInd boot
   loader](https://github.com/kdeldycke/dotfiles/blob/master/scripts/macos-install-refind.sh)
   if a Linux partition is detected.
@@ -25,7 +26,7 @@ Features
 ](https://en.wikipedia.org/wiki/Source_Code_Pro).
 * Keeps OSes fast and lean.
 * [Custom
-  configuration](https://github.com/kdeldycke/dotfiles/blob/master/scripts/kubuntu-config.sh#L14)
+  configuration](https://github.com/kdeldycke/dotfiles/blob/master/scripts/kubuntu-desktop-config.sh#L14)
   for [`MacBookAir5,2`](https://www.amazon.com/dp/B008GV6QV2/?tag=kevideld-20).
 
 

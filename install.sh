@@ -135,7 +135,10 @@ if $IS_MACOS; then
     source ./scripts/macos-install.sh
     source ./scripts/macos-install-refind.sh
 else
-    source ./scripts/kubuntu-install.sh
+    source ./scripts/ubuntu-server-install.sh
+    if $IS_DESKTOP; then
+        source ./scripts/kubuntu-desktop-install.sh
+    fi
 fi
 
 # Install & upgrade all global python modules
@@ -192,7 +195,10 @@ nvim -c "try | call dein#update() | finally | qall! | endtry"
 if $IS_MACOS; then
     source ./scripts/macos-config.sh
 else
-    source ./scripts/kubuntu-config.sh
+    source ./scripts/ubuntu-server-config.sh
+    if $IS_DESKTOP; then
+        source ./scripts/kubuntu-desktop-config.sh
+    fi
 fi
 
 # Reload Bash with new configuration
