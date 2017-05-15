@@ -26,9 +26,6 @@ done
 sudo apt install -y $UBUNTU_SERVER_PACKAGES
 
 
-sudo apt install -y python-pip python-dev runsnakerun
-
-
 sudo apt-file update
 
 sudo deborphan | xargs sudo apt -y remove --purge

@@ -56,6 +56,8 @@ ntp
 p7zip-full
 powertop
 psmisc
+python-dev
+python-pip
 sysfsutils
 system-config-lvm
 xfsprogs
@@ -120,6 +122,7 @@ mpv
 network-manager-openvpn
 pdftk
 picard
+runsnakerun
 transcode
 ttf-ancient-fonts
 unclutter
