@@ -1,8 +1,7 @@
 # Kevin's dotfiles [![Build Status](https://img.shields.io/travis/kdeldycke/maildir-deduplicate/develop.svg?style=flat)](https://travis-ci.org/kdeldycke/dotfiles)
 
-Dot-files and system configuration for Python developers, currently targetting
-**macOS 10.12** (Sierra), **Kubuntu** and **Ubuntu Server 16.04 LTS** (Xenial
-Xerus)
+Dot-files and system configuration for Python developers, targetting
+**macOS**, **Kubuntu** and **Ubuntu Server**.
 
 ![Mac OS X 10.11 El Capitan solarized terminal and vim
 ](https://raw.githubusercontent.com/kdeldycke/dotfiles/master/screenshots/osx-10.11.png)
@@ -28,6 +27,16 @@ Features
 * [Custom
   configuration](https://github.com/kdeldycke/dotfiles/blob/master/scripts/kubuntu-desktop-config.sh#L14)
   for [`MacBookAir5,2`](https://www.amazon.com/dp/B008GV6QV2/?tag=kevideld-20).
+
+
+Profiles
+--------
+
+Profile name | Target OS | Description
+:--- |:--- |:---
+macOS | macOS 10.12 (Sierra) | Desktop-centric usage for everyday use and work on a personnal, single-user machine.
+Kubuntu | Kubuntu 16.04 LTS (Xenial Xerus) | Same as above.
+Ubuntu Server | Ubuntu Server 16.04 LTS (Xenial Xerus) | Minimal config to feel at home on a server. Currently needs `root`.
 
 
 Install
