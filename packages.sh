@@ -41,7 +41,7 @@ wget
 
 # Packages to install on both Ubuntu and Kubuntu, desktops and servers, but not
 # macOS.
-KUBUNTU_SERVER_PACKAGES="
+UBUNTU_SERVER_PACKAGES="
 apt-file
 ca-certificates
 cpufrequtils
