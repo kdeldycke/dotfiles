@@ -125,6 +125,12 @@ Ubuntu Server:
 * [Ubuntu Server 16.04 LTS (Xenial Xerus)](https://github.com/kdeldycke/dotfiles/tree/master) (current)
 
 
+Resources
+---------
+
+* [Awesome OSX command line](https://github.com/herrbischoff/awesome-osx-command-line)
+
+
 License
 -------
 
