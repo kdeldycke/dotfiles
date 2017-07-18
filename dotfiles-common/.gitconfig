@@ -24,6 +24,8 @@
     algorithm = patience
     # Source: https://github.com/git/git/commit/3cde4e02ee891bff53bac7f6a7d977f50418a4b5
     indentHeuristic = true
+[diff-so-fancy]
+    first-run = false
 [commit]
     # Source: https://github.com/pstadler/keybase-gpg-github
     gpgsign = true
