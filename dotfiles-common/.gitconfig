@@ -22,8 +22,6 @@
     renames = copies
     # Source: http://blog.apiaxle.com/post/handy-git-tips-to-stop-you-getting-fired/
     algorithm = patience
-    # Source: https://github.com/git/git/commit/3cde4e02ee891bff53bac7f6a7d977f50418a4b5
-    indentHeuristic = true
 [diff-so-fancy]
     first-run = false
 [commit]
