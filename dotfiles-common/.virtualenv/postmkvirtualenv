@@ -7,4 +7,4 @@ ENV_CONF=$WORKON_HOME/$PROJECT_NAME/.env
 echo "workon $PROJECT_NAME" > "$ENV_CONF"
 
 # Pre-install unit test tools in the new virtualenv
-pip install tox nose-progressive
+pip install tox pytest pytest-cov

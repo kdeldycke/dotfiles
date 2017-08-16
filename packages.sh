@@ -140,12 +140,12 @@ httpie
 jupyter
 meta-package-manager
 neovim
-nose
-nose-progressive
 pycodestyle
 pydocstyle
 pygments
 pylint
+pytest
+pytest-cov
 setuptools
 tox
 virtualenv
