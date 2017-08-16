@@ -146,6 +146,7 @@ pygments
 pylint
 pytest
 pytest-cov
+pytest-sugar
 setuptools
 tox
 virtualenv
