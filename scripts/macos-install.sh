@@ -98,7 +98,6 @@ brew cask install aerial
 brew cask install android-file-transfer
 brew cask install avidemux
 brew cask install bitcoin-core
-brew cask install borgbackup
 brew cask install dropbox
 brew cask install dupeguru
 brew cask install ftdi-vcp-driver
@@ -162,6 +161,10 @@ GOOGLE_APPLICATION_CREDENTIALS=~/.google-cloud-auth.json gcsfuse --implicit-dirs
 # See: https://github.com/GoogleCloudPlatform/gcsfuse/issues/188
 # sudo ln -s /usr/local/sbin/mount_gcsfuse /sbin/
 # mount -t gcsfuse -o rw,user,keyfile="${HOME}/.google-cloud-auth.json" backup-imac-borg "${HOME}/gcs"
+
+# Install restic for backups.
+brew tap restic/restic
+brew install restic
 
 # Install Atom and its plugins.
 brew cask install atom
