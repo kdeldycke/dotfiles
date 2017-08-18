@@ -317,6 +317,9 @@ sudo systemsetup -settimezone "Europe/Paris" > /dev/null
 sudo systemsetup -setnetworktimeserver "time.euro.apple.com"
 sudo systemsetup -setusingnetworktime on
 
+# Do not set timezone automatticaly depending on location.
+sudo defaults write /Library/Preferences/com.apple.timezone.auto.plist Active -bool false
+
 # Stop iTunes from responding to the keyboard media keys
 launchctl unload -w /System/Library/LaunchAgents/com.apple.rcd.plist 2> /dev/null
 
