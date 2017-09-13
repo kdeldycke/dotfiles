@@ -110,7 +110,6 @@ brew cask install karabiner-elements
 brew cask install keybase
 brew cask install kiwix
 brew cask install libreoffice
-brew cask install limechat
 brew cask install musicbrainz-picard
 brew cask install music-manager
 brew cask install openzfs

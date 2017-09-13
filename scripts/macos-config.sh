@@ -1048,40 +1048,6 @@ defaults write com.musicbrainz.Picard setting.fingerprinting_system -string "aco
 defaults write com.musicbrainz.Picard setting.acoustid_apikey -string "lP2ph5Sm"
 
 ###############################################################################
-# LimeChat.app                                                                #
-###############################################################################
-
-# Connection behaviour.
-defaults write net.limechat.LimeChat Preferences.General.auto_join_on_invited -bool true
-defaults write net.limechat.LimeChat Preferences.General.auto_rejoin -bool true
-defaults write net.limechat.LimeChat Preferences.General.connect_on_doubleclick -bool true
-defaults write net.limechat.LimeChat Preferences.General.disconnect_on_doubleclick -bool false
-defaults write net.limechat.LimeChat Preferences.General.join_on_doubleclick -bool true
-defaults write net.limechat.LimeChat Preferences.General.leave_on_doubleclick -bool false
-defaults write net.limechat.LimeChat Preferences.General.confirm_quit -bool false
-
-# Log history.
-defaults write net.limechat.LimeChat Preferences.General.log_transcript -bool true
-defaults write net.limechat.LimeChat Preferences.General.max_log_lines -int 3000
-defaults write net.limechat.LimeChat Preferences.General.open_browser_in_background -bool false
-
-# Theme.
-defaults write net.limechat.LimeChat Preferences.Theme.name -string "resource:Alternate Lines"
-
-# Defaults to pre-El Capitan system font while we wait for general availability
-# of the new San Francisco font.
-defaults write net.limechat.LimeChat Preferences.Theme.override_log_font -bool true
-defaults write net.limechat.LimeChat Preferences.Theme.log_font_name -string "HelveticaNeue"
-defaults write net.limechat.LimeChat Preferences.Theme.log_font_size -int 13
-defaults write net.limechat.LimeChat Preferences.Theme.override_input_font -bool true
-defaults write net.limechat.LimeChat Preferences.Theme.input_font_name -string "HelveticaNeue"
-defaults write net.limechat.LimeChat Preferences.Theme.input_font_size -int 13
-
-# Include day in timestamp.
-defaults write net.limechat.LimeChat Preferences.Theme.override_timestamp_format -bool true
-defaults write net.limechat.LimeChat Preferences.Theme.timestamp_format -string "%d|%H:%M"
-
-###############################################################################
 # Kill affected applications                                                  #
 ###############################################################################
 
