@@ -148,12 +148,12 @@ brew install homebrew/dupes/openssh
 
 # Add extra filesystem support.
 brew cask install osxfuse
-brew install homebrew/fuse/ext2fuse
-brew install homebrew/fuse/ext4fuse
-brew install homebrew/fuse/ntfs-3g
+brew install ext2fuse
+brew install ext4fuse
+brew install ntfs-3g
 
 # Install and configure Google Cloud Storage bucket mount point.
-brew install homebrew/fuse/gcsfuse
+brew install gcsfuse
 mkdir -p "${HOME}/gcs"
 GOOGLE_APPLICATION_CREDENTIALS=~/.google-cloud-auth.json gcsfuse --implicit-dirs backup-imac-restic ./gcs
 # Mount doesn't work as macOS doesn't let us register a new filesystem plugin.
