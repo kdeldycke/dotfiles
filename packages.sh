@@ -83,6 +83,7 @@ youtube-dl
 # List of Desktop packages available via apt on Ubuntu and Brew Cask on macOS.
 COMMON_BIN_PACKAGES="
 audacity
+electrum
 firefox
 gimp
 handbrake
