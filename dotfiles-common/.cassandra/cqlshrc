@@ -1,3 +1,5 @@
+# https://docs.datastax.com/en/cql/3.3/cql/cql_reference/cqlshUsingCqlshrc.html
+
 [connection]
 # Timeout in seconds.
 timeout=100
