@@ -116,6 +116,7 @@ brew cask install openzfs
 brew cask install rowanj-gitx
 brew cask install slack
 brew cask install spectacle
+brew cask install spotify
 brew cask install steam
 brew cask install telegram-desktop
 brew cask install torbrowser
