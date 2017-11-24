@@ -100,6 +100,7 @@ brew cask install avidemux
 brew cask install bitcoin-core
 brew cask install dropbox
 brew cask install dupeguru
+brew cask install etcher
 brew cask install ftdi-vcp-driver
 brew cask install gitup
 brew cask install google-chrome
