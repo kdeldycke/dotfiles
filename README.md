@@ -34,7 +34,7 @@ Profiles
 
 Profile name | Target OS | Description
 :--- |:--- |:---
-macOS | macOS 10.12 (Sierra) | Desktop-centric usage for everyday use and work on a personnal, single-user machine.
+macOS | macOS 10.13 (High Sierra) | Desktop-centric usage for everyday use and work on a personnal, single-user machine.
 Kubuntu | Kubuntu 16.04 LTS (Xenial Xerus) | Same as above.
 Ubuntu Server | Ubuntu Server 16.04 LTS (Xenial Xerus) | Minimal config to feel at home on a server. Currently needs `root`.
 
@@ -104,7 +104,8 @@ branches are available for archive.
 
 macOS:
 
-* [macOS 10.12 (Sierra)](https://github.com/kdeldycke/dotfiles/tree/master) (current)
+* [macOS 10.13 (High Sierra)](https://github.com/kdeldycke/dotfiles/tree/master) (current)
+* [macOS 10.12 (Sierra)](https://github.com/kdeldycke/dotfiles/tree/macos-10.12)
 * [Mac OS X 10.11 (El Capitan)](https://github.com/kdeldycke/dotfiles/tree/osx-10.11)
 * [Mac OS X 10.10 (Yosemite)](https://github.com/kdeldycke/dotfiles/tree/osx-10.10)
 * [Mac OS X 10.9 (Mavericks)](https://github.com/kdeldycke/dotfiles/tree/osx-10.9)
