@@ -2,3 +2,9 @@
 
 # Keyword casing preference. Possible values "lower", "upper", "auto"
 keyword_casing = upper
+
+# Table format. Possible values: psql, plain, simple, grid, fancy_grid, pipe,
+# ascii, double, github, orgtbl, rst, mediawiki, html, latex, latex_booktabs,
+# textile, moinmoin, jira, vertical, tsv, csv.
+# Recommended: psql, fancy_grid and grid.
+table_format = fancy_grid
