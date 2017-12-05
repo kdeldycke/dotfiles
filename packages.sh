@@ -4,7 +4,6 @@ set -x
 # Packages to install on all targets, useful on both servers and desktops like
 # CLIs and system utils.
 COMMON_SERVER_PACKAGES="
-apg
 bash
 bash-completion
 colordiff
@@ -42,6 +41,7 @@ wget
 # Packages to install on both Ubuntu and Kubuntu, desktops and servers, but not
 # macOS.
 UBUNTU_SERVER_PACKAGES="
+apg
 apt-file
 ca-certificates
 cpufrequtils
