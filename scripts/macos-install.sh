@@ -125,7 +125,11 @@ brew cask install tunnelblick
 brew cask install virtualbox-extension-pack
 brew cask install xbox360-controller-driver
 
+# Install App Store packages.
+mas install "$(mas search 1password | cut -d ' ' -f 1)"
+
 # Open apps so I'll not forget to login
+open -a 1Password
 open -a Dropbox
 
 # Install QuickLooks plugins
