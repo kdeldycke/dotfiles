@@ -35,6 +35,9 @@ brew upgrade
 # Add Cask
 brew tap caskroom/cask
 
+# Add drivers.
+brew tap caskroom/drivers
+
 # Add services
 brew tap homebrew/services
 
@@ -123,7 +126,7 @@ brew cask install torbrowser
 brew cask install transmission
 brew cask install tunnelblick
 brew cask install virtualbox-extension-pack
-brew cask install xbox360-controller-driver
+brew cask install xbox360-controller-driver-unofficial
 
 # Install App Store packages.
 mas install "$(mas search 1password | cut -d ' ' -f 1)"
