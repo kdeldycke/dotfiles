@@ -24,9 +24,6 @@ Features
 * All terminal font is [Source Code Pro
 ](https://en.wikipedia.org/wiki/Source_Code_Pro).
 * Keeps OSes fast and lean.
-* [Custom
-  configuration](https://github.com/kdeldycke/dotfiles/blob/master/scripts/kubuntu-desktop-config.sh#L14)
-  for [`MacBookAir5,2`](https://www.amazon.com/dp/B008GV6QV2/?tag=kevideld-20).
 
 
 Profiles
