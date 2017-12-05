@@ -89,7 +89,6 @@ handbrake
 hugin
 inkscape
 prey
-sqlitebrowser
 subsurface
 virtualbox
 "
@@ -124,6 +123,7 @@ network-manager-openvpn
 pdftk
 picard
 runsnakerun
+sqlitebrowser
 transcode
 ttf-ancient-fonts
 unclutter

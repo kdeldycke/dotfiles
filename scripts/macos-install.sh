@@ -97,6 +97,7 @@ brew cask install aerial
 brew cask install android-file-transfer
 brew cask install avidemux
 brew cask install bitcoin-core
+brew cask install db-browser-for-sqlite
 brew cask install dropbox
 brew cask install dupeguru
 brew cask install etcher
