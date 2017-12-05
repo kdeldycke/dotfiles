@@ -62,8 +62,6 @@ sysfsutils
 system-config-lvm
 xfsprogs
 xsltproc
-zfs-dkms
-zfsutils-linux
 "
 
 # List of Desktop packages available via apt on Ubuntu and Brew sources on
