@@ -3,8 +3,8 @@
 Dot-files and system configuration for Python developers, targetting
 **macOS**, **Kubuntu** and **Ubuntu Server**.
 
-![Mac OS X 10.12 Sierra solarized terminal and vim
-](https://raw.githubusercontent.com/kdeldycke/dotfiles/master/screenshots/macos-10.12.png)
+![Mac OS X 10.13 High Sierra solarized terminal and vim
+](https://raw.githubusercontent.com/kdeldycke/dotfiles/master/screenshots/macos-10.13.jpg)
 
 ![Kubuntu 15.10 Wily Werewolf solarized terminal and vim
 ](https://raw.githubusercontent.com/kdeldycke/dotfiles/master/screenshots/kubuntu-15.10.png)
