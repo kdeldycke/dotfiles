@@ -82,7 +82,6 @@ youtube-dl
 
 # List of Desktop packages available via apt on Ubuntu and Brew Cask on macOS.
 COMMON_BIN_PACKAGES="
-audacity
 electrum
 firefox
 gimp
@@ -97,6 +96,7 @@ virtualbox
 
 # Packages to install on Kubuntu desktops only.
 KUBUNTU_DESKTOP_PACKAGES="
+audacity
 bitcoin-qt
 bleachbit
 chromium-browser
