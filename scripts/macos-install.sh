@@ -68,7 +68,6 @@ do
    brew install "$PACKAGE"
 done
 brew install ack
-brew install cassandra
 brew install curl
 brew link --force curl
 brew install dockutil
