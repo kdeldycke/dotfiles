@@ -105,7 +105,7 @@ brew cask install ftdi-vcp-driver
 brew cask install gitup
 brew cask install google-chrome
 brew cask install google-drive
-brew cask install google-play-music-desktop-player
+brew cask install marshallofsound-google-play-music-player
 brew cask install java
 brew cask install karabiner-elements
 brew cask install keybase
