@@ -96,9 +96,6 @@ do
    brew cask install "$PACKAGE"
 done
 brew cask install aerial
-brew cask install android-file-transfer
-brew cask install avidemux
-brew cask install bitcoin-core
 brew cask install db-browser-for-sqlite
 brew cask install dropbox
 brew cask install dupeguru
@@ -106,12 +103,10 @@ brew cask install etcher
 brew cask install ftdi-vcp-driver
 brew cask install gitup
 brew cask install google-chrome
-brew cask install google-drive
 brew cask install marshallofsound-google-play-music-player
 brew cask install java
 brew cask install karabiner-elements
 brew cask install keybase
-brew cask install kiwix
 brew cask install libreoffice
 brew cask install musicbrainz-picard
 brew cask install music-manager
