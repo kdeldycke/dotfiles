@@ -63,14 +63,11 @@
     st = status
     # Legit addons
     branches = !legit branches
-    graft = !legit graft
-    harvest = !legit harvest
     publish = !legit publish
     unpublish = !legit unpublish
-    sprout = !legit sprout
     sync = !legit sync
     switch = !legit switch
-    resync = !legit resync
+    undo = !legit undo
     # View abbreviated SHA, description, and history graph of the latest 20 commits
     l = log --pretty=oneline -n 20 --graph --abbrev-commit --decorate
     hist = log --pretty=format:\"%C(yellow)%h%C(reset) %C(green)%ad%C(reset) %C(red)|%C(reset) %s %C(bold blue)[%an]%C(reset)%C(yellow)%d%C(reset)\" --graph --date=short
