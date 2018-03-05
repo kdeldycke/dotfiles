@@ -1,5 +1,5 @@
-# Force Python, then Homebrew binaries to take precedence on macOS default
-PYTHON_LOCAL_BIN="/usr/local/opt/python/libexec/bin"
+# Force use of Python 2 from Homebrew by default.
+PYTHON_LOCAL_BIN="/usr/local/opt/python@2/bin"
 GNU_CORE_UTILS_BIN="$(brew --prefix coreutils)/libexec/gnubin"
 export PATH="$PYTHON_LOCAL_BIN:$GNU_CORE_UTILS_BIN:/usr/local/bin:/usr/local/sbin:$PATH"
 

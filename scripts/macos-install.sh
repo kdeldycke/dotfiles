@@ -51,8 +51,8 @@ mas upgrade
 # Install macOS system requirements
 brew cask install xquartz
 
-# Install a brand new Python
-brew install python
+# Install latest Python 2.
+brew install python@2
 brew link --overwrite python
 # Install python 3 too.
 brew install python3
