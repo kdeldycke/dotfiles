@@ -134,7 +134,6 @@ bumpversion
 coverage
 flake8
 gmvault
-gsutil
 httpie
 jupyter
 meta-package-manager
