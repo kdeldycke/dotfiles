@@ -198,19 +198,21 @@ export PYTHONSTARTUP="$HOME/.python_startup.py"
 # Display DeprecationWarning
 #export PYTHONWARNINGS=d
 
-# Set virtualenv facilities
-export WORKON_HOME=$HOME/virtualenvs
-export VIRTUALENVWRAPPER_HOOK_DIR=$HOME/.virtualenv
-# Use default Python. VIRTUALENVWRAPPER_PYTHON doesn't seems to be used by virtualenvwrapper, so
-# force it through venv's args.
-# export VIRTUALENVWRAPPER_PYTHON=`which python`
-export VIRTUALENVWRAPPER_VIRTUALENV_ARGS="--python=$(which python)"
+# Set virtualenv home.
+export WORKON_HOME=$HOME/.virtualenvs
 
 # Load shell helpers
-source virtualenvwrapper.sh
 source ~/.autoenv/activate.sh
 
+# Add pip completion.
 eval "$(pip completion --bash)"
+
+# Add pipenv-pipes completion.
+# Source: https://pipenv-pipes.readthedocs.io/en/latest/completions.html#bash-zsh
+_pipenv-pipes_completions() {
+    COMPREPLY=($(compgen -W "$(pipes --_completion)" -- "${COMP_WORDS[1]}"))
+}
+complete -F _pipenv-pipes_completions pipes
 
 # Add tab completion for SSH hostnames based on ~/.ssh/config, ignoring wildcards
 [ -e "$HOME/.ssh/config" ] && complete -o "default" -o "nospace" -W "$(grep "^Host" ~/.ssh/config | grep -v "[?*]" | cut -d " " -f2- | tr ' ' '\n')" scp sftp ssh

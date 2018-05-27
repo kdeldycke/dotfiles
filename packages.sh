@@ -138,6 +138,8 @@ httpie
 jupyter
 meta-package-manager
 neovim
+pipenv
+pipenv-pipes
 pycodestyle
 pydocstyle
 pygments
@@ -147,8 +149,6 @@ pytest-cov
 pytest-sugar
 setuptools
 tox
-virtualenv
-virtualenvwrapper
 wheel
 yapf
 "
