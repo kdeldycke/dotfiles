@@ -41,9 +41,6 @@ brew tap caskroom/drivers
 # Add services
 brew tap homebrew/services
 
-# Add Neovim.
-brew tap neovim/neovim
-
 # Install Mac App Store CLI and upgrade all apps.
 brew install mas
 mas upgrade
@@ -161,7 +158,6 @@ GOOGLE_APPLICATION_CREDENTIALS=~/.google-cloud-auth.json gcsfuse --implicit-dirs
 # mount -t gcsfuse -o rw,user,keyfile="${HOME}/.google-cloud-auth.json" backup-imac-restic "${HOME}/gcs"
 
 # Install restic for backups.
-brew tap restic/restic
 brew install restic
 
 # Install Atom and its plugins.
