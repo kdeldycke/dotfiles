@@ -132,7 +132,6 @@ PYTHON_PACKAGES="
 pip
 bumpversion
 coverage
-flake8
 gmvault
 httpie
 jupyter
