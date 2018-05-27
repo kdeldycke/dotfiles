@@ -201,9 +201,6 @@ export PYTHONSTARTUP="$HOME/.python_startup.py"
 # Set virtualenv home.
 export WORKON_HOME=$HOME/.virtualenvs
 
-# Load shell helpers
-source ~/.autoenv/activate.sh
-
 # Add pip completion.
 eval "$(pip completion --bash)"
 
