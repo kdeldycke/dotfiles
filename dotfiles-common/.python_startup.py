@@ -20,11 +20,7 @@ except ImportError as exception:
 else:
 
     # Enable tab completion.
-    # macOS's bind should only be applied with legacy readline.
-    if sys.platform == 'darwin' and 'libedit' in readline.__doc__:
-        readline.parse_and_bind("bind ^I rl_complete")
-    else:
-        readline.parse_and_bind("tab: complete")
+    readline.parse_and_bind("tab: complete")
 
     # Enable history file.
     history_file = os.environ.get(
