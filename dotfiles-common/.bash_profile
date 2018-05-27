@@ -1,5 +1,5 @@
-# Force use of Python 2 from Homebrew by default.
-PYTHON_LOCAL_BIN="/usr/local/opt/python@2/bin"
+# Force use of Python 3 from Homebrew by default.
+PYTHON_LOCAL_BIN="/usr/local/opt/python/libexec/bin"
 GNU_CORE_UTILS_BIN="$(brew --prefix coreutils)/libexec/gnubin"
 export PATH="$PYTHON_LOCAL_BIN:$GNU_CORE_UTILS_BIN:/usr/local/bin:/usr/local/sbin:$PATH"
 
