@@ -150,9 +150,6 @@ Unspecified open-source license.
 * [Solarized for GNU ls](https://github.com/seebi/dircolors-solarized/blob/master/dircolors.256dark).
 © 2013 Sebastian Tramp.
 Do What The Fuck You Want To Public License (WTFPL).
-* [Python shell enhancement](https://github.com/jbisbee/python-shell-enhancement).
-© 2013 Jeff Bisbee.
-MIT license.
 
 The rest of the content is configuration and code I accumulated over years.
 Some was heavily inspired by other dotfiles repositories. But each time I
