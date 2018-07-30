@@ -103,6 +103,7 @@ brew cask install java
 brew cask install karabiner-elements
 brew cask install keybase
 brew cask install libreoffice
+brew cask install macdown
 brew cask install musicbrainz-picard
 brew cask install music-manager
 brew cask install rowanj-gitx
