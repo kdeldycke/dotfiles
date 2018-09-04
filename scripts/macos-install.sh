@@ -161,28 +161,6 @@ GOOGLE_APPLICATION_CREDENTIALS=~/.google-cloud-auth.json gcsfuse --implicit-dirs
 # Install restic for backups.
 brew install restic
 
-# Install Atom and its plugins.
-brew cask install atom
-ATOM_PACKAGES="
-atom-beautify
-autocomplete-paths
-autocomplete-python
-color-picker
-docblockr
-file-icons
-hydrogen
-linter-flake8
-minimap
-python-isort
-python-tools
-tag
-trailing-spaces
-"
-for PACKAGE in $ATOM_PACKAGES
-do
-   apm install "$PACKAGE"
-done
-
 # Install runsnakeerun
 brew install wxmac
 brew install wxpython
