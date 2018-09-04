@@ -94,7 +94,6 @@ virtualbox
 # Packages to install on Kubuntu desktops only.
 KUBUNTU_DESKTOP_PACKAGES="
 audacity
-bitcoin-qt
 bleachbit
 chromium-browser
 chromium-codecs-ffmpeg-extra
