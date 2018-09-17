@@ -26,7 +26,6 @@ mercurial
 neovim
 optipng
 p7zip
-pgcli
 pngcrush
 recode
 rename
@@ -136,6 +135,7 @@ httpie
 jupyter
 meta-package-manager
 neovim
+pgcli
 pipenv
 pipenv-pipes
 pycodestyle
