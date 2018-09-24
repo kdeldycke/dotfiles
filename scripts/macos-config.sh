@@ -612,7 +612,7 @@ for shortcut_label in "Launchpad" "Calendar" "Contacts" "Mail" \
 done
 
 # Add new app shortcuts to the dock.
-for app in "Google Chrome" "Firefox" "GitUp" "Transmission" "LibreOffice" \
+for app in "Firefox" "GitUp" "Transmission" "LibreOffice" \
     "TorBrowser" "Steam" "Popcorn-Time" "Telegram Desktop" "Slack" \
     "1Password"; do
     dockutil --find "${app}"
@@ -965,42 +965,6 @@ defaults write com.apple.messageshelper.MessageController SOInputLineSettings -d
 defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "continuousSpellCheckingEnabled" -bool false
 
 ###############################################################################
-# Google Chrome                                                               #
-###############################################################################
-
-# Disable the all too sensitive backswipe on trackpads
-defaults write com.google.Chrome AppleEnableSwipeNavigateWithScrolls -bool false
-
-# Disable the all too sensitive backswipe on Magic Mouse
-defaults write com.google.Chrome AppleEnableMouseSwipeNavigateWithScrolls -bool false
-
-# Use the system-native print preview dialog
-defaults write com.google.Chrome DisablePrintPreview -bool true
-
-# Expand the print dialog by default
-defaults write com.google.Chrome PMPrintingExpandedStateForPrint2 -bool true
-
-# TODO: Edit ./Library/Application Support/Google/Chrome/Default/Preferences
-# to remove all plugins but the PDF viewer.
-
-# Remove unused default extensions: Google Docs, Docs Offline, Sheets and Slides.
-for chrome_ext in \
-        "aohghmighlieiainnegkcijnfilokake" "ghbmnnjooekpmoecnnnilnnbdlolhkhi" \
-        "felcaaldnbdncclmgdcncolpebgiejap" "aapocclcgogkmnckokdopfmhonfmgoek"; do
-    rm -rf "${HOME}/Library/Application Support/Google/Chrome/Default/Extensions/${chrome_ext}"
-done
-
-# Remove Flash player and NaCl plugins.
-rm -rf ~/Library/Application\ Support/Google/Chrome/{PepperFlash,pnacl}/
-find "/Applications/Google Chrome.app/Contents/Versions" -type d -name "Internet Plug-Ins" -delete
-
-# Remove Widevine DRM plugin.
-find "/Applications/Google Chrome.app/Contents/Versions" -type d -name "WidevineCdm" -delete
-
-# Remove all default apps: docs, drive, gmail and youtube.
-find "/Applications/Google Chrome.app/Contents/Versions" -type f -path '*/Default Apps/*' -and \( -name 'docs.crx' -or -name 'drive.crx' -or -name 'gmail.crx' -or -name 'youtube.crx' \) -delete
-
-###############################################################################
 # Transmission.app                                                            #
 ###############################################################################
 
@@ -1079,7 +1043,6 @@ for app in "Activity Monitor" \
         "Contacts" \
         "Dock" \
         "Finder" \
-        "Google Chrome" \
         "Mail" \
         "Messages" \
         "Photos" \
