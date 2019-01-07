@@ -112,7 +112,6 @@ brew cask install telegram-desktop
 brew cask install torbrowser
 brew cask install transmission
 brew cask install tunnelblick
-brew cask install virtualbox-extension-pack
 brew cask install xbox360-controller-driver-unofficial
 
 # Install App Store packages.

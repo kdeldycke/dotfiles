@@ -87,7 +87,6 @@ hugin
 inkscape
 prey
 subsurface
-virtualbox
 "
 
 # Packages to install on Kubuntu desktops only.
