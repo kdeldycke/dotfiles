@@ -113,7 +113,6 @@ libavcodec-extra
 libdvd-pkg
 mkvtoolnix
 mkvtoolnix-gui
-mpv
 network-manager-openvpn
 pdftk
 picard

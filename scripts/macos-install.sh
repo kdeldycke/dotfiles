@@ -97,6 +97,7 @@ brew cask install dupeguru
 brew cask install etcher
 brew cask install gitup
 brew cask install marshallofsound-google-play-music-player
+brew cask install iina
 brew cask install java
 brew cask install karabiner-elements
 brew cask install keybase
@@ -174,13 +175,6 @@ fi
 brew install duti
 duti -s com.apple.Safari http
 # See: http://stackoverflow.com/a/25622557
-
-# Install mpv.app so we can set it as default player.
-# Source: https://github.com/mpv-player/mpv/wiki/FAQ#how-can-i-make-mpv-the-default-application-to-open-movie-files-on-osx
-brew install mpv --with-bundle
-duti -s io.mpv api
-duti -s io.mpv mkv
-duti -s io.mpv mp4
 
 # Install Popcorn Time.
 rm -rf /Applications/Popcorn-Time.app
