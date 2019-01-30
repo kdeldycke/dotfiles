@@ -219,4 +219,3 @@ wget https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/addon-607
 
 # Clean things up.
 brew cleanup
-brew prune
