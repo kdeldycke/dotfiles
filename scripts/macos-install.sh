@@ -99,7 +99,6 @@ brew cask install gitup
 brew cask install marshallofsound-google-play-music-player
 brew cask install iina
 brew cask install java
-brew cask install karabiner-elements
 brew cask install keybase
 brew cask install libreoffice
 brew cask install macdown
