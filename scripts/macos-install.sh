@@ -90,6 +90,7 @@ for PACKAGE in $COMMON_BIN_PACKAGES
 do
    brew cask install "$PACKAGE"
 done
+brew cask install adguard
 brew cask install aerial
 brew cask install db-browser-for-sqlite
 brew cask install dropbox
