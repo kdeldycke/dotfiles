@@ -116,10 +116,10 @@ brew cask install transmission
 brew cask install tunnelblick
 
 # Install App Store packages.
-mas install "$(mas search 1password | cut -d ' ' -f 1)"
+mas lucky "1Password 7"
 
 # Open apps so I'll not forget to login
-open -a 1Password
+open -a "1Password 7"
 open -a Dropbox
 
 # Install QuickLooks plugins
