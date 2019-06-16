@@ -121,6 +121,7 @@ mas lucky "1Password 7"
 # Open apps so I'll not forget to login
 open -a "1Password 7"
 open -a Dropbox
+open -a adguard
 
 # Install QuickLooks plugins
 # Source: https://github.com/sindresorhus/quick-look-plugins
