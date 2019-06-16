@@ -53,7 +53,6 @@ brew install python
 brew link --overwrite python
 
 # Install common packages
-brew install apple-gcc42
 for PACKAGE in $COMMON_SERVER_PACKAGES
 do
    brew install "$PACKAGE"
