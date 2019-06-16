@@ -69,7 +69,6 @@ brew install exiftool
 brew install faad2
 brew install gpg-agent
 brew install md5sha1sum
-brew install --with-qt5 mkvtoolnix
 brew install openssl
 brew install osxutils
 brew install pinentry-mac

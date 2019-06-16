@@ -110,9 +110,6 @@ kdenlive
 kompare
 kwrite
 libavcodec-extra
-libdvd-pkg
-mkvtoolnix
-mkvtoolnix-gui
 network-manager-openvpn
 pdftk
 picard
