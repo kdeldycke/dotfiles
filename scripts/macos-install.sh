@@ -114,7 +114,6 @@ brew cask install telegram-desktop
 brew cask install torbrowser
 brew cask install transmission
 brew cask install tunnelblick
-brew cask install xbox360-controller-driver-unofficial
 
 # Install App Store packages.
 mas install "$(mas search 1password | cut -d ' ' -f 1)"
