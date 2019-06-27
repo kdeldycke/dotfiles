@@ -130,7 +130,8 @@ brew cask install suspicious-package
 qlmanage -r
 
 # Install GNU `sed`, overwriting the built-in `sed`.
-brew install gnu-sed --with-default-names
+brew install gnu-sed
+ln -s "$(which gsed)" "$(brew --prefix coreutils)/libexec/gnubin/sed"
 
 # Install more recent versions of some macOS tools.
 brew install homebrew/dupes/grep
