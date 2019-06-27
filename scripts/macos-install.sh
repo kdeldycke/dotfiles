@@ -48,10 +48,6 @@ mas upgrade
 # Install macOS system requirements
 brew cask install xquartz
 
-# Install Python 3.
-brew install python
-brew link --overwrite python
-
 # Install common packages
 for PACKAGE in $COMMON_SERVER_PACKAGES
 do
@@ -73,6 +69,7 @@ brew install openssl
 brew install osxutils
 brew install pinentry-mac
 brew install pstree
+brew install python
 brew install rmlint
 brew install rclone
 brew install ssh-copy-id
