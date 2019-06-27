@@ -87,7 +87,6 @@ do
 done
 brew cask install adguard
 brew cask install aerial
-brew cask install db-browser-for-sqlite
 brew cask install dropbox
 brew cask install dupeguru
 brew cask install balenaetcher
@@ -154,11 +153,6 @@ GOOGLE_APPLICATION_CREDENTIALS=~/.google-cloud-auth.json gcsfuse --implicit-dirs
 
 # Install restic for backups.
 brew install restic
-
-# Install runsnakeerun
-brew install wxmac
-brew install wxpython
-pip install --upgrade RunSnakeRun
 
 # Install uBlock for Safari.
 defaults read ~/Library/Safari/Extensions/extensions | grep --quiet "com.el1t.uBlock"

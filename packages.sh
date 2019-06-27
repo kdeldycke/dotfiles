@@ -16,20 +16,17 @@ git-extras
 gpg
 graphviz
 grc
-hfsutils
 htop
 imagemagick
 jq
 jnettop
 legit
-mercurial
 neovim
 optipng
 p7zip
 pngcrush
 recode
 rename
-rtmpdump
 shellcheck
 testdisk
 tree
@@ -45,8 +42,6 @@ apt-file
 ca-certificates
 cpufrequtils
 deborphan
-hfsplus
-hfsprogs
 libimage-exiftool-perl
 lm-sensors
 mbr
@@ -72,7 +67,6 @@ fontforge
 id3v2
 lame
 shntool
-wireshark
 x264
 youtube-dl
 "
@@ -80,18 +74,13 @@ youtube-dl
 # List of Desktop packages available via apt on Ubuntu and Brew Cask on macOS.
 COMMON_BIN_PACKAGES="
 electrum
-firefox
 gimp
-handbrake
-hugin
-inkscape
 prey
 subsurface
 "
 
 # Packages to install on Kubuntu desktops only.
 KUBUNTU_DESKTOP_PACKAGES="
-audacity
 bleachbit
 chromium-browser
 chromium-codecs-ffmpeg-extra
@@ -106,16 +95,12 @@ gimp-plugin-registry
 gitg
 hunspell-fr
 hunspell-fr-classical
-kdenlive
 kompare
 kwrite
 libavcodec-extra
 network-manager-openvpn
 pdftk
 picard
-runsnakerun
-sqlitebrowser
-transcode
 ttf-ancient-fonts
 unclutter
 "
@@ -123,8 +108,6 @@ unclutter
 # Python packages to install from PyPi on all targets.
 PYTHON_PACKAGES="
 pip
-bumpversion
-coverage
 gmvault
 httpie
 jupyter
