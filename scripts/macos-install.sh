@@ -90,7 +90,7 @@ brew cask install aerial
 brew cask install db-browser-for-sqlite
 brew cask install dropbox
 brew cask install dupeguru
-brew cask install etcher
+brew cask install balenaetcher
 brew cask install ftdi-vcp-driver
 brew cask install gitup
 brew cask install marshallofsound-google-play-music-player
