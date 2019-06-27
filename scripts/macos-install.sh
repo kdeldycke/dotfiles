@@ -154,13 +154,6 @@ GOOGLE_APPLICATION_CREDENTIALS=~/.google-cloud-auth.json gcsfuse --implicit-dirs
 # Install restic for backups.
 brew install restic
 
-# Install uBlock for Safari.
-defaults read ~/Library/Safari/Extensions/extensions | grep --quiet "com.el1t.uBlock"
-if [[ $? -ne 0 ]]; then
-    curl -o "$TMPDIR/uBlock.safariextz" -O https://github.com/el1t/uBlock-Safari/releases/download/1.10.0-alpha.4/uBlock.safariextz
-    open "$TMPDIR/uBlock.safariextz"
-fi
-
 # Set Safari as the default browser.
 brew install duti
 duti -s com.apple.Safari http
