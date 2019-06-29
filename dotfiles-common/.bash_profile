@@ -1,7 +1,10 @@
 # Force use of Python 3 from Homebrew by default.
 PYTHON_LOCAL_BIN="/usr/local/opt/python/libexec/bin"
-GNU_CORE_UTILS_BIN="$(brew --prefix coreutils)/libexec/gnubin"
-export PATH="$PYTHON_LOCAL_BIN:$GNU_CORE_UTILS_BIN:/usr/local/bin:/usr/local/sbin:$PATH"
+GNU_COREUTILS_BIN="$(brew --prefix coreutils)/libexec/gnubin"
+GNU_SED_BIN="$(brew --prefix gnu-sed)/libexec/gnubin"
+GNU_GREP_BIN="$(brew --prefix grep)/libexec/gnubin"
+BSD_OPENSSH_BIN="/usr/local/opt/openssl/bin"
+export PATH="$PYTHON_LOCAL_BIN:$GNU_COREUTILS_BIN:$GNU_SED_BIN:$GNU_GREP_BIN:$BSD_OPENSSH_BIN:/usr/local/bin:/usr/local/sbin:$PATH"
 
 # Prefer US English and use UTF-8
 export LANG="en_US"

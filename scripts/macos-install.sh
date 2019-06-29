@@ -129,13 +129,10 @@ brew cask install quicklook-json
 brew cask install suspicious-package
 qlmanage -r
 
-# Install GNU `sed`, overwriting the built-in `sed`.
-brew install gnu-sed
-ln -s "$(which gsed)" "$(brew --prefix coreutils)/libexec/gnubin/sed"
-
 # Install more recent versions of some macOS tools.
-brew install homebrew/dupes/grep
-brew install homebrew/dupes/openssh
+brew install gnu-sed
+brew install grep
+brew install openssh
 
 # Add extra filesystem support.
 brew cask install osxfuse
