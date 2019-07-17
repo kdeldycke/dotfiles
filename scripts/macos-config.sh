@@ -613,7 +613,7 @@ done
 
 # Add new app shortcuts to the dock.
 for app in "Firefox" "GitUp" "Transmission" "LibreOffice" \
-    "TorBrowser" "Steam" "Popcorn-Time" "Telegram Desktop" "Slack" \
+    "TorBrowser" "Popcorn-Time" "Telegram Desktop" "Slack" \
     "1Password"; do
     dockutil --find "${app}"
     if [ $? -ne 0 ]; then

@@ -51,12 +51,6 @@ sudo apt install /tmp/google-musicmanager-beta_current_amd64.deb
 rm /tmp/google-musicmanager-beta_current_amd64.deb
 
 
-# Install Steam
-sudo dpkg --add-architecture i386
-sudo apt update
-sudo apt install -y steam mesa-utils
-
-
 # Install Tor Browser.
 sudo apt install -y torbrowser-launcher
 torbrowser-launcher
