@@ -605,16 +605,16 @@ defaults write com.apple.dock wvous-tl-corner -int 5
 defaults write com.apple.dock wvous-tl-modifier -int 0
 
 # Remove apps I don't use from the dock.
-for shortcut_label in "Launchpad" "Calendar" "Contacts" "Mail" \
-    "Safari" "Siri" "Maps" "FaceTime" "iTunes" "iBooks" "App Store" "Reminders" \
-    "Photos" "Messages" "Numbers" "Pages"; do
+for shortcut_label in "Launchpad" "Contacts" "Mail" \
+    "Siri" "Maps" "FaceTime" "iTunes" "iBooks" "Reminders" \
+    "Photos" "Messages" "Pages" "News"; do
     dockutil --remove "${shortcut_label}" --allhomes --no-restart
 done
 
 # Add new app shortcuts to the dock.
-for app in "Firefox" "GitUp" "Transmission" "LibreOffice" \
-    "TorBrowser" "Popcorn-Time" "Telegram Desktop" "Slack" \
-    "1Password"; do
+for app in "GitUp" "Transmission" "LibreOffice" \
+    "Tor Browser" "Popcorn-Time" "Telegram Desktop" "Spark" "Slack" \
+    "1Password 7"; do
     dockutil --find "${app}"
     if [ $? -ne 0 ]; then
         dockutil --add "/Applications/${app}.app" --replacing "${app}" --no-restart
