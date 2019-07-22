@@ -190,6 +190,16 @@ export LESS_TERMCAP_ZV=$(tput rsubm)
 export LESS_TERMCAP_ZO=$(tput ssupm)
 export LESS_TERMCAP_ZW=$(tput rsupm)
 
+# Remove spurious find error messages on access restrictions. Keeps find's
+# output clean, tidy and easier to read.
+# Source: https://apple.stackexchange.com/a/353650
+find() {
+  { LC_ALL=C command find "$@" 3>&2 2>&1 1>&3 | \
+    grep -v -e 'Permission denied' -e 'Operation not permitted' >&3; \
+    [ $? = 1 ]; \
+  } 3>&2 2>&1
+}
+
 # Expose diff-so-fancy.
 export PATH="$PATH:$HOME/.diff-so-fancy"
 
