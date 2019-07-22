@@ -180,7 +180,7 @@ chmod +x ${HOME}/.bitbar/*.{sh,py,rb}
 open -a BitBar
 
 # Open Tor Browser once to create a default profile.
-open -a "Tor Browser"
+open --wait-apps -a "Tor Browser"
 # Show TorBrowser bookmark toolbar.
 TB_CONFIG_DIR=$(find "${HOME}/Library/Application Support/TorBrowser-Data/Browser" -maxdepth 1 -iname "*.default")
 sed -i "s/\"PersonalToolbar\":{\"collapsed\":\"true\"}/\"PersonalToolbar\":{\"collapsed\":\"false\"}/" "$TB_CONFIG_DIR/xulstore.json"
