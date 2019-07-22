@@ -103,7 +103,7 @@ brew cask install rowanj-gitx
 brew cask install slack
 brew cask install spectacle
 brew cask install telegram-desktop
-brew cask install torbrowser
+brew cask install tor-browser
 brew cask install transmission
 brew cask install tunnelblick
 
@@ -170,14 +170,16 @@ wget -O "${HOME}/.bitbar/brew-services.7m.rb" https://github.com/matryer/bitbar-
 chmod +x ${HOME}/.bitbar/*.{sh,py,rb}
 open -a BitBar
 
+# Open Tor Browser once to create a default profile.
+open -a "Tor Browser"
 # Show TorBrowser bookmark toolbar.
-TB_CONFIG_DIR=$(find "${HOME}/Library/Application Support/TorBrowser-Data/Browser" -depth 1 -iname "*.default")
+TB_CONFIG_DIR=$(find "${HOME}/Library/Application Support/TorBrowser-Data/Browser" -maxdepth 1 -iname "*.default")
 sed -i "s/\"PersonalToolbar\":{\"collapsed\":\"true\"}/\"PersonalToolbar\":{\"collapsed\":\"false\"}/" "$TB_CONFIG_DIR/xulstore.json"
 # Set TorBrowser bookmarks in toolbar.
 # Source: https://yro.slashdot.org/story/16/06/08/151245/kickasstorrents-enters-the-dark-web-adds-official-tor-address
 BOOKMARKS="
 http://uj3wazyk5u4hnvtk.onion,PirateBay,nnypemktnpya,dvzeeooowsgx
-https://yggtorrent.com,yggTorrent,nnypemktnpyb,dvzeeooowsgy
+https://www2.yggtorrent.ch,yggTorrent,nnypemktnpyb,dvzeeooowsgy
 "
 TB_BOOKMARK_DB="$TB_CONFIG_DIR/places.sqlite"
 # Remove all bookmarks from the toolbar.
