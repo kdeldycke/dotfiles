@@ -107,14 +107,22 @@ brew cask install tor-browser
 brew cask install transmission
 brew cask install tunnelblick
 
-# Install App Store packages.
+# Uninstall Pages.
+sudo mas uninstall 409201541
+
+# Install 1Password.
 mas lucky "1Password 7"
-mas lucky "Spark - Email App by Readdle"
+open -a "1Password 7"
+# Activate Safari extention.
+# Source: https://github.com/kdeldycke/kevin-deldycke-blog/blob/master/content/posts/macos-commands.md
+pluginkit -e use -i com.agilebits.onepassword7.1PasswordSafariAppExtension
 
 # Open apps so I'll not forget to login
-open -a "1Password 7"
 open -a Dropbox
 open -a adguard
+
+# Install Spark.
+mas lucky "Spark - Email App by Readdle"
 
 # Install QuickLooks plugins
 # Source: https://github.com/sindresorhus/quick-look-plugins
