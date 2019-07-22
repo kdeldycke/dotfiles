@@ -3,8 +3,9 @@ PYTHON_LOCAL_BIN="/usr/local/opt/python/libexec/bin"
 GNU_COREUTILS_BIN="$(brew --prefix coreutils)/libexec/gnubin"
 GNU_SED_BIN="$(brew --prefix gnu-sed)/libexec/gnubin"
 GNU_GREP_BIN="$(brew --prefix grep)/libexec/gnubin"
+GNU_FINDUTILS_BIN="$(brew --prefix findutils)/libexec/gnubin"
 BSD_OPENSSH_BIN="/usr/local/opt/openssl/bin"
-export PATH="$PYTHON_LOCAL_BIN:$GNU_COREUTILS_BIN:$GNU_SED_BIN:$GNU_GREP_BIN:$BSD_OPENSSH_BIN:/usr/local/bin:/usr/local/sbin:$PATH"
+export PATH="$PYTHON_LOCAL_BIN:$GNU_COREUTILS_BIN:$GNU_SED_BIN:$GNU_GREP_BIN:$GNU_FINDUTILS_BIN:$BSD_OPENSSH_BIN:/usr/local/bin:/usr/local/sbin:$PATH"
 
 # Prefer US English and use UTF-8
 export LANG="en_US"
