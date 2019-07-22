@@ -45,7 +45,7 @@ brew tap homebrew/services
 brew install mas
 mas upgrade
 
-# Install macOS system requirements
+# Install XQuartz to support Linux-based GUI Apps.
 brew cask install xquartz
 
 # Install common packages
