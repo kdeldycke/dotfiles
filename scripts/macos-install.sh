@@ -109,6 +109,7 @@ brew cask install tunnelblick
 
 # Install App Store packages.
 mas lucky "1Password 7"
+mas lucky "Spark - Email App by Readdle"
 
 # Open apps so I'll not forget to login
 open -a "1Password 7"
