@@ -63,7 +63,6 @@ brew link --force curl
 brew install dockutil
 brew install exiftool
 brew install faad2
-brew install gpg-agent
 brew install openssl
 brew install osxutils
 brew install pinentry-mac
