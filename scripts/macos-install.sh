@@ -1,29 +1,13 @@
 #!/usr/bin/env bash
 set -x
 
-# Install command line tools.
-xcode-select --install
-
-# A full installation of Xcode.app is required to compile some formulas like
-# macvim. Installing the Command Line Tools only is not enough.
-# Also, if Xcode is installed but the license is not accepted then brew will
-# fail.
-xcodebuild -version
-# Accept Xcode license
-if [[ $? -ne 0 ]]; then
-    # TODO: find a way to install Xcode.app automatticaly
-    # See: https://stackoverflow.com/a/18244349
-    sudo xcodebuild -license
-fi
-
 # Update all macOS packages
 sudo softwareupdate -i -a
 
-# Install Homebrew if not found
-brew --version 2>&1 >/dev/null
-if [[ $? -ne 0 ]]; then
-    # Clean-up failed Homebrew installs first without prompting the user.
-    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)" -- "--force"
+# Check if homebrew is already installed
+# This also install xcode command line tools
+if test ! "$(command -v brew)"
+then
     # Install Homebrew without prompting for user confirmation.
     # See: https://github.com/Homebrew/install/pull/139
     CI=true ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
