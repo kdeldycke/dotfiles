@@ -857,6 +857,8 @@ defaults write com.apple.Terminal ShowLineMarks -int 0
 # Time Machine                                                                #
 ###############################################################################
 
+# Source: https://krypted.com/mac-os-x/ins-outs-using-tmutil-backup-restore-review-time-machine-backups/
+
 # Prevent Time Machine from prompting to use new hard drives as backup volume
 defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool true
 
@@ -864,8 +866,8 @@ defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool true
 # Source: http://www.defaults-write.com/time-machine-setup-a-size-limit-for-backup-volumes/
 sudo defaults write com.apple.TimeMachine MaxSize -integer 1048576
 
-# Disable local Time Machine backups
-hash tmutil &> /dev/null && sudo tmutil disablelocal
+# Activate Time Machine backups (including local snapshots).
+sudo tmutil enable
 
 ###############################################################################
 # Activity Monitor                                                            #
