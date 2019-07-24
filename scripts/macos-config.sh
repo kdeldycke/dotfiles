@@ -197,7 +197,7 @@ sudo systemsetup -setwakeonmodem off
 sudo pmset -a ring 0
 
 # Disable wake-on LAN
-systemsetup -setwakeonnetworkaccess off
+sudo systemsetup -setwakeonnetworkaccess off
 sudo pmset -a womp 0
 
 # Disable file-sharing via AFP or SMB
