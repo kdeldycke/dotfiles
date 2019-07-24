@@ -25,9 +25,8 @@ if [[ $? -ne 0 ]]; then
     # Clean-up failed Homebrew installs first without prompting the user.
     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)" -- "--force"
     # Install Homebrew without prompting for user confirmation.
-    # See: https://github.com/Homebrew/install/blob
-    # /7ff54f50f73170a51c11b0dda74b663806cb6cef/install#L184
-    TRAVIS=true ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    # See: https://github.com/Homebrew/install/pull/139
+    CI=true ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 fi
 brew update
 brew upgrade
