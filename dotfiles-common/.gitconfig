@@ -20,8 +20,11 @@
     diff = auto
     status = auto
     branch = auto
-    ui = auto
+        ui = true
     interactive = auto
+[help]
+    # Autocorrect for simple typos
+    autocorrect = 1
 [apply]
     whitespace = fix
 [diff]
@@ -50,6 +53,9 @@
     fetchJobs = 2
 [merge]
     log = true
+[mergetool]
+    # Do not keep backup files around after a successful merge.
+    keepBackup = false
 [branch]
     autosetuprebase = remote
 [rebase]
