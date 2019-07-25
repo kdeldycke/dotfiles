@@ -116,6 +116,7 @@ alias v="nvim"
 alias g="git"
 alias h="history"
 alias q='exit'
+alias how="howdoi --color"
 
 function cls {
     if $IS_MACOS; then
