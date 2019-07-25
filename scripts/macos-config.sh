@@ -726,6 +726,24 @@ defaults write com.apple.Safari InstallExtensionUpdatesAutomatically -bool true
 # 2: Prompt for each website one time only
 defaults write com.apple.Safari SafariGeolocationPermissionPolicy -int 0
 
+# Clear downloads on quit
+defaults write com.apple.Safari DownloadsClearingPolicy -int 2
+
+# Clear history:
+# 1 = after one day
+# 7 = after one week
+# 14 = after two weeks
+# 31 = after one month
+# 365 = after one year
+# 365000 = never (after 1000 years)
+defaults write HistoryAgeInDaysLimiti -int 14
+
+# Don't allow apple pay checking.
+defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2ApplePayCapabilityDisclosureAllowed -bool false
+
+# Disable website specific search.
+defaults write com.apple.Safari WebsiteSpecificSearchEnabled -bool false
+
 ###############################################################################
 # Mail                                                                        #
 ###############################################################################
