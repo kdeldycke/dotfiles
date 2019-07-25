@@ -20,7 +20,7 @@
     diff = auto
     status = auto
     branch = auto
-        ui = true
+    ui = true
     interactive = auto
 [help]
     # Autocorrect for simple typos
