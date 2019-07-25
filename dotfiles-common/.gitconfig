@@ -63,8 +63,11 @@
     # rebases.
     autostash = true
 [alias]
+    # Meta: Print supported aliases.
+    aliases = config --get-regexp alias
     br = branch
-    ci = commit
+    cl = clone
+    cm = commit
     co = checkout
     df = diff
     g  = grep -I
@@ -97,6 +100,8 @@
     ca = !git add -A && git commit -av
     # Switch to a branch, creating it if necessary
     go = !git checkout -b "$1" || git checkout "$1"
+    # Create a new branch and push it upstream
+    nb = "!f() { git checkout -b ${1} && git push --set-upstream origin ${1}:${1}; }; f"
     # Show verbose output about tags and remotes
     tags = tag -l
     remotes = remote -v
