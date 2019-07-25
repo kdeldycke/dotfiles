@@ -7,6 +7,11 @@
     # Prevent macOS's revisiond daemon to mess up with our files.
     # See: https://www.git-tower.com/blog/make-git-rebase-safe-on-osx/
     trustctime = false
+#[protocol]
+#    GitLab does not support protocol v2 yet: https://gitlab.com/gitlab-org/gitlab-ce/issues/59994
+#    version = 2
+[pack]
+    useSparse = true
 [user]
     name = Kevin Deldycke
     email = kevin@deldycke.com
