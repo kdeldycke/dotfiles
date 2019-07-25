@@ -96,8 +96,8 @@ defaults write com.apple.LaunchServices LSQuarantine -bool false
 # Try e.g. `cd /tmp; unidecode "\x{0000}" > cc.txt; open -e cc.txt`
 defaults write NSGlobalDomain NSTextShowsControlCharacters -bool true
 
-# Disable Resume system-wide
-defaults write com.apple.systempreferences NSQuitAlwaysKeepsWindows -bool false
+# Keep all windows open from previous session.
+defaults write com.apple.systempreferences NSQuitAlwaysKeepsWindows -bool true
 
 # Disable automatic termination of inactive apps
 defaults write NSGlobalDomain NSDisableAutomaticTermination -bool true
@@ -635,6 +635,19 @@ defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebK
 
 # Show the full URL in the address bar (note: this still hides the scheme)
 defaults write com.apple.Safari ShowFullURLInSmartSearchField -bool true
+
+# Start with all windows from last session
+defaults write com.apple.Safari AlwaysRestoreSessionAtLaunch -bool true
+defaults write com.apple.Safari OpenPrivateWindowWhenNotRestoringSessionAtLaunch -bool false
+
+# Setup new window and tab behvior
+# 0: Homepage
+# 1: Empty Page
+# 2: Same Page
+# 3: Bookmarks
+# 4: Top Sites
+defaults write com.apple.Safari NewTabBehavior -int 4
+defaults write com.apple.Safari NewWindowBehavior -int 4
 
 # Set Safari’s home page to `about:blank` for faster loading
 defaults write com.apple.Safari HomePage -string "about:blank"
