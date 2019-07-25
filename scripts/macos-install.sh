@@ -50,6 +50,7 @@ brew install howdoi
 brew install openssl
 brew install osxutils
 brew install pinentry-mac
+brew install prettyping
 brew install pstree
 brew install python
 brew install rmlint
