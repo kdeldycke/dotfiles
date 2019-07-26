@@ -40,6 +40,9 @@ sudo nvram SystemAudioVolume=" "
 # Disable transparency in the menu bar and elsewhere on Yosemite
 defaults write com.apple.universalaccess reduceTransparency -bool true
 
+# Enable ctrl+option+cmd to drag windows.
+defaults write com.apple.universalaccess NSWindowShouldDragOnGesture -string "YES"
+
 # Menu bar: hide the User icon
 defaults -currentHost write dontAutoLoad -array \
         "/System/Library/CoreServices/Menu Extras/User.menu"
@@ -52,8 +55,17 @@ defaults write com.apple.systemuiserver menuExtras -array \
         "/System/Library/CoreServices/Menu Extras/Battery.menu" \
         "/System/Library/CoreServices/Menu Extras/Clock.menu"
 
+# Autohide dock and menubar.
+#defaults write NSGlobalDomain _HIHideMenuBar -bool true
+
 # Set highlight color to green
 #defaults write NSGlobalDomain AppleHighlightColor -string "0.764700 0.976500 0.568600"
+
+# Enable graphite appearance.
+#defaults write NSGlobalDomain AppleAquaColorVariant -int 6
+
+# Enable the dark menubar and dock.
+#defaults write NSGlobalDomain AppleInterfaceStyle -string "Dark"
 
 # Set sidebar icon size to medium
 defaults write NSGlobalDomain NSTableViewDefaultSizeMode -int 2
@@ -115,7 +127,7 @@ defaults write com.apple.helpviewer DevMode -bool true
 
 # Reveal IP address, hostname, OS version, etc. when clicking the clock
 # in the login window
-sudo defaults write /Library/Preferences/com.apple.loginwindow AdminHostInfo HostName
+sudo defaults write /Library/Preferences/com.apple.loginwindow AdminHostInfo -string "HostName"
 
 # Restart automatically if the computer freezes
 sudo systemsetup -setrestartfreeze on
@@ -260,10 +272,12 @@ sudo perl -p -i -e 's|expire-after:10M|expire-after: 30d |g' /private/etc/securi
 
 # Set mouse and scrolling speed.
 defaults write NSGlobalDomain com.apple.mouse.scaling -int 3
+defaults write NSGlobalDomain com.apple.trackpad.scaling -int 3
 defaults write NSGlobalDomain com.apple.scrollwheel.scaling -float 0.6875
 
 # Trackpad: enable tap to click for this user and for the login screen
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
+defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
 defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
 defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
 
@@ -281,8 +295,19 @@ defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeF
 # Disable “natural” (Lion-style) scrolling
 defaults write NSGlobalDomain com.apple.swipescrolldirection -bool false
 
-# Increase sound quality for Bluetooth headphones/headsets
-defaults write com.apple.BluetoothAudioAgent "Apple Bitpool Min (editable)" -int 40
+# Increase sound quality for Bluetooth headphones/headsets.
+# Sources:
+#     https://www.reddit.com/r/apple/comments/5rfdj6/pro_tip_significantly_improve_bluetooth_audio/
+#     https://apple.stackexchange.com/questions/40259/bluetooth-audio-problems-on-a-macbook
+for bitpool_param in "Negotiated Bitpool" \
+                     "Negotiated Bitpool Max" \
+                     "Negotiated Bitpool Min" \
+                     "Apple Bitpool Max (editable)" \
+                     "Apple Bitpool Min (editable)" \
+                     "Apple Initial Bitpool (editable)" \
+                     "Apple Initial Bitpool Min (editable)"; do
+    defaults write com.apple.BluetoothAudioAgent "${bitpool_param}" -int 80
+done
 
 # Enable full keyboard access for all controls
 # (e.g. enable Tab in modal dialogs)
@@ -319,6 +344,9 @@ sudo systemsetup -setusingnetworktime on
 
 # Do not set timezone automatticaly depending on location.
 sudo defaults write /Library/Preferences/com.apple.timezone.auto.plist Active -bool false
+
+# Enable 24 hour time.
+defaults write com.apple.menuextra.clock DateFormat -string "EEE HH:mm"
 
 # Stop iTunes from responding to the keyboard media keys
 launchctl unload -w /System/Library/LaunchAgents/com.apple.rcd.plist 2> /dev/null
@@ -391,6 +419,7 @@ defaults write com.apple.screencapture disable-shadow -bool true
 # Enable subpixel font rendering on non-Apple LCDs
 # Reference: https://github.com/kevinSuttle/macOS-Defaults/issues/17#issuecomment-266633501
 defaults write NSGlobalDomain AppleFontSmoothing -int 1
+defaults write NSGlobalDomain CGFontRenderingFontSmoothingDisabled -bool false
 
 # Enable HiDPI display modes (requires restart)
 sudo defaults write /Library/Preferences/com.apple.windowserver DisplayResolutionEnabled -bool true
@@ -398,6 +427,9 @@ sudo defaults write /Library/Preferences/com.apple.windowserver DisplayResolutio
 ###############################################################################
 # Finder                                                                      #
 ###############################################################################
+
+# Hide all desktop icons (useful when presenting)
+defaults write com.apple.finder CreateDesktop -bool false
 
 # Finder: allow quitting via ⌘ + Q; doing so will also hide desktop icons
 defaults write com.apple.finder QuitMenuItem -bool true
@@ -410,11 +442,11 @@ defaults write com.apple.finder DisableAllAnimations -bool true
 defaults write com.apple.finder NewWindowTarget -string "PfHm"
 defaults write com.apple.finder NewWindowTargetPath -string "file://${HOME}/"
 
-# Show icons for hard drives, servers, and removable media on the desktop
-defaults write com.apple.finder ShowExternalHardDrivesOnDesktop -bool true
-defaults write com.apple.finder ShowHardDrivesOnDesktop -bool true
-defaults write com.apple.finder ShowMountedServersOnDesktop -bool true
-defaults write com.apple.finder ShowRemovableMediaOnDesktop -bool true
+# Don't show icons for hard drives, servers, and removable media on the desktop
+defaults write com.apple.finder ShowExternalHardDrivesOnDesktop -bool false
+defaults write com.apple.finder ShowHardDrivesOnDesktop -bool false
+defaults write com.apple.finder ShowMountedServersOnDesktop -bool false
+defaults write com.apple.finder ShowRemovableMediaOnDesktop -bool false
 
 # Finder: show hidden files by default
 defaults write com.apple.finder AppleShowAllFiles -bool true
@@ -541,7 +573,10 @@ defaults write com.apple.dock show-process-indicators -bool true
 #defaults write com.apple.dock persistent-apps -array
 
 # Show only open applications in the Dock
-#defaults write com.apple.dock static-only -bool true
+defaults write com.apple.dock static-only -bool true
+
+# Don't show recent applications in the dock
+defaults write com.apple.dock show-recents -bool false
 
 # Don’t animate opening applications from the Dock
 defaults write com.apple.dock launchanim -bool false
@@ -667,9 +702,6 @@ defaults write com.apple.Safari ShowSidebarInTopSites -bool true
 # Disable Safari’s thumbnail cache for History and Top Sites
 defaults write com.apple.Safari DebugSnapshotsUpdatePolicy -int 2
 
-# Enable Safari’s debug menu
-defaults write com.apple.Safari IncludeInternalDebugMenu -bool true
-
 # Make Safari’s search banners default to Contains instead of Starts With
 defaults write com.apple.Safari FindOnPageMatchesWordStartsOnly -bool false
 
@@ -680,9 +712,10 @@ defaults write com.apple.Safari ProxiesInBookmarksBar "()"
 defaults write com.apple.Safari IncludeDevelopMenu -bool true
 defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
 defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled -bool true
-
 # Add a context menu item for showing the Web Inspector in web views
 defaults write NSGlobalDomain WebKitDeveloperExtras -bool true
+# Enable Safari’s debug menu
+defaults write com.apple.Safari IncludeInternalDebugMenu -bool true
 
 # Enable continuous spellchecking
 defaults write com.apple.Safari WebContinuousSpellCheckingEnabled -bool true
@@ -690,8 +723,8 @@ defaults write com.apple.Safari WebContinuousSpellCheckingEnabled -bool true
 defaults write com.apple.Safari WebAutomaticSpellingCorrectionEnabled -bool false
 
 # Disable AutoFill
-defaults write com.apple.Safari AutoFillFromAddressBook -bool false
 defaults write com.apple.Safari AutoFillPasswords -bool false
+defaults write com.apple.Safari AutoFillFromAddressBook -bool false
 defaults write com.apple.Safari AutoFillCreditCardData -bool false
 defaults write com.apple.Safari AutoFillMiscellaneousForms -bool false
 
@@ -774,7 +807,7 @@ defaults write com.apple.mail SpellCheckingBehavior -string "NoSpellCheckingEnab
 ###############################################################################
 
 # Hide Spotlight tray-icon (and subsequent helper)
-#sudo chmod 600 /System/Library/CoreServices/Search.bundle/Contents/MacOS/Search
+sudo chmod 600 /System/Library/CoreServices/Search.bundle/Contents/MacOS/Search
 # Disable Spotlight indexing for any volume that gets mounted and has not yet
 # been indexed before.
 # Use `sudo mdutil -i off "/Volumes/foo"` to stop indexing any volume.
@@ -822,7 +855,7 @@ sudo mdutil -E / > /dev/null
 ###############################################################################
 
 # Only use UTF-8 in Terminal.app
-defaults write com.apple.terminal StringEncodings -array 4
+defaults write com.apple.terminal StringEncodings -array "4"
 
 # Use a modified version of the Solarized Dark theme by default in Terminal.app
 osascript <<EOD
@@ -973,6 +1006,10 @@ defaults write com.apple.commerce AutoUpdate -bool true
 
 # Allow the App Store to reboot machine on macOS updates
 defaults write com.apple.commerce AutoUpdateRestartRequired -bool true
+
+# Turn off video autoplay.
+defaults write com.apple.AppStore AutoPlayVideoSetting -string "off"
+defaults write com.apple.AppStore UserSetAutoPlayVideoSetting -int 1
 
 ###############################################################################
 # Photos                                                                      #

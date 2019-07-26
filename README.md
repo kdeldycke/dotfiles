@@ -127,6 +127,7 @@ Resources
 ---------
 
 * [Awesome OSX command line](https://github.com/herrbischoff/awesome-osx-command-line)
+* [`ingrino`'s dotfiles](https://github.com/lingrino/dotfiles)
 
 
 License
