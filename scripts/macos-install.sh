@@ -91,8 +91,9 @@ brew cask install tor-browser
 brew cask install transmission
 brew cask install tunnelblick
 
-# Uninstall Pages.
-sudo mas uninstall 409201541
+# Remove Pages and GarageBand.
+sudo rm -rf /Applications/GarageBand.app
+sudo rm -rf /Applications/Pages.app
 
 # Install 1Password.
 mas lucky "1Password 7"
