@@ -73,6 +73,7 @@ brew cask install aerial
 brew cask install dropbox
 brew cask install dupeguru
 brew cask install balenaetcher
+brew cask install fork
 brew cask install ftdi-vcp-driver
 brew cask install gitup
 brew cask install marshallofsound-google-play-music-player
@@ -83,7 +84,6 @@ brew cask install libreoffice
 brew cask install macdown
 brew cask install musicbrainz-picard
 brew cask install music-manager
-brew cask install rowanj-gitx
 brew cask install slack
 brew cask install spectacle
 brew cask install telegram-desktop
