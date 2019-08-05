@@ -148,9 +148,6 @@ Unspecified open-source license.
 * [Solarized for Xresources](https://github.com/solarized/xresources).
 © 2011 Ethan Schoonover.
 Unspecified open-source license.
-* [Solarized for GNU ls](https://github.com/seebi/dircolors-solarized/blob/master/dircolors.256dark).
-© 2013 Sebastian Tramp.
-Do What The Fuck You Want To Public License (WTFPL).
 
 The rest of the content is configuration and code I accumulated over years.
 Some was heavily inspired by other dotfiles repositories. But each time I

@@ -7,3 +7,6 @@
 [submodule ".diff-so-fancy"]
 	path = dotfiles-common/.diff-so-fancy
 	url = https://github.com/stevemao/diff-so-fancy.git
+[submodule "dotfiles-common/.dircolors-solarized"]
+	path = dotfiles-common/.dircolors-solarized
+	url = https://github.com/seebi/dircolors-solarized.git
