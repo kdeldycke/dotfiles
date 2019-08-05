@@ -67,19 +67,6 @@ call the script again to upgrade your system:
     $ ./install.sh 2>&1 | tee ./install.log
 
 
-Restore
--------
-
-A backup of the original dotfiles is made when `install.sh` is first called.
-
-To restore the originals, run:
-
-    $ ./install.sh restore
-
-Note that if there was not an original version, the installed links will not be
-removed.
-
-
 Maintenance
 -----------
 
