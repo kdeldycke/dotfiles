@@ -56,19 +56,11 @@ for FILEPATH in $DOT_FILES
 do
     SOURCE="${PWD}/$FILEPATH"
     TARGET="${HOME}/$(basename "${FILEPATH}")"
-    if [ "$1" = "restore" ]; then
-        # Restore backups if found
-        if [ -e "${TARGET}.dotfiles.bak" ] && [ -L "${TARGET}" ]; then
-            unlink "${TARGET}"
-            mv "$TARGET.dotfiles.bak" "$TARGET"
-        fi
-    else
-        # Link files
-        if [ -e "${TARGET}" ] && [ ! -L "${TARGET}" ]; then
-            mv "$TARGET" "$TARGET.dotfiles.bak"
-        fi
-        ln -sf "${SOURCE}" "$(dirname "${TARGET}")"
+    # Link files
+    if [ -e "${TARGET}" ] && [ ! -L "${TARGET}" ]; then
+        mv "$TARGET" "$TARGET.dotfiles.bak"
     fi
+    ln -sf "${SOURCE}" "$(dirname "${TARGET}")"
 done
 
 # Load package lists to install.
