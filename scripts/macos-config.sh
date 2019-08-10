@@ -17,8 +17,10 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 # General UI/UX                                                               #
 ###############################################################################
 
+# Transform "  |   "model" = <"MacBookAir8,1">" to "MBA"
+COMPUTER_MODEL_SHORTHAND=$(ioreg -c IOPlatformExpertDevice -d 2 -r | grep "model" | python -c "print(''.join([c for c in input() if c.isupper()]))")
+COMPUTER_NAME="$(whoami)-${COMPUTER_MODEL_SHORTHAND}"
 # Set computer name (as done via System Preferences → Sharing)
-COMPUTER_NAME="$(whoami)-MBA"
 sudo scutil --set ComputerName "${COMPUTER_NAME}"
 sudo scutil --set HostName "${COMPUTER_NAME}"
 sudo scutil --set LocalHostName "${COMPUTER_NAME}"
