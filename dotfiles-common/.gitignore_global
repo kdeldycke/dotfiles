@@ -1,6 +1,6 @@
 
-# Created by https://www.gitignore.io/api/vim,git,gpg,less,test,linux,macos,games,python,backup,windows,dropbox,archive,archives,database,bittorrent,virtualenv,executable,compressed,libreoffice,compression,datarecovery,microsoftoffice,jupyternotebooks,compressedarchive
-# Edit at https://www.gitignore.io/?templates=vim,git,gpg,less,test,linux,macos,games,python,backup,windows,dropbox,archive,archives,database,bittorrent,virtualenv,executable,compressed,libreoffice,compression,datarecovery,microsoftoffice,jupyternotebooks,compressedarchive
+# Created by https://www.gitignore.io/api/vim,git,gpg,less,test,linux,macos,games,python,backup,windows,dropbox,archive,archives,database,bittorrent,virtualenv,executable,compressed,libreoffice,compression,datarecovery,microsoftoffice,jupyternotebooks,compressedarchive,certificates,ssh
+# Edit at https://www.gitignore.io/?templates=vim,git,gpg,less,test,linux,macos,games,python,backup,windows,dropbox,archive,archives,database,bittorrent,virtualenv,executable,compressed,libreoffice,compression,datarecovery,microsoftoffice,jupyternotebooks,compressedarchive,certificates,ssh
 
 ### Archive ###
 
@@ -637,4 +637,4 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# End of https://www.gitignore.io/api/vim,git,gpg,less,test,linux,macos,games,python,backup,windows,dropbox,archive,archives,database,bittorrent,virtualenv,executable,compressed,libreoffice,compression,datarecovery,microsoftoffice,jupyternotebooks,compressedarchive
+# End of https://www.gitignore.io/api/vim,git,gpg,less,test,linux,macos,games,python,backup,windows,dropbox,archive,archives,database,bittorrent,virtualenv,executable,compressed,libreoffice,compression,datarecovery,microsoftoffice,jupyternotebooks,compressedarchive,certificates,ssh
