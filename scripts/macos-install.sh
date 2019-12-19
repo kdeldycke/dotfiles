@@ -47,7 +47,7 @@ brew install dockutil
 brew install exiftool
 brew install faad2
 brew install ffmpeg
-brew install howdoi
+brew install ghostscript
 brew install openssl
 brew install osxutils
 brew install pinentry-mac
@@ -71,21 +71,24 @@ do
 done
 brew cask install adguard
 brew cask install aerial
+brew cask install balenaetcher
+brew cask install bisq
+brew cask install caldigit-thunderbolt-charging
+brew cask install caprine
 brew cask install dropbox
 brew cask install dupeguru
-brew cask install balenaetcher
 brew cask install fork
 brew cask install ftdi-vcp-driver
 brew cask install gitup
-brew cask install marshallofsound-google-play-music-player
 brew cask install iina
 brew cask install java
 brew cask install keybase
 brew cask install libreoffice
 brew cask install macdown
+brew cask install marshallofsound-google-play-music-player
 brew cask install musicbrainz-picard
 brew cask install music-manager
-brew cask install slack
+brew cask install netnewswire
 brew cask install spectacle
 brew cask install telegram-desktop
 brew cask install tor-browser
