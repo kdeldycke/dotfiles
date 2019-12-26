@@ -57,6 +57,7 @@ brew install python
 brew install rmlint
 brew install rclone
 brew install ssh-copy-id
+brew install tldr
 brew install watch
 brew install webkit2png
 
