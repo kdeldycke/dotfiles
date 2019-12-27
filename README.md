@@ -38,6 +38,16 @@ Ubuntu Server | Ubuntu Server 16.04 LTS (Xenial Xerus) | Minimal config to feel 
 
 ### macOS
 
+1. [Reset NVRAM or PRAM on your Mac](https://support.apple.com/en-us/HT204063).
+
+1. Download macOS from the App Store.
+
+1. Plug a USB drive to your machine, format it with the Disk Utility app,
+double-check it is mounted at `/Volumes/Untitled`, and finally [flash it with
+the macOS image](https://support.apple.com/en-us/HT201372):
+
+    $ sudo /Applications/Install\ macOS\ Mojave.app/Contents/Resources/createinstallmedia --volume /Volumes/Untitled --nointeraction
+
 
 ## Install
 
