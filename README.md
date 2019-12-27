@@ -10,8 +10,7 @@ Dot-files and system configuration for Python developers, targetting
 ](https://raw.githubusercontent.com/kdeldycke/dotfiles/master/screenshots/kubuntu-15.10.png)
 
 
-Features
---------
+## Features
 
 * Aimed at Python programmers using `Neovim`.
 * Common configuration for both macOS, Kubuntu and Ubuntu Server.
@@ -26,8 +25,7 @@ Features
 * Keeps OSes fast and lean.
 
 
-Profiles
---------
+## Profiles
 
 Profile name | Target OS | Description
 :--- |:--- |:---
@@ -36,8 +34,12 @@ Kubuntu | Kubuntu 16.04 LTS (Xenial Xerus) | Same as above.
 Ubuntu Server | Ubuntu Server 16.04 LTS (Xenial Xerus) | Minimal config to feel at home on a server. Currently needs `root`.
 
 
-Install
--------
+## Pre-installation
+
+### macOS
+
+
+## Install
 
 1. First, you need a local copy of this project.
 
@@ -58,8 +60,7 @@ Install
         $ ./install.sh 2>&1 | tee ./install.log
 
 
-Upgrade
--------
+## Upgrade
 
 I'm trying to make the install procedure indempotent so you'll just have to
 call the script again to upgrade your system:
@@ -67,8 +68,7 @@ call the script again to upgrade your system:
     $ ./install.sh 2>&1 | tee ./install.log
 
 
-Maintenance
------------
+## Maintenance
 
 Once in a while, compare `scripts/macos-config.sh` file with its upstream
 template from [Mathias Bynens `.macos`
@@ -80,13 +80,12 @@ Then merge differences to reduce the differences. This is going to greatly
 improve the maintenance of macOS configuration.
 
 
-Versions
---------
+## Versions
 
 Only the current `master` branch is supported and actively maintained. Older
 branches are available for archive.
 
-macOS:
+### macOS
 
 * [macOS 10.13 (High Sierra)](https://github.com/kdeldycke/dotfiles/tree/master) (current)
 * [macOS 10.12 (Sierra)](https://github.com/kdeldycke/dotfiles/tree/macos-10.12)
@@ -95,7 +94,7 @@ macOS:
 * [Mac OS X 10.9 (Mavericks)](https://github.com/kdeldycke/dotfiles/tree/osx-10.9)
 * [Mac OS X 10.8 (Mountain Lion)](https://github.com/kdeldycke/dotfiles/tree/osx-10.8)
 
-Kubuntu:
+### Kubuntu
 
 * [Kubuntu 16.04 LTS (Xenial Xerus)](https://github.com/kdeldycke/dotfiles/tree/master) (current)
 * [Kubuntu 15.10 (Wily Werewolf)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-15.10)
@@ -105,20 +104,18 @@ Kubuntu:
 * [Kubuntu 13.10 (Saucy Salamander)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-13.10)
 * [Kubuntu 13.04 (Raring Ringtail)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-13.04)
 
-Ubuntu Server:
+### Ubuntu Server
 
 * [Ubuntu Server 16.04 LTS (Xenial Xerus)](https://github.com/kdeldycke/dotfiles/tree/master) (current)
 
 
-Resources
----------
+## Resources
 
 * [Awesome OSX command line](https://github.com/herrbischoff/awesome-osx-command-line)
 * [`ingrino`'s dotfiles](https://github.com/lingrino/dotfiles)
 
 
-License
--------
+## License
 
 For convenience, some third party code and assets are hard-copied in place.
 These particular items have their own license and copyright:
