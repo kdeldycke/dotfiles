@@ -33,9 +33,9 @@ kern.maxfilesperproc=18000
 EOF
 
 # Remove default content
-rm -rf ~/Downloads/About\ Downloads.lpdf
-rm -rf ~/Public/Drop\ Box
-rm -rf ~/Public/.com.apple.timemachine.supported
+rm -rf "${HOME}/Downloads/About Downloads.lpdf"
+rm -rf "${HOME}/Public/Drop Box"
+rm -rf "${HOME}/Public/.com.apple.timemachine.supported"
 
 # Disable the sound effects on boot
 sudo nvram SystemAudioVolume=" "
@@ -158,7 +158,7 @@ defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
 
 # Set a custom wallpaper image. `DefaultDesktop.jpg` is already a symlink, and
 # all wallpapers are in `/Library/Desktop Pictures/`. The default is `Wave.jpg`.
-#rm -rf ~/Library/Application Support/Dock/desktoppicture.db
+#rm -rf "${HOME}/Library/Application Support/Dock/desktoppicture.db"
 #sudo rm -rf /System/Library/CoreServices/DefaultDesktop.jpg
 #sudo ln -s /path/to/your/image /System/Library/CoreServices/DefaultDesktop.jpg
 
