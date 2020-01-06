@@ -31,6 +31,8 @@
     renames = copies
     # Source: http://blog.apiaxle.com/post/handy-git-tips-to-stop-you-getting-fired/
     algorithm = patience
+    # Source: https://mobile.twitter.com/brandur/status/1182066723337293828
+    noprefix = true
 [diff-so-fancy]
     first-run = false
 [commit]
