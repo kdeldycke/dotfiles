@@ -102,6 +102,10 @@ brew cask install tunnelblick
 sudo rm -rf /Applications/GarageBand.app
 sudo rm -rf /Applications/Pages.app
 
+# Install Numbers and Keynotes
+mas lucky "Keynote"
+mas lucky "Numbers"
+
 # Install 1Password.
 mas lucky "1Password 7"
 open -a "1Password 7"
