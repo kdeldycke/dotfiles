@@ -1,11 +1,12 @@
 # Force use of Python 3 from Homebrew by default.
 PYTHON_LOCAL_BIN="/usr/local/opt/python/libexec/bin"
 GNU_COREUTILS_BIN="$(brew --prefix coreutils)/libexec/gnubin"
+GNU_TAR_BIN="$(brew --prefix gnu-tar)/libexec/gnubin"
 GNU_SED_BIN="$(brew --prefix gnu-sed)/libexec/gnubin"
 GNU_GREP_BIN="$(brew --prefix grep)/libexec/gnubin"
 GNU_FINDUTILS_BIN="$(brew --prefix findutils)/libexec/gnubin"
 BSD_OPENSSH_BIN="/usr/local/opt/openssl/bin"
-export PATH="$PYTHON_LOCAL_BIN:$GNU_COREUTILS_BIN:$GNU_SED_BIN:$GNU_GREP_BIN:$GNU_FINDUTILS_BIN:$BSD_OPENSSH_BIN:/usr/local/bin:/usr/local/sbin:$PATH"
+export PATH="$PYTHON_LOCAL_BIN:$GNU_COREUTILS_BIN:$GNU_TAR_BIN:$GNU_SED_BIN:$GNU_GREP_BIN:$GNU_FINDUTILS_BIN:$BSD_OPENSSH_BIN:/usr/local/bin:/usr/local/sbin:$PATH"
 
 # Prefer US English and use UTF-8
 export LANG="en_US"
@@ -233,25 +234,19 @@ complete -F _pipenv-pipes_completions pipes
 extract () {
     if [ -f "$1" ]; then
         case "$1" in
-            *.tar.bz2)  tar -jxvf "$1"                    ;;
-            *.tar.gz)   tar -zxvf "$1"                    ;;
-            *.bz2)      bunzip2 "$1"                      ;;
-            *.dmg)      hdiutil mount "$1"                ;;
-            *.gz)       gunzip "$1"                       ;;
-            *.tar)      tar -xvf "$1"                     ;;
-            *.tbz2)     tar -jxvf "$1"                    ;;
-            *.tgz)      tar -zxvf "$1"                    ;;
-            *.xz)       tar xJf "$1"                      ;;
-            *.zip)      unzip "$1"                        ;;
-            *.ZIP)      unzip "$1"                        ;;
-            *.pax)      pax -r < "$1"                     ;;
-            *.pax.Z)    uncompress "$1" --stdout | pax -r ;;
-            *.rar)      unrar x "$1"                      ;;
-            *.Z)        uncompress "$1"                   ;;
-            *.7z)       7z x "$1"                         ;;
-            *.xar)      xar -xvf "$1"                     ;;
-            *.pkg)      xar -xvf "$1"                     ;;
-            *)          echo "'$1' cannot be extracted/mounted via extract()" ;;
+            *.dmg)   hdiutil mount "$1"                ;;
+            *.tar)   tar -xvf "$1"                     ;;
+            *.zip)   unzip "$1"                        ;;
+            *.ZIP)   unzip "$1"                        ;;
+            *.pax)   pax -r < "$1"                     ;;
+            *.pax.Z) uncompress "$1" --stdout | pax -r ;;
+            *.rar)   unrar x "$1"                      ;;
+            *.7z)    7z x "$1"                         ;;
+            *.xar)   xar -xvf "$1"                     ;;
+            *.pkg)   xar -xvf "$1"                     ;;
+            # Rely on GNU's tar autodetection. List of recognized suffixes:
+            # https://www.gnu.org/software/tar/manual/html_node/gzip.html#auto_002dcompress
+            *)       tar -axvf "$1"                    ;;
         esac
     else
         echo "'$1' is not a valid file"

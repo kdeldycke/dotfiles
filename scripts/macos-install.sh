@@ -127,6 +127,7 @@ brew cask install suspicious-package
 qlmanage -r
 
 # Install more recent versions of some macOS tools.
+brew install gnu-tar
 brew install gnu-sed
 brew install grep
 brew install openssh
