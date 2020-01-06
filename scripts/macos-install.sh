@@ -12,6 +12,7 @@ then
     # See: https://github.com/Homebrew/install/pull/139
     CI=true ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 fi
+brew analytics off
 brew update
 brew upgrade
 
