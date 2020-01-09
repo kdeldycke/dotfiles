@@ -112,6 +112,7 @@ alias ccat='pygmentize -g'
 
 alias top="htop"
 alias gr='grep -RIi --no-messages'
+alias vim='nvim'
 alias vi='nvim'
 alias v="nvim"
 alias g="git"
