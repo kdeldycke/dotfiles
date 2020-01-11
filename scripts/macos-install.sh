@@ -50,6 +50,7 @@ brew install exiftool
 brew install faad2
 brew install ffmpeg
 brew install ghostscript
+brew install mozjpeg
 brew install openssl
 brew install osxutils
 brew install pinentry-mac
