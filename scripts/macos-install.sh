@@ -90,9 +90,7 @@ brew cask install java
 brew cask install keybase
 brew cask install libreoffice
 brew cask install macdown
-brew cask install marshallofsound-google-play-music-player
 brew cask install musicbrainz-picard
-brew cask install music-manager
 brew cask install netnewswire
 brew cask install spectacle
 brew cask install telegram-desktop
