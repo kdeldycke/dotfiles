@@ -168,6 +168,12 @@ defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
 #sudo rm -rf /System/Library/CoreServices/DefaultDesktop.jpg
 #sudo ln -s /path/to/your/image /System/Library/CoreServices/DefaultDesktop.jpg
 
+# Play user interface sound effects
+defaults write -globalDomain "com.apple.sound.uiaudio.enabled" -int 0
+
+# Play feedback when volume is changed
+defaults write -globalDomain "com.apple.sound.beep.feedback" -int 0
+
 ##############################################################################
 # Security                                                                   #
 ##############################################################################
