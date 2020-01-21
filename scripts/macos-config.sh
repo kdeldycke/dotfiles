@@ -186,10 +186,10 @@ sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 1
 
 # Enable stealth mode
 # https://support.apple.com/kb/PH18642
-sudo defaults write /Library/Preferences/com.apple.alf stealthenabled -int 1
+sudo defaults write /Library/Preferences/com.apple.alf stealthenabled -bool true
 
 # Enable firewall logging
-sudo defaults write /Library/Preferences/com.apple.alf loggingenabled -int 1
+sudo defaults write /Library/Preferences/com.apple.alf loggingenabled -bool true
 
 # Do not automatically allow signed software to receive incoming connections
 sudo defaults write /Library/Preferences/com.apple.alf allowsignedenabled -bool false
@@ -426,7 +426,7 @@ sudo pmset -a hibernatemode 3
 defaults -currentHost write com.apple.screensaver idleTime -int 600
 
 # Require password immediately after sleep or screen saver begins
-defaults write com.apple.screensaver askForPassword -int 1
+defaults write com.apple.screensaver askForPassword -bool true
 defaults write com.apple.screensaver askForPasswordDelay -int 0
 
 # Screen Saver: Aerial
