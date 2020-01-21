@@ -109,9 +109,6 @@ defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode2 -bool true
 defaults write NSGlobalDomain PMPrintingExpandedStateForPrint -bool true
 defaults write NSGlobalDomain PMPrintingExpandedStateForPrint2 -bool true
 
-# Save to disk (not to iCloud) by default
-defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
-
 # Automatically quit printer app once the print jobs complete
 defaults write com.apple.print.PrintingPrefs "Quit When Finished" -bool true
 
@@ -571,6 +568,26 @@ defaults write com.apple.finder FXInfoPanesExpanded -dict \
 	General -bool true \
 	OpenWith -bool true \
 	Privileges -bool true
+
+# Prefer tabs when opening documents
+defaults write -globalDomain "AppleWindowTabbingMode" -string "always"
+
+# Copy window location: top right (as if it is a notification)
+defaults write com.apple.finder CopyProgressWindowLocation -string "{2160, 23}"
+
+###############################################################################
+# iCloud                                                                      #
+###############################################################################
+
+# Save to disk (not to iCloud) by default
+defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
+
+# Show warning before removing from iCloud Drive
+defaults write com.apple.finder FXEnableRemoveFromICloudDriveWarning -bool false
+
+# Allow Handoff between this Mac and your iCloud devices
+defaults -currentHost write com.apple.coreservices.useractivityd "ActivityAdvertisingAllowed" -bool true
+defaults -currentHost write com.apple.coreservices.useractivityd "ActivityReceivingAllowed" -bool true
 
 ###############################################################################
 # Dock, Dashboard, and hot corners                                            #
