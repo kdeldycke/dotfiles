@@ -264,6 +264,16 @@ security set-keychain-settings -t 21600 -l ~/Library/Keychains/login.keychain
 # Source: https://web.archive.org/web/20160114141929/https://training.apple.com/pdf/WP_FileVault2.pdf
 sudo pmset destroyfvkeyonstandby 1
 
+# Enable FileVault (if not already enabled)
+# This requires a user password, and outputs a recovery key that should be
+# copied to a secure location
+if [[ $(sudo fdesetup status | head -1) == "FileVault is Off." ]]; then
+  sudo fdesetup enable -user `whoami`
+fi
+
+# Disable automatic login when FileVault is enabled
+#sudo defaults write /Library/Preferences/com.apple.loginwindow DisableFDEAutoLogin -bool true
+
 # Enable secure virtual memory
 sudo defaults write /Library/Preferences/com.apple.virtualMemory UseEncryptedSwap -bool true
 
