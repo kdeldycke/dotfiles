@@ -70,6 +70,22 @@ the macOS image](https://support.apple.com/en-us/HT201372):
         $ ./install.sh 2>&1 | tee ./install.log
 
 
+## Post-installation
+
+Manual setup required to finish up the perfect configuration.
+
+### macOS
+
+This is a list of manual post-installation steps required to fully configure the system. Haven't found any way to automate them all.
+
+* Copy SSH (`./dotfiles/dotfiles-common/.ssh/`) and GPG (`./dotfiles/dotfiles-common/.gnupg/`) keys from backups.
+* `System Preferences` -> `Touch ID` -> `Add other fingerprints`.
+* Give `/Applications/Utilities/Terminal.app` full disk access: `System Preferences` -> `Privacy` -> `Full Disk Access`.
+* Give `/Applications/Utilities/Dropbox.app` accessibility permissions: `System Preferences` -> `Privacy` -> `Accessibility`.
+* Uncheck all options to disallow analytics sharing: `System Preferences` -> `Privacy` -> `Analytics`.
+* Check `Limit Ad Tracking` option in: `System Preferences` -> `Privacy` -> `Advertising`.
+
+
 ## Upgrade
 
 I'm trying to make the install procedure indempotent so you'll just have to
