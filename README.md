@@ -102,8 +102,8 @@ branches are available for archive.
 * [Mac OS X 10.9 (Mavericks)](https://github.com/kdeldycke/dotfiles/tree/osx-10.9)
 * [Mac OS X 10.8 (Mountain Lion)](https://github.com/kdeldycke/dotfiles/tree/osx-10.8)
 
-In the past the project also targetted Kubuntu and Ubuntu Server Linux
-distributions. You can still find these tagged in the repository but are quite
+Former [support of Kubuntu and Ubuntu Server Linux
+distributions has been dropped](https://github.com/kdeldycke/dotfiles/commit/e667245f6a4c90c6d41907e392adb74c5acfcf13). You can still find these tagged in the repository but are quite
 ancient (2016).
 
 
