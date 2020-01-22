@@ -43,7 +43,6 @@ source ./packages.sh
 
 # Install all software first.
 source ./scripts/macos-install.sh
-source ./scripts/macos-install-refind.sh
 
 # Install & upgrade all global python modules
 for p in $PYTHON_PACKAGES

@@ -9,9 +9,6 @@ Dot-files and system configuration for Python developers on **macOS**.
 ## Features
 
 * Aimed at Python programmers using `Neovim`.
-* [Installs rEFInd boot
-  loader](https://github.com/kdeldycke/dotfiles/blob/master/scripts/macos-install-refind.sh)
-  if a Linux partition is detected.
 * Produce colored output for most of shell commands.
 * All color schemes are based on [Solarized
 ](http://ethanschoonover.com/solarized).
