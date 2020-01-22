@@ -6,7 +6,6 @@ matrix:
         - os: osx
 
 os:
-    - linux
     - osx
 
 install:

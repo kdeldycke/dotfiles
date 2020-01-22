@@ -1,42 +1,26 @@
 # Kevin's dotfiles [![Build Status](https://img.shields.io/travis/kdeldycke/maildir-deduplicate/develop.svg?style=flat)](https://travis-ci.org/kdeldycke/dotfiles)
 
-Dot-files and system configuration for Python developers, targetting
-**macOS**, **Kubuntu** and **Ubuntu Server**.
+Dot-files and system configuration for Python developers on **macOS**.
 
 ![Mac OS X 10.13 High Sierra solarized terminal and vim
 ](https://raw.githubusercontent.com/kdeldycke/dotfiles/master/screenshots/macos-10.13.jpg)
-
-![Kubuntu 15.10 Wily Werewolf solarized terminal and vim
-](https://raw.githubusercontent.com/kdeldycke/dotfiles/master/screenshots/kubuntu-15.10.png)
 
 
 ## Features
 
 * Aimed at Python programmers using `Neovim`.
-* Common configuration for both macOS, Kubuntu and Ubuntu Server.
 * [Installs rEFInd boot
   loader](https://github.com/kdeldycke/dotfiles/blob/master/scripts/macos-install-refind.sh)
   if a Linux partition is detected.
 * Produce colored output for most of shell commands.
 * All color schemes are based on [Solarized
 ](http://ethanschoonover.com/solarized).
-* All terminal font is [Source Code Pro
+* Terminal and coding font is [Source Code Pro
 ](https://en.wikipedia.org/wiki/Source_Code_Pro).
-* Keeps OSes fast and lean.
-
-
-## Profiles
-
-Profile name | Target OS | Description
-:--- |:--- |:---
-macOS | macOS 10.15 (Catalina) | Desktop-centric usage for everyday use and work on a personnal, single-user machine.
-Kubuntu | Kubuntu 16.04 LTS (Xenial Xerus) | Same as above.
-Ubuntu Server | Ubuntu Server 16.04 LTS (Xenial Xerus) | Minimal config to feel at home on a server. Currently needs `root`.
+* Keeps macOS fast, lean and secure.
 
 
 ## Pre-installation
-
-### macOS
 
 1. [Reset NVRAM or PRAM on your Mac](https://support.apple.com/en-us/HT204063).
 
@@ -74,8 +58,6 @@ the macOS image](https://support.apple.com/en-us/HT201372):
 
 Manual setup required to finish up the perfect configuration.
 
-### macOS
-
 This is a list of manual post-installation steps required to fully configure the system. Haven't found any way to automate them all.
 
 * Copy SSH (`./dotfiles/dotfiles-common/.ssh/`) and GPG (`./dotfiles/dotfiles-common/.gnupg/`) keys from backups.
@@ -111,8 +93,6 @@ improve the maintenance of macOS configuration.
 Only the current `master` branch is supported and actively maintained. Older
 branches are available for archive.
 
-### macOS
-
 * [macOS 10.15 (Catalina)](https://github.com/kdeldycke/dotfiles/tree/master) (current)
 * [macOS 10.14 (Mojave)](https://github.com/kdeldycke/dotfiles/tree/macos-10.14)
 * [macOS 10.13 (High Sierra)](https://github.com/kdeldycke/dotfiles/tree/macos-10.13)
@@ -122,19 +102,9 @@ branches are available for archive.
 * [Mac OS X 10.9 (Mavericks)](https://github.com/kdeldycke/dotfiles/tree/osx-10.9)
 * [Mac OS X 10.8 (Mountain Lion)](https://github.com/kdeldycke/dotfiles/tree/osx-10.8)
 
-### Kubuntu
-
-* [Kubuntu 16.04 LTS (Xenial Xerus)](https://github.com/kdeldycke/dotfiles/tree/master) (current)
-* [Kubuntu 15.10 (Wily Werewolf)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-15.10)
-* [Kubuntu 15.04 (Vivid Vervet)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-15.04)
-* [Kubuntu 14.10 (Utopic Unicorn)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-14.10)
-* [Kubuntu 14.04 LTS (Trusty Tahr)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-14.04)
-* [Kubuntu 13.10 (Saucy Salamander)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-13.10)
-* [Kubuntu 13.04 (Raring Ringtail)](https://github.com/kdeldycke/dotfiles/tree/kubuntu-13.04)
-
-### Ubuntu Server
-
-* [Ubuntu Server 16.04 LTS (Xenial Xerus)](https://github.com/kdeldycke/dotfiles/tree/master) (current)
+In the past the project also targetted Kubuntu and Ubuntu Server Linux
+distributions. You can still find these tagged in the repository but are quite
+ancient (2016).
 
 
 ## Resources
@@ -153,12 +123,6 @@ These particular items have their own license and copyright:
 SIL Open Font License version 1.1.
 * [Solarized for Terminal.App](https://github.com/tomislav/osx-terminal.app-colors-solarized).
 © 2013 Tomislav Filipčić.
-Unspecified open-source license.
-* [Solarized for Konsole](https://github.com/phiggins/konsole-colors-solarized).
-© 2012 Pete Higgins.
-Unspecified open-source license.
-* [Solarized for Xresources](https://github.com/solarized/xresources).
-© 2011 Ethan Schoonover.
 Unspecified open-source license.
 
 The rest of the content is configuration and code I accumulated over years.

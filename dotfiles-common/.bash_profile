@@ -12,24 +12,13 @@ export PATH="$PYTHON_LOCAL_BIN:$GNU_COREUTILS_BIN:$GNU_TAR_BIN:$GNU_SED_BIN:$GNU
 export LANG="en_US"
 export LC_ALL="en_US.UTF-8"
 
-# Detect distribution
-if [ "$(uname -s)" == "Darwin" ]; then
-    IS_MACOS=true
-else
-    IS_MACOS=false
-fi
-
 # Do not let homebrew send stats to Google Analytics.
 # See: https://github.com/Homebrew/brew/blob/master/share/doc/homebrew/Analytics.md#opting-out
-if $IS_MACOS; then
-    export HOMEBREW_NO_ANALYTICS=1
-fi
+export HOMEBREW_NO_ANALYTICS=1
 
 # If possible, add tab completion for many more commands
 [ -f /etc/bash_completion ] && source /etc/bash_completion
-if $IS_MACOS; then
-    [ -f "$(brew --prefix)/etc/bash_completion" ] && source "$(brew --prefix)/etc/bash_completion"
-fi
+[ -f "$(brew --prefix)/etc/bash_completion" ] && source "$(brew --prefix)/etc/bash_completion"
 
 # Setting history length
 export HISTCONTROL="ignoredups:erasedups"
@@ -68,11 +57,7 @@ done;
 export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
 
 # Set user & root prompt
-if $IS_MACOS; then
-    GIT_PROMPT_THEME="Solarized"
-else
-    GIT_PROMPT_THEME="Solarized_Ubuntu"
-fi
+GIT_PROMPT_THEME="Solarized"
 source ~/.bash-git-prompt/gitprompt.sh
 export SUDO_PS1='\[\e[31m\]\u\[\e[37m\]:\[\e[33m\]\w\[\e[31m\]\$\[\033[00m\] '
 
@@ -81,17 +66,11 @@ export EDITOR="nvim"
 
 # Set default ls color schemes (source: https://github.com/seebi/dircolors-solarized/issues/10 ).
 # macOS/Linux color translations generated with http://geoff.greer.fm/lscolors/
-if $IS_MACOS; then
-    export CLICOLOR=1
-    export LSCOLORS="gxfxbEaEBxxEhEhBaDaCaD"
-else
-    export LS_COLORS="di=36;40:ln=35;40:so=31;:pi=0;:ex=1;;40:bd=0;:cd=37;:su=37;:sg=0;:tw=0;:ow=0;:"
-fi
+export CLICOLOR=1
+export LSCOLORS="gxfxbEaEBxxEhEhBaDaCaD"
 
 # Activate global dir colors if found.
-if $IS_MACOS; then
-    alias dircolors='gdircolors'
-fi
+alias dircolors='gdircolors'
 if [ -f $HOME/.dircolors ]
 then
     eval "$(dircolors -b $HOME/.dircolors)"
@@ -121,12 +100,8 @@ alias q='exit'
 alias how="howdoi --color"
 
 function cls {
-    if $IS_MACOS; then
-        # Source: https://stackoverflow.com/a/2198403
-        osascript -e 'tell application "System Events" to keystroke "k" using command down'
-    else
-        clear
-    fi
+    # Source: https://stackoverflow.com/a/2198403
+    osascript -e 'tell application "System Events" to keystroke "k" using command down'
 }
 alias c='cls'
 
@@ -254,28 +229,23 @@ extract () {
     fi
 }
 
-# Distribution-specific commands
-if $IS_MACOS; then
+# Opens current directory in apps
+alias f='open -a Finder ./'
 
-    # Opens current directory in apps
-    alias f='open -a Finder ./'
+# Replace netstat command on macOS to find ports used by apps
+alias netstat="sudo lsof -i -P"
 
-    # Replace netstat command on macOS to find ports used by apps
-    alias netstat="sudo lsof -i -P"
+# Add tab completion for `defaults read|write NSGlobalDomain`
+# You could just use `-g` instead, but I like being explicit
+complete -W "NSGlobalDomain" defaults
 
-    # Add tab completion for `defaults read|write NSGlobalDomain`
-    # You could just use `-g` instead, but I like being explicit
-    complete -W "NSGlobalDomain" defaults
+# Lock the screen
+alias lock='/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend'
 
-    # Lock the screen
-    alias lock='/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend'
-
-    # Link pinentry and GPG agent together
-    if test -f $HOME/.gnupg/.gpg-agent-info -a -n "$(pgrep gpg-agent)"; then
-        source $HOME/.gnupg/.gpg-agent-info
-        export GPG_AGENT_INFO
-    else
-        eval $(gpg-agent --daemon --write-env-file $HOME/.gnupg/.gpg-agent-info)
-    fi
-
+# Link pinentry and GPG agent together
+if test -f $HOME/.gnupg/.gpg-agent-info -a -n "$(pgrep gpg-agent)"; then
+    source $HOME/.gnupg/.gpg-agent-info
+    export GPG_AGENT_INFO
+else
+    eval $(gpg-agent --daemon --write-env-file $HOME/.gnupg/.gpg-agent-info)
 fi
