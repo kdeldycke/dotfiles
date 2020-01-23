@@ -1,4 +1,4 @@
-# Kevin's dotfiles [![Build Status](https://img.shields.io/travis/kdeldycke/maildir-deduplicate/develop.svg?style=flat)](https://travis-ci.org/kdeldycke/dotfiles)
+# Kevin's dotfiles
 
 Dot-files and system configuration for Python developers on **macOS**.
 
