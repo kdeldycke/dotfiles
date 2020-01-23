@@ -2,18 +2,15 @@
 
 Dot-files and system configuration for Python developers on **macOS**.
 
-![Mac OS X 10.13 High Sierra solarized terminal and vim
-](https://raw.githubusercontent.com/kdeldycke/dotfiles/master/screenshots/macos-10.13.jpg)
+![Mac OS X 10.13 High Sierra solarized terminal and vim](https://raw.githubusercontent.com/kdeldycke/dotfiles/master/screenshots/macos-10.13.jpg)
 
 
 ## Features
 
 * Aimed at Python programmers using `Neovim`.
 * Produce colored output for most of shell commands.
-* All color schemes are based on [Solarized
-](http://ethanschoonover.com/solarized).
-* Terminal and coding font is [Source Code Pro
-](https://en.wikipedia.org/wiki/Source_Code_Pro).
+* All color schemes are based on [Solarized](http://ethanschoonover.com/solarized).
+* Terminal and coding font is [Source Code Pro](https://en.wikipedia.org/wiki/Source_Code_Pro).
 * Keeps macOS fast, lean and secure.
 
 
@@ -76,8 +73,7 @@ call the script again to upgrade your system:
 ## Maintenance
 
 Once in a while, compare `scripts/macos-config.sh` file with its upstream
-template from [Mathias Bynens `.macos`
-](https://github.com/mathiasbynens/dotfiles/blob/master/.macos) dotfile:
+template from [Mathias Bynens `.macos`](https://github.com/mathiasbynens/dotfiles/blob/master/.macos) dotfile:
 
     $ curl https://raw.githubusercontent.com/mathiasbynens/dotfiles/master/.macos | diff -ru - ./scripts/macos-config.sh
 
@@ -129,5 +125,4 @@ should be able to trace back the origin of things by looking at the commit
 history.
 
 If you can't find any clue about an external source, then assume it is original
-content I produced, which I released under the [BSD 2-Clause License
-](LICENSE.md).
+content I produced, which I released under the [BSD 2-Clause License](LICENSE.md).
