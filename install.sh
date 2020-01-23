@@ -15,6 +15,14 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 # TODO: install git here.
 
+# Check if SIP is going to let us mess with some part of the system.
+csrutil status | grep --quiet "disabled"
+if [[ $? -ne 0 ]]; then
+    echo "System Integrity Protection (SIP) is enabled."
+else
+    echo "System Integrity Protection (SIP) is disabled."
+fi
+
 # Force initialization and update of local submodules.
 git submodule init
 git submodule update --remote --merge
