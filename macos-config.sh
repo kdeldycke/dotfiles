@@ -560,6 +560,29 @@ done
 # Column View : `clmv`
 # Cover Flow  : `Flwv`
 defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
+# After configuring preferred view style, clear all `.DS_Store` files
+# to ensure settings are applied for every directory
+sudo find / -name ".DS_Store" -print --delete
+
+# View Options
+# ColumnShowIcons    : Show preview column
+# ShowPreview        : Show icons
+# ShowIconThumbnails : Show icon preview
+# ArrangeBy          : Sort by
+#   dnam : Name
+#   kipl : Kind
+#   ludt : Date Last Opened
+#   pAdd : Date Added
+#   modd : Date Modified
+#   ascd : Date Created
+#   logs : Size
+#   labl : Tags
+/usr/libexec/PlistBuddy \
+    -c "Set :StandardViewOptions:ColumnViewOptions:ColumnShowIcons bool    false" \
+    -c "Set :StandardViewOptions:ColumnViewOptions:FontSize        integer 11"    \
+    -c "Set :StandardViewOptions:ColumnViewOptions:ShowPreview     bool    true"  \
+    -c "Set :StandardViewOptions:ColumnViewOptions:ArrangeBy       string  dnam"  \
+    ~/Library/Preferences/com.apple.finder.plist
 
 # Disable the warning before emptying the Trash
 defaults write com.apple.finder WarnOnEmptyTrash -bool false
