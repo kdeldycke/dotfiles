@@ -72,6 +72,12 @@
 ### BitTorrent ###
 *.torrent
 
+### certificates ###
+*.pem
+*.key
+*.crt
+*.priv
+
 ### Compressed ###
 *.pkg
 *.sit
@@ -297,7 +303,7 @@
 
 ### GPG ###
 secring.*
-
+**/.gnupg/*.gpg
 
 ### JupyterNotebooks ###
 # gitignore template for Jupyter Notebooks
@@ -306,9 +312,12 @@ secring.*
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
 
+# IPython
+profile_default/
+ipython_config.py
+
 # Remove previous ipynb_checkpoints
 #   git rm -r .ipynb_checkpoints/
-#
 
 ### Less ###
 *.less
@@ -436,16 +445,6 @@ coverage.xml
 *.mo
 *.pot
 
-# Django stuff:
-*.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
-
-# Flask stuff:
-instance/
-.webassets-cache
-
 # Scrapy stuff:
 .scrapy
 
@@ -454,12 +453,6 @@ docs/_build/
 
 # PyBuilder
 target/
-
-# Jupyter Notebook
-
-# IPython
-profile_default/
-ipython_config.py
 
 # pyenv
 .python-version
@@ -477,21 +470,17 @@ celerybeat-schedule
 # SageMath parsed files
 *.sage.py
 
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
 # Spyder project settings
 .spyderproject
 .spyproject
 
 # Rope project settings
 .ropeproject
+
+# Mr Developer
+.mr.developer.cfg
+.project
+.pydevproject
 
 # mkdocs documentation
 /site
@@ -503,6 +492,11 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+### SSH ###
+**/.ssh/id_*
+**/.ssh/*_id_*
+**/.ssh/known_hosts
 
 ### Test ###
 ### Ignore all files that could be used to test your code and
@@ -598,21 +592,27 @@ Sessionx.vim
 
 # Temporary
 .netrwhist
+
 # Auto-generated tag files
 tags
+
 # Persistent undo
 [._]*.un~
+
+# Coc configuration directory
+.vim
 
 ### VirtualEnv ###
 # Virtualenv
 # http://iamzed.com/2009/05/07/a-primer-on-virtualenv/
-[Bb]in
-[Ii]nclude
-[Ll]ib
-[Ll]ib64
-[Ll]ocal
-[Ss]cripts
 pyvenv.cfg
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 pip-selfcheck.json
 
 ### Windows ###
