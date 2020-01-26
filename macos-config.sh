@@ -764,7 +764,10 @@ defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebK
 # Show the full URL in the address bar (note: this still hides the scheme)
 defaults write com.apple.Safari ShowFullURLInSmartSearchField -bool true
 
-# Start with all windows from last session
+# Safari > General > Safari opens with:
+# false,false: A new window
+# false,true: A new private window
+# true, false: All windows from last session
 defaults write com.apple.Safari AlwaysRestoreSessionAtLaunch -bool true
 defaults write com.apple.Safari OpenPrivateWindowWhenNotRestoringSessionAtLaunch -bool false
 
