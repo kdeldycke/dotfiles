@@ -24,7 +24,7 @@ Dot-files and system configuration for Python developers on **macOS**.
 double-check it is mounted at `/Volumes/Untitled`, and finally [flash it with
 the macOS image](https://support.apple.com/en-us/HT201372):
 
-    $ sudo /Applications/Install\ macOS\ Catalina.app/Contents/Resources/createinstallmedia --volume /Volumes/Untitled --nointeraction
+        $ sudo /Applications/Install\ macOS\ Catalina.app/Contents/Resources/createinstallmedia --volume /Volumes/Untitled --nointeraction
 
 
 ## Install
