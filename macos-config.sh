@@ -1001,6 +1001,31 @@ defaults write com.apple.mail DisableInlineAttachmentViewing -bool true
 # Disable automatic spell checking
 defaults write com.apple.mail SpellCheckingBehavior -string "NoSpellCheckingEnabled"
 
+# Show To/Cc label in message list
+defaults write com.apple.mail EnableToCcInMessageList -bool true
+
+###############################################################################
+# iWork                                                                       #
+###############################################################################
+
+## Keynote
+
+#defaults write com.apple.iWork.Keynote 'ShowStartingPointsForNewDocument' -bool false
+defaults write com.apple.iWork.Keynote 'dontShowWhatsNew' -bool true
+defaults write com.apple.iWork.Keynote 'FirstRunFlag' -bool true
+
+## Numbers
+
+#defaults write com.apple.iWork.Numbers 'ShowStartingPointsForNewDocument' -bool false
+defaults write com.apple.iWork.Numbers 'dontShowWhatsNew' -bool true
+defaults write com.apple.iWork.Numbers 'FirstRunFlag' -bool true
+
+## Pages
+
+#defaults write com.apple.iWork.Pages 'ShowStartingPointsForNewDocument' -bool false
+defaults write com.apple.iWork.Pages 'dontShowWhatsNew' -bool true
+defaults write com.apple.iWork.Pages 'FirstRunFlag' -bool true
+
 ###############################################################################
 # Spotlight                                                                   #
 ###############################################################################
