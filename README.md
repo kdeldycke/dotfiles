@@ -72,6 +72,14 @@ call the script again to upgrade your system:
 
 ## Maintenance
 
+### Submodules
+
+To upgrade submodules:
+
+    $ git submodule update --recursive --remote
+
+### macOS configuration
+
 Once in a while, compare `scripts/macos-config.sh` file with its upstream
 template from [Mathias Bynens `.macos`](https://github.com/mathiasbynens/dotfiles/blob/master/.macos) dotfile:
 
