@@ -139,6 +139,7 @@ brew cask install libreoffice
 brew cask install macdown
 brew cask install musicbrainz-picard
 brew cask install netnewswire
+brew cask install signal
 brew cask install spectacle
 brew cask install telegram-desktop
 brew cask install tor-browser
