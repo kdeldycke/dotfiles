@@ -258,7 +258,7 @@ sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText \
     "Found this computer? Please contact Kevin Deldycke at kevin@deldycke.com ."
 
 # Automatically lock the login keychain for inactivity after 6 hours.
-security set-keychain-settings -t 21600 -l ~/Library/Keychains/login.keychain
+security set-keychain-settings -t 21600 -l "${HOME}/Library/Keychains/login.keychain"
 
 # Destroy FileVault key when going into standby mode, forcing a re-auth.
 # Source: https://web.archive.org/web/20160114141929/https://training.apple.com/pdf/WP_FileVault2.pdf
@@ -594,7 +594,7 @@ defaults write com.apple.NetworkBrowser BrowseAllInterfaces -bool true
 #sudo nvram boot-args="mbasd=1"
 
 # Show the ~/Library folder
-chflags nohidden ~/Library
+chflags nohidden "${HOME}/Library"
 
 # Show the /Volumes folder
 sudo chflags nohidden /Volumes
