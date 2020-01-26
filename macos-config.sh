@@ -535,9 +535,9 @@ defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
 #defaults write com.apple.frameworks.diskimages skip-verify-remote -bool true
 
 # Automatically open a new Finder window when a volume is mounted
-defaults write com.apple.frameworks.diskimages auto-open-ro-root -bool true
-defaults write com.apple.frameworks.diskimages auto-open-rw-root -bool true
-defaults write com.apple.finder OpenWindowForNewRemovableDisk -bool true
+defaults write com.apple.frameworks.diskimages auto-open-ro-root -bool false
+defaults write com.apple.frameworks.diskimages auto-open-rw-root -bool false
+defaults write com.apple.finder OpenWindowForNewRemovableDisk -bool false
 
 # Show item info near icons on the desktop and in other icon views
 /usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:showItemInfo true" ~/Library/Preferences/com.apple.finder.plist
