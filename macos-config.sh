@@ -578,7 +578,7 @@ sudo find / -name ".DS_Store" -print --delete
 #   logs : Size
 #   labl : Tags
 /usr/libexec/PlistBuddy \
-    -c "Set :StandardViewOptions:ColumnViewOptions:ColumnShowIcons bool    false" \
+    -c "Set :StandardViewOptions:ColumnViewOptions:ColumnShowIcons bool    true" \
     -c "Set :StandardViewOptions:ColumnViewOptions:FontSize        integer 11"    \
     -c "Set :StandardViewOptions:ColumnViewOptions:ShowPreview     bool    true"  \
     -c "Set :StandardViewOptions:ColumnViewOptions:ArrangeBy       string  dnam"  \
