@@ -130,7 +130,6 @@ brew cask install dropbox
 brew cask install dupeguru
 brew cask install fork
 brew cask install ftdi-vcp-driver
-brew cask install gitup
 brew cask install google-drive-file-stream
 brew cask install iina
 brew cask install java
