@@ -1075,6 +1075,34 @@ sudo mdutil -i on / > /dev/null
 sudo mdutil -E / > /dev/null
 
 ###############################################################################
+# QuickLook plugins                                                           #
+###############################################################################
+
+# Text selection in Quick Look
+defaults write com.apple.finder QLEnableTextSelection -bool true
+
+# Fix for the ancient UTF-8 bug in QuickLook (https://mths.be/bbo)
+# Commented out, as this is known to cause problems in various Adobe apps :(
+# See https://github.com/mathiasbynens/dotfiles/issues/237
+#echo "0x08000100:0" > ~/.CFUserTextEncoding
+
+### QLColorCode
+
+# Set font
+defaults write org.n8gray.QLColorCode font Monaco
+
+# Set font size
+defaults write org.n8gray.QLColorCode fontSizePoints 9
+
+# Set hightlight theme
+#defaults write org.n8gray.QLColorCode hlTheme ide-xcode
+
+# Add extra highlight flags
+# -l: Print line numbers in output file
+# -V: Wrap long lines without indenting function parameters and statements
+defaults write org.n8gray.QLColorCode extraHLFlags '-l -V'
+
+###############################################################################
 # Terminal                                                                    #
 ###############################################################################
 
