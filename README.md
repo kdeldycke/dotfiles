@@ -54,7 +54,7 @@ Manual setup required to finish up the perfect configuration.
 
 This is a list of manual post-installation steps required to fully configure the system. Haven't found any way to automate them all.
 
-* Copy SSH (`./dotfiles/dotfiles-common/.ssh/`) and GPG (`./dotfiles/dotfiles-common/.gnupg/`) keys from backups.
+* Copy SSH (`./dotfiles/dotfiles/.ssh/`) and GPG (`./dotfiles/dotfiles/.gnupg/`) keys from backups.
 * `System Preferences` -> `Touch ID` -> `Add other fingerprints`.
 * Give `/Applications/Utilities/Terminal.app` full disk access: `System Preferences` -> `Privacy` -> `Full Disk Access`.
 * Give `/Applications/Utilities/Dropbox.app` accessibility permissions: `System Preferences` -> `Privacy` -> `Accessibility`.

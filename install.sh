@@ -28,9 +28,8 @@ git submodule init
 git submodule update --remote --merge
 
 # Search local dotfiles
-DOT_FILES=$(find ./dotfiles-common ./dotfiles-macos -maxdepth 1 \
-    -not -path "./dotfiles-common" \
-    -not -path "./dotfiles-macos" \
+DOT_FILES=$(find ./dotfiles -maxdepth 1 \
+    -not -path "./dotfiles" \
     -not -name "\.DS_Store" -and \
     -not -name "*\.swp" -and \
     -not -name "*~*" )
