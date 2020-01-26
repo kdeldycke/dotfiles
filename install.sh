@@ -92,7 +92,6 @@ brew install ack
 brew install aspell
 brew install broot
 brew install curl
-brew link --force curl
 brew install dockutil
 brew install exiftool
 brew install faad2
