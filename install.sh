@@ -90,6 +90,7 @@ do
 done
 brew install ack
 brew install aspell
+brew install broot
 brew install curl
 brew link --force curl
 brew install dockutil
