@@ -554,7 +554,11 @@ for view in 'Desktop' 'FK_Standard' 'Standard'; do
 done
 
 # Use list view in all Finder windows by default
-# Four-letter codes for the other view modes: `icnv`, `clmv`, `Flwv`
+# Four-letter codes for the other view modes:
+# Icon View   : `icnv`
+# List View   : `Nlsv`
+# Column View : `clmv`
+# Cover Flow  : `Flwv`
 defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
 
 # Disable the warning before emptying the Trash
