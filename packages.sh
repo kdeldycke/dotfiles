@@ -1,63 +1,110 @@
 #!/usr/bin/env bash
 set -x
 
-# Packages to install on all targets, useful on both servers and desktops like
-# CLIs and system utils.
-COMMON_SERVER_PACKAGES="
+# Packages installed from Brew.
+BREW_PACKAGES="
+ack
+aspell
 bash
 bash-completion
+broot
 colordiff
 colortail
 coreutils
+curl
 dmg2img
+dockutil
+exiftool
+ext2fuse
+ext4fuse
+faac
+faad2
 fdupes
+ffmpeg
 findutils
+flac
+fontforge
+ghostscript
 git
 git-extras
+gnu-sed
+gnu-tar
 gpg
 graphviz
 grc
+grep
 htop
+id3v2
 imagemagick
-jq
 jnettop
+jq
+lame
 legit
+mozjpeg
 neovim
+ntfs-3g
+openssh
+openssl
 optipng
+osxutils
 p7zip
 pdftk-java
+pinentry-mac
 pngcrush
+prettyping
+pstree
+python
+rclone
 recode
 rename
+rmlint
 shellcheck
+shntool
+ssh-copy-id
 testdisk
+tldr
 tree
 unrar
+watch
+webkit2png
 wget
-"
-
-# List of Desktop packages available via Brew sources on
-# macOS.
-COMMON_DESKTOP_PACKAGES="
-faac
-flac
-fontforge
-id3v2
-lame
-shntool
 x264
 youtube-dl
 "
 
-# List of Desktop packages available via Brew Cask on macOS.
-COMMON_BIN_PACKAGES="
+# Packages to install by the way of Brew's casks.
+CASK_PACKAGES="
+adguard
+aerial
+balenaetcher
+bisq
+caldigit-thunderbolt-charging
+caprine
+dropbox
+dupeguru
 electrum
+fork
+ftdi-vcp-driver
 gimp
+google-drive-file-stream
+iina
+java
+keybase
+libreoffice
+macdown
+musicbrainz-picard
+netnewswire
+osxfuse
 prey
+signal
+spectacle
 subsurface
+telegram-desktop
+tor-browser
+transmission
 "
 
-# Python packages to install from PyPi on all targets.
+# Python packages to install from PyPi.
 PYTHON_PACKAGES="
 pip
 gmvault

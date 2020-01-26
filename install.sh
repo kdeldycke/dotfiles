@@ -23,9 +23,11 @@ else
     echo "System Integrity Protection (SIP) is disabled."
 fi
 
+
+######### Dotfiles install #########
+
 # Force initialization and update of local submodules.
-git submodule init
-git submodule update --remote --merge
+git submodule update --recursive --remote
 
 # Search local dotfiles
 DOT_FILES=$(find ./dotfiles -maxdepth 1 \
@@ -45,11 +47,14 @@ do
     ln -sf "${SOURCE}" "$(dirname "${TARGET}")"
 done
 
-# Load package lists to install.
-source ./packages.sh
 
-# Update all macOS packages
+######### System upgrades #########
+
+# Update all macOS packages.
 sudo softwareupdate -i -a
+
+
+######### Brew install #########
 
 # Check if homebrew is already installed
 # This also install xcode command line tools
@@ -72,77 +77,34 @@ brew tap caskroom/drivers
 # Add services
 brew tap homebrew/services
 
-# Install Mac App Store CLI and upgrade all apps.
-brew install mas
-mas upgrade
-
-# Install XQuartz to support Linux-based GUI Apps.
+# Install XQuartz beforehand to support Linux-based GUI Apps.
 brew cask install xquartz
 
-# Install common packages
-for PACKAGE in $COMMON_SERVER_PACKAGES
+# Load package lists to install.
+source ./packages.sh
+
+# Install brew packages.
+for PACKAGE in $BREW_PACKAGES
 do
    brew install "$PACKAGE"
 done
-for PACKAGE in $COMMON_DESKTOP_PACKAGES
+
+# Install cask packages.
+for PACKAGE in $CASK_PACKAGES
 do
-   brew install "$PACKAGE"
+   brew cask install "$PACKAGE"
 done
-brew install ack
-brew install aspell
-brew install broot
-brew install curl
-brew install dockutil
-brew install exiftool
-brew install faad2
-brew install ffmpeg
-brew install ghostscript
-brew install mozjpeg
-brew install openssl
-brew install osxutils
-brew install pinentry-mac
-brew install prettyping
-brew install pstree
-brew install python
-brew install rmlint
-brew install rclone
-brew install ssh-copy-id
-brew install tldr
-brew install watch
-brew install webkit2png
 
 # htop-osx requires root privileges to correctly display all running processes.
 sudo chown root:wheel "$(brew --prefix)/bin/htop"
 sudo chmod u+s "$(brew --prefix)/bin/htop"
 
-# Install binary apps from homebrew.
-for PACKAGE in $COMMON_BIN_PACKAGES
-do
-   brew cask install "$PACKAGE"
-done
-brew cask install adguard
-brew cask install aerial
-brew cask install balenaetcher
-brew cask install bisq
-brew cask install caldigit-thunderbolt-charging
-brew cask install caprine
-brew cask install dropbox
-brew cask install dupeguru
-brew cask install fork
-brew cask install ftdi-vcp-driver
-brew cask install google-drive-file-stream
-brew cask install iina
-brew cask install java
-brew cask install keybase
-brew cask install libreoffice
-brew cask install macdown
-brew cask install musicbrainz-picard
-brew cask install netnewswire
-brew cask install signal
-brew cask install spectacle
-brew cask install telegram-desktop
-brew cask install tor-browser
-brew cask install transmission
+
+######### Mac App Store packages #########
+
+# Install Mac App Store CLI and upgrade all apps.
+brew install mas
+mas upgrade
 
 # Remove Pages and GarageBand.
 sudo rm -rf /Applications/GarageBand.app
@@ -177,18 +139,6 @@ brew cask install qlvideo
 brew cask install quicklook-json
 brew cask install suspicious-package
 qlmanage -r
-
-# Install more recent versions of some macOS tools.
-brew install gnu-tar
-brew install gnu-sed
-brew install grep
-brew install openssh
-
-# Add extra filesystem support.
-brew cask install osxfuse
-brew install ext2fuse
-brew install ext4fuse
-brew install ntfs-3g
 
 # Install and configure Google Cloud Storage bucket mount point.
 brew install gcsfuse
