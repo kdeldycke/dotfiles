@@ -1366,8 +1366,23 @@ defaults write com.apple.TextEdit PlainTextEncodingForWrite -int 4
 defaults write com.apple.DiskUtility DUDebugMenuEnabled -bool true
 defaults write com.apple.DiskUtility advanced-image-options -bool true
 
+# Show All Devices
+defaults write com.apple.DiskUtility SidebarShowAllDevices -bool true
+
+###############################################################################
+# QuickTime
+###############################################################################
+
 # Auto-play videos when opened with QuickTime Player
 defaults write com.apple.QuickTimePlayerX MGPlayMovieOnOpen -bool true
+
+# Set recording quality
+# High:    MGCompressionPresetHighQuality
+# Maximum: MGCompressionPresetMaximumQuality
+defaults write com.apple.QuickTimePlayerX MGRecordingCompressionPresetIdentifier -string 'MGCompressionPresetMaximumQuality'
+
+# Show mouse clicks in screen recordings
+defaults write com.apple.QuickTimePlayerX MGScreenRecordingDocumentShowMouseClicksUserDefaultsKey -bool true
 
 ###############################################################################
 # Mac App Store                                                               #
