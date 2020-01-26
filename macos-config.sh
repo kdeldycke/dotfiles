@@ -780,20 +780,74 @@ defaults write com.apple.Safari OpenPrivateWindowWhenNotRestoringSessionAtLaunch
 defaults write com.apple.Safari NewTabBehavior -int 4
 defaults write com.apple.Safari NewWindowBehavior -int 4
 
+# Number of top sites to show:
+# 6 top sites: 0
+# 12 top sites: 1
+# 24 top sites: 2
+defaults write com.apple.Safari TopSitesGridArrangement -int 0
+
+# Open pages in tabs instead of windows:
+# 0: Never
+# 1: Automatically
+# 2: Always
+defaults write com.apple.Safari TabCreationPolicy -int 2
+
+# Set tab bar visibility
+defaults write com.apple.Safari AlwaysShowTabBar -bool false
+
+# cmd+click opens a link in a new tab
+defaults write com.apple.Safari CommandClickMakesTabs -bool true
+
+# When a new tab or window opens, make it active
+defaults write com.apple.Safari OpenNewTabsInFront -bool false
+
+# Use cmd+1 through cmd+9 to switch tabs
+defaults write com.apple.Safari Command1Through9SwitchesTabs -bool true
+
 # Set Safari’s home page to `about:blank` for faster loading
 defaults write com.apple.Safari HomePage -string "about:blank"
 
+# Save downloded files to
+defaults write com.apple.Safari DownloadsPath -string '~/Downloads'
+
 # Prevent Safari from opening ‘safe’ files automatically after downloading
 defaults write com.apple.Safari AutoOpenSafeDownloads -bool false
+
+# Save format
+# 0: Page Source
+# 1: Web Archive
+defaults write com.apple.Safari SavePanelFileFormat -int 0
 
 # Allow hitting the Backspace key to go to the previous page in history
 defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2BackspaceKeyNavigationEnabled -bool true
 
 # Hide Safari’s bookmarks bar by default
 defaults write com.apple.Safari ShowFavoritesBar -bool false
+defaults write com.apple.Safari ShowFavoritesBar-v2 -bool false
+
+# Show status bar
+defaults write com.apple.Safari ShowStatusBar -bool true
+defaults write com.apple.Safari ShowOverlayStatusBar -bool true
+defaults write com.apple.Safari ShowStatusBarInFullScreen -bool true
+
+# Always show toolbar in full screen
+defaults write com.apple.Safari AutoShowToolbarInFullScreen -bool false
+
+# Show Favorites under Smart Search field
+defaults write com.apple.Safari ShowFavoritesUnderSmartSearchField -bool false
+
+# Show Safari’s sidebar in new windows
+defaults write com.apple.Safari ShowSidebarInNewWindows -bool true
 
 # Show Safari’s sidebar in Top Sites
 defaults write com.apple.Safari ShowSidebarInTopSites -bool true
+
+# Show Sidebar Mode
+# Values: "Bookmarks", "Reading List"
+defaults write com.apple.Safari SidebarViewModeIdentifier -string  "Bookmarks"
+
+# Preload Top Hit in the background
+defaults write com.apple.Safari PreloadTopHit -bool false
 
 # Disable Safari’s thumbnail cache for History and Top Sites
 defaults write com.apple.Safari DebugSnapshotsUpdatePolicy -int 2
@@ -804,6 +858,12 @@ defaults write com.apple.Safari FindOnPageMatchesWordStartsOnly -bool false
 # Remove useless icons from Safari’s bookmarks bar
 defaults write com.apple.Safari ProxiesInBookmarksBar "()"
 
+# Don't show frequently visited sites in Top bar
+defaults write com.apple.SafariTechnologyPreview ShowFrequentlyVisitedSites -bool false
+
+# Save article for offline reading automatically.
+defaults write com.apple.Safari ReadingListSaveArticlesOfflineAutomatically -bool true
+
 # Enable the Develop menu and the Web Inspector in Safari
 defaults write com.apple.Safari IncludeDevelopMenu -bool true
 defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
@@ -812,6 +872,10 @@ defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebK
 defaults write NSGlobalDomain WebKitDeveloperExtras -bool true
 # Enable Safari’s debug menu
 defaults write com.apple.Safari IncludeInternalDebugMenu -bool true
+
+# Set default encoding
+defaults write com.apple.Safari WebKitDefaultTextEncodingName -string 'utf-8'
+defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2DefaultTextEncodingName -string 'utf-8'
 
 # Enable continuous spellchecking
 defaults write com.apple.Safari WebContinuousSpellCheckingEnabled -bool true
@@ -827,9 +891,16 @@ defaults write com.apple.Safari AutoFillMiscellaneousForms -bool false
 # Warn about fraudulent websites
 defaults write com.apple.Safari WarnAboutFraudulentWebsites -bool true
 
+# Enable JavaScript
+# defaults write com.apple.Safari WebKitJavaScriptEnabled -bool true
+# defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2JavaScriptEnabled -bool true
+
 # Disable plug-ins
 defaults write com.apple.Safari WebKitPluginsEnabled -bool false
 defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2PluginsEnabled -bool false
+
+# Stop internet plug-ins to save power
+defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2PlugInSnapshottingEnabled -bool true
 
 # Disable Java
 defaults write com.apple.Safari WebKitJavaEnabled -bool false
@@ -846,8 +917,23 @@ defaults write com.apple.SafariTechnologyPreview WebKitMediaPlaybackAllowsInline
 defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2AllowsInlineMediaPlayback -bool false
 defaults write com.apple.SafariTechnologyPreview com.apple.Safari.ContentPageGroupIdentifier.WebKit2AllowsInlineMediaPlayback -bool false
 
+# Allow WebGL
+# defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2WebGLEnabled -bool true
+
+# Enable extensions
+defaults write com.apple.Safari ExtensionsEnabled -bool true
+
 # Update extensions automatically
 defaults write com.apple.Safari InstallExtensionUpdatesAutomatically -bool true
+
+# Cookies and website data:
+# 0,2,2: Always block
+# 3,1,1: Allow from current website only
+# 2,1,1: Allow from websites I visit
+# 1,0,0: Always allow
+defaults write com.apple.Safari BlockStoragePolicy -int 2
+defaults write com.apple.Safari WebKitStorageBlockingPolicy -int 1
+defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2StorageBlockingPolicy -int 1
 
 # Deny location services access from websites
 # 0: Deny without Prompting
@@ -855,7 +941,13 @@ defaults write com.apple.Safari InstallExtensionUpdatesAutomatically -bool true
 # 2: Prompt for each website one time only
 defaults write com.apple.Safari SafariGeolocationPermissionPolicy -int 0
 
-# Clear downloads on quit
+# Allow websites to ask for permission to send push notifications
+defaults write com.apple.Safari CanPromptForPushNotifications -bool false
+
+# Remove downloads list items
+# 0: Manually
+# 1: When Safari Quits
+# 2: Upon Successful Download
 defaults write com.apple.Safari DownloadsClearingPolicy -int 2
 
 # Clear history:
@@ -872,6 +964,17 @@ defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebK
 
 # Disable website specific search.
 defaults write com.apple.Safari WebsiteSpecificSearchEnabled -bool false
+
+# Never use font sizes smaller than
+defaults write com.apple.Safari WebKitMinimumFontSize -int 9
+defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2MinimumFontSize -float 9
+
+# Print headers and footers
+defaults write com.apple.Safari PrintHeadersAndFooters -bool false
+
+# Print backgrounds
+defaults write com.apple.Safari WebKitShouldPrintBackgroundsPreferenceKey -bool false
+defaults write com.apple.Safari "com.apple.Safari.ContentPageGroupIdentifier.WebKit2ShouldPrintBackgrounds" -bool false
 
 ###############################################################################
 # Mail                                                                        #
