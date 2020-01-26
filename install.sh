@@ -49,7 +49,7 @@ done
 source ./packages.sh
 
 # Install all software first.
-source ./scripts/macos-install.sh
+source ./macos-install.sh
 
 # Install & upgrade all global python modules
 for p in $PYTHON_PACKAGES
@@ -71,7 +71,7 @@ mv ./Source\ Code\ Pro.otf ~/Library/Fonts/
 nvim -c "try | call dein#update() | finally | qall! | endtry"
 
 # Configure everything.
-source ./scripts/macos-config.sh
+source ./macos-config.sh
 
 # TODO: deduplicate bash history entries with:
 # https://github.com/kdeldycke/scripts/blob/master/bash-history-merge.py
