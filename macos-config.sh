@@ -384,7 +384,7 @@ sudo systemsetup -setusingnetworktime on
 sudo defaults write /Library/Preferences/com.apple.timezone.auto.plist Active -bool false
 
 # Enable 24 hour time.
-defaults write com.apple.menuextra.clock DateFormat -string "EEE HH:mm"
+defaults write com.apple.menuextra.clock DateFormat -string "EEE d MMM HH:mm"
 
 # Stop iTunes from responding to the keyboard media keys
 launchctl unload -w /System/Library/LaunchAgents/com.apple.rcd.plist 2> /dev/null
