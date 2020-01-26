@@ -143,7 +143,6 @@ brew cask install spectacle
 brew cask install telegram-desktop
 brew cask install tor-browser
 brew cask install transmission
-brew cask install tunnelblick
 
 # Remove Pages and GarageBand.
 sudo rm -rf /Applications/GarageBand.app
