@@ -475,8 +475,14 @@ defaults write com.apple.finder QuitMenuItem -bool true
 # Finder: disable window animations and Get Info animations
 defaults write com.apple.finder DisableAllAnimations -bool true
 
-# Set $HOME as the default location for new Finder windows
-# For other paths, use `PfLo` and `file:///full/path/here/`
+# Set ${HOME} as the default location for new Finder windows
+# Computer     : `PfCm`
+# Volume       : `PfVo`
+# $HOME        : `PfHm`
+# Desktop      : `PfDe`
+# Documents    : `PfDo`
+# All My Files : `PfAF`
+# Other…       : `PfLo`
 defaults write com.apple.finder NewWindowTarget -string "PfHm"
 defaults write com.apple.finder NewWindowTargetPath -string "file://${HOME}/"
 
