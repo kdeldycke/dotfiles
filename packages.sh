@@ -76,6 +76,7 @@ youtube-dl
 CASK_PACKAGES="
 adguard
 aerial
+amethyst
 balenaetcher
 bisq
 caldigit-thunderbolt-charging
@@ -97,7 +98,6 @@ netnewswire
 osxfuse
 prey
 signal
-spectacle
 subsurface
 telegram-desktop
 tor-browser

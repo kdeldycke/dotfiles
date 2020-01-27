@@ -1589,7 +1589,6 @@ for app in "Activity Monitor" \
         "Messages" \
         "Photos" \
         "Safari" \
-        "Spectacle" \
         "SystemUIServer" \
         "Terminal" \
         "Transmission" \
