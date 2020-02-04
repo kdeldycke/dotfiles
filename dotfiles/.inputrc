@@ -1,6 +1,12 @@
 # Make Tab autocomplete regardless of filename case
 set completion-ignore-case on
 
+# Replace common prefix with ellipsis for completion
+set completion-prefix-display-length 2
+
+# Complete unambiguously on first tab, then show completions
+set show-all-if-unmodified on
+
 # List all matches in case multiple possible completions are possible
 set show-all-if-ambiguous on
 
