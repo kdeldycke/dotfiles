@@ -8,6 +8,7 @@ Dot-files and system configuration for Python developers on **macOS**.
 ## Features
 
 * Aimed at Python programmers using `Neovim`.
+* Targets `Zsh` shell (now the [default since Catalina](https://support.apple.com/en-gb/HT208050)).
 * Produce colored output for most of shell commands.
 * All color schemes are based on [Solarized](http://ethanschoonover.com/solarized).
 * Terminal and coding font is [Source Code Pro](https://en.wikipedia.org/wiki/Source_Code_Pro).

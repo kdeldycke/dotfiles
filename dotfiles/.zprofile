@@ -18,9 +18,8 @@ export LC_ALL="en_US.UTF-8"
 # See: https://github.com/Homebrew/brew/blob/master/share/doc/homebrew/Analytics.md#opting-out
 export HOMEBREW_NO_ANALYTICS=1
 
-# If possible, add tab completion for many more commands
-[ -f /etc/bash_completion ] && source /etc/bash_completion
-[ -f "$(brew --prefix)/etc/bash_completion" ] && source "$(brew --prefix)/etc/bash_completion"
+# Activate tab completion for many more commands.
+fpath=(/usr/local/share/zsh-completions $fpath)
 
 # Setting history length
 export HISTCONTROL="ignoredups:erasedups"
@@ -60,7 +59,6 @@ export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; histor
 
 # Set user & root prompt
 GIT_PROMPT_THEME="Solarized"
-source ~/.bash-git-prompt/gitprompt.sh
 export SUDO_PS1='\[\e[31m\]\u\[\e[37m\]:\[\e[33m\]\w\[\e[31m\]\$\[\033[00m\] '
 
 # Make Neovim the default editor
@@ -196,10 +194,11 @@ export PYTHONSTARTUP="$HOME/.python_startup.py"
 export WORKON_HOME=$HOME/.virtualenvs
 
 # Add pip completion.
-eval "$(pip completion --bash)"
+eval "$(pip completion --zsh)"
 
 # Add pipenv-pipes completion.
 # Source: https://pipenv-pipes.readthedocs.io/en/latest/completions.html#bash-zsh
+autoload bashcompinit && bashcompinit
 _pipenv-pipes_completions() {
     COMPREPLY=($(compgen -W "$(pipes --_completion)" -- "${COMP_WORDS[1]}"))
 }

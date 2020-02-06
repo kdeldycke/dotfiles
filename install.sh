@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 set -x
 
 # Detect platform.
@@ -225,5 +225,9 @@ source ./macos-config.sh
 # TODO: deduplicate bash history entries with:
 # https://github.com/kdeldycke/scripts/blob/master/bash-history-merge.py
 
-# Reload Bash with new configuration
-source ~/.bash_profile
+# Force rebuilding of shell autocompletion.
+rm -f ~/.zcompdump
+compinit
+
+# Reload shell with new configuration.
+source ~/.zprofile

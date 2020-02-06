@@ -1,12 +1,10 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 set -x
 
 # Packages installed from Brew.
 BREW_PACKAGES="
 ack
 aspell
-bash
-bash-completion
 broot
 colordiff
 colortail
@@ -70,6 +68,9 @@ webkit2png
 wget
 x264
 youtube-dl
+zsh
+zsh-completions
+zsh-git-prompt
 "
 
 # Packages to install by the way of Brew's casks.
