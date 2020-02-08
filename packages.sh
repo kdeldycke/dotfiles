@@ -21,7 +21,6 @@ fdupes
 ffmpeg
 findutils
 flac
-fontforge
 ghostscript
 git
 git-extras
@@ -83,6 +82,7 @@ caprine
 dropbox
 dupeguru
 electrum
+font-source-code-pro-for-powerline
 fork
 ftdi-vcp-driver
 gimp

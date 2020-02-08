@@ -77,6 +77,10 @@ brew tap caskroom/drivers
 # Add services
 brew tap homebrew/services
 
+# Add fonts; these formulas needs SVN.
+brew install subversion
+brew tap homebrew/cask-fonts
+
 # Install XQuartz beforehand to support Linux-based GUI Apps.
 brew cask install xquartz
 
@@ -205,16 +209,6 @@ for p in $PYTHON_PACKAGES
 do
     pip install --upgrade "$p"
 done
-
-# Patch terminal font on desktops for Vim's Airline plugin.
-# See: https://powerline.readthedocs.org/en/latest/fontpatching.html
-mkdir ./powerline-fontpatcher
-curl -fsSL https://github.com/Lokaltog/powerline-fontpatcher/tarball/develop | tar -xvz --strip-components 1 --directory ./powerline-fontpatcher -f -
-fontforge -script ./powerline-fontpatcher/scripts/powerline-fontpatcher --no-rename ./assets/SourceCodePro-Regular.otf
-rm -rf ./powerline-fontpatcher
-# Install the patched font
-mkdir -p ~/Library/Fonts/
-mv ./Source\ Code\ Pro.otf ~/Library/Fonts/
 
 # Force Neovim plugin upgrades
 nvim -c "try | call dein#update() | finally | qall! | endtry"

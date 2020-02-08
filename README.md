@@ -119,9 +119,6 @@ distributions has been dropped](https://github.com/kdeldycke/dotfiles/commit/e66
 For convenience, some third party code and assets are hard-copied in place.
 These particular items have their own license and copyright:
 
-* [Source Code Pro](https://github.com/adobe-fonts/source-code-pro/releases/latest) 2.030.
-© 2016 Adobe Systems.
-SIL Open Font License version 1.1.
 * [Solarized for Terminal.App](https://github.com/tomislav/osx-terminal.app-colors-solarized).
 © 2013 Tomislav Filipčić.
 Unspecified open-source license.
