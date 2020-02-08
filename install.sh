@@ -219,15 +219,18 @@ mv ./Source\ Code\ Pro.otf ~/Library/Fonts/
 # Force Neovim plugin upgrades
 nvim -c "try | call dein#update() | finally | qall! | endtry"
 
+# Install zinit
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/zdharma/zinit/master/doc/install.sh)"
+
+# Fix "zsh compinit: insecure directories" error.
+sudo chown -R $(whoami) /usr/local/share/zsh /usr/local/share/zsh/site-functions
+chmod u+w /usr/local/share/zsh /usr/local/share/zsh/site-functions
+
+# Force zinit self-upgrade.
+zinit self-update
+
 # Configure everything.
 source ./macos-config.sh
-
-# TODO: deduplicate bash history entries with:
-# https://github.com/kdeldycke/scripts/blob/master/bash-history-merge.py
-
-# Force rebuilding of shell autocompletion.
-rm -f ~/.zcompdump
-compinit
 
 # Reload shell with new configuration.
 source ~/.zprofile

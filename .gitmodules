@@ -1,6 +1,3 @@
-[submodule ".diff-so-fancy"]
-	path = dotfiles/.diff-so-fancy
-	url = https://github.com/stevemao/diff-so-fancy.git
 [submodule "dotfiles/.dircolors-solarized"]
 	path = dotfiles/.dircolors-solarized
 	url = https://github.com/seebi/dircolors-solarized.git

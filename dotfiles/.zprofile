@@ -18,44 +18,27 @@ export LC_ALL="en_US.UTF-8"
 # See: https://github.com/Homebrew/brew/blob/master/share/doc/homebrew/Analytics.md#opting-out
 export HOMEBREW_NO_ANALYTICS=1
 
-# Activate tab completion for many more commands.
-fpath=(/usr/local/share/zsh-completions $fpath)
-
-# Setting history length
-export HISTCONTROL="ignoredups:erasedups"
-export HISTTIMEFORMAT="[%F %T] "
-export HISTSIZE=999999
-export HISTFILESIZE=$HISTSIZE;
-# Make some commands not show up in history
-export HISTIGNORE="ls:ll:cd:cd -:pwd:exit:date:history"
-
-# Append to the history file, don't overwrite it.
-shopt -s histappend
-# Allow us to re-edit a failed history substitution.
-shopt -s histreedit
-# History expansions will be verified before execution.
-shopt -s histverify
-
 # Case-insensitive globbing (used in pathname expansion).
 shopt -s nocaseglob
 
-# Autocorrect typos in path names when using `cd`.
-shopt -s cdspell
-
-# Check the window size after each command and, if necessary,
-# update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
-# Enable some Bash 4 features when possible:
-# * `autocd`, e.g. `**/qux` will enter `./foo/bar/baz/qux`
-# * Recursive globbing, e.g. `echo **/*.txt`
-for option in autocd globstar; do
-    shopt -s "$option" 2> /dev/null;
-done;
-
-# After each command, append to the history file and reread it.
-# Source: https://unix.stackexchange.com/a/1292
-export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
+# Add a reminder of shortcuts to move efficiently in the CLI.
+# Source: https://news.ycombinator.com/item?id=16242955
+function echo_color() {
+    local color="$1"
+    printf "${color}$2\033[0m\n"
+}
+echo_color "\033[0;90m" "^f  Move forward"
+echo_color "\033[0;90m" "^b  Move backward"
+echo_color "\033[0;90m" "^p  Move up"
+echo_color "\033[0;90m" "^n  Move down"
+echo_color "\033[0;90m" "^a  Jump to beginning of line"
+echo_color "\033[0;90m" "^e  Jump to end of line"
+echo_color "\033[0;90m" "^d  Delete forward"
+echo_color "\033[0;90m" "^h  Delete backward"
+echo_color "\033[0;90m" "^k  Delete forward to end of line"
+echo_color "\033[0;90m" "^u  Delete entire line"
 
 # Set user & root prompt
 GIT_PROMPT_THEME="Solarized"
@@ -178,9 +161,6 @@ find() {
   } 3>&2 2>&1
 }
 
-# Expose diff-so-fancy.
-export PATH="$PATH:$HOME/.diff-so-fancy"
-
 # Don't let Python produce .pyc or .pyo. Left-overs can produce strange side-effects.
 export PYTHONDONTWRITEBYTECODE=true
 
@@ -203,9 +183,6 @@ _pipenv-pipes_completions() {
     COMPREPLY=($(compgen -W "$(pipes --_completion)" -- "${COMP_WORDS[1]}"))
 }
 complete -F _pipenv-pipes_completions pipes
-
-# Add tab completion for SSH hostnames based on ~/.ssh/config, ignoring wildcards
-[ -e "$HOME/.ssh/config" ] && complete -o "default" -o "nospace" -W "$(grep "^Host" ~/.ssh/config | grep -v "[?*]" | cut -d " " -f2- | tr ' ' '\n')" scp sftp ssh
 
 # Extract most know archives with one command
 extract () {

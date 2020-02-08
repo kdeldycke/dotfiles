@@ -69,8 +69,6 @@ wget
 x264
 youtube-dl
 zsh
-zsh-completions
-zsh-git-prompt
 "
 
 # Packages to install by the way of Brew's casks.
