@@ -34,6 +34,9 @@ setopt complete_in_word
 setopt hash_list_all
 
 ## Expansion and Globbing
+# Make globbing (filename generation) un-sensitive to case.
+# Bug: zsh-autosuggestions doesn't respect that parameter: https://github.com/zsh-users/zsh-autosuggestions/issues/239
+unsetopt case_glob
 # In order to use #, ~ and ^ for filename generation grep word
 # *~(*.gz|*.bz|*.bz2|*.zip|*.Z) -> searches for word not in compressed files
 # don't forget to quote '^', '~' and '#'!

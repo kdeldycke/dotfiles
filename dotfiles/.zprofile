@@ -18,11 +18,6 @@ export LC_ALL="en_US.UTF-8"
 # See: https://github.com/Homebrew/brew/blob/master/share/doc/homebrew/Analytics.md#opting-out
 export HOMEBREW_NO_ANALYTICS=1
 
-# Case-insensitive globbing (used in pathname expansion).
-shopt -s nocaseglob
-
-shopt -s checkwinsize
-
 # Add a reminder of shortcuts to move efficiently in the CLI.
 # Source: https://news.ycombinator.com/item?id=16242955
 function echo_color() {
