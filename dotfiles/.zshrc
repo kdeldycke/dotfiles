@@ -76,11 +76,11 @@ setopt notify
 
 ## Shell Emulation
 # Use zsh style word splitting.
-setopt no_sh_word_split
+unsetopt sh_word_split
 
 ## Zle
 # Avoid beeps and visual bells.
-setopt no_beep
+unsetopt beep
 
 
 ### Install Zsh plugins ###
