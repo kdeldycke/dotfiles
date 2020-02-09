@@ -18,23 +18,6 @@ export LC_ALL="en_US.UTF-8"
 # See: https://github.com/Homebrew/brew/blob/master/share/doc/homebrew/Analytics.md#opting-out
 export HOMEBREW_NO_ANALYTICS=1
 
-# Add a reminder of shortcuts to move efficiently in the CLI.
-# Source: https://news.ycombinator.com/item?id=16242955
-function echo_color() {
-    local color="$1"
-    printf "${color}$2\033[0m\n"
-}
-echo_color "\033[0;90m" "^f  Move forward"
-echo_color "\033[0;90m" "^b  Move backward"
-echo_color "\033[0;90m" "^p  Move up"
-echo_color "\033[0;90m" "^n  Move down"
-echo_color "\033[0;90m" "^a  Jump to beginning of line"
-echo_color "\033[0;90m" "^e  Jump to end of line"
-echo_color "\033[0;90m" "^d  Delete forward"
-echo_color "\033[0;90m" "^h  Delete backward"
-echo_color "\033[0;90m" "^k  Delete forward to end of line"
-echo_color "\033[0;90m" "^u  Delete entire line"
-
 # Set user & root prompt
 GIT_PROMPT_THEME="Solarized"
 export SUDO_PS1='\[\e[31m\]\u\[\e[37m\]:\[\e[33m\]\w\[\e[31m\]\$\[\033[00m\] '
