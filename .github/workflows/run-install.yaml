@@ -5,7 +5,7 @@ on:
 
 jobs:
 
-  lint:
+  tests:
     name: Test full installation
     runs-on: macos-latest
     steps:
