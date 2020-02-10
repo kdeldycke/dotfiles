@@ -19,7 +19,6 @@ export LC_ALL="en_US.UTF-8"
 export HOMEBREW_NO_ANALYTICS=1
 
 # Set user & root prompt
-GIT_PROMPT_THEME="Solarized"
 export SUDO_PS1='\[\e[31m\]\u\[\e[37m\]:\[\e[33m\]\w\[\e[31m\]\$\[\033[00m\] '
 
 # Make Neovim the default editor
