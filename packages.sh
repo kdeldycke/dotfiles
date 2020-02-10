@@ -82,7 +82,7 @@ caprine
 dropbox
 dupeguru
 electrum
-font-source-code-pro-for-powerline
+font-sourcecodepro-nerd-font
 fork
 ftdi-vcp-driver
 gimp

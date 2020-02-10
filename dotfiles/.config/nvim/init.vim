@@ -180,7 +180,8 @@ colorscheme solarized
 
 
 " Font
-set guifont=Source\ Code\ Pro:h11
+" List available fonts with: fc-list | cut -d ':' -f 2 | sort | uniq
+set guifont=SauceCodePro\ Nerd\ Font:h11
 
 
 " Make a dir if no exists
