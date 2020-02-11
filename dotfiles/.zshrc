@@ -26,6 +26,9 @@ SAVEHIST=$HISTSIZE
 # Make some commands not show up in history
 HISTORY_IGNORE='(ls|ll|cd|cd ..|pwd|exit|date|history)'
 
+# Get rid of extra empty space on the right.
+# See: https://github.com/romkatv/powerlevel10k#extra-space-without-background-on-the-right-side-of-right-prompt
+ZLE_RPROMPT_INDENT=0
 
 
 ### Zsh Options
