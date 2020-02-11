@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@master
       - name: Switch to Zsh
         run : |
-          chsh -s /bin/zsh
+          /bin/zsh
       - name: Run install
         run : |
           ./install.sh
