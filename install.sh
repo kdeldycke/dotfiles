@@ -30,12 +30,7 @@ fi
 git submodule update --recursive --remote
 
 # Search local dotfiles
-DOT_FILES=$(find ./dotfiles -maxdepth 1 \
-    -not -path "./dotfiles" \
-    -not -name "\.DS_Store" -and \
-    -not -name "*\.swp" -and \
-    -not -name "*~*" )
-
+DOT_FILES=("${(@f)$(find ./dotfiles -maxdepth 1 -not -path './dotfiles' -not -name '\.DS_Store')}")
 for FILEPATH in $DOT_FILES
 do
     SOURCE="${PWD}/$FILEPATH"
