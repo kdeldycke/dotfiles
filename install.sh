@@ -6,6 +6,11 @@ if [ "$(uname -s)" != "Darwin" ]; then
     echo "These dotfiles only targets macOS."
     exit 1
 fi
+echo $SHELL | grep 'zsh'
+if [[ $? -ne 0 ]]; then
+    echo "These dotfiles were only tested with Zsh shell."
+    exit 1
+fi
 
 # Ask for the administrator password upfront.
 sudo -v
