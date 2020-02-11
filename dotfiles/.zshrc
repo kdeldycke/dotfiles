@@ -12,14 +12,23 @@ autoload -Uz _zinit
 ### End of Zinit installer's chunk
 
 
+### Zsh Parameters
+# Source: http://zsh.sourceforge.net/Doc/Release/Parameters.html#Parameters-Used-By-The-Shell
+
+# Prefer US English and use UTF-8
+LANG="en_US"
+LC_ALL="en_US.UTF-8"
+
 # Setting history length
-export HISTSIZE=999999
-export SAVEHIST=$HISTSIZE;
+HISTSIZE=999999
+SAVEHIST=$HISTSIZE
+
 # Make some commands not show up in history
-export HISTORY_IGNORE='(ls|ll|cd|cd ..|pwd|exit|date|history)'
+HISTORY_IGNORE='(ls|ll|cd|cd ..|pwd|exit|date|history)'
 
 
-### Zsh options
+
+### Zsh Options
 # Source: http://zsh.sourceforge.net/Doc/Release/Options.html
 
 ## Changing Directories

@@ -10,10 +10,6 @@ CURL_BIN="$(brew --prefix curl)/bin"
 export
 PATH="$PYTHON_LOCAL_BIN:$GNU_COREUTILS_BIN:$GNU_TAR_BIN:$GNU_SED_BIN:$GNU_GREP_BIN:$GNU_FINDUTILS_BIN:$BSD_OPENSSH_BIN:$CURL_BIN:/usr/local/bin:/usr/local/sbin:$PATH"
 
-# Prefer US English and use UTF-8
-export LANG="en_US"
-export LC_ALL="en_US.UTF-8"
-
 # Do not let homebrew send stats to Google Analytics.
 # See: https://github.com/Homebrew/brew/blob/master/share/doc/homebrew/Analytics.md#opting-out
 export HOMEBREW_NO_ANALYTICS=1
