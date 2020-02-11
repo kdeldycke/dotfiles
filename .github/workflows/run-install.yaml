@@ -10,11 +10,9 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@master
-      - name: Switch to Zsh
-        run : |
-          /bin/zsh
       - name: Run install
         run : |
+          /bin/zsh
           ./install.sh
 
   lint:
