@@ -12,8 +12,7 @@ jobs:
       - uses: actions/checkout@master
       - name: Run install
         run : |
-          /bin/zsh
-          ./install.sh
+          /bin/zsh ./install.sh
 
   lint:
     name: Check updated copyrights
