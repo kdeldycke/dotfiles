@@ -34,6 +34,7 @@ call dein#add('Yggdroot/indentLine')
 call dein#add('airblade/vim-gitgutter')
 call dein#add('alfredodeza/coveragepy.vim')
 call dein#add('ervandew/supertab')
+call dein#add('ryanoasis/vim-devicons')
 
 " Syntax
 call dein#add('sheerun/vim-polyglot')
