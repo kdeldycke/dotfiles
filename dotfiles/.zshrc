@@ -330,11 +330,3 @@ export WORKON_HOME=$HOME/.virtualenvs
 
 # Add pip completion.
 eval "$(pip completion --zsh)"
-
-# Add pipenv-pipes completion.
-# Source: https://pipenv-pipes.readthedocs.io/en/latest/completions.html#bash-zsh
-autoload bashcompinit && bashcompinit
-_pipenv-pipes_completions() {
-    COMPREPLY=($(compgen -W "$(pipes --_completion)" -- "${COMP_WORDS[1]}"))
-}
-complete -F _pipenv-pipes_completions pipes

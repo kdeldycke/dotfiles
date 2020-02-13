@@ -112,8 +112,7 @@ jupyter
 meta-package-manager
 neovim
 pgcli
-pipenv
-pipenv-pipes
+poetry
 pycodestyle
 pydocstyle
 pygments
