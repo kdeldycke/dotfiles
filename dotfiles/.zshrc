@@ -148,18 +148,48 @@ alias v="nvim"
 
 
 ###############################################################################
-# Prepend paths pointing to recent utils from Brew.
+# Expends global searched path to look for brew-sourced utilities.
 ###############################################################################
-# Source: https://stackoverflow.com/a/9352979
-path[1,0]=/usr/local/sbin
-path[1,0]=$(brew --prefix coreutils)/libexec/gnubin
-path[1,0]=$(brew --prefix grep)/libexec/gnubin
-path[1,0]=$(brew --prefix findutils)/libexec/gnubin
-path[1,0]=$(brew --prefix gnu-sed)/libexec/gnubin
-path[1,0]=$(brew --prefix gnu-tar)/libexec/gnubin
-path[1,0]=$(brew --prefix openssh)/bin
-path[1,0]=$(brew --prefix curl)/bin
-path[1,0]=$(brew --prefix python)/libexec/bin
+PATH_CACHE="${HOME}/.path-env-cache"
+FORCE_REFRESH=false
+if [[ ! -e ${PATH_CACHE} ]]; then
+    #echo "Cache file ${PATH_CACHE} not found."
+    FORCE_REFRESH=true
+else
+    CACHE_AGE=$(($(date +%s) - $(date -r ${PATH_CACHE} +%s)))
+    #echo "Cache age: ${CACHE_AGE} seconds."
+    # Force a cache refresh every 7 days.
+    if [[ $(( ${CACHE_AGE} > 7 * 24 * 60 * 60 )) != 0 ]]; then
+        FORCE_REFRESH=true
+    fi;
+fi;
+if [[ ${FORCE_REFRESH} = true ]]; then
+    # Cache is old or doesn't exist. Refresh it.
+    #echo "Recreate cached PATH env..."
+    rm -f ${PATH_CACHE}
+    touch ${PATH_CACHE}
+    # Ordered list of path.
+    echo "/usr/local/sbin"                           >> ${PATH_CACHE}
+    echo "$(brew --prefix coreutils)/libexec/gnubin" >> ${PATH_CACHE}
+    echo "$(brew --prefix grep)/libexec/gnubin"      >> ${PATH_CACHE}
+    echo "$(brew --prefix findutils)/libexec/gnubin" >> ${PATH_CACHE}
+    echo "$(brew --prefix gnu-sed)/libexec/gnubin"   >> ${PATH_CACHE}
+    echo "$(brew --prefix gnu-tar)/libexec/gnubin"   >> ${PATH_CACHE}
+    echo "$(brew --prefix openssh)/bin"              >> ${PATH_CACHE}
+    echo "$(brew --prefix curl)/bin"                 >> ${PATH_CACHE}
+    echo "$(brew --prefix python)/libexec/bin"       >> ${PATH_CACHE}
+fi;
+
+
+# Cache exists and has been refreshed in the last 24 hours: load it.
+#echo "Load up cached PATH env...";
+# Source: https://stackoverflow.com/a/41212803
+for line in "${(@f)"$(<${PATH_CACHE})"}"
+{
+    #echo "$line";
+    # Prepend paths. Source: https://stackoverflow.com/a/9352979
+    path[1,0]=${line}
+}
 
 
 ###############################################################################
