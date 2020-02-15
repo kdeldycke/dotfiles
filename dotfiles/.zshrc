@@ -150,43 +150,34 @@ alias v="nvim"
 ###############################################################################
 # Expends global searched path to look for brew-sourced utilities.
 ###############################################################################
+# File where the list of path is cached.
 PATH_CACHE="${HOME}/.path-env-cache"
-FORCE_REFRESH=false
-if [[ ! -e ${PATH_CACHE} ]]; then
-    #echo "Cache file ${PATH_CACHE} not found."
-    FORCE_REFRESH=true
-else
-    CACHE_AGE=$(($(date +%s) - $(date -r ${PATH_CACHE} +%s)))
-    #echo "Cache age: ${CACHE_AGE} seconds."
-    # Force a cache refresh every 7 days.
-    if [[ $(( ${CACHE_AGE} > 7 * 24 * 60 * 60 )) != 0 ]]; then
-        FORCE_REFRESH=true
-    fi;
-fi;
-if [[ ${FORCE_REFRESH} = true ]]; then
-    # Cache is old or doesn't exist. Refresh it.
-    #echo "Recreate cached PATH env..."
-    rm -f ${PATH_CACHE}
-    touch ${PATH_CACHE}
-    # Ordered list of path.
-    echo "/usr/local/sbin"                           >> ${PATH_CACHE}
-    echo "$(brew --prefix coreutils)/libexec/gnubin" >> ${PATH_CACHE}
-    echo "$(brew --prefix grep)/libexec/gnubin"      >> ${PATH_CACHE}
-    echo "$(brew --prefix findutils)/libexec/gnubin" >> ${PATH_CACHE}
-    echo "$(brew --prefix gnu-sed)/libexec/gnubin"   >> ${PATH_CACHE}
-    echo "$(brew --prefix gnu-tar)/libexec/gnubin"   >> ${PATH_CACHE}
-    echo "$(brew --prefix openssh)/bin"              >> ${PATH_CACHE}
-    echo "$(brew --prefix curl)/bin"                 >> ${PATH_CACHE}
-    echo "$(brew --prefix python)/libexec/bin"       >> ${PATH_CACHE}
-fi;
 
+# Force a cache refresh if file doesn't exist or older than 7 days.
+# Source: https://gist.github.com/ctechols/ca1035271ad134841284#gistcomment-3109177
+() {
+    setopt extendedglob local_options
+    if [[ ! -e ${PATH_CACHE} || -n ${PATH_CACHE}(#qN.md+7) ]]; then
+        # Ordered list of path.
+        PATH_LIST=(
+            /usr/local/sbin
+            $(brew --prefix coreutils)/libexec/gnubin
+            $(brew --prefix grep)/libexec/gnubin
+            $(brew --prefix findutils)/libexec/gnubin
+            $(brew --prefix gnu-sed)/libexec/gnubin
+            $(brew --prefix gnu-tar)/libexec/gnubin
+            $(brew --prefix openssh)/bin
+            $(brew --prefix curl)/bin
+            $(brew --prefix python)/libexec/bin
+        )
+        print -rl -- ${PATH_LIST} > ${PATH_CACHE}
+    fi
+}
 
 # Cache exists and has been refreshed in the last 24 hours: load it.
-#echo "Load up cached PATH env...";
 # Source: https://stackoverflow.com/a/41212803
 for line in "${(@f)"$(<${PATH_CACHE})"}"
 {
-    #echo "$line";
     # Prepend paths. Source: https://stackoverflow.com/a/9352979
     path[1,0]=${line}
 }
