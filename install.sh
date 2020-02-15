@@ -225,6 +225,3 @@ zinit self-update
 
 # Configure everything.
 source ./macos-config.sh
-
-# Reload shell with new configuration.
-source ~/.zprofile
