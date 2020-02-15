@@ -13,12 +13,3 @@ jobs:
       - name: Run install
         run : |
           ./install.sh
-
-  lint:
-    name: Check updated copyrights
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - name: Search and check copyright notice years
-        run : |
-          grep "$(date +'\-%Y')" ./LICENSE.md

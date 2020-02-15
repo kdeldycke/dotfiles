@@ -120,8 +120,7 @@ For convenience, some third party code and assets are hard-copied in place.
 These particular items have their own license and copyright:
 
 * [Solarized for Terminal.App](https://github.com/tomislav/osx-terminal.app-colors-solarized).
-© 2013 Tomislav Filipčić.
-Unspecified open-source license.
+© Tomislav Filipčić. Unspecified open-source license.
 
 The rest of the content is configuration and code I accumulated over years.
 Some was heavily inspired by other dotfiles repositories. But each time I
