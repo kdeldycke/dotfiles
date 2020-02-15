@@ -1478,9 +1478,9 @@ defaults write org.m0k.transmission DownloadLocationConstant -bool true
 defaults write org.m0k.transmission DownloadChoice -string "Constant"
 defaults write org.m0k.transmission DownloadFolder -string "${HOME}/Downloads"
 
-# Use `${HOME}/Documents/Torrents` to store incomplete downloads
+# Use `${HOME}/Torrents` to store incomplete downloads
 defaults write org.m0k.transmission UseIncompleteDownloadFolder -bool true
-defaults write org.m0k.transmission IncompleteDownloadFolder -string "${HOME}/Documents/Torrents"
+defaults write org.m0k.transmission IncompleteDownloadFolder -string "${HOME}/Torrents"
 
 # Use `${HOME}/Downloads` to store completed downloads
 defaults write org.m0k.transmission DownloadLocationConstant -bool true
