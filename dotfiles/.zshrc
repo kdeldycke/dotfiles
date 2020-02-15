@@ -45,6 +45,11 @@ HISTORY_IGNORE='(ls|ll|cd|cd ..|pwd|exit|date|history)'
 # See: https://github.com/romkatv/powerlevel10k#extra-space-without-background-on-the-right-side-of-right-prompt
 ZLE_RPROMPT_INDENT=0
 
+# Binds Up and Down to a history search, backwards and forwards.
+# Source: https://unix.stackexchange.com/a/97844
+bindkey "^[[A" history-beginning-search-backward
+bindkey "^[[B" history-beginning-search-forward
+
 
 ###############################################################################
 # Zsh Options
