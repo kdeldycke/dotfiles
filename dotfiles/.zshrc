@@ -260,14 +260,17 @@ if [ -n GRC ]; then
     #wdiff
 fi
 
-# Detect which `ls` flavor is in use
-if ls --color > /dev/null 2>&1; then # GNU `ls`
+# Detect which `ls` flavor is in use.
+if ls --color > /dev/null 2>&1; then
+    # GNU `ls`
     lsflags="--color"
-else # macOS `ls`
+else
+    # macOS `ls`
     lsflags="-G"
 fi
-alias ll='ls --human-readable --almost-all -l ${lsflags}'
-alias ls='ls --human-readable --almost-all --indicator-style=slash ${lsflags}'
+lsflags+=" --human-readable --almost-all --group-directories-first "
+alias ll="ls -l --time-style='+%Y-%m-%d %H:%M' ${lsflags}"
+alias ls="ls --indicator-style=slash ${lsflags}"
 
 # Handy aliases for going up in a directory
 alias ..="cd .."
