@@ -13,6 +13,7 @@ sudo -v
 # Keep-alive: update existing `sudo` time stamp until `.macos` has finished
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
+
 ###############################################################################
 # General UI/UX                                                               #
 ###############################################################################
@@ -173,6 +174,7 @@ defaults write -globalDomain "com.apple.sound.uiaudio.enabled" -int 0
 
 # Play feedback when volume is changed
 defaults write -globalDomain "com.apple.sound.beep.feedback" -int 0
+
 
 ##############################################################################
 # Security                                                                   #
@@ -389,6 +391,7 @@ defaults write com.apple.menuextra.clock DateFormat -string "EEE d MMM HH:mm"
 # Stop iTunes from responding to the keyboard media keys
 launchctl unload -w /System/Library/LaunchAgents/com.apple.rcd.plist 2> /dev/null
 
+
 ###############################################################################
 # Energy saving                                                               #
 ###############################################################################
@@ -431,6 +434,7 @@ sudo pmset -a hibernatemode 3
 # …and make sure it can’t be rewritten
 #sudo chflags uchg /private/var/vm/sleepimage
 
+
 ###############################################################################
 # Screen                                                                      #
 ###############################################################################
@@ -461,6 +465,7 @@ defaults write NSGlobalDomain CGFontRenderingFontSmoothingDisabled -bool false
 
 # Enable HiDPI display modes (requires restart)
 sudo defaults write /Library/Preferences/com.apple.windowserver DisplayResolutionEnabled -bool true
+
 
 ###############################################################################
 # Finder                                                                      #
@@ -606,9 +611,9 @@ file=/Applications/Dropbox.app/Contents/Resources/emblem-dropbox-uptodate.icns
 # Expand the following File Info panes:
 # “General”, “Open with”, and “Sharing & Permissions”
 defaults write com.apple.finder FXInfoPanesExpanded -dict \
-	General -bool true \
-	OpenWith -bool true \
-	Privileges -bool true
+    General -bool true \
+    OpenWith -bool true \
+    Privileges -bool true
 
 # Prefer tabs when opening documents
 defaults write -globalDomain "AppleWindowTabbingMode" -string "always"
@@ -629,6 +634,7 @@ defaults write com.apple.finder FXEnableRemoveFromICloudDriveWarning -bool false
 # Allow Handoff between this Mac and your iCloud devices
 defaults -currentHost write com.apple.coreservices.useractivityd "ActivityAdvertisingAllowed" -bool true
 defaults -currentHost write com.apple.coreservices.useractivityd "ActivityReceivingAllowed" -bool true
+
 
 ###############################################################################
 # Dock, Dashboard, and hot corners                                            #
@@ -744,6 +750,7 @@ for app in "GitUp" "Transmission" "LibreOffice" \
         dockutil --add "/Applications/${app}.app" --replacing "${app}" --no-restart
     fi
 done
+
 
 ###############################################################################
 # Safari & WebKit                                                             #
@@ -976,6 +983,7 @@ defaults write com.apple.Safari PrintHeadersAndFooters -bool false
 defaults write com.apple.Safari WebKitShouldPrintBackgroundsPreferenceKey -bool false
 defaults write com.apple.Safari "com.apple.Safari.ContentPageGroupIdentifier.WebKit2ShouldPrintBackgrounds" -bool false
 
+
 ###############################################################################
 # Mail                                                                        #
 ###############################################################################
@@ -1004,6 +1012,7 @@ defaults write com.apple.mail SpellCheckingBehavior -string "NoSpellCheckingEnab
 # Show To/Cc label in message list
 defaults write com.apple.mail EnableToCcInMessageList -bool true
 
+
 ###############################################################################
 # iWork                                                                       #
 ###############################################################################
@@ -1026,6 +1035,7 @@ defaults write com.apple.iWork.Numbers 'FirstRunFlag' -bool true
 defaults write com.apple.iWork.Pages 'dontShowWhatsNew' -bool true
 defaults write com.apple.iWork.Pages 'FirstRunFlag' -bool true
 
+
 ###############################################################################
 # Spotlight                                                                   #
 ###############################################################################
@@ -1038,41 +1048,42 @@ sudo chmod 600 /System/Library/CoreServices/Search.bundle/Contents/MacOS/Search
 sudo defaults write /.Spotlight-V100/VolumeConfiguration Exclusions -array "/Volumes"
 # Change indexing order and disable some search results
 # Yosemite-specific search results (remove them if you are using macOS 10.9 or older):
-# 	MENU_DEFINITION
-# 	MENU_CONVERSION
-# 	MENU_EXPRESSION
-# 	MENU_SPOTLIGHT_SUGGESTIONS (send search queries to Apple)
-# 	MENU_WEBSEARCH             (send search queries to Apple)
-# 	MENU_OTHER
+#     MENU_DEFINITION
+#     MENU_CONVERSION
+#     MENU_EXPRESSION
+#     MENU_SPOTLIGHT_SUGGESTIONS (send search queries to Apple)
+#     MENU_WEBSEARCH             (send search queries to Apple)
+#     MENU_OTHER
 defaults write com.apple.spotlight orderedItems -array \
-	'{"enabled" = 1;"name" = "APPLICATIONS";}' \
-	'{"enabled" = 1;"name" = "SYSTEM_PREFS";}' \
-	'{"enabled" = 1;"name" = "DIRECTORIES";}' \
-	'{"enabled" = 1;"name" = "PDF";}' \
-	'{"enabled" = 1;"name" = "FONTS";}' \
-	'{"enabled" = 0;"name" = "DOCUMENTS";}' \
-	'{"enabled" = 0;"name" = "MESSAGES";}' \
-	'{"enabled" = 0;"name" = "CONTACT";}' \
-	'{"enabled" = 0;"name" = "EVENT_TODO";}' \
-	'{"enabled" = 0;"name" = "IMAGES";}' \
-	'{"enabled" = 0;"name" = "BOOKMARKS";}' \
-	'{"enabled" = 0;"name" = "MUSIC";}' \
-	'{"enabled" = 0;"name" = "MOVIES";}' \
-	'{"enabled" = 0;"name" = "PRESENTATIONS";}' \
-	'{"enabled" = 0;"name" = "SPREADSHEETS";}' \
-	'{"enabled" = 1;"name" = "SOURCE";}' \
-	'{"enabled" = 0;"name" = "MENU_DEFINITION";}' \
-	'{"enabled" = 0;"name" = "MENU_OTHER";}' \
-	'{"enabled" = 1;"name" = "MENU_CONVERSION";}' \
-	'{"enabled" = 1;"name" = "MENU_EXPRESSION";}' \
-	'{"enabled" = 0;"name" = "MENU_WEBSEARCH";}' \
-	'{"enabled" = 0;"name" = "MENU_SPOTLIGHT_SUGGESTIONS";}'
+    '{"enabled" = 1;"name" = "APPLICATIONS";}' \
+    '{"enabled" = 1;"name" = "SYSTEM_PREFS";}' \
+    '{"enabled" = 1;"name" = "DIRECTORIES";}' \
+    '{"enabled" = 1;"name" = "PDF";}' \
+    '{"enabled" = 1;"name" = "FONTS";}' \
+    '{"enabled" = 0;"name" = "DOCUMENTS";}' \
+    '{"enabled" = 0;"name" = "MESSAGES";}' \
+    '{"enabled" = 0;"name" = "CONTACT";}' \
+    '{"enabled" = 0;"name" = "EVENT_TODO";}' \
+    '{"enabled" = 0;"name" = "IMAGES";}' \
+    '{"enabled" = 0;"name" = "BOOKMARKS";}' \
+    '{"enabled" = 0;"name" = "MUSIC";}' \
+    '{"enabled" = 0;"name" = "MOVIES";}' \
+    '{"enabled" = 0;"name" = "PRESENTATIONS";}' \
+    '{"enabled" = 0;"name" = "SPREADSHEETS";}' \
+    '{"enabled" = 1;"name" = "SOURCE";}' \
+    '{"enabled" = 0;"name" = "MENU_DEFINITION";}' \
+    '{"enabled" = 0;"name" = "MENU_OTHER";}' \
+    '{"enabled" = 1;"name" = "MENU_CONVERSION";}' \
+    '{"enabled" = 1;"name" = "MENU_EXPRESSION";}' \
+    '{"enabled" = 0;"name" = "MENU_WEBSEARCH";}' \
+    '{"enabled" = 0;"name" = "MENU_SPOTLIGHT_SUGGESTIONS";}'
 # Load new settings before rebuilding the index
 killall mds > /dev/null 2>&1
 # Make sure indexing is enabled for the main volume
 sudo mdutil -i on / > /dev/null
 # Rebuild the index from scratch
 sudo mdutil -E / > /dev/null
+
 
 ###############################################################################
 # QuickLook plugins                                                           #
@@ -1102,6 +1113,7 @@ defaults write org.n8gray.QLColorCode fontSizePoints 9
 # -V: Wrap long lines without indenting function parameters and statements
 defaults write org.n8gray.QLColorCode extraHLFlags '-l -V'
 
+
 ###############################################################################
 # Terminal                                                                    #
 ###############################################################################
@@ -1114,43 +1126,43 @@ osascript <<EOD
 
 tell application "Terminal"
 
-	local allOpenedWindows
-	local initialOpenedWindows
-	local windowID
-	set themeName to "Solarized Dark"
+    local allOpenedWindows
+    local initialOpenedWindows
+    local windowID
+    set themeName to "Solarized Dark"
 
-	(* Store the IDs of all the open terminal windows. *)
-	set initialOpenedWindows to id of every window
+    (* Store the IDs of all the open terminal windows. *)
+    set initialOpenedWindows to id of every window
 
-	(* Open the custom theme so that it gets added to the list
-	   of available terminal themes (note: this will open two
-	   additional terminal windows). *)
-	do shell script "open './assets/" & themeName & ".terminal'"
+    (* Open the custom theme so that it gets added to the list
+       of available terminal themes (note: this will open two
+       additional terminal windows). *)
+    do shell script "open './assets/" & themeName & ".terminal'"
 
-	(* Wait a little bit to ensure that the custom theme is added. *)
-	delay 1
+    (* Wait a little bit to ensure that the custom theme is added. *)
+    delay 1
 
-	(* Set the custom theme as the default terminal theme. *)
-	set default settings to settings set themeName
+    (* Set the custom theme as the default terminal theme. *)
+    set default settings to settings set themeName
 
-	(* Get the IDs of all the currently opened terminal windows. *)
-	set allOpenedWindows to id of every window
+    (* Get the IDs of all the currently opened terminal windows. *)
+    set allOpenedWindows to id of every window
 
-	repeat with windowID in allOpenedWindows
+    repeat with windowID in allOpenedWindows
 
-		(* Close the additional windows that were opened in order
-		   to add the custom theme to the list of terminal themes. *)
-		if initialOpenedWindows does not contain windowID then
-			close (every window whose id is windowID)
+        (* Close the additional windows that were opened in order
+           to add the custom theme to the list of terminal themes. *)
+        if initialOpenedWindows does not contain windowID then
+            close (every window whose id is windowID)
 
-		(* Change the theme for the initial opened terminal windows
-		   to remove the need to close them in order for the custom
-		   theme to be applied. *)
-		else
-			set current settings of tabs of (every window whose id is windowID) to settings set themeName
-		end if
+        (* Change the theme for the initial opened terminal windows
+           to remove the need to close them in order for the custom
+           theme to be applied. *)
+        else
+            set current settings of tabs of (every window whose id is windowID) to settings set themeName
+        end if
 
-	end repeat
+    end repeat
 
 end tell
 
@@ -1176,6 +1188,7 @@ defaults write com.apple.Terminal ShowLineMarks -int 0
     -c "Delete :WindowSettings:Basic:VisualBell"            \
     -c "Add    :WindowSettings:Basic:VisualBell bool true"  \
     ~/Library/Preferences/com.apple.terminal.plist
+
 
 ###############################################################################
 # Time Machine                                                                #
@@ -1253,6 +1266,7 @@ defaults write com.apple.ActivityMonitor NetworkGraphType -int 1
 # 6: CPU History
 defaults write com.apple.ActivityMonitor IconType -int 5
 
+
 ###############################################################################
 # Contacts                                                                    #
 ###############################################################################
@@ -1304,6 +1318,7 @@ defaults write NSGlobalDomain NSPersonNameDefaultDisplayNameOrder -int 1
 # Prefer nicknames
 defaults write NSGlobalDomain NSPersonNameDefaultShouldPreferNicknamesPreference -bool true
 
+
 ###############################################################################
 # Calendar                                                                    #
 ###############################################################################
@@ -1349,6 +1364,7 @@ defaults write com.apple.iCal "Show Week Numbers" -bool true
 # Ask before sending changes to events
 defaults write com.apple.iCal WarnBeforeSendingInvitations -bool true
 
+
 ###############################################################################
 # Dashboard, TextEdit and Disk Utility                                        #
 ###############################################################################
@@ -1369,6 +1385,7 @@ defaults write com.apple.DiskUtility advanced-image-options -bool true
 # Show All Devices
 defaults write com.apple.DiskUtility SidebarShowAllDevices -bool true
 
+
 ###############################################################################
 # QuickTime
 ###############################################################################
@@ -1383,6 +1400,7 @@ defaults write com.apple.QuickTimePlayerX MGRecordingCompressionPresetIdentifier
 
 # Show mouse clicks in screen recordings
 defaults write com.apple.QuickTimePlayerX MGScreenRecordingDocumentShowMouseClicksUserDefaultsKey -bool true
+
 
 ###############################################################################
 # Mac App Store                                                               #
@@ -1419,12 +1437,14 @@ defaults write com.apple.commerce AutoUpdateRestartRequired -bool true
 defaults write com.apple.AppStore AutoPlayVideoSetting -string "off"
 defaults write com.apple.AppStore UserSetAutoPlayVideoSetting -int 1
 
+
 ###############################################################################
 # Photos                                                                      #
 ###############################################################################
 
 # Prevent Photos from opening automatically when devices are plugged in
 defaults -currentHost write com.apple.ImageCapture disableHotPlug -bool true
+
 
 ###############################################################################
 # Messages                                                                    #
@@ -1461,6 +1481,7 @@ defaults write com.apple.messageshelper.AlertsController NotifyAboutKnockKnockKe
 
 # Show all buddy pictures in conversations
 defaults write com.apple.iChat ShowAllBuddyPictures -bool false
+
 
 ###############################################################################
 # Transmission.app                                                            #
@@ -1544,6 +1565,7 @@ defaults write org.m0k.transmission FilterBar -bool true
 # Availability
 defaults write org.m0k.transmission DisplayProgressBarAvailable -bool false
 
+
 ###############################################################################
 # MusicBrainz.app                                                             #
 ###############################################################################
@@ -1574,6 +1596,7 @@ defaults write com.musicbrainz.Picard setting.ca_provider_use_caa_release_group_
 defaults write com.musicbrainz.Picard setting.fingerprinting_system -string "acoustid"
 defaults write com.musicbrainz.Picard setting.acoustid_apikey -string "lP2ph5Sm"
 
+
 ###############################################################################
 # Kill affected applications                                                  #
 ###############################################################################
@@ -1593,6 +1616,6 @@ for app in "Activity Monitor" \
         "Terminal" \
         "Transmission" \
         "iCal"; do
-	killall "${app}" &> /dev/null
+    killall "${app}" &> /dev/null
 done
 echo "Done. Note that some of these changes require a logout/restart to take effect."
