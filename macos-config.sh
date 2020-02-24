@@ -621,6 +621,61 @@ defaults write -globalDomain "AppleWindowTabbingMode" -string "always"
 # Copy window location: top right (as if it is a notification)
 defaults write com.apple.finder CopyProgressWindowLocation -string "{2160, 23}"
 
+
+###############################################################################
+# Sets applications as default handlers for Apple's Uniform Type Identifiers  #
+###############################################################################
+# Source: https://github.com/ptb/mac-setup/blob/develop/mac-setup.command#L2182-L2442
+
+# To hunt IDs, see: http://stackoverflow.com/a/25622557
+
+_duti='com.apple.DiskImageMounter com.apple.disk-image
+com.apple.DiskImageMounter public.disk-image
+com.apple.DiskImageMounter public.iso-image
+com.apple.Terminal com.apple.terminal.shell-script
+com.apple.installer com.apple.installer-package-archive
+com.apple.Safari http
+com.colliderli.iina com.apple.coreaudio-format
+com.colliderli.iina com.apple.m4a-audio
+com.colliderli.iina com.apple.m4v-video
+com.colliderli.iina com.apple.mpeg-4-ringtone
+com.colliderli.iina com.apple.protected-mpeg-4-audio
+com.colliderli.iina com.apple.protected-mpeg-4-video
+com.colliderli.iina com.apple.quicktime-movie
+com.colliderli.iina com.audible.aa-audio
+com.colliderli.iina com.microsoft.waveform-audio
+com.colliderli.iina com.microsoft.windows-media-wmv
+com.colliderli.iina public.ac3-audio
+com.colliderli.iina public.aifc-audio
+com.colliderli.iina public.aiff-audio
+com.colliderli.iina public.audio
+com.colliderli.iina public.audiovisual-content
+com.colliderli.iina public.avi
+com.colliderli.iina public.movie
+com.colliderli.iina public.mp3
+com.colliderli.iina public.mpeg
+com.colliderli.iina public.mpeg-2-video
+com.colliderli.iina public.mpeg-4
+com.colliderli.iina public.mpeg-4-audio'
+
+if test -x "/usr/local/bin/duti"; then
+    test -f "${HOME}/Library/Preferences/org.duti.plist" && \
+        rm "${HOME}/Library/Preferences/org.duti.plist"
+
+    printf "%s\n" "${_duti}" | \
+    while IFS="$(printf ' ')" read id uti; do
+        defaults write org.duti DUTISettings -array-add \
+            "{
+                DUTIBundleIdentifier = '$id';
+                DUTIUniformTypeIdentifier = '$uti';
+                DUTIRole = 'all';
+            }"
+    done
+
+    duti "${HOME}/Library/Preferences/org.duti.plist"
+fi
+
+
 ###############################################################################
 # iCloud                                                                      #
 ###############################################################################

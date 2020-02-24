@@ -153,11 +153,6 @@ GOOGLE_APPLICATION_CREDENTIALS=~/.google-cloud-auth.json gcsfuse --implicit-dirs
 # sudo ln -s /usr/local/sbin/mount_gcsfuse /sbin/
 # mount -t gcsfuse -o rw,user,keyfile="${HOME}/.google-cloud-auth.json" backup-imac-restic "${HOME}/gcs"
 
-# Set Safari as the default browser.
-brew install duti
-duti -s com.apple.Safari http
-# See: http://stackoverflow.com/a/25622557
-
 # Install Popcorn Time.
 rm -rf /Applications/Popcorn-Time.app
 wget -O - "https://get.popcorntime.sh/repo/build/Popcorn-Time-0.3.10-Mac.zip" | tar -xz --directory /Applications -f -

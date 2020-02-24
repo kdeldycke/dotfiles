@@ -12,6 +12,7 @@ coreutils
 curl
 dmg2img
 dockutil
+duti
 exiftool
 ext2fuse
 ext4fuse
