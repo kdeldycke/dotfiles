@@ -106,7 +106,6 @@ transmission
 
 # Python packages to install from PyPi.
 PYTHON_PACKAGES="
-pip
 gmvault
 httpie
 jupyter

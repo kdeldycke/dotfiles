@@ -198,6 +198,14 @@ wget https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/addon-607
 brew cleanup
 brew services cleanup
 
+# Use latest pip.
+pip install --upgrade pip
+
+# Fix brew/pip issue.
+# Source: https://github.com/Homebrew/homebrew-core/issues/43866
+# https://discourse.brew.sh/t/pip-install-upgrade-pip-breaks-pip-when-installed-with-homebrew/5338
+ln -sf /usr/local/bin/pip $(brew --prefix python)/libexec/bin/pip
+
 # Install & upgrade all global python modules
 for p in $PYTHON_PACKAGES
 do
