@@ -18,10 +18,12 @@ ext2fuse
 ext4fuse
 faac
 faad2
+fd
 fdupes
 ffmpeg
 findutils
 flac
+fzf
 ghostscript
 git
 git-extras
@@ -55,6 +57,7 @@ python
 rclone
 recode
 rename
+ripgrep
 rmlint
 shellcheck
 shntool

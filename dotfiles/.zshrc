@@ -120,9 +120,23 @@ unsetopt beep
 ###############################################################################
 # Zsh Plugins
 ###############################################################################
+# Configure fzf and its Zsh integration.
+# Source: https://mike.place/2017/fzf-fd/
+export FZF_DEFAULT_COMMAND="fd --type f --hidden . $HOME"
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_ALT_C_COMMAND="fd --type d --hidden --exclude .git . $HOME"
+zinit light Aloxaf/fzf-tab
+
 zinit light zsh-users/zsh-completions
-zinit light zsh-users/zsh-autosuggestions
+
 zinit light zdharma/fast-syntax-highlighting
+
+# Autosuggestion plugin config.
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+ZSH_AUTOSUGGEST_USE_ASYNC=1
+#ZSH_AUTOSUGGEST_MANUAL_REBIND=1
+zinit light zsh-users/zsh-autosuggestions
+
 zinit light zdharma/zsh-diff-so-fancy
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
@@ -218,6 +232,7 @@ alias ccat='pygmentize -g'
 
 alias top="htop"
 alias gr='grep -RIi --no-messages'
+alias rg='rg -uuu'
 alias g="git"
 alias h="history"
 alias q='exit'
@@ -304,6 +319,9 @@ find() {
     [ $? = 1 ]; \
   } 3>&2 2>&1
 }
+
+# Default options for fd, a faster find.
+alias fd='fd --hidden'
 
 # Extract most know archives with one command
 extract () {
