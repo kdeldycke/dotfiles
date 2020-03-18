@@ -34,6 +34,7 @@ graphviz
 grc
 grep
 htop
+httpie
 id3v2
 imagemagick
 jnettop
@@ -110,7 +111,6 @@ transmission
 # Python packages to install from PyPi.
 PYTHON_PACKAGES="
 gmvault
-httpie
 jupyter
 meta-package-manager
 neovim
