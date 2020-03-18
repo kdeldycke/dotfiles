@@ -154,8 +154,10 @@ GOOGLE_APPLICATION_CREDENTIALS=~/.google-cloud-auth.json gcsfuse --implicit-dirs
 # mount -t gcsfuse -o rw,user,keyfile="${HOME}/.google-cloud-auth.json" backup-imac-restic "${HOME}/gcs"
 
 # Install Popcorn Time.
+wget -O "/tmp/Popcorn-Time-0.4.0-Mac.zip" "https://github.com/popcorn-official/popcorn-desktop/releases/download/v0.4.0/Popcorn-Time-0.4.0-Mac.zip"
 rm -rf /Applications/Popcorn-Time.app
-wget -O - "https://get.popcorntime.sh/repo/build/Popcorn-Time-0.3.10-Mac.zip" | tar -xz --directory /Applications -f -
+unzip "/tmp/Popcorn-Time-0.4.0-Mac.zip" -d /Applications/
+rm -f "/tmp/Popcorn-Time-0.4.0-Mac.zip"
 
 # Install and configure bitbar.
 brew cask install bitbar
