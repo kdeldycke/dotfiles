@@ -97,6 +97,7 @@ java
 keybase
 libreoffice
 macdown
+mullvadvpn
 musicbrainz-picard
 netnewswire
 osxfuse
