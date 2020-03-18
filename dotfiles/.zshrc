@@ -122,6 +122,9 @@ unsetopt beep
 ###############################################################################
 zinit light zsh-users/zsh-completions
 
+# Load custom completion.
+fpath=( ~/.zfunc "${fpath[@]}" )
+
 # Initialize completion.
 # See: https://github.com/Aloxaf/fzf-tab/issues/61
 zpcompinit; zpcdreplay
@@ -380,9 +383,3 @@ export PYTHONSTARTUP="$HOME/.python_startup.py"
 
 # Display DeprecationWarning
 #export PYTHONWARNINGS=d
-
-# Set virtualenv home.
-export WORKON_HOME=$HOME/.virtualenvs
-
-# Add pip completion.
-eval "$(pip completion --zsh)"

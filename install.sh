@@ -212,6 +212,10 @@ do
     pip install --upgrade "$p"
 done
 
+# Generate pip and poetry completion.
+pip completion --zsh > ~/.zfunc/_pip
+poetry completions zsh > ~/.zfunc/_poetry
+
 # Force Neovim plugin upgrades
 nvim -c "try | call dein#update() | finally | qall! | endtry"
 
