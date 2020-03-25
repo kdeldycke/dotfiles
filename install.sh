@@ -214,6 +214,7 @@ done
 # Generate pip and poetry completion.
 pip completion --zsh > ~/.zfunc/_pip
 poetry completions zsh > ~/.zfunc/_poetry
+_MPM_COMPLETE=source_zsh mpm > ~/.zfunc/_mpm
 
 # Force Neovim plugin upgrades
 nvim -c "try | call dein#update() | finally | qall! | endtry"
