@@ -56,7 +56,6 @@ call dein#add('haya14busa/incsearch.vim')
 call dein#add('junegunn/vim-easy-align')
 call dein#add('tpope/vim-surround')
 call dein#add('tpope/vim-repeat')
-call dein#add('fisadev/vim-isort')
 
 if has('nvim') == 0
   call dein#add('tpope/vim-sensible')
@@ -277,3 +276,7 @@ let g:vim_markdown_conceal_code_blocks = 0
 
 " Plist
 au BufRead,BufNewFile *.plist set filetype=plist
+
+" Auto-call isort on Python files.
+" Source: https://github.com/fisadev/vim-isort/issues/36#issuecomment-577683883
+autocmd BufWritePost *.py :!isort %
