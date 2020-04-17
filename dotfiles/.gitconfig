@@ -15,7 +15,7 @@
 [user]
     name = Kevin Deldycke
     email = kevin@deldycke.com
-    signingkey = B1ED5A3A
+    signingkey = C572BB01B1ED5A3A
 [color]
     diff = auto
     status = auto
