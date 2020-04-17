@@ -1281,8 +1281,7 @@ defaults write com.apple.ActivityMonitor SortDirection -int 0
 # Set columns for each tab
 defaults write com.apple.ActivityMonitor "UserColumnsPerTab v5.0" -dict \
     '0' '( Command, CPUUsage, CPUTime, Threads, IdleWakeUps, PID, UID )' \
-    '1' '( Command, anonymousMemory, compressedMemory, ResidentSize, ' \
-          'PurgeableMem, Threads, Ports, PID, UID)' \
+    '1' '( Command, anonymousMemory, compressedMemory, ResidentSize, PurgeableMem, Threads, Ports, PID, UID)' \
     '2' '( Command, PowerScore, 12HRPower, AppSleep, graphicCard, UID )' \
     '3' '( Command, bytesWritten, bytesRead, Architecture, PID, UID )' \
     '4' '( Command, txBytes, rxBytes, txPackets, rxPackets, PID, UID )'
