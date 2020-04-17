@@ -119,9 +119,6 @@ sudo defaults write /Library/Preferences/com.apple.loginwindow AdminHostInfo -st
 # Restart automatically if the computer freezes
 sudo systemsetup -setrestartfreeze on
 
-# Never go into computer sleep mode
-#sudo systemsetup -setcomputersleep Off > /dev/null
-
 # Disable automatic capitalization as it’s annoying when typing code
 defaults write NSGlobalDomain NSAutomaticCapitalizationEnabled -bool false
 
