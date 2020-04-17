@@ -39,35 +39,14 @@ rm -rf "${HOME}/Public/.com.apple.timemachine.supported"
 # Disable the sound effects on boot
 sudo nvram SystemAudioVolume=" "
 
-# Disable transparency in the menu bar and elsewhere on Yosemite
-defaults write com.apple.universalaccess reduceTransparency -bool true
-
 # Enable ctrl+option+cmd to drag windows.
 defaults write com.apple.universalaccess NSWindowShouldDragOnGesture -string "YES"
-
-# Menu bar: hide the User icon
-defaults -currentHost write dontAutoLoad -array \
-        "/System/Library/CoreServices/Menu Extras/User.menu"
-defaults write com.apple.systemuiserver menuExtras -array \
-        "/System/Library/CoreServices/Menu Extras/TimeMachine.menu" \
-        "/System/Library/CoreServices/Menu Extras/AirPort.menu" \
-        "/System/Library/CoreServices/Menu Extras/Bluetooth.menu" \
-        "/System/Library/CoreServices/Menu Extras/TextInput.menu" \
-        "/System/Library/CoreServices/Menu Extras/Volume.menu" \
-        "/System/Library/CoreServices/Menu Extras/Battery.menu" \
-        "/System/Library/CoreServices/Menu Extras/Clock.menu"
-
-# Autohide dock and menubar.
-#defaults write NSGlobalDomain _HIHideMenuBar -bool true
 
 # Set highlight color to green
 #defaults write NSGlobalDomain AppleHighlightColor -string "0.764700 0.976500 0.568600"
 
 # Enable graphite appearance.
 #defaults write NSGlobalDomain AppleAquaColorVariant -int 6
-
-# Enable the dark menubar and dock.
-#defaults write NSGlobalDomain AppleInterfaceStyle -string "Dark"
 
 # Set sidebar icon size to medium
 defaults write NSGlobalDomain NSTableViewDefaultSizeMode -int 2
@@ -143,9 +122,6 @@ sudo systemsetup -setrestartfreeze on
 # Never go into computer sleep mode
 #sudo systemsetup -setcomputersleep Off > /dev/null
 
-# Disable Notification Center and remove the menu bar icon
-launchctl unload -w /System/Library/LaunchAgents/com.apple.notificationcenterui.plist 2> /dev/null
-
 # Disable automatic capitalization as it’s annoying when typing code
 defaults write NSGlobalDomain NSAutomaticCapitalizationEnabled -bool false
 
@@ -172,6 +148,35 @@ defaults write -globalDomain "com.apple.sound.uiaudio.enabled" -int 0
 
 # Play feedback when volume is changed
 defaults write -globalDomain "com.apple.sound.beep.feedback" -int 0
+
+
+##############################################################################
+# Menubar                                                                    #
+##############################################################################
+
+# Disable transparency in the menu bar and elsewhere on Yosemite
+defaults write com.apple.universalaccess reduceTransparency -bool true
+
+# Menu bar: hide the User icon
+defaults -currentHost write dontAutoLoad -array \
+        "/System/Library/CoreServices/Menu Extras/User.menu"
+defaults write com.apple.systemuiserver menuExtras -array \
+        "/System/Library/CoreServices/Menu Extras/TimeMachine.menu" \
+        "/System/Library/CoreServices/Menu Extras/AirPort.menu" \
+        "/System/Library/CoreServices/Menu Extras/Bluetooth.menu" \
+        "/System/Library/CoreServices/Menu Extras/TextInput.menu" \
+        "/System/Library/CoreServices/Menu Extras/Volume.menu" \
+        "/System/Library/CoreServices/Menu Extras/Battery.menu" \
+        "/System/Library/CoreServices/Menu Extras/Clock.menu"
+
+# Autohide dock and menubar.
+#defaults write NSGlobalDomain _HIHideMenuBar -bool true
+
+# Enable the dark menubar and dock.
+#defaults write NSGlobalDomain AppleInterfaceStyle -string "Dark"
+
+# Disable Notification Center and remove the menu bar icon
+launchctl unload -w /System/Library/LaunchAgents/com.apple.notificationcenterui.plist 2> /dev/null
 
 
 ##############################################################################
