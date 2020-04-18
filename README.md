@@ -88,16 +88,6 @@ To upgrade submodules:
 
     $ git submodule update --recursive --remote
 
-### macOS configuration
-
-Once in a while, compare `macos-config.sh` file with its upstream
-template from [Mathias Bynens `.macos`](https://github.com/mathiasbynens/dotfiles/blob/master/.macos) dotfile:
-
-    $ curl https://raw.githubusercontent.com/mathiasbynens/dotfiles/master/.macos | diff -ru - ./macos-config.sh
-
-Then merge differences to reduce the differences. This is going to greatly
-improve the maintenance of macOS configuration.
-
 
 ## Versions
 
@@ -121,6 +111,7 @@ distributions has been dropped](https://github.com/kdeldycke/dotfiles/commit/e66
 
 * [Awesome OSX command line](https://github.com/herrbischoff/awesome-osx-command-line)
 * [`ingrino`'s dotfiles](https://github.com/lingrino/dotfiles)
+* [Mathias Bynens `.macos`](https://github.com/mathiasbynens/dotfiles/blob/master/.macos)
 
 
 ## License
