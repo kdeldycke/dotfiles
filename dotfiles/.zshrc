@@ -138,6 +138,8 @@ zinit light Aloxaf/fzf-tab
 
 zinit light zdharma/fast-syntax-highlighting
 
+zinit light zsh-users/zsh-history-substring-search
+
 # Autosuggestion plugin config.
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 ZSH_AUTOSUGGEST_USE_ASYNC=1
