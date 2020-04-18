@@ -5,6 +5,11 @@ set -x
 # settings we’re about to change
 osascript -e 'tell application "System Preferences" to quit'
 
+
+###############################################################################
+# Permissions and Access                                                      #
+###############################################################################
+
 # Ask for the administrator password upfront
 sudo -v
 
