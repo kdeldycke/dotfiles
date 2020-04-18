@@ -62,6 +62,7 @@ ripgrep
 rmlint
 shellcheck
 shntool
+spoof-mac
 ssh-copy-id
 testdisk
 tldr

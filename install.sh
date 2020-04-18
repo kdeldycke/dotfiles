@@ -103,6 +103,9 @@ done
 sudo chown root:wheel "$(brew --prefix)/bin/htop"
 sudo chmod u+s "$(brew --prefix)/bin/htop"
 
+# Activate auto MAC Address spoofing.
+sudo brew services start spoof-mac
+
 
 ######### Mac App Store packages #########
 
