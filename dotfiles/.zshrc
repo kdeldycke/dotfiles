@@ -131,9 +131,9 @@ zpcompinit; zpcdreplay
 
 # Configure fzf and its Zsh integration.
 # Source: https://mike.place/2017/fzf-fd/
-export FZF_DEFAULT_COMMAND="fd --type f --hidden . $HOME"
+export FZF_DEFAULT_COMMAND="fd --one-file-system --type f --hidden . $HOME"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-export FZF_ALT_C_COMMAND="fd --type d --hidden --exclude .git . $HOME"
+export FZF_ALT_C_COMMAND="fd --one-file-system --type d --hidden --exclude .git . $HOME"
 zinit light Aloxaf/fzf-tab
 
 zinit light zdharma/fast-syntax-highlighting
