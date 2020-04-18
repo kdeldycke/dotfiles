@@ -67,7 +67,6 @@ This is a list of manual post-installation steps required to fully configure the
 
 * Copy SSH (`./dotfiles/dotfiles/.ssh/`) and GPG (`./dotfiles/dotfiles/.gnupg/`) keys from backups.
 * `System Preferences` -> `Touch ID` -> `Add other fingerprints`.
-* Give `/Applications/Utilities/Dropbox.app` accessibility permissions: `System Preferences` -> `Privacy` -> `Accessibility`.
 * Uncheck all options to disallow analytics sharing: `System Preferences` -> `Privacy` -> `Analytics`.
 * Check `Limit Ad Tracking` option in: `System Preferences` -> `Privacy` -> `Advertising`.
 
