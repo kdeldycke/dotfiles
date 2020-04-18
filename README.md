@@ -17,15 +17,25 @@ Dot-files and system configuration for Python developers on **macOS**.
 
 ## Pre-installation
 
+We will reinstall macOS from scratch.
+
 1. [Reset NVRAM or PRAM on your Mac](https://support.apple.com/en-us/HT204063).
 
-1. Download macOS from the App Store.
+1. Download macOS from the `App Store.app`.
 
 1. Plug a USB drive to your machine, format it with the Disk Utility app,
 double-check it is mounted at `/Volumes/Untitled`, and finally [flash it with
 the macOS image](https://support.apple.com/en-us/HT201372):
 
         $ sudo /Applications/Install\ macOS\ Catalina.app/Contents/Resources/createinstallmedia --volume /Volumes/Untitled --nointeraction
+
+1. Reboot your machine, reinstall macOS, create a user.
+
+1. Login to your new user, and launch `Preferences.app`.
+
+1. Go to `Security & Privacy` > `Privacy` > `Click the lock to make changes.` and then unlock with touch ID or password.
+
+1. Go to `Full Disk Access` > Click the `+` button > Go to `Applications` > `Utilities` > Choose `Terminal.app`.
 
 
 ## Install
