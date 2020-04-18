@@ -330,7 +330,7 @@ find() {
 }
 
 # Default options for fd, a faster find.
-alias fd='fd --hidden'
+alias fd='fd --one-file-system --hidden'
 
 # Extract most know archives with one command
 extract () {
