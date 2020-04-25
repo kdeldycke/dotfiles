@@ -517,7 +517,7 @@ defaults -currentHost write com.apple.screensaver moduleDict -dict moduleName -s
     -c "Set     :updateWhileSaverMode   bool    false   "\
     -c "Set     :debugMode              bool    false   "\
     -c "Set     :logToDisk              bool    false   "\
-    ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost/com.JohnCoates.Aerial.plist
+    ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost/com.JohnCoates.Aerial.${HOST_UUID}.plist
 
 
 ###############################################################################
