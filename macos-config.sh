@@ -552,15 +552,17 @@ defaults write com.apple.finder OpenWindowForNewRemovableDisk -bool false
 # Set icon view settings on desktop and in icon views
 for view in 'Desktop' 'FK_Standard' 'Standard'; do
     # Show item info near icons on the desktop and in other icon views
-    /usr/libexec/PlistBuddy -c "Set :${view}ViewSettings:IconViewSettings:showItemInfo bool true" ~/Library/Preferences/com.apple.finder.plist
     # Show item info to the right of the icons on the desktop
-    /usr/libexec/PlistBuddy -c "Set :${view}ViewSettings:IconViewSettings:labelOnBottom bool false" ~/Library/Preferences/com.apple.finder.plist
     # Enable snap-to-grid for icons on the desktop and in other icon views
-    /usr/libexec/PlistBuddy -c "Set :${view}ViewSettings:IconViewSettings:arrangeBy string grid" ~/Library/Preferences/com.apple.finder.plist
     # Increase grid spacing for icons on the desktop and in other icon views
-    /usr/libexec/PlistBuddy -c "Set :${view}ViewSettings:IconViewSettings:gridSpacing integer 100" ~/Library/Preferences/com.apple.finder.plist
     # Increase the size of icons on the desktop and in other icon views
-    /usr/libexec/PlistBuddy -c "Set :${view}ViewSettings:IconViewSettings:iconSize integer 32" ~/Library/Preferences/com.apple.finder.plist
+    /usr/libexec/PlistBuddy \
+        -c "Set :${view}ViewSettings:IconViewSettings:showItemInfo  bool    true"  \
+        -c "Set :${view}ViewSettings:IconViewSettings:labelOnBottom bool    false" \
+        -c "Set :${view}ViewSettings:IconViewSettings:arrangeBy     string  grid"  \
+        -c "Set :${view}ViewSettings:IconViewSettings:gridSpacing   integer 100"   \
+        -c "Set :${view}ViewSettings:IconViewSettings:iconSize      integer 32"    \
+        ~/Library/Preferences/com.apple.finder.plist
 done
 
 # Use list view in all Finder windows by default
@@ -588,10 +590,11 @@ sudo find / -name ".DS_Store" -print --delete
 #   logs : Size
 #   labl : Tags
 /usr/libexec/PlistBuddy \
-    -c "Set :StandardViewOptions:ColumnViewOptions:ColumnShowIcons bool    true" \
-    -c "Set :StandardViewOptions:ColumnViewOptions:FontSize        integer 11"    \
-    -c "Set :StandardViewOptions:ColumnViewOptions:ShowPreview     bool    true"  \
-    -c "Set :StandardViewOptions:ColumnViewOptions:ArrangeBy       string  dnam"  \
+    -c "Set :StandardViewOptions:ColumnViewOptions:ColumnShowIcons    bool    true" \
+    -c "Set :StandardViewOptions:ColumnViewOptions:FontSize           integer 11"   \
+    -c "Set :StandardViewOptions:ColumnViewOptions:ShowPreview        bool    true" \
+    -c "Set :StandardViewOptions:ColumnViewOptions:ShowIconThumbnails bool    true" \
+    -c "Set :StandardViewOptions:ColumnViewOptions:ArrangeBy          string  dnam" \
     ~/Library/Preferences/com.apple.finder.plist
 
 # Disable the warning before emptying the Trash
