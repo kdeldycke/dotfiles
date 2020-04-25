@@ -796,13 +796,13 @@ defaults write com.apple.dock wvous-tl-modifier -int 0
 # Remove apps I don't use from the dock.
 for shortcut_label in "Launchpad" "Contacts" "Mail" \
     "Siri" "Maps" "FaceTime" "iTunes" "iBooks" "Reminders" \
-    "Photos" "Messages" "Pages" "News"; do
+    "Photos" "Pages" "News" "TV" "Podcasts"; do
     dockutil --remove "${shortcut_label}" --allhomes --no-restart
 done
 
 # Add new app shortcuts to the dock.
-for app in "GitUp" "Transmission" "LibreOffice" \
-    "Tor Browser" "Popcorn-Time" "Telegram Desktop" "Spark" "Slack" \
+for app in "Fork" "Transmission" "LibreOffice" \
+    "Tor Browser" "Popcorn-Time" "Telegram Desktop" "Spark" \
     "1Password 7"; do
     dockutil --find "${app}"
     if [ $? -ne 0 ]; then
