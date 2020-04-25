@@ -574,7 +574,7 @@ done
 defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
 # After configuring preferred view style, clear all `.DS_Store` files
 # to ensure settings are applied for every directory
-sudo find / -name ".DS_Store" -print --delete
+sudo find / -name ".DS_Store" -print -delete
 
 # View Options
 # ColumnShowIcons    : Show preview column
