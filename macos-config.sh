@@ -1581,7 +1581,8 @@ defaults write org.m0k.transmission AutoImportDirectory -string "${HOME}/Downloa
 # Prompt user for removal of active transfers only when downloading
 defaults write org.m0k.transmission CheckRemoveDownloading -bool true
 
-# Prompt user for quit with active transfers only when downloading
+# Do not prompt user for quit, wether there is an active transfer or download.
+defaults write org.m0k.transmission CheckQuit -bool false
 defaults write org.m0k.transmission CheckQuitDownloading -bool false
 
 # Trash original torrent files
