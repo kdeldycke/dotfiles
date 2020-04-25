@@ -5,6 +5,9 @@ set -x
 # settings we’re about to change
 osascript -e 'tell application "System Preferences" to quit'
 
+# Extract hardware UUID to reconstruct host-dependent plists.
+HOST_UUID=$(ioreg -d2 -c IOPlatformExpertDevice | awk -F\" '/IOPlatformUUID/{print $(NF-1)}')
+
 
 ###############################################################################
 # Permissions and Access                                                      #
@@ -444,16 +447,6 @@ sudo pmset -a hibernatemode 3
 # Screen                                                                      #
 ###############################################################################
 
-# Start screen saver after 10 minutes
-defaults -currentHost write com.apple.screensaver idleTime -int 600
-
-# Require password immediately after sleep or screen saver begins
-defaults write com.apple.screensaver askForPassword -bool true
-defaults write com.apple.screensaver askForPasswordDelay -int 0
-
-# Screen Saver: Aerial
-defaults -currentHost write com.apple.screensaver moduleDict -dict moduleName -string "Aerial" path -string "${HOME}/Library/Screen Savers/Aerial.saver" type -int 0
-
 # Save screenshots to the desktop
 defaults write com.apple.screencapture location -string "${HOME}/Desktop"
 
@@ -470,6 +463,61 @@ defaults write NSGlobalDomain CGFontRenderingFontSmoothingDisabled -bool false
 
 # Enable HiDPI display modes (requires restart)
 sudo defaults write /Library/Preferences/com.apple.windowserver DisplayResolutionEnabled -bool true
+
+
+###############################################################################
+# Screen Saver                                                                #
+###############################################################################
+
+# Start screen saver after 10 minutes
+defaults -currentHost write com.apple.screensaver idleTime -int 600
+
+# Require password immediately after sleep or screen saver begins
+defaults write com.apple.screensaver askForPassword -bool true
+defaults write com.apple.screensaver askForPasswordDelay -int 0
+
+# Screen Saver: Aerial
+defaults -currentHost write com.apple.screensaver moduleDict -dict moduleName -string "Aerial" path -string "${HOME}/Library/Screen Savers/Aerial.saver" type -int 0
+
+
+###############################################################################
+# Aerial                                                                      #
+###############################################################################
+
+# Disable fade in/out
+# Video format: 4K HEVC
+# Disable if battery < 20%
+# Viewing mode: Cloned
+# Only shows clock on main diplays, without seconds or am/pm
+# Only shows location for 10 seconds on main display only
+# Aligns scenes with system dark mode
+# Never stream videos or previews
+# Only search for new videos once a month
+# Do not check for update, let brew cask handle that
+# Do not notify for new versions on screen
+# Deactivate logs
+/usr/libexec/PlistBuddy \
+    -c "Set     :fadeMode               integer 0       "\
+    -c "Set     :intVideoFormat         integer 3       "\
+    -c "Set     :intOnBatteryMode       integer 2       "\
+    -c "Set     :newViewingMode         integer 1       "\
+    -c "Delete  :LayerClock                             "\
+    -c "Add     :LayerClock:displays    integer 1       "\
+    -c "Add     :LayerClock:showSeconds bool    false   "\
+    -c "Add     :LayerClock:hideAmPm    bool    true    "\
+    -c "Delete  :LayerLocation                          "\
+    -c "Add     :LayerLocation:displays integer 1       "\
+    -c "Add     :LayerLocation:time     integer 1       "\
+    -c "Set     :timeMode               integer 3       "\
+    -c "Set     :neverStreamVideos      bool    false   "\
+    -c "Set     :neverStreamPreviews    bool    false   "\
+    -c "Set     :neverStreamPreviews    bool    false   "\
+    -c "Set     :newVideosMode          integer 1       "\
+    -c "Set     :checkForUpdates        bool    false   "\
+    -c "Set     :updateWhileSaverMode   bool    false   "\
+    -c "Set     :debugMode              bool    false   "\
+    -c "Set     :logToDisk              bool    false   "\
+    ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost/com.JohnCoates.Aerial.plist
 
 
 ###############################################################################
