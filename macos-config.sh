@@ -492,6 +492,7 @@ defaults -currentHost write com.apple.screensaver moduleDict -dict moduleName -s
 # Viewing mode: Cloned
 # Only shows clock on main diplays, without seconds or am/pm
 # Only shows location for 10 seconds on main display only
+# Shows date on main display only
 # Aligns scenes with system dark mode
 # Never stream videos or previews
 # Only search for new videos once a month
@@ -510,6 +511,11 @@ defaults -currentHost write com.apple.screensaver moduleDict -dict moduleName -s
     -c "Delete  :LayerLocation                          "\
     -c "Add     :LayerLocation:displays integer 1       "\
     -c "Add     :LayerLocation:time     integer 1       "\
+    -c "Delete  :LayerDate                              "\
+    -c "Add     :LayerDate:isEnabled    bool    true    "\
+    -c "Add     :LayerDate:displays     integer 1       "\
+    -c "Add     :LayerDate:format       integer 0       "\
+    -c "Add     :LayerDate:withYear     bool    true    "\
     -c "Set     :timeMode               integer 3       "\
     -c "Set     :neverStreamVideos      bool    false   "\
     -c "Set     :neverStreamPreviews    bool    false   "\
