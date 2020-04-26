@@ -484,6 +484,8 @@ defaults -currentHost write com.apple.screensaver moduleDict -dict moduleName -s
 # Aerial                                                                      #
 ###############################################################################
 
+# XXX Layer settings are broken. See: https://github.com/JohnCoates/Aerial/issues/976
+
 # Disable fade in/out
 # Video format: 4K HEVC
 # Disable if battery < 20%
