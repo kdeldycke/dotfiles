@@ -31,8 +31,8 @@ autoload -Uz _zinit
 # Source: http://zsh.sourceforge.net/Doc/Release/Parameters.html#Parameters-Used-By-The-Shell
 
 # Prefer US English and use UTF-8
-LANG="en_US"
-LC_ALL="en_US.UTF-8"
+LANG="en_US.UTF-8"
+LC_ALL=$LANG
 
 # Setting history length
 HISTSIZE=999999
