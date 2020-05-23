@@ -19,6 +19,22 @@ sudo -v
 # Keep-alive: update existing `sudo` time stamp until `.macos` has finished
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
+# Some plist preferences files are not readable either by the user or root
+# unless the Terminal.app gets Full Disk Access permission.
+#
+# ❯ cat /Users/kde/Library/Preferences/com.apple.AddressBook.plist
+# cat: /Users/kde/Library/Preferences/com.apple.AddressBook.plist: Operation not permitted
+#
+# ❯ sudo cat /Users/kde/Library/Preferences/com.apple.AddressBook.plist
+# Password:
+# cat: /Users/kde/Library/Preferences/com.apple.AddressBook.plist: Operation not permitted
+# TODO: Add Full Disk Access to Terminal.app
+
+# Add Terminal as a developer tool.
+# Source: an Apple Xcode engineer at: https://news.ycombinator.com/item?id=23278629
+sudo spctl developer-mode enable-terminal
+# TODO: go to Security & Privacy preference pane, login and check Terminal app.
+
 
 ###############################################################################
 # General UI/UX                                                               #
