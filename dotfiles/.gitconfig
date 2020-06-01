@@ -1,6 +1,6 @@
 [core]
     editor = nvim
-    pager = diff-so-fancy
+    pager = delta --dark --theme='Monokai Extended' --paging never
     autocrlf = input
     whitespace = fix,space-before-tab,tab-in-indent,trailing-space
     excludesfile = ~/.gitignore_global
@@ -22,6 +22,8 @@
     branch = auto
     ui = true
     interactive = auto
+[interactive]
+    diffFilter = delta --color-only
 [help]
     # Autocorrect for simple typos
     autocorrect = 1
@@ -33,8 +35,6 @@
     algorithm = patience
     # Source: https://mobile.twitter.com/brandur/status/1182066723337293828
     noprefix = true
-[diff-so-fancy]
-    first-run = false
 [commit]
     # Source: https://github.com/pstadler/keybase-gpg-github
     gpgsign = true

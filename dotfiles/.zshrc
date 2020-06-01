@@ -146,8 +146,6 @@ ZSH_AUTOSUGGEST_USE_ASYNC=1
 #ZSH_AUTOSUGGEST_MANUAL_REBIND=1
 zinit light zsh-users/zsh-autosuggestions
 
-zinit light zdharma/zsh-diff-so-fancy
-
 zinit light darvid/zsh-poetry
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
@@ -373,6 +371,9 @@ if test -f $HOME/.gnupg/.gpg-agent-info -a -n "$(pgrep gpg-agent)"; then
 else
     eval $(gpg-agent --daemon --write-env-file $HOME/.gnupg/.gpg-agent-info)
 fi
+
+# Deactivate git-delta diff pager.
+export BAT_PAGER=cat
 
 
 ###############################################################################

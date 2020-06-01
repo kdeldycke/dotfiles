@@ -26,6 +26,7 @@ flac
 fzf
 ghostscript
 git
+git-delta
 git-extras
 gnu-sed
 gnu-tar
