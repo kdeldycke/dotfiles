@@ -132,8 +132,8 @@ pluginkit -e use -i com.agilebits.onepassword7.1PasswordSafariAppExtension
 open -a Dropbox
 open -a adguard
 
-# Install Spark.
 mas lucky "Spark - Email App by Readdle"
+mas lucky "Microsoft Remote Desktop"
 
 # Install QuickLooks plugins
 # Source: https://github.com/sindresorhus/quick-look-plugins
