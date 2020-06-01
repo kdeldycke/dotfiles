@@ -108,6 +108,7 @@ subsurface
 telegram-desktop
 tor-browser
 transmission
+zoomus
 "
 
 # Python packages to install from PyPi.
