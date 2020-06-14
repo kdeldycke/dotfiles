@@ -104,6 +104,7 @@ musicbrainz-picard
 netnewswire
 osxfuse
 prey
+samsung-portable-ssd-t5
 signal
 subsurface
 telegram-desktop
