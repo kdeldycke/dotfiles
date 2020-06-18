@@ -6,6 +6,7 @@ BREW_PACKAGES="
 homebrew/cask-drivers/logitech-options
 ack
 aspell
+awscli
 broot
 colordiff
 colortail
