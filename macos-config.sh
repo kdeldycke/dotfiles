@@ -1621,6 +1621,39 @@ defaults write com.apple.messageshelper.AlertsController NotifyAboutKnockKnockKe
 # Show all buddy pictures in conversations
 defaults write com.apple.iChat ShowAllBuddyPictures -bool false
 
+###############################################################################
+# iiNA                                                                        #
+###############################################################################
+
+/usr/libexec/PlistBuddy \
+    -c "Clear dict" \
+    -c "Add :SUAutomaticallyUpdate          integer 1" \
+    -c "Add :SUEnableAutomaticChecks        integer 1" \
+    -c "Add :receiveBetaUpdate              integer 0" \
+    -c "Add :SUHasLaunchedBefore            integer 1" \
+    -c "Add :SUSendProfileInfo              integer 0" \
+    -c "Add :enableAdvancedSettings         integer 1" \
+    -c "Add :enableLogging                  integer 0" \
+    -c "Add :quitWhenNoOpenedWindow         integer 1" \
+    -c "Add :keepOpenOnFileEnd              integer 0" \
+    -c "Add :resumeLastPosition             integer 0" \
+    -c "Add :recordRecentFiles              integer 0" \
+    -c "Add :recordPlaybackHistory          integer 0" \
+    -c "Add :trackAllFilesInRecentOpenMenu  integer 0" \
+    -c "Add :playlistAutoAdd                integer 0" \
+    -c "Add :playlistAutoPlayNext           integer 0" \
+    -c "Add :screenShotFolder               string  '~/Desktop'" \
+    -c "Add :themeMaterial                  integer 4" \
+    -c "Add :resizeWindowTiming             integer 0" \
+    -c "Add :controlBarToolbarButtons       array" \
+    -c "Add :controlBarToolbarButtons:0     integer 2" \
+    -c "Add :controlBarToolbarButtons:0     integer 1" \
+    -c "Add :controlBarToolbarButtons:0     integer 5" \
+    -c "Add :controlBarToolbarButtons:0     integer 0" \
+    -c "Add :showChapterPos                 integer 1" \
+    -c "Add :autoSearchOnlineSub            integer 1" \
+    ~/Library/Preferences/com.colliderli.iina.plist
+
 
 ###############################################################################
 # Transmission.app                                                            #
