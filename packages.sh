@@ -26,6 +26,7 @@ ffmpeg
 findutils
 flac
 fzf
+gawk
 ghostscript
 git
 git-delta
