@@ -3,6 +3,7 @@ set -x
 
 # Packages installed from Brew.
 BREW_PACKAGES="
+homebrew/cask-drivers/logitech-options
 ack
 aspell
 broot
