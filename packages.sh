@@ -89,6 +89,7 @@ balenaetcher
 bisq
 caldigit-thunderbolt-charging
 caprine
+disk-arbitrator
 dropbox
 dupeguru
 electrum
