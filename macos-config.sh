@@ -507,48 +507,92 @@ defaults -currentHost write com.apple.screensaver moduleDict -dict moduleName -s
 # Aerial                                                                      #
 ###############################################################################
 
-# XXX Layer settings are broken. See: https://github.com/JohnCoates/Aerial/issues/976
-
 # Disable fade in/out
+defaults write ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost/com.JohnCoates.Aerial.plist \
+    fadeMode -int 0
+
 # Video format: 4K HEVC
+defaults write ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost/com.JohnCoates.Aerial.plist \
+    intVideoFormat -int 3
+
 # Disable if battery < 20%
+defaults write ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost/com.JohnCoates.Aerial.plist \
+    intOnBatteryMode -int 2
+
 # Viewing mode: Cloned
-# Only shows clock on main diplays, without seconds or am/pm
-# Only shows location for 10 seconds on main display only
-# Shows date on main display only
+defaults write ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost/com.JohnCoates.Aerial.plist \
+    newViewingMode -int 1
+
 # Aligns scenes with system dark mode
+defaults write ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost/com.JohnCoates.Aerial.plist \
+    timeMode -int 3
+
 # Never stream videos or previews
+defaults write ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost/com.JohnCoates.Aerial.plist \
+    neverStreamVideos -bool false
+defaults write ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost/com.JohnCoates.Aerial.plist \
+    neverStreamPreviews -bool false
+
 # Only search for new videos once a month
+defaults write ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost/com.JohnCoates.Aerial.plist \
+    newVideosMode -int 1
+
 # Do not check for update, let brew cask handle that
+defaults write ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost/com.JohnCoates.Aerial.plist \
+    checkForUpdates -bool false
+
 # Do not notify for new versions on screen
-# Deactivate logs
-/usr/libexec/PlistBuddy \
-    -c "Set     :fadeMode               integer 0       "\
-    -c "Set     :intVideoFormat         integer 3       "\
-    -c "Set     :intOnBatteryMode       integer 2       "\
-    -c "Set     :newViewingMode         integer 1       "\
-    -c "Delete  :LayerClock                             "\
-    -c "Add     :LayerClock:displays    integer 1       "\
-    -c "Add     :LayerClock:showSeconds bool    false   "\
-    -c "Add     :LayerClock:hideAmPm    bool    true    "\
-    -c "Delete  :LayerLocation                          "\
-    -c "Add     :LayerLocation:displays integer 1       "\
-    -c "Add     :LayerLocation:time     integer 1       "\
-    -c "Delete  :LayerDate                              "\
-    -c "Add     :LayerDate:isEnabled    bool    true    "\
-    -c "Add     :LayerDate:displays     integer 1       "\
-    -c "Add     :LayerDate:format       integer 0       "\
-    -c "Add     :LayerDate:withYear     bool    true    "\
-    -c "Set     :timeMode               integer 3       "\
-    -c "Set     :neverStreamVideos      bool    false   "\
-    -c "Set     :neverStreamPreviews    bool    false   "\
-    -c "Set     :neverStreamPreviews    bool    false   "\
-    -c "Set     :newVideosMode          integer 1       "\
-    -c "Set     :checkForUpdates        bool    false   "\
-    -c "Set     :updateWhileSaverMode   bool    false   "\
-    -c "Set     :debugMode              bool    false   "\
-    -c "Set     :logToDisk              bool    false   "\
-    ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost/com.JohnCoates.Aerial.${HOST_UUID}.plist
+defaults write ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost/com.JohnCoates.Aerial.plist \
+    updateWhileSaverMode -bool false
+
+# Deactivate debug mode and logs
+defaults write ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost/com.JohnCoates.Aerial.plist \
+    debugMode -bool false
+defaults write ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost/com.JohnCoates.Aerial.plist \
+    logToDisk -bool false
+
+# Aerial layer widget configuration is a serialized JSON string. This hack will
+# only allows preferences to be accounted for if all keys of a widget conf are
+# present. See: https://github.com/JohnCoates/Aerial/issues/976
+
+# Only shows clock on main diplays, without seconds or am/pm
+defaults write ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost/com.JohnCoates.Aerial.plist \
+    LayerClock -string \
+    '{
+        "isEnabled": true,
+        "displays": 1,
+        "showSeconds": false,
+        "hideAmPm": true,
+        "clockFormat" : 1,
+        "corner" : 3,
+        "fontName" : "Helvetica Neue Medium",
+        "fontSize" : 50
+    }'
+
+# Only shows location for 10 seconds on main display only
+defaults write ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost/com.JohnCoates.Aerial.plist \
+    LayerLocation -string \
+    '{
+        "isEnabled": true,
+        "displays": 1,
+        "time": 1,
+        "corner" : 7,
+        "fontName" : "Helvetica Neue Medium",
+        "fontSize" : 28
+    }'
+
+# Shows date on main display only
+defaults write ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost/com.JohnCoates.Aerial.plist \
+    LayerDate -string \
+    '{
+        "isEnabled": true,
+        "displays": 1,
+        "format": 0,
+        "withYear": true,
+        "corner": 3,
+        "fontName": "Helvetica Neue Thin",
+        "fontSize": 25
+    }'
 
 
 ###############################################################################
