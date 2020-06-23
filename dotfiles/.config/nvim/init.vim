@@ -276,7 +276,3 @@ let g:vim_markdown_conceal_code_blocks = 0
 
 " Plist
 au BufRead,BufNewFile *.plist set filetype=plist
-
-" Auto-call isort on Python files.
-" Source: https://github.com/fisadev/vim-isort/issues/36#issuecomment-577683883
-autocmd BufWritePost *.py :!isort %
