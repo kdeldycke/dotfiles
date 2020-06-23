@@ -1835,6 +1835,29 @@ defaults write com.musicbrainz.Picard setting.acoustid_apikey -string "lP2ph5Sm"
 
 
 ###############################################################################
+# Fork                                                                        #
+###############################################################################
+
+# Check stable update every week.
+defaults write com.DanPristupov.Fork SUAutomaticallyUpdate -int 1
+defaults write com.DanPristupov.Fork applicationUpdateChannel -int 1
+defaults write com.DanPristupov.Fork SUScheduledCheckInterval -int 604800
+
+# Default repository source.
+defaults write com.DanPristupov.Fork defaultSourceFolder -string "~"
+
+# Set font.
+defaults write com.DanPristupov.Fork diffFontName -string "SauceCodeProNerdFontComplete-Regular"
+defaults write com.DanPristupov.Fork diffFontSize -int 11
+
+# Disable telemetry.
+defaults write com.DanPristupov.Fork disableAnonymousUsageReports -int 1
+
+# Use latest git from brew.
+defaults write com.DanPristupov.Fork gitInstanceType -int 3
+
+
+###############################################################################
 # Kill affected applications                                                  #
 ###############################################################################
 
