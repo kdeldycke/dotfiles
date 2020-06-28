@@ -1,4 +1,4 @@
-name: Run complete installation of dotfiles
+name: Tests
 on:
   push:
   pull_request:
@@ -6,10 +6,9 @@ on:
 jobs:
 
   tests:
-    name: Test full installation
+    name: Run full installation
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@master
       - name: Run install
-        run : |
-          ./install.sh
+        run : ./install.sh
