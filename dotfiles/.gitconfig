@@ -1,6 +1,6 @@
 [core]
     editor = nvim
-    pager = delta --dark --theme='Monokai Extended' --paging never
+    pager = delta
     autocrlf = input
     whitespace = fix,space-before-tab,tab-in-indent,trailing-space
     excludesfile = ~/.gitignore_global
@@ -22,6 +22,11 @@
     branch = auto
     ui = true
     interactive = auto
+[delta]
+    dark
+    theme = 'Monokai Extended'
+    paging = never
+    line-numbers
 [interactive]
     diffFilter = delta --color-only
 [help]
