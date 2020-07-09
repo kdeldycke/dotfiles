@@ -103,6 +103,7 @@ java
 keybase
 libreoffice
 macdown
+monitorcontrol
 mullvadvpn
 musicbrainz-picard
 netnewswire
