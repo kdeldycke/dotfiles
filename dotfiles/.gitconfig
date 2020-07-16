@@ -26,6 +26,7 @@
     dark
     theme = 'Monokai Extended'
     paging = never
+    hunk-header-style = omit
     line-numbers
 [interactive]
     diffFilter = delta --color-only
