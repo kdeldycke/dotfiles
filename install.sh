@@ -200,21 +200,16 @@ brew cleanup
 brew services cleanup
 
 # Use latest pip.
-pip install --upgrade pip
-
-# Fix brew/pip issue.
-# Source: https://github.com/Homebrew/homebrew-core/issues/43866
-# https://discourse.brew.sh/t/pip-install-upgrade-pip-breaks-pip-when-installed-with-homebrew/5338
-ln -sf /usr/local/bin/pip $(brew --prefix python)/libexec/bin/pip
+python -m pip install --upgrade pip
 
 # Install & upgrade all global python modules
 for p in $PYTHON_PACKAGES
 do
-    pip install --upgrade "$p"
+    python -m pip install --upgrade "$p"
 done
 
 # Generate pip and poetry completion.
-pip completion --zsh > ~/.zfunc/_pip
+python -m pip completion --zsh > ~/.zfunc/_pip
 poetry completions zsh > ~/.zfunc/_poetry
 _MPM_COMPLETE=source_zsh mpm > ~/.zfunc/_mpm
 
