@@ -87,6 +87,7 @@ aerial
 amethyst
 balenaetcher
 bisq
+blockblock
 caldigit-thunderbolt-charging
 caprine
 disk-arbitrator

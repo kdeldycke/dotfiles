@@ -65,6 +65,7 @@ Manual setup required to finish up the perfect configuration.
 
 This is a list of manual post-installation steps required to fully configure the system. Haven't found any way to automate them all.
 
+* Go to `Full Disk Access` > Click the `+` button > Go to `Applications` > `Utilities` > Choose `BlockBlock Helper.app`.
 * Copy SSH (`./dotfiles/dotfiles/.ssh/`) and GPG (`./dotfiles/dotfiles/.gnupg/`) keys from backups.
 * `System Preferences` -> `Touch ID` -> `Add other fingerprints`.
 * Uncheck all options to disallow analytics sharing: `System Preferences` -> `Privacy` -> `Analytics`.
