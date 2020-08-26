@@ -103,6 +103,7 @@ iina
 java
 keybase
 libreoffice
+lulu
 macdown
 monitorcontrol
 mullvadvpn
