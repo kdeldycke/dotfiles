@@ -15,6 +15,7 @@ curl
 dmg2img
 dockutil
 duti
+exa
 exiftool
 ext2fuse
 ext4fuse

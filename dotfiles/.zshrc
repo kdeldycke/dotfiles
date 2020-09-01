@@ -39,7 +39,7 @@ HISTSIZE=999999
 SAVEHIST=$HISTSIZE
 
 # Make some commands not show up in history
-HISTORY_IGNORE='(ls|ll|cd|cd ..|pwd|exit|date|history)'
+HISTORY_IGNORE='(l|ls|ll|cd|cd ..|pwd|exit|date|history)'
 
 # Get rid of extra empty space on the right.
 # See: https://github.com/romkatv/powerlevel10k#extra-space-without-background-on-the-right-side-of-right-prompt
@@ -215,20 +215,6 @@ for line in "${(@f)"$(<${PATH_CACHE})"}"
 # Coloured output, aliases and good defaults.
 ###############################################################################
 
-# Set default ls color schemes (source: https://github.com/seebi/dircolors-solarized/issues/10 ).
-# macOS color translations generated with http://geoff.greer.fm/lscolors/
-export CLICOLOR=1
-export LSCOLORS="gxfxbEaEBxxEhEhBaDaCaD"
-
-# Activate global dir colors if found.
-alias dircolors='gdircolors'
-if [ -f $HOME/.dircolors ]
-then
-    eval "$(dircolors -b $HOME/.dircolors)"
-else
-    eval "$(dircolors -b)"
-fi
-
 alias du='du -csh'
 alias df='df -h'
 alias grep='grep --color=auto'
@@ -271,7 +257,6 @@ if [ -n GRC ]; then
     alias ld='colourify ld'
     #ldap
     #log
-    alias ls='colourify ls'
     alias make='colourify make'
     alias mount='colourify mount'
     #mtr
@@ -284,17 +269,11 @@ if [ -n GRC ]; then
     #wdiff
 fi
 
-# Detect which `ls` flavor is in use.
-if ls --color > /dev/null 2>&1; then
-    # GNU `ls`
-    lsflags="--color"
-else
-    # macOS `ls`
-    lsflags="-G"
-fi
-lsflags+=" --human-readable --almost-all --group-directories-first "
-alias ll="ls -l --time-style='+%Y-%m-%d %H:%M' ${lsflags}"
-alias ls="ls --indicator-style=slash ${lsflags}"
+# exa is a modern ls.
+LS_FLAGS="--all --group-directories-first"
+alias ls="exa ${LS_FLAGS}"
+alias ll="exa ${LS_FLAGS} --long --group --header --modified --sort=name --git --time-style=long-iso --classify"
+alias l="ls"
 
 # Handy aliases for going up in a directory
 alias ..="cd .."
