@@ -439,9 +439,6 @@ sudo defaults write /Library/Preferences/com.apple.timezone.auto.plist Active -b
 # Enable 24 hour time.
 defaults write com.apple.menuextra.clock DateFormat -string "EEE d MMM HH:mm"
 
-# Stop iTunes from responding to the keyboard media keys
-launchctl unload -w /System/Library/LaunchAgents/com.apple.rcd.plist 2> /dev/null
-
 
 ###############################################################################
 # Energy saving                                                               #
