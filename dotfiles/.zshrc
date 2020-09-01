@@ -269,9 +269,10 @@ if [ -n GRC ]; then
 fi
 
 # exa is a modern ls.
-LS_FLAGS="--all --group-directories-first"
-alias ls="exa ${LS_FLAGS}"
-alias ll="exa ${LS_FLAGS} --long --group --header --modified --sort=name --git --time-style=long-iso --classify"
+export TIME_STYLE="long-iso"
+LS_FLAGS="--all --group-directories-first --sort=name"
+alias ls="exa ${LS_FLAGS} --across"
+alias ll="exa ${LS_FLAGS} --long --group --header --binary --created --modified --git --classify"
 alias l="ls"
 alias tree="ll --tree"
 
