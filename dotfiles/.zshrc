@@ -222,7 +222,6 @@ alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 alias diff="colordiff -ru"
 alias dmesg="dmesg --color"
-alias tree='tree -Csh'
 alias ccat='pygmentize -g'
 
 alias top="htop"
@@ -274,6 +273,7 @@ LS_FLAGS="--all --group-directories-first"
 alias ls="exa ${LS_FLAGS}"
 alias ll="exa ${LS_FLAGS} --long --group --header --modified --sort=name --git --time-style=long-iso --classify"
 alias l="ls"
+alias tree="ll --tree"
 
 # Handy aliases for going up in a directory
 alias ..="cd .."
