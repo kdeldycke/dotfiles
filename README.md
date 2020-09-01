@@ -10,7 +10,7 @@ Dot-files and system configuration for Python developers on **macOS**.
 * Aimed at Python programmers using `Neovim`.
 * Targets `Zsh` shell (now the [default since Catalina](https://support.apple.com/en-gb/HT208050)).
 * Produce colored output for most of shell commands.
-* All color schemes are based on [Solarized](http://ethanschoonover.com/solarized).
+* All color schemes are based on [Monokai](https://web.archive.org/web/20161107090516/http://www.monokai.nl/blog/2006/07/).
 * Terminal and coding font is [Source Code Pro](https://en.wikipedia.org/wiki/Source_Code_Pro).
 * Keeps macOS fast, lean and secure.
 
@@ -119,8 +119,7 @@ distributions has been dropped](https://github.com/kdeldycke/dotfiles/commit/e66
 For convenience, some third party code and assets are hard-copied in place.
 These particular items have their own license and copyright:
 
-* [Solarized for Terminal.App](https://github.com/tomislav/osx-terminal.app-colors-solarized).
-© Tomislav Filipčić. Unspecified open-source license.
+* [Monokai Soda](https://github.com/lysyi3m/macos-terminal-themes#monokai-soda-download).
 
 The rest of the content is configuration and code I accumulated over years.
 Some was heavily inspired by other dotfiles repositories. But each time I

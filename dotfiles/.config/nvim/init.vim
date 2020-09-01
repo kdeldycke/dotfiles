@@ -25,7 +25,7 @@ call dein#begin(expand(plugins_dir))
 call dein#add('Shougo/dein.vim')
 
 " Color scheme
-call dein#add('altercation/vim-colors-solarized')
+call dein#add('crusoexia/vim-monokai')
 
 " GUI
 call dein#add('vim-airline/vim-airline')
@@ -174,9 +174,7 @@ set undoreload=1000
 
 " Color scheme.
 syntax enable
-set background=dark
-let g:solarized_termtrans = 1
-colorscheme solarized
+colorscheme monokai
 
 
 " Font
@@ -235,7 +233,7 @@ augroup END
 
 " Airline
 set noshowmode
-let g:airline_theme = 'solarized'
+let g:airline_theme = 'molokai'
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#hunks#non_zero_only = 1
 let g:airline#extensions#tabline#enabled = 2
