@@ -125,7 +125,7 @@ mas lucky "Numbers"
 mas lucky "1Password 7"
 open -a "1Password 7"
 # Activate Safari extention.
-# Source: https://github.com/kdeldycke/kevin-deldycke-blog/blob/master/content/posts/macos-commands.md
+# Source: https://github.com/kdeldycke/kevin-deldycke-blog/blob/main/content/posts/macos-commands.md
 pluginkit -e use -i com.agilebits.onepassword7.1PasswordSafariAppExtension
 
 # Open apps so I'll not forget to login

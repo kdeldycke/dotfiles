@@ -2,7 +2,7 @@
 
 Dot-files and system configuration for Python developers on **macOS**.
 
-![Mac OS X 10.13 High Sierra solarized terminal and vim](https://raw.githubusercontent.com/kdeldycke/dotfiles/master/assets/macos-10.13.jpg)
+![Mac OS X 10.13 High Sierra solarized terminal and vim](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/macos-10.13.jpg)
 
 
 ## Features
@@ -51,7 +51,7 @@ the macOS image](https://support.apple.com/en-us/HT201372):
 
         $ mkdir ~/dotfiles
         $ cd ~/dotfiles
-        $ curl -fsSL https://github.com/kdeldycke/dotfiles/tarball/master | tar --strip-components 1 -xvzf -
+        $ curl -fsSL https://github.com/kdeldycke/dotfiles/tarball/main | tar --strip-components 1 -xvzf -
 
 2. Now you can install the dotfiles on your system:
 
@@ -91,10 +91,10 @@ To upgrade submodules:
 
 ## Versions
 
-Only the current `master` branch is supported and actively maintained. Older
+Only the current default `main` branch is supported and actively maintained. Older
 branches are available for archive.
 
-* [macOS 10.15 (Catalina)](https://github.com/kdeldycke/dotfiles/tree/master) (current)
+* [macOS 10.15 (Catalina)](https://github.com/kdeldycke/dotfiles/tree/main) (current)
 * [macOS 10.14 (Mojave)](https://github.com/kdeldycke/dotfiles/tree/macos-10.14)
 * [macOS 10.13 (High Sierra)](https://github.com/kdeldycke/dotfiles/tree/macos-10.13)
 * [macOS 10.12 (Sierra)](https://github.com/kdeldycke/dotfiles/tree/macos-10.12)
