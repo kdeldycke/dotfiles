@@ -905,6 +905,9 @@ defaults write com.apple.dock showhidden -bool true
 # Disable the Launchpad gesture (pinch with thumb and three fingers)
 #defaults write com.apple.dock showLaunchpadGestureEnabled -int 0
 
+# Make the cmd-tab app switcher show up on all monitors.
+#defaults write com.apple.Dock appswitcher-all-displays -bool true
+
 # Reset Launchpad, but keep the desktop wallpaper intact
 find "${HOME}/Library/Application Support/Dock" -maxdepth 1 -name "*-*.db" -delete
 
