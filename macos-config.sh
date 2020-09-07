@@ -1471,6 +1471,21 @@ defaults write com.apple.ActivityMonitor IconType -int 5
 
 
 ###############################################################################
+# Quartz Debug                                                                #
+###############################################################################
+
+# Lets the window list work.
+defaults write com.apple.QuartzDebug QuartzDebugPrivateInterface -bool YES
+
+# Show useful things in the dock icon.
+defaults write com.apple.QuartzDebug QDDockShowFramemeterHistory -bool YES
+defaults write com.apple.QuartzDebug QDDockShowNumericalFps -bool YES
+
+# Identify which app a window belongs to (press ⌃⌥ while hovering over it).
+defaults write com.apple.QuartzDebug QDShowWindowInfoOnMouseOver -bool YES
+
+
+###############################################################################
 # Contacts                                                                    #
 ###############################################################################
 
