@@ -106,6 +106,7 @@ java
 keybase
 knockknock
 libreoffice
+little-snitch
 lulu
 macdown
 monitorcontrol
