@@ -92,6 +92,7 @@ blockblock
 caldigit-thunderbolt-charging
 caprine
 disk-arbitrator
+disk-drill
 dropbox
 dupeguru
 electrum
