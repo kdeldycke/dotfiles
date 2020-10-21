@@ -103,6 +103,7 @@ google-drive-file-stream
 iina
 java
 keybase
+knockknock
 libreoffice
 lulu
 macdown
