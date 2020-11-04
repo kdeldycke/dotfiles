@@ -54,6 +54,7 @@ openssl
 optipng
 osxutils
 p7zip
+pandoc
 pdftk-java
 pinentry-mac
 pngcrush
@@ -91,6 +92,7 @@ bisq
 blockblock
 caldigit-thunderbolt-charging
 caprine
+db-browser-for-sqlite
 disk-arbitrator
 disk-drill
 dropbox
@@ -103,6 +105,7 @@ gimp
 google-drive-file-stream
 iina
 java
+kap
 keybase
 knockknock
 libreoffice
