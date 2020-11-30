@@ -1,5 +1,7 @@
 {
-    "editor.columnSelection": true,
     "telemetry.enableCrashReporter": false,
-    "telemetry.enableTelemetry": false
+    "telemetry.enableTelemetry": false,
+    "workbench.colorTheme": "Monokai Dimmed",
+    "editor.fontFamily": "\"SauceCodePro Nerd Font\", Menlo, Monaco, 'Courier New', monospace",
+    "editor.fontSize": 14,
 }
