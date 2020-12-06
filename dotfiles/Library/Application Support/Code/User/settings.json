@@ -1,7 +1,19 @@
 {
     "telemetry.enableCrashReporter": false,
     "telemetry.enableTelemetry": false,
-    "workbench.colorTheme": "Monokai Dimmed",
     "editor.fontFamily": "\"SauceCodePro Nerd Font\", Menlo, Monaco, 'Courier New', monospace",
-    "editor.fontSize": 14,
+    "editor.minimap.showSlider": "always",
+    "editor.cursorBlinking": "solid",
+    "workbench.colorTheme": "Monokai",
+    "workbench.tree.indent": 16,
+    "workbench.editor.showIcons": false,
+    "explorer.decorations.colors": false,
+    "editor.overviewRulerBorder": false,
+    "editor.renderLineHighlight": "gutter",
+    "editor.renderLineHighlightOnlyWhenFocus": true,
+    "editor.roundedSelection": false,
+    "editor.stablePeek": true,
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.wrappingIndent": "deepIndent",
+    "files.trimTrailingWhitespace": true
 }
