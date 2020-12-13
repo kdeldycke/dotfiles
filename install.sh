@@ -159,14 +159,16 @@ GOOGLE_APPLICATION_CREDENTIALS=~/.google-cloud-auth.json gcsfuse --implicit-dirs
 # Install Popcorn Time.
 brew cask reinstall https://raw.githubusercontent.com/popcorn-official/popcorn-desktop/development/casks/popcorn-time.rb
 
-# Install and configure bitbar.
-brew cask install bitbar
-defaults write com.matryer.BitBar pluginsDirectory "~/.bitbar"
-wget -O "${HOME}/.bitbar/btc.17m.sh" https://github.com/matryer/bitbar-plugins/raw/master/Cryptocurrency/Bitcoin/bitstamp.net/last.10s.sh
-sed -i "s/Bitstamp: /Ƀ/" "${HOME}/.bitbar/btc.17m.sh"
-wget -O "${HOME}/.bitbar/brew-services.7m.rb" https://github.com/matryer/bitbar-plugins/raw/master/Dev/Homebrew/brew-services.10m.rb
-chmod +x ${HOME}/.bitbar/*.{sh,py,rb}
-open -a BitBar
+# Install and configure swiftbar.
+brew tap melonamin/formulae
+brew install swiftbar
+defaults write com.ameba.SwiftBar PluginDirectory "~/.swiftbar"
+defaults write com.ameba.SwiftBar SUHasLaunchedBefore 1
+wget -O "${HOME}/.swiftbar/btc.17m.sh" https://github.com/matryer/bitbar-plugins/raw/master/Cryptocurrency/Bitcoin/bitstamp.net/last.10s.sh
+sed -i "s/Bitstamp: /Ƀ/" "${HOME}/.swiftbar/btc.17m.sh"
+wget -O "${HOME}/.swiftbar/brew-services.7m.rb" https://github.com/matryer/bitbar-plugins/raw/master/Dev/Homebrew/brew-services.10m.rb
+chmod +x ${HOME}/.swiftbar/*.{sh,py,rb}
+open -a SwiftBar
 
 # Open Tor Browser once to create a default profile.
 open --wait-apps -a "Tor Browser"
