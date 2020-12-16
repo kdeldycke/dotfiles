@@ -7,7 +7,7 @@ jobs:
 
   tests:
     name: Run full installation
-    runs-on: macos-latest
+    runs-on: macos-11.0
     steps:
       - uses: actions/checkout@master
       - name: Run install
