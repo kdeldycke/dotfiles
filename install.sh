@@ -122,6 +122,9 @@ open -a "1Password 7"
 # Source: https://github.com/kdeldycke/kevin-deldycke-blog/blob/main/content/posts/macos-commands.md
 pluginkit -e use -i com.agilebits.onepassword7.1PasswordSafariAppExtension
 
+# WiFi Explorer Lite
+mas install 1408727408
+
 # Open apps so I'll not forget to login
 open -a Dropbox
 open -a adguard
