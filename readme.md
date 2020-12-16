@@ -4,7 +4,6 @@ Dot-files and system configuration for Python developers on **macOS**.
 
 ![Mac OS X 10.13 High Sierra solarized terminal and vim](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/macos-10.13.jpg)
 
-
 ## Features
 
 * Aimed at Python programmers using `Neovim`.
@@ -13,7 +12,6 @@ Dot-files and system configuration for Python developers on **macOS**.
 * All color schemes are based on [Monokai](https://web.archive.org/web/20161107090516/http://www.monokai.nl/blog/2006/07/).
 * Terminal and coding font is [Source Code Pro](https://en.wikipedia.org/wiki/Source_Code_Pro).
 * Keeps macOS fast, lean and secure.
-
 
 ## Pre-installation
 
@@ -27,7 +25,9 @@ We will reinstall macOS from scratch.
 double-check it is mounted at `/Volumes/Untitled`, and finally [flash it with
 the macOS image](https://support.apple.com/en-us/HT201372):
 
+        ```shell-session
         $ sudo /Applications/Install\ macOS\ Catalina.app/Contents/Resources/createinstallmedia --volume /Volumes/Untitled --nointeraction
+        ```
 
 1. Reboot your machine, reinstall macOS, create a user.
 
@@ -37,27 +37,31 @@ the macOS image](https://support.apple.com/en-us/HT201372):
 
 1. Go to `Full Disk Access` > Click the `+` button > Go to `Applications` > `Utilities` > Choose `Terminal.app`.
 
-
 ## Install
 
 1. First, you need a local copy of this project.
 
    If you're lucky and have `git` already installed on your machine, do:
 
+        ```shell-session
         $ cd ~
         $ git clone --recursive https://github.com/kdeldycke/dotfiles.git
+        ```
 
    If you don't have `git` yet, fetch an archive of the repository:
 
+        ```shell-session
         $ mkdir ~/dotfiles
         $ cd ~/dotfiles
         $ curl -fsSL https://github.com/kdeldycke/dotfiles/tarball/main | tar --strip-components 1 -xvzf -
+        ```
 
 2. Now you can install the dotfiles on your system:
 
-        $ cd ~/dotfiles
-        $ ./install.sh 2>&1 | tee ./install.log
-
+```shell-session
+$ cd ~/dotfiles
+$ ./install.sh 2>&1 | tee ./install.log
+```
 
 ## Post-installation
 
@@ -73,14 +77,14 @@ This is a list of manual post-installation steps required to fully configure the
 * Uncheck all options to disallow analytics sharing: `System Preferences` -> `Privacy` -> `Analytics`.
 * Check `Limit Ad Tracking` option in: `System Preferences` -> `Privacy` -> `Advertising`.
 
-
 ## Upgrade
 
 I'm trying to make the install procedure indempotent so you'll just have to
 call the script again to upgrade your system:
 
-    $ ./install.sh 2>&1 | tee ./install.log
-
+```shell-session
+$ ./install.sh 2>&1 | tee ./install.log
+```
 
 ## Maintenance
 
@@ -88,8 +92,9 @@ call the script again to upgrade your system:
 
 To upgrade submodules:
 
-    $ git submodule update --recursive --remote
-
+```shell-session
+$ git submodule update --recursive --remote
+```
 
 ## Versions
 
@@ -109,13 +114,11 @@ branches are available for archive.
 Former [support of Kubuntu and Ubuntu Server Linux
 distributions has been dropped](https://github.com/kdeldycke/dotfiles/commit/e667245f6a4c90c6d41907e392adb74c5acfcf13). You can still find these as dedicated branches, but all are quite ancient (2016).
 
-
 ## Resources
 
 * [Awesome OSX command line](https://github.com/herrbischoff/awesome-osx-command-line)
 * [`ingrino`'s dotfiles](https://github.com/lingrino/dotfiles)
 * [Mathias Bynens `.macos`](https://github.com/mathiasbynens/dotfiles/blob/master/.macos)
-
 
 ## License
 
