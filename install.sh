@@ -94,10 +94,7 @@ do
 done
 
 # Install cask packages.
-for PACKAGE in $CASK_PACKAGES
-do
-   brew cask install "$PACKAGE"
-done
+for PACKAGE (${(f)CASK_PACKAGES}) brew install --cask "$PACKAGE"
 
 # htop-osx requires root privileges to correctly display all running processes.
 sudo chown root:wheel "$(brew --prefix)/bin/htop"
@@ -137,14 +134,14 @@ mas lucky "Microsoft Remote Desktop"
 
 # Install QuickLooks plugins
 # Source: https://github.com/sindresorhus/quick-look-plugins
-brew cask install epubquicklook
-brew cask install qlcolorcode
-brew cask install qlimagesize
-brew cask install qlmarkdown
-brew cask install qlstephen
-brew cask install qlvideo
-brew cask install quicklook-json
-brew cask install suspicious-package
+brew install --cask epubquicklook
+brew install --cask qlcolorcode
+brew install --cask qlimagesize
+brew install --cask qlmarkdown
+brew install --cask qlstephen
+brew install --cask qlvideo
+brew install --cask quicklook-json
+brew install --cask suspicious-package
 qlmanage -r
 
 # Install and configure Google Cloud Storage bucket mount point.
