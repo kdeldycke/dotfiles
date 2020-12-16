@@ -88,10 +88,7 @@ brew cask install xquartz
 source ./packages.sh
 
 # Install brew packages.
-for PACKAGE in $BREW_PACKAGES
-do
-   brew install "$PACKAGE"
-done
+for PACKAGE (${(f)BREW_PACKAGES}) brew install "$PACKAGE"
 
 # Install cask packages.
 for PACKAGE (${(f)CASK_PACKAGES}) brew install --cask "$PACKAGE"
@@ -200,10 +197,7 @@ brew services cleanup
 python -m pip install --upgrade pip
 
 # Install & upgrade all global python modules
-for p in $PYTHON_PACKAGES
-do
-    python -m pip install --upgrade "$p"
-done
+for p (${(f)PYTHON_PACKAGES}) python -m pip install --upgrade "$p"
 
 # Generate pip and poetry completion.
 python -m pip completion --zsh > ~/.zfunc/_pip
