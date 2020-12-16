@@ -86,6 +86,7 @@ zsh
 CASK_PACKAGES="
 adguard
 aerial
+altserver
 amethyst
 balenaetcher
 bisq
