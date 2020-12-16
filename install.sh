@@ -69,10 +69,10 @@ brew update
 brew upgrade
 
 # Add Cask
-brew tap caskroom/cask
+brew tap homebrew/cask
 
 # Add drivers.
-brew tap caskroom/drivers
+brew tap homebrew/homebrew-cask-drivers
 
 # Add services
 brew tap homebrew/services
