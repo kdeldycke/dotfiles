@@ -124,7 +124,7 @@ telegram-desktop
 tor-browser
 transmission
 visual-studio-code
-zoomus
+zoom
 "
 
 # Python packages to install from PyPi.
