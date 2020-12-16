@@ -112,11 +112,11 @@ sudo rm -rf /Applications/GarageBand.app
 sudo rm -rf /Applications/Pages.app
 
 # Install Numbers and Keynotes
-mas lucky "Keynote"
-mas lucky "Numbers"
+mas install 409183694
+mas install 409203825
 
 # Install 1Password.
-mas lucky "1Password 7"
+mas install 1333542190
 open -a "1Password 7"
 # Activate Safari extention.
 # Source: https://github.com/kdeldycke/kevin-deldycke-blog/blob/main/content/posts/macos-commands.md
@@ -126,8 +126,11 @@ pluginkit -e use -i com.agilebits.onepassword7.1PasswordSafariAppExtension
 open -a Dropbox
 open -a adguard
 
-mas lucky "Spark - Email App by Readdle"
-mas lucky "Microsoft Remote Desktop"
+# Spark - Email App by Readdle
+mas install 1176895641
+ 
+# Microsoft Remote Desktop    
+mas install 1295203466
 
 # Install QuickLooks plugins
 # Source: https://github.com/sindresorhus/quick-look-plugins
