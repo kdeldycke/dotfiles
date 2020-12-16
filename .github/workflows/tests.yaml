@@ -3,6 +3,9 @@ name: Tests
 "on":
   push:
   pull_request:
+  schedule:
+    # Run tests every Monday at 9:17 to catch regressions.
+    - cron: "17 9 * * 1"
 
 jobs:
 
