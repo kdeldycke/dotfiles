@@ -10,6 +10,6 @@ jobs:
     name: Run full installation
     runs-on: macos-11.0
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2.3.4
       - name: Run install
         run : ./install.sh
