@@ -76,7 +76,6 @@ kern.maxfilesperproc=18000
 EOF
 
 # Remove default content
-rm -rf "${HOME}/Downloads/About Downloads.lpdf"
 rm -rf "${HOME}/Public/Drop Box"
 rm -rf "${HOME}/Public/.com.apple.timemachine.supported"
 
