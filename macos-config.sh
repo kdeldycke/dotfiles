@@ -358,7 +358,7 @@ sudo perl -p -i -e 's|filesz:2M|filesz:10M|g' /private/etc/security/audit_contro
 sudo perl -p -i -e 's|expire-after:10M|expire-after: 30d |g' /private/etc/security/audit_control
 
 ###############################################################################
-# Trackpad, mouse, keyboard, Bluetooth accessories, and input                 #
+# Trackpad, mouse, keyboard, Bluetooth accessories and input                  #
 ###############################################################################
 
 # Set mouse and scrolling speed.
@@ -554,7 +554,7 @@ defaults write ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSav
 defaults write ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost/com.JohnCoates.Aerial.plist \
     newVideosMode -int 1
 
-# Do not check for update, let brew cask handle that
+# Do not check for update, let brew handle that
 defaults write ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost/com.JohnCoates.Aerial.plist \
     checkForUpdates -bool false
 
