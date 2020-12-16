@@ -156,8 +156,6 @@ GOOGLE_APPLICATION_CREDENTIALS=~/.google-cloud-auth.json gcsfuse --implicit-dirs
 # sudo ln -s /usr/local/sbin/mount_gcsfuse /sbin/
 # mount -t gcsfuse -o rw,user,keyfile="${HOME}/.google-cloud-auth.json" backup-imac-restic "${HOME}/gcs"
 
-# Install Popcorn Time.
-brew cask reinstall https://raw.githubusercontent.com/popcorn-official/popcorn-desktop/development/casks/popcorn-time.rb
 
 # Install and configure swiftbar.
 brew tap melonamin/formulae

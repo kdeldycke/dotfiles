@@ -945,7 +945,7 @@ done
 
 # Add new app shortcuts to the dock.
 for app in "Fork" "Transmission" "LibreOffice" \
-    "Tor Browser" "Popcorn-Time" "Telegram Desktop" "Spark" \
+    "Tor Browser" "Telegram Desktop" "Spark" \
     "1Password 7"; do
     dockutil --find "${app}"
     if [ $? -ne 0 ]; then
