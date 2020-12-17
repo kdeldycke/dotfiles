@@ -77,6 +77,12 @@ This is a list of manual post-installation steps required to fully configure the
 
 1. In `Touch ID` → `Add other fingerprints`.
 
+1. In `Security & Privacy` → `Privacy` → `Accessibility`, activate:
+    * `Logi Options Daemon`
+    * `MonitorControl.app`
+
+    ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/accessibility-preferences.png)
+
 1. In `Security & Privacy` → `Privacy` → `Full Disk Access`, click the `+` button. Then go to `Applications` → `Utilities`, to add:
     * `BlockBlock.app`
     * `KnockKnock.app`
