@@ -168,8 +168,9 @@ wget -O "${HOME}/.swiftbar/brew-services.7m.rb" https://github.com/matryer/bitba
 chmod +x ${HOME}/.swiftbar/*.{sh,py,rb}
 open -a SwiftBar
 
-# Open Tor Browser once to create a default profile.
-open --wait-apps -a "Tor Browser"
+# Open Tor Browser at least once in the background to create a default profile.
+# Then close it after a while to not block script execution.
+open --wait-apps -g -a "Tor Browser" & sleep 20s; killall "firefox"
 # Show TorBrowser bookmark toolbar.
 TB_CONFIG_DIR=$(find "${HOME}/Library/Application Support/TorBrowser-Data/Browser" -maxdepth 1 -iname "*.default")
 sed -i "s/\"PersonalToolbar\":{\"collapsed\":\"true\"}/\"PersonalToolbar\":{\"collapsed\":\"false\"}/" "$TB_CONFIG_DIR/xulstore.json"
