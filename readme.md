@@ -31,11 +31,15 @@ the macOS image](https://support.apple.com/en-us/HT201372):
 
 1. Reboot your machine, reinstall macOS, create a user.
 
-1. Login to your new user, and launch `Preferences.app`.
+1. Login to your new user, and launch `System Preferences.app`.
 
-1. Go to `Security & Privacy` > `Privacy` > `Click the lock to make changes.` and then unlock with touch ID or password.
+1. Go to `Security & Privacy` → `Privacy` → `Click the lock to make changes`, and then unlock with touch ID or password:
 
-1. Go to `Full Disk Access` > Click the `+` button > Go to `Applications` > `Utilities` > Choose `Terminal.app`.
+    ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/system-preferences-security-privacy-unlock.png)
+
+1. Go to `Full Disk Access`, click the `+` button, go to `Applications` → `Utilities`, and choose `Terminal.app`:
+
+    ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/terminal-full-disk-access.png)
 
 ## Install
 
@@ -69,13 +73,34 @@ Manual setup required to finish up the perfect configuration.
 
 This is a list of manual post-installation steps required to fully configure the system. Haven't found any way to automate them all.
 
-* Go to `Full Disk Access` > Click the `+` button > Go to `Applications` > `Utilities`. Then add:
-  * `BlockBlock.app`
-  * `KnockKnock.app`
-* Copy SSH (`./dotfiles/dotfiles/.ssh/`) and GPG (`./dotfiles/dotfiles/.gnupg/`) keys from backups.
-* `System Preferences` -> `Touch ID` -> `Add other fingerprints`.
-* Uncheck all options to disallow analytics sharing: `System Preferences` -> `Privacy` -> `Analytics`.
-* Check `Limit Ad Tracking` option in: `System Preferences` -> `Privacy` -> `Advertising`.
+### `System Preferences.app`
+
+1. In `Security & Privacy` → `Privacy` → `Full Disk Access`, click the `+` button. Then go to `Applications` → `Utilities`, to add:
+    * `BlockBlock.app`
+    * `KnockKnock.app`
+
+1. In `Security & Privacy` → `Privacy` → `Analytics & Improvements`: uncheck all options to disallow analytics sharing.
+
+    ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/analytics-and-improvements-preferences.png)
+
+1. In `Security & Privacy` → `Privacy` → `Apple Advertising`: uncheck `Personalized Ads` option.
+
+    ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/apple-advertising-preferences.png)
+
+1. In `Touch ID` → `Add other fingerprints`.
+
+### SSH
+
+1. Copy SSH (`./dotfiles/dotfiles/.ssh/`) and GPG (`./dotfiles/dotfiles/.gnupg/`) folders from Time Machine backups.
+
+### Safari
+
+1. In `Preferences...` → `Extensions`, activate:
+    * `1Password`
+    * `AdGuard Assistant`
+    * `Open in IINA`
+
+    ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/safari-active-extensions.png)
 
 ## Upgrade
 
