@@ -17,3 +17,12 @@ name: Lint
       - name: Lint
         run: |
           yamllint .
+
+  check-secrets:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2.3.4
+      with:
+        fetch-depth: '0'
+    - name: gitleaks-action
+      uses: zricethezav/gitleaks-action@v1.2.0
