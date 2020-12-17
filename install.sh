@@ -81,9 +81,6 @@ brew tap homebrew/services
 brew install subversion
 brew tap homebrew/cask-fonts
 
-# Install XQuartz beforehand to support Linux-based GUI Apps.
-brew cask install xquartz
-
 # Load package lists to install.
 source ./packages.sh
 
