@@ -45,12 +45,13 @@ sudo -v
 # ❯ sudo cat /Users/kde/Library/Preferences/com.apple.AddressBook.plist
 # Password:
 # cat: /Users/kde/Library/Preferences/com.apple.AddressBook.plist: Operation not permitted
-# TODO: Add Full Disk Access to Terminal.app
 
-# Add Terminal as a developer tool.
-# Source: an Apple Xcode engineer at: https://news.ycombinator.com/item?id=23278629
+# Add Terminal as a developer tool. Any app referenced in the hidden Developer
+# Tools category will be able to bypass GateKeeper.
+# Source: an Apple Xcode engineer at:
+#   https://news.ycombinator.com/item?id=23278629
+#   https://news.ycombinator.com/item?id=23273867
 sudo spctl developer-mode enable-terminal
-# TODO: go to Security & Privacy preference pane, login and check Terminal app.
 
 
 ###############################################################################

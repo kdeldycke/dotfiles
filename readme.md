@@ -89,6 +89,9 @@ This is a list of manual post-installation steps required to fully configure the
 
     ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/apple-advertising-preferences.png)
 
+1. In `Security & Privacy` → `Privacy` → `Developer Tools`, activate `Terminal`:
+
+    ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/developer-tools-preferences.png)
 
 ### SSH
 
