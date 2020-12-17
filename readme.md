@@ -2,7 +2,7 @@
 
 Dot-files and system configuration for Python developers on **macOS**.
 
-![Mac OS X 10.13 High Sierra solarized terminal and vim](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/macos-10.13.jpg)
+![Mac OS X 10.13 High Sierra solarized terminal and vim](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/macos-10.13.jpeg)
 
 ## Features
 
