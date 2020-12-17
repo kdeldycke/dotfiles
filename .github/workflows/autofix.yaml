@@ -52,3 +52,32 @@ jobs:
           labels: CI/CD, documentation
           assignees: kdeldycke
           branch: optimize-images
+
+  gitignore:
+    name: Generate .gitignore and create a PR
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - name: Install git-extras package
+        run: |
+          sudo apt install -y git-extras
+      - name: Generate .gitignore
+        run: >
+          git ignore-io vim git gpg less test linux macos games 
+          python backup windows dropbox archive archives database bittorrent
+          virtualenv executable compressed libreoffice compression
+          > ./dotfiles/.gitignore_global
+      - uses: peter-evans/create-pull-request@v3.5.1
+        with:
+          author: "Kevin Deldycke <kevin@deldycke.com>"
+          commit-message: "[autofix] Regenerate .gitignore"
+          title: "[autofix] Regenerate .gitignore"
+          body: >
+            [Auto-generated on run
+            #${{ github.run_id }}](https://github.com/${{ github.repository
+            }}/actions/runs/${{ github.run_id }}) as defined by [workflow
+            action](https://github.com/${{ github.repository
+            }}/blob/${{ github.base_ref }}/.github/workflows/autofix.yaml).
+          labels: CI/CD
+          assignees: kdeldycke
+          branch: update-gitignore
