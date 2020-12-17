@@ -75,6 +75,8 @@ This is a list of manual post-installation steps required to fully configure the
 
 ### `System Preferences.app`
 
+1. In `Touch ID` → `Add other fingerprints`.
+
 1. In `Security & Privacy` → `Privacy` → `Full Disk Access`, click the `+` button. Then go to `Applications` → `Utilities`, to add:
     * `BlockBlock.app`
     * `KnockKnock.app`
@@ -87,7 +89,6 @@ This is a list of manual post-installation steps required to fully configure the
 
     ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/apple-advertising-preferences.png)
 
-1. In `Touch ID` → `Add other fingerprints`.
 
 ### SSH
 
