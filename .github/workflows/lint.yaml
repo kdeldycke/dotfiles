@@ -4,6 +4,8 @@ name: Lint
   push:
   pull_request:
 
+jobs:
+
   lint-yaml:
     name: Lint YAML files
     runs-on: ubuntu-20.04
