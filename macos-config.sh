@@ -18,6 +18,8 @@
 #   * https://scriptingosx.com/2016/11/editing-property-lists/
 #   * https://scriptingosx.com/2018/02/defaults-the-plist-killer/
 #   * https://apps.tempel.org/PrefsEditor/index.php
+#
+# Some of these changes still require a logout/restart to take effect.
 
 set -x
 
@@ -1890,4 +1892,3 @@ for app in "Activity Monitor" \
         "iCal"; do
     killall "${app}" &> /dev/null
 done
-echo "Done. Note that some of these changes require a logout/restart to take effect."
