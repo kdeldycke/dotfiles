@@ -111,16 +111,6 @@ call the script again to upgrade your system:
 $ ./install.sh 2>&1 | tee ./install.log
 ```
 
-## Maintenance
-
-### Submodules
-
-To upgrade submodules:
-
-```shell-session
-$ git submodule update --recursive --remote
-```
-
 ## Versions
 
 Only the current default `main` branch is supported and actively maintained. Older
