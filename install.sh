@@ -187,7 +187,7 @@ TB_BOOKMARK_DB="$TB_CONFIG_DIR/places.sqlite"
 # Remove all bookmarks from the toolbar.
 sqlite3 -echo -header -column "$TB_BOOKMARK_DB" "DELETE FROM moz_bookmarks WHERE parent=(SELECT id FROM moz_bookmarks WHERE guid='toolbar_____'); SELECT * FROM moz_bookmarks;"
 # Add bookmarks one by one.
-for BM_INFO in $BOOKMARKS
+for BM_INFO (${(f)BOOKMARKS}) 
 do
     BM_URL=$(echo $BM_INFO | cut -d',' -f1)
     BM_TITLE=$(echo $BM_INFO | cut -d',' -f2)
