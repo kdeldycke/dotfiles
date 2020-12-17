@@ -145,7 +145,13 @@ brew install --cask qlstephen
 brew install --cask qlvideo
 brew install --cask quicklook-json
 brew install --cask suspicious-package
+# Fix "QL*.qlgenerator cannot be opened because the developer cannot be verified."
+xattr -cr ~/Library/QuickLook/QLColorCode.qlgenerator
+xattr -cr ~/Library/QuickLook/QLMarkdown.qlgenerator
+xattr -cr ~/Library/QuickLook/QLStephen.qlgenerator
+# Clear plugin cache
 qlmanage -r
+qlmanage -r cache
 
 # Install and configure Google Cloud Storage bucket mount point.
 brew install gcsfuse
