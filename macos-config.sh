@@ -1888,6 +1888,17 @@ defaults write com.DanPristupov.Fork gitInstanceType -int 3
 
 
 ###############################################################################
+# NetNewsWire                                                                 #
+###############################################################################
+
+defaults write com.ranchero.NetNewsWire-Evergreen SUAutomaticallyUpdate -int 1
+defaults write com.ranchero.NetNewsWire-Evergreen SUEnableAutomaticChecks -int 1
+defaults write com.ranchero.NetNewsWire-Evergreen SUHasLaunchedBefore -int 1
+
+defaults write com.ranchero.NetNewsWire-Evergreen refreshInterval -int 2
+
+
+###############################################################################
 # Kill affected applications                                                  #
 ###############################################################################
 
