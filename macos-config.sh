@@ -76,7 +76,7 @@ kern.maxfilesperproc=18000
 EOF
 
 # Remove default content
-rm -rf "${HOME}/Public/Drop Box"
+sudo rm -rf "${HOME}/Public/Drop Box"
 rm -rf "${HOME}/Public/.com.apple.timemachine.supported"
 
 # Disable the sound effects on boot
