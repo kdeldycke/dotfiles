@@ -201,6 +201,12 @@ sqlite3 -echo -header -column "$TB_BOOKMARK_DB" "SELECT * FROM moz_bookmarks; SE
 # Force installation of uBlock origin
 wget https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/addon-607454-latest.xpi -O "$TB_CONFIG_DIR/extensions/uBlock0@raymondhill.net.xpi"
 
+# Open IINA at least once in the background to let it register its Safari extension.
+# Then close it after a while to not block script execution.
+# This also pop-up a persistent, but non-blocking dialog:
+# "XXX.app is an app downloaded from the Internet. Are you sure you want to open it?"
+open --wait-apps -g -a "IINA" & sleep 20s; killall "IINA"
+
 # Clean things up.
 brew cleanup
 brew services cleanup
