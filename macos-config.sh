@@ -85,6 +85,10 @@ sudo nvram SystemAudioVolume=" "
 # Enable ctrl+option+cmd to drag windows.
 defaults write com.apple.universalaccess NSWindowShouldDragOnGesture -string "YES"
 
+# Enable auto dark mode
+defaults write NSGlobalDomain AppleInterfaceStyle -string "Dark"
+defaults write NSGlobalDomain AppleInterfaceStyleSwitchesAutomatically -bool true
+
 # Set highlight color to green
 #defaults write NSGlobalDomain AppleHighlightColor -string "0.764700 0.976500 0.568600"
 
