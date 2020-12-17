@@ -41,20 +41,20 @@ the macOS image](https://support.apple.com/en-us/HT201372):
 
 1. First, you need a local copy of this project.
 
-   If you're lucky and have `git` already installed on your machine, do:
+    If you're lucky and have `git` already installed on your machine, do:
 
-        ```shell-session
-        $ cd ~
-        $ git clone --recursive https://github.com/kdeldycke/dotfiles.git
-        ```
+    ```shell-session
+    $ cd ~
+    $ git clone --recursive https://github.com/kdeldycke/dotfiles.git
+    ```
 
-   If you don't have `git` yet, fetch an archive of the repository:
+    If you don't have `git` yet, fetch an archive of the repository:
 
-        ```shell-session
-        $ mkdir ~/dotfiles
-        $ cd ~/dotfiles
-        $ curl -fsSL https://github.com/kdeldycke/dotfiles/tarball/main | tar --strip-components 1 -xvzf -
-        ```
+    ```shell-session
+    $ mkdir ~/dotfiles
+    $ cd ~/dotfiles
+    $ curl -fsSL https://github.com/kdeldycke/dotfiles/tarball/main | tar --strip-components 1 -xvzf -
+    ```
 
 2. Now you can install the dotfiles on your system:
 
