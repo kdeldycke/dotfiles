@@ -115,7 +115,7 @@ mas install 409203825
 # Install 1Password.
 mas install 1333542190
 open -a "1Password 7"
-# Activate Safari extention.
+# Activate Safari extension.
 # Source: https://github.com/kdeldycke/kevin-deldycke-blog/blob/main/content/posts/macos-commands.md
 pluginkit -e use -i com.agilebits.onepassword7.1PasswordSafariAppExtension
 

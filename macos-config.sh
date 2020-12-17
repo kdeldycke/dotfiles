@@ -1575,7 +1575,7 @@ defaults write com.apple.iCal "Show heat map in Year View" -bool true
 # Show week numbers
 defaults write com.apple.iCal "Show Week Numbers" -bool true
 
-# Open events in seperate windows
+# Open events in separate windows
 # defaults write com.apple.iCal OpenEventsInWindowType -bool true
 
 # Ask before sending changes to events
@@ -1771,7 +1771,7 @@ defaults write org.m0k.transmission AutoImportDirectory -string "${HOME}/Downloa
 # Prompt user for removal of active transfers only when downloading
 defaults write org.m0k.transmission CheckRemoveDownloading -bool true
 
-# Do not prompt user for quit, wether there is an active transfer or download.
+# Do not prompt user for quit, whether there is an active transfer or download.
 defaults write org.m0k.transmission CheckQuit -bool false
 defaults write org.m0k.transmission CheckQuitDownloading -bool false
 
