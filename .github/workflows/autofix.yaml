@@ -66,9 +66,10 @@ jobs:
           git ignore-io -u
       - name: Generate .gitignore
         run: >
-          git ignore-io vim git gpg less test linux macos games 
-          python backup windows dropbox archive archives database bittorrent
-          virtualenv executable compressed libreoffice compression
+          git ignore-io archive archives backup bittorrent compressed
+          compression database dropbox executable games git gpg less 
+          libreoffice linux macos nohup python test vim virtualenv
+          visualstudiocode windows
           > ./dotfiles/.gitignore_global
       - uses: peter-evans/create-pull-request@v3.5.1
         with:
