@@ -1,6 +1,6 @@
 
-# Created by https://www.gitignore.io/api/vim,git,gpg,less,test,linux,macos,games,python,backup,windows,dropbox,archive,archives,database,bittorrent,virtualenv,executable,compressed,libreoffice,compression,datarecovery,microsoftoffice,jupyternotebooks,compressedarchive,certificates,ssh
-# Edit at https://www.gitignore.io/?templates=vim,git,gpg,less,test,linux,macos,games,python,backup,windows,dropbox,archive,archives,database,bittorrent,virtualenv,executable,compressed,libreoffice,compression,datarecovery,microsoftoffice,jupyternotebooks,compressedarchive,certificates,ssh
+# Created by https://www.toptal.com/developers/gitignore/api/archive,archives,backup,bittorrent,certificates,compressed,compressedarchive,compression,database,datarecovery,dropbox,executable,games,git,gpg,jupyternotebooks,less,libreoffice,linux,macos,microsoftoffice,nohup,python,ssh,test,vim,virtualenv,visualstudiocode,windows
+# Edit at https://www.toptal.com/developers/gitignore?templates=archive,archives,backup,bittorrent,certificates,compressed,compressedarchive,compression,database,datarecovery,dropbox,executable,games,git,gpg,jupyternotebooks,less,libreoffice,linux,macos,microsoftoffice,nohup,python,ssh,test,vim,virtualenv,visualstudiocode,windows
 
 ### Archive ###
 
@@ -15,7 +15,7 @@
 
 # A self-extracting archive that uses the Bourne shell (sh).
 *.shar
-# A system for storing multiple files. LBR archives typically contained files processed by SQ, or the archive itself was compressed with SQ. LBR archives that were compressed with SQ ended with the extension .LQR
+# A system for storing multiple files. LBR archives typically contained files processed by SQ, or the archive itself was compressed with SQ. LBR archives that were compressed with SQ ended with the extension .LQR	
 *.LBR
 # An archive format originally used mainly for archiving and distribution of the exact, nearly-exact, or custom-modified contents of an optical storage medium such as a CD-ROM or DVD-ROM. However, it can be used to archive the contents of other storage media, selected partitions, folders, and/or files. The resulting archive is typically optimized for convenient rendering to (re-)writable CD or DVD media.
 *.iso
@@ -49,18 +49,22 @@
 *.rar
 *.zip
 *.gz
+*.gzip
 *.tgz
 *.bzip
+*.bzip2
 *.bz2
 *.xz
 *.lzma
 *.cab
+*.xar
 
 # Packing-only formats
 
 # Package management formats
 *.dmg
 *.egg
+*.txz
 
 ### Backup ###
 *.bak
@@ -76,6 +80,7 @@
 *.pem
 *.key
 *.crt
+*.cer
 *.priv
 
 ### Compressed ###
@@ -196,13 +201,12 @@
 # File-based disk image format developed to deploy Microsoft Windows.
 *.wim
 # XAR
-*.xar
 # Native format of the Open Source KiriKiri Visual Novel engine. Uses combination of block splitting and zlib compression. The filenames and pathes are stored in UTF-16 format. For integrity check, the Adler-32 hashsum is used. For many commercial games, the files are encrypted (and decoded on runtime) via so-called "cxdec" module, which implements xor-based encryption.
 *.xp3
 # Yamazaki zipper archive. Compression format used in DeepFreezer archiver utility created by Yamazaki Satoshi. Read and write support exists in TUGZip, IZArc and ZipZag
 *.yz1
 # The most widely used compression format on Microsoft Windows. Commonly used on Macintosh and Unix systems as well.
-# application/x-zoo 	zoo 	Multiple 	Multiple 	Yes
+# application/x-zoo 	zoo 	Multiple 	Multiple 	Yes 	
 *.zoo
 # Journaling (append-only) archive format with rollback capability. Supports deduplication and incremental update based on last-modified dates. Multi-threaded. Compresses in LZ77, BWT, and context mixing formats. Open source.
 *.zpaq
@@ -244,14 +248,6 @@
 # Compression format(s) used by some DOS and Windows install programs. MS-DOS includes expand.exe to decompress its install files. The compressed files are created with a matching compress.exe command. The compression algorithm is LZSS.
 *.??_
 
-
-### Database ###
-*.accdb
-*.db
-*.dbf
-*.mdb
-*.pdb
-*.sqlite3
 
 ### DataRecovery ###
 
@@ -303,7 +299,7 @@
 
 ### GPG ###
 secring.*
-**/.gnupg/*.gpg
+
 
 ### JupyterNotebooks ###
 # gitignore template for Jupyter Notebooks
@@ -348,7 +344,7 @@ ipython_config.py
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
 
 # Thumbnails
 ._*
@@ -388,6 +384,9 @@ Backup of *.doc*
 
 # Visio autosave temporary files
 *.~vsd*
+
+### Nohup ###
+nohup.out
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
@@ -438,21 +437,38 @@ htmlcov/
 nosetests.xml
 coverage.xml
 *.cover
+*.py,cover
 .hypothesis/
 .pytest_cache/
+pytestdebug.log
 
 # Translations
 *.mo
 *.pot
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff:
+instance/
+.webassets-cache
 
 # Scrapy stuff:
 .scrapy
 
 # Sphinx documentation
 docs/_build/
+doc/_build/
 
 # PyBuilder
 target/
+
+# Jupyter Notebook
+
+# IPython
 
 # pyenv
 .python-version
@@ -464,11 +480,25 @@ target/
 #   install all needed dependencies.
 #Pipfile.lock
 
-# celery beat schedule file
+# PEP 582; used by e.g. github.com/David-OConnor/pyflow
+__pypackages__/
+
+# Celery stuff
 celerybeat-schedule
+celerybeat.pid
 
 # SageMath parsed files
 *.sage.py
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+pythonenv*
 
 # Spyder project settings
 .spyderproject
@@ -476,11 +506,6 @@ celerybeat-schedule
 
 # Rope project settings
 .ropeproject
-
-# Mr Developer
-.mr.developer.cfg
-.project
-.pydevproject
 
 # mkdocs documentation
 /site
@@ -492,6 +517,12 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# profiling data
+.prof
 
 ### SSH ###
 **/.ssh/id_*
@@ -581,6 +612,7 @@ dmypy.json
 ### Vim ###
 # Swap
 [._]*.s[a-v][a-z]
+!*.svg  # comment out if you don't need vector files
 [._]*.sw[a-p]
 [._]s[a-rt-v][a-z]
 [._]ss[a-gi-z]
@@ -592,28 +624,33 @@ Sessionx.vim
 
 # Temporary
 .netrwhist
-
 # Auto-generated tag files
 tags
-
 # Persistent undo
 [._]*.un~
-
-# Coc configuration directory
-.vim
 
 ### VirtualEnv ###
 # Virtualenv
 # http://iamzed.com/2009/05/07/a-primer-on-virtualenv/
+[Bb]in
+[Ii]nclude
+[Ll]ib
+[Ll]ib64
+[Ll]ocal
+[Ss]cripts
 pyvenv.cfg
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
 pip-selfcheck.json
+
+### VisualStudioCode ###
+.vscode/*
+!.vscode/tasks.json
+!.vscode/launch.json
+*.code-workspace
+
+### VisualStudioCode Patch ###
+# Ignore all local history of files
+.history
+.ionide
 
 ### Windows ###
 # Windows thumbnail cache files
@@ -637,4 +674,12 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# End of https://www.gitignore.io/api/vim,git,gpg,less,test,linux,macos,games,python,backup,windows,dropbox,archive,archives,database,bittorrent,virtualenv,executable,compressed,libreoffice,compression,datarecovery,microsoftoffice,jupyternotebooks,compressedarchive,certificates,ssh
+### Database ###
+*.accdb
+*.db
+*.dbf
+*.mdb
+*.pdb
+*.sqlite3
+
+# End of https://www.toptal.com/developers/gitignore/api/archive,archives,backup,bittorrent,certificates,compressed,compressedarchive,compression,database,datarecovery,dropbox,executable,games,git,gpg,jupyternotebooks,less,libreoffice,linux,macos,microsoftoffice,nohup,python,ssh,test,vim,virtualenv,visualstudiocode,windows
