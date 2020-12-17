@@ -539,6 +539,10 @@ defaults -currentHost write com.apple.screensaver moduleDict -dict moduleName -s
 # Aerial                                                                      #
 ###############################################################################
 
+# Disable setup walkthrough
+defaults write ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost/com.JohnCoates.Aerial.plist \
+    firstTimeSetup -int 1
+
 # Disable fade in/out
 defaults write ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost/com.JohnCoates.Aerial.plist \
     fadeMode -int 0
@@ -559,29 +563,25 @@ defaults write ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSav
 defaults write ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost/com.JohnCoates.Aerial.plist \
     timeMode -int 3
 
-# Never stream videos or previews
+# Enable dynamic rotation of cache
 defaults write ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost/com.JohnCoates.Aerial.plist \
-    neverStreamVideos -bool false
-defaults write ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost/com.JohnCoates.Aerial.plist \
-    neverStreamPreviews -bool false
+    enableManagement -int 1
 
-# Only search for new videos once a month
+# Rotate cache every month
 defaults write ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost/com.JohnCoates.Aerial.plist \
-    newVideosMode -int 1
+    intCachePeriodicity -int 2
 
-# Do not check for update, let brew handle that
+# Limit cache to 20 Gb
 defaults write ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost/com.JohnCoates.Aerial.plist \
-    checkForUpdates -bool false
+    cacheLimit -int 20
 
-# Do not notify for new versions on screen
+# Show download progress on screen saver
 defaults write ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost/com.JohnCoates.Aerial.plist \
-    updateWhileSaverMode -bool false
+    showBackgroundDownloads -int 1
 
 # Deactivate debug mode and logs
 defaults write ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost/com.JohnCoates.Aerial.plist \
     debugMode -bool false
-defaults write ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost/com.JohnCoates.Aerial.plist \
-    logToDisk -bool false
 
 # Aerial layer widget configuration is a serialized JSON string. This hack will
 # only allows preferences to be accounted for if all keys of a widget conf are
@@ -1421,6 +1421,9 @@ defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool true
 # Limit Time Machine total backup size to 1 TB (=1024*1024)
 # Source: http://www.defaults-write.com/time-machine-setup-a-size-limit-for-backup-volumes/
 sudo defaults write com.apple.TimeMachine MaxSize -integer 1048576
+
+# Exclude Aerial screen saver big video cache
+sudo tmutil addexclusion "~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Application Support/Aerial/Cache"
 
 # Activate Time Machine backups (including local snapshots).
 sudo tmutil enable
