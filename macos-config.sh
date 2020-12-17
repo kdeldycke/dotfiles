@@ -61,7 +61,7 @@ sudo spctl developer-mode enable-terminal
 ###############################################################################
 
 # Transform "  |   "model" = <"MacBookAir8,1">" to "MBA"
-COMPUTER_MODEL_SHORTHAND=$(ioreg -c IOPlatformExpertDevice -d 2 -r | grep "model" | python -c "print(''.join([c for c in input() if c.isupper()]))")
+COMPUTER_MODEL_SHORTHAND=$(ioreg -c IOPlatformExpertDevice -d 2 -r | grep "\"model\" =" | python -c "print(''.join([c for c in input() if c.isupper()]))")
 COMPUTER_NAME="$(whoami)-${COMPUTER_MODEL_SHORTHAND}"
 # Set computer name (as done via System Preferences → Sharing)
 sudo scutil --set ComputerName "${COMPUTER_NAME}"
