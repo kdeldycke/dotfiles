@@ -249,14 +249,21 @@ sudo launchctl load /System/Library/LaunchDaemons/com.apple.alf.agent.plist
 launchctl load /System/Library/LaunchAgents/com.apple.alf.useragent.plist
 
 # Apply configuration on all network interfaces.
-IFS=$'\n'
-for net_service in `networksetup -listallnetworkservices | awk '{if(NR>1)print}'`; do
+#   $ networksetup -listallnetworkservices
+#   An asterisk (*) denotes that a network service is disabled.
+#   Thunderbolt Ethernet Slot 1, Port 1
+#   *Thunderbolt Ethernet Slot 1, Port 2
+#   Wi-Fi
+#   iPhone USB
+#   Bluetooth PAN
+#   Thunderbolt Bridge
+net_interfaces=$(networksetup -listallnetworkservices | awk '{gsub(/^*/,""); if(NR>1)print}')
+for net_service (${(f)net_interfaces}); do
     # Use Cloudflare's fast and privacy friendly DNS.
     networksetup -setdnsservers "${net_service}" 1.1.1.1 1.0.0.1 2606:4700:4700::1111 2606:4700:4700::1001
     # Clear out all search domains.
     networksetup -setsearchdomains "${net_service}" "Empty"
 done
-unset IFS
 
 # Setup 10G NIC
 networksetup -setMTU "Thunderbolt Ethernet Slot  1, Port 2" 9000
