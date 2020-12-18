@@ -125,7 +125,11 @@ $ ./install.sh 2>&1 | tee ./install.log
 
 It mainly consist in refreshing some assets at every macOS major release:
 
+* Regenerate [`Monokai Soda.terminal` profile](https://github.com/kdeldycke/dotfiles/blob/main/assets/Monokai%20Soda.terminal).
+
 * Re-run [`p10k configure`](https://github.com/romkatv/powerlevel10k#configuration-wizard) with the [same parameters as before](https://github.com/kdeldycke/dotfiles/blob/main/dotfiles/.p10k.zsh#L3-L6).
+
+* Update screenshots. 😖
 
 ## Versions
 
