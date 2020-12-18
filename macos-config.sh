@@ -518,10 +518,10 @@ sudo defaults write /Library/Preferences/com.apple.windowserver DisplayResolutio
 
 # Only affects brightness, not contrast
 defaults write me.guillaumeb.MonitorControl lowerContrast -bool false
-defaults write me.guillaumeb.MonitorControl showContrast -bool false 
+defaults write me.guillaumeb.MonitorControl showContrast -bool false
 
 # Do not modify all screens at once
-defaults write me.guillaumeb.MonitorControl allScreens -bool false 
+defaults write me.guillaumeb.MonitorControl allScreens -bool false
 
 
 ###############################################################################
