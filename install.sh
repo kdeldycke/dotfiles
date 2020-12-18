@@ -168,7 +168,7 @@ open -a SwiftBar
 # Then close it after a while to not block script execution.
 open --wait-apps -g -a "Tor Browser" & sleep 20s; killall "firefox"
 # Show TorBrowser bookmark toolbar.
-TB_CONFIG_DIR=$(find "${HOME}/Library/Application Support/TorBrowser-Data/Browser" -maxdepth 1 -iname "*.default")
+TB_CONFIG_DIR=$(command find "${HOME}/Library/Application Support/TorBrowser-Data/Browser" -maxdepth 1 -iname "*.default")
 tee -a "$TB_CONFIG_DIR/xulstore.json" <<-EOF
 {"chrome://browser/content/browser.xhtml": {
     "PersonalToolbar": {"collapsed": "false"}

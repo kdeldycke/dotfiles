@@ -733,7 +733,7 @@ done
 defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
 # After configuring preferred view style, clear all `.DS_Store` files
 # to ensure settings are applied for every directory
-sudo find / -name ".DS_Store" -print -delete
+sudo command find / -name ".DS_Store" -print -delete
 
 # View Options
 # ColumnShowIcons    : Show preview column
@@ -928,7 +928,7 @@ defaults write com.apple.dock showhidden -bool true
 #defaults write com.apple.Dock appswitcher-all-displays -bool true
 
 # Reset Launchpad, but keep the desktop wallpaper intact
-find "${HOME}/Library/Application Support/Dock" -maxdepth 1 -name "*-*.db" -delete
+command find "${HOME}/Library/Application Support/Dock" -maxdepth 1 -name "*-*.db" -delete
 
 # Add iOS & Watch Simulator to Launchpad
 #sudo ln -sf "/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app" "/Applications/Simulator.app"
