@@ -121,6 +121,12 @@ call the script again to upgrade your system:
 $ ./install.sh 2>&1 | tee ./install.log
 ```
 
+## Maintenance
+
+It mainly consist in refreshing some assets at every macOS major release:
+
+* Re-run [`p10k configure`](https://github.com/romkatv/powerlevel10k#configuration-wizard) with the [same parameters as before](https://github.com/kdeldycke/dotfiles/blob/main/dotfiles/.p10k.zsh#L3-L6).
+
 ## Versions
 
 Only the current default `main` branch is supported and actively maintained. Older
