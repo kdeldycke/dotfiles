@@ -29,9 +29,8 @@ fi
 ######### Dotfiles install #########
 
 # Search local dotfiles
-DOT_FILES=("${(@f)$(find ./dotfiles -maxdepth 1 -not -path './dotfiles' -not -name '\.DS_Store')}")
-for FILEPATH in $DOT_FILES
-do
+DOT_FILES=$(command find ./dotfiles -maxdepth 1 -not -path './dotfiles' -not -name '\.DS_Store')
+for FILEPATH (${(f)DOT_FILES}); do
     SOURCE="${PWD}/$FILEPATH"
     TARGET="${HOME}/$(basename "${FILEPATH}")"
     # Link files
