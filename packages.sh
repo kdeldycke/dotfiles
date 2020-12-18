@@ -99,7 +99,7 @@ disk-drill
 dropbox
 dupeguru
 electrum
-font-sourcecodepro-nerd-font
+font-sauce-code-pro-nerd-font
 fork
 ftdi-vcp-driver
 gimp
