@@ -220,9 +220,6 @@ defaults write com.apple.systemuiserver menuExtras -array \
 # Autohide dock and menubar.
 #defaults write NSGlobalDomain _HIHideMenuBar -bool true
 
-# Enable the dark menubar and dock.
-#defaults write NSGlobalDomain AppleInterfaceStyle -string "Dark"
-
 # Disable Notification Center and remove the menu bar icon
 launchctl unload -w /System/Library/LaunchAgents/com.apple.notificationcenterui.plist 2> /dev/null
 
