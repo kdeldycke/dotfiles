@@ -28,9 +28,6 @@ fi
 
 ######### Dotfiles install #########
 
-# Force initialization and update of local submodules.
-git submodule update --recursive --remote
-
 # Search local dotfiles
 DOT_FILES=("${(@f)$(find ./dotfiles -maxdepth 1 -not -path './dotfiles' -not -name '\.DS_Store')}")
 for FILEPATH in $DOT_FILES
