@@ -277,10 +277,12 @@ sudo systemsetup -setremoteappleevents off
 
 # Disable remote login
 # TODO: is waiting for user input. Make it unattended.
-sudo systemsetup -setremotelogin off
+# Remote login is already Off by default. We can ignore it for now.
+#sudo systemsetup -setremotelogin off
 
 # Disable wake-on modem
-sudo systemsetup -setwakeonmodem off
+# XXX setwakeonmodem returns "Wake On Modem: Not supported on this machine." for now.
+#sudo systemsetup -setwakeonmodem off
 sudo pmset -a ring 0
 
 # Disable wake-on LAN
@@ -331,7 +333,8 @@ sudo defaults write /Library/Preferences/com.apple.virtualMemory UseEncryptedSwa
 sudo defaults write /Library/Preferences/com.apple.mDNSResponder.plist NoMulticastAdvertisements -bool true
 
 # Disable diagnostic reports.
-sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.SubmitDiagInfo.plist
+# XXX Fails with message: "Operation not permitted while System Integrity Protection is engaged"
+#sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.SubmitDiagInfo.plist
 
 # Show location icon in menu bar when System Services request your location.
 sudo defaults write /Library/Preferences/com.apple.locationmenu.plist ShowSystemServices -bool true
