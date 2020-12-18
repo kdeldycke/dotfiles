@@ -266,7 +266,7 @@ for net_service (${(f)net_interfaces}); do
 done
 
 # Setup 10G NIC
-networksetup -setMTU "Thunderbolt Ethernet Slot  1, Port 2" 9000
+networksetup -setMTU "Thunderbolt Ethernet Slot 1, Port 2" 9000
 
 # Disable IR remote control
 sudo defaults write /Library/Preferences/com.apple.driver.AppleIRController DeviceEnabled -bool false
