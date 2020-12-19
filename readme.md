@@ -99,18 +99,18 @@ This is a list of manual post-installation steps required to fully configure the
 
     ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/developer-tools-preferences.png)
 
-### SSH
+### SSH & GPG
 
-1. Copy SSH (`./dotfiles/dotfiles/.ssh/`) and GPG (`./dotfiles/dotfiles/.gnupg/`) folders from Time Machine backups.
+Copy SSH (`./dotfiles/dotfiles/.ssh/`) and GPG (`./dotfiles/dotfiles/.gnupg/`) folders from Time Machine backups.
 
 ### Safari
 
-1. In `Preferences...` → `Extensions`, activate:
-    * `1Password`
-    * `AdGuard Assistant`
-    * `Open in IINA`
+In `Preferences...` → `Extensions`, activate:
+  * `1Password`
+  * `AdGuard Assistant`
+  * `Open in IINA`
 
-    ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/safari-active-extensions.png)
+![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/safari-active-extensions.png)
 
 ### AdGuard
 
