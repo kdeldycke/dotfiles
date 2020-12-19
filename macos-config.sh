@@ -513,6 +513,14 @@ sudo defaults write /Library/Preferences/com.apple.windowserver DisplayResolutio
 
 
 ###############################################################################
+# Nightlight                                                                  #
+###############################################################################
+
+# Start night shift from sunset to sunrise
+nightlight schedule start
+
+
+###############################################################################
 # MonitorControl.app                                                          #
 ###############################################################################
 

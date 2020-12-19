@@ -68,6 +68,7 @@ ripgrep
 rmlint
 shellcheck
 shntool
+smudge/smudge/nightlight
 spoof-mac
 ssh-copy-id
 testdisk
