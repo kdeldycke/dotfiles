@@ -112,6 +112,12 @@ This is a list of manual post-installation steps required to fully configure the
 
     ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/safari-active-extensions.png)
 
+### AdGuard
+
+In `Preferences...` → `Filters`, click the `+` button and subscribe to all filter lists:
+
+![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/adguard-filter-lists-subscription.png)
+
 ## Upgrade
 
 I'm trying to make the install procedure indempotent so you'll just have to

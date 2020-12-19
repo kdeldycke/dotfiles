@@ -1722,6 +1722,99 @@ defaults write com.apple.messageshelper.AlertsController NotifyAboutKnockKnockKe
 # Show all buddy pictures in conversations
 defaults write com.apple.iChat ShowAllBuddyPictures -bool false
 
+
+###############################################################################
+# AdGuard                                                                     #
+###############################################################################
+
+# Do not block search ads and websites' self-promotion
+defaults write com.adguard.mac.adguard UsefulAdsEnabled -bool false
+
+# Activate language-specific filters automaticcaly
+defaults write com.adguard.mac.adguard ActivateFiltersAutomaticEnabled -bool true
+
+# Launch AdGuard at Login
+defaults write com.adguard.mac.adguard StartAtLogin -bool true
+
+# Hide menu bar icon
+defaults write com.adguard.mac.adguard HideMenubarIcon -bool false
+
+# Enable filters
+defaults write com.adguard.mac.adguard FilteringEnabled -bool true
+
+# TODO: activate all filters
+# Seems to be saved at: ~/Library/Group Containers/XXXXXXXX.com.adguard.mac/Library/Application Support/com.adguard.mac.adguard/adguard.db
+
+# Advanced tracking protection
+defaults write com.adguard.mac.adguard StealthEnabled -bool true
+
+# Hide your search queries
+defaults write com.adguard.mac.adguard StealthHideSearchQueries -bool true
+
+# Send Do-Not-Track header
+defaults write com.adguard.mac.adguard StealthSendDoNotTrackHeader -bool false
+
+# Strip tracking parameters
+defaults write com.adguard.mac.adguard StealthStripUrl -bool true
+
+# Self-destruction of third-party cookies after a 10 minutes TTL
+defaults write com.adguard.mac.adguard StealthBlockThirdPartyCookiesMin -int 10
+
+# Self-destruction of first-party cookies
+defaults write com.adguard.mac.adguard StealthBlockFirstPartyCookies -bool true
+
+# Disable cache for third-party requests
+defaults write com.adguard.mac.adguard StealthDisableThirdPartyCache -bool true
+
+# Block third-party Authorization header
+defaults write com.adguard.mac.adguard StealthBlockThirdPartyAuthorization -bool true
+
+# Block WebRTC
+defaults write com.adguard.mac.adguard StealthBlockWebRtc -bool true
+
+# Block Push API
+defaults write com.adguard.mac.adguard StealthBlockBrowserPushApi -bool true
+
+# Block Location API
+defaults write com.adguard.mac.adguard StealthBlockBrowserLocationApi -bool true
+
+# Block Java
+defaults write com.adguard.mac.adguard StealthBlockBrowserJava -bool true
+
+# Hide Referrer from third-parties
+defaults write com.adguard.mac.adguard StealthRemoveReferrerFromThirdPartyRequests -bool true
+
+# Hide your User-Agent
+defaults write com.adguard.mac.adguard StealthHideUserAgent -bool true
+
+# Mask your IP address
+defaults write com.adguard.mac.adguard StealthHideIp -bool true
+
+# Remove X-Client-Data header
+defaults write com.adguard.mac.adguard StealthRemoveXClientDataHeader -bool true
+
+# Phishing and malware protection
+defaults write com.adguard.mac.adguard SafebrowsingEnabled -bool true
+
+# Help us with Browsing security filters development
+defaults write com.adguard.mac.adguard SafebrowsingHelpEnabled -bool false
+
+# Extensions
+defaults write com.adguard.mac.adguard UserscriptsEnabled -bool true
+
+# AdGuard Extra
+defaults write com.adguard.mac.adguard ExtraEnabled -bool true
+
+# Automaticcally filter applications
+defaults write com.adguard.mac.adguard NetworkFilterEnabled -bool true
+
+# Filter HTTPS protocol
+defaults write com.adguard.mac.adguard FilterHttps -bool true
+
+# Do not filter websites with EV certificates
+defaults write com.adguard.mac.adguard IgnoreEvSslCertificates -bool false
+
+
 ###############################################################################
 # iiNA                                                                        #
 ###############################################################################
