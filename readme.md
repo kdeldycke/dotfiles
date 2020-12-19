@@ -75,6 +75,10 @@ This is a list of manual post-installation steps required to fully configure the
 
 ### `System Preferences.app`
 
+1. In `Displays`, set external monitor scale:
+
+    ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/external-display-scale.png)
+
 1. In `Touch ID` → `Add other fingerprints`.
 
 1. In `Security & Privacy` → `Privacy` → `Accessibility`, activate:
