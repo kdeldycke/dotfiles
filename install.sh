@@ -78,7 +78,7 @@ brew tap homebrew/cask-fonts
 source ./packages.sh
 
 # Install brew packages.
-for PACKAGE (${(f)BREW_PACKAGES}) brew install "$PACKAGE"
+for PACKAGE (${(f)BREW_PACKAGES}) brew install --formula "$PACKAGE"
 
 # Install cask packages.
 for PACKAGE (${(f)CASK_PACKAGES}) brew install --cask "$PACKAGE"
