@@ -84,6 +84,7 @@ This is a list of manual post-installation steps required to fully configure the
 1. In `Security & Privacy` → `Privacy` → `Accessibility`, activate:
     * `Amethyst.app`
     * `Logi Options Daemon`
+    * `Logi Options`
     * `MonitorControl.app`
 
     ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/accessibility-preferences.png)
