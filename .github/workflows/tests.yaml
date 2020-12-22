@@ -14,7 +14,7 @@ jobs:
     runs-on: macos-11.0
     steps:
       - uses: actions/checkout@v2.3.4
-      - name: Reverts to Zsh as shell
+      - name: Switch to Zsh
         # GitHub macOS images forces bash as default:
         #   https://github.com/actions/virtual-environments/blob
         #   /0d93dd2fc97a0708d5f35ccda0e1be53c996630d/images/macos/provision
@@ -23,6 +23,7 @@ jobs:
           cat /etc/shells
           sudo chsh -s /bin/zsh $USERNAME
           sudo chsh -s /bin/zsh root
+          /bin/zsh
       - name: Run install
         run: |
           ./install.sh
