@@ -19,7 +19,9 @@ jobs:
         #   https://github.com/actions/virtual-environments/blob
         #   /0d93dd2fc97a0708d5f35ccda0e1be53c996630d/images/macos/provision
         #   /configuration/shell-change.sh#L3-L5
-        sudo chsh -s /bin/zsh $USERNAME
-        sudo chsh -s /bin/zsh root
+        run: |
+          sudo chsh -s /bin/zsh $USERNAME
+          sudo chsh -s /bin/zsh root
       - name: Run install
-        run : ./install.sh
+        run: |
+          ./install.sh
