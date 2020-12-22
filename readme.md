@@ -82,6 +82,7 @@ This is a list of manual post-installation steps required to fully configure the
 1. In `Touch ID` → `Add other fingerprints`.
 
 1. In `Security & Privacy` → `Privacy` → `Accessibility`, activate:
+    * `Amethyst.app`
     * `Logi Options Daemon`
     * `MonitorControl.app`
 
