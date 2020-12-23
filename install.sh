@@ -6,6 +6,12 @@ if [ "$(uname -s)" != "Darwin" ]; then
     echo "These dotfiles only targets macOS."
     exit 1
 fi
+
+# Force our way into Zsh.
+cat /etc/shells
+echo $SHELL
+sudo chsh -s /bin/zsh $USERNAME
+sudo chsh -s /bin/zsh root
 echo $SHELL
 if [ "$(basename -- "$SHELL")" != "zsh" ]; then
     echo "These dotfiles were only tested with Zsh shell."
