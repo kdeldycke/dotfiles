@@ -1012,12 +1012,11 @@ defaults write com.apple.Safari UniversalSearchEnabled -bool false
 defaults write com.apple.Safari SuppressSearchSuggestions -bool true
 
 # Configure DuckDuckGo as main search engine
-defaults write NSGlobalDomain NSPreferredWebServices.NSWebServicesProviderWebSearch.NSDefaultDisplayName -string "DuckDuckGo"
-defaults write NSGlobalDomain NSPreferredWebServices.NSWebServicesProviderWebSearch.NSProviderIdentifier -string "com.duckduckgo"
+defaults write com.apple.Safari SearchProviderIdentifier -string "com.duckduckgo"
+defaults write NSGlobalDomain NSProviderIdentifier -string "com.duckduckgo"
 
 # Press Tab to highlight each item on a web page
-defaults write com.apple.Safari WebKitTabToLinksPreferenceKey -bool true
-defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2TabsToLinks -bool true
+defaults write com.apple.Safari WebKitPreferences.tabFocusesLinks -bool true
 
 # Show the full URL in the address bar (note: this still hides the scheme)
 defaults write com.apple.Safari ShowFullURLInSmartSearchField -bool true
@@ -1033,8 +1032,7 @@ defaults write com.apple.Safari OpenPrivateWindowWhenNotRestoringSessionAtLaunch
 # 0: Homepage
 # 1: Empty Page
 # 2: Same Page
-# 3: Bookmarks
-# 4: Top Sites
+# 4: Start Page
 defaults write com.apple.Safari NewTabBehavior -int 4
 defaults write com.apple.Safari NewWindowBehavior -int 4
 
@@ -1063,7 +1061,7 @@ defaults write com.apple.Safari OpenNewTabsInFront -bool false
 defaults write com.apple.Safari Command1Through9SwitchesTabs -bool true
 
 # Set Safari’s home page to `about:blank` for faster loading
-defaults write com.apple.Safari HomePage -string "about:blank"
+defaults write com.apple.Safari HomePage -string ""
 
 # Save downloded files to
 defaults write com.apple.Safari DownloadsPath -string '~/Downloads'
@@ -1125,7 +1123,6 @@ defaults write com.apple.Safari ReadingListSaveArticlesOfflineAutomatically -boo
 # Enable the Develop menu and the Web Inspector in Safari
 defaults write com.apple.Safari IncludeDevelopMenu -bool true
 defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
-defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled -bool true
 # Add a context menu item for showing the Web Inspector in web views
 defaults write NSGlobalDomain WebKitDeveloperExtras -bool true
 # Enable Safari’s debug menu
@@ -1133,7 +1130,7 @@ defaults write com.apple.Safari IncludeInternalDebugMenu -bool true
 
 # Set default encoding
 defaults write com.apple.Safari WebKitDefaultTextEncodingName -string 'utf-8'
-defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2DefaultTextEncodingName -string 'utf-8'
+defaults write com.apple.Safari WebKitPreferences.defaultTextEncodingName -string 'utf-8'
 
 # Enable continuous spellchecking
 defaults write com.apple.Safari WebContinuousSpellCheckingEnabled -bool true
@@ -1215,7 +1212,7 @@ defaults write com.apple.Safari DownloadsClearingPolicy -int 2
 # 31 = after one month
 # 365 = after one year
 # 365000 = never (after 1000 years)
-defaults write HistoryAgeInDaysLimiti -int 14
+defaults write com.apple.Safari HistoryAgeInDaysLimit -int 14
 
 # Don't allow apple pay checking.
 defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2ApplePayCapabilityDisclosureAllowed -bool false
@@ -1225,7 +1222,7 @@ defaults write com.apple.Safari WebsiteSpecificSearchEnabled -bool false
 
 # Never use font sizes smaller than
 defaults write com.apple.Safari WebKitMinimumFontSize -int 9
-defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2MinimumFontSize -float 9
+defaults write com.apple.Safari WebKitPreferences.minimumFontSize -int 9
 
 # Print headers and footers
 defaults write com.apple.Safari PrintHeadersAndFooters -bool false
