@@ -294,9 +294,6 @@ sudo pmset -a ring 0
 sudo systemsetup -setwakeonnetworkaccess off
 sudo pmset -a womp 0
 
-# Disable file-sharing via SMB
-sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.smbd.plist
-
 # Display login window as name and password
 sudo defaults write /Library/Preferences/com.apple.loginwindow SHOWFULLNAME -bool true
 
@@ -335,10 +332,6 @@ sudo defaults write /Library/Preferences/com.apple.virtualMemory UseEncryptedSwa
 
 # Disable Bonjour multicast advertisements
 sudo defaults write /Library/Preferences/com.apple.mDNSResponder.plist NoMulticastAdvertisements -bool true
-
-# Disable diagnostic reports.
-# XXX Fails with message: "Operation not permitted while System Integrity Protection is engaged"
-#sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.SubmitDiagInfo.plist
 
 # Show location icon in menu bar when System Services request your location.
 sudo defaults write /Library/Preferences/com.apple.locationmenu.plist ShowSystemServices -bool true
