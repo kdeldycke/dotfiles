@@ -724,11 +724,11 @@ for view in 'Desktop' 'FK_Standard' 'Standard'; do
     # Increase grid spacing for icons on the desktop and in other icon views
     # Increase the size of icons on the desktop and in other icon views
     /usr/libexec/PlistBuddy \
-        -c "Set :${view}ViewSettings:IconViewSettings:showItemInfo  bool    true"  \
-        -c "Set :${view}ViewSettings:IconViewSettings:labelOnBottom bool    false" \
-        -c "Set :${view}ViewSettings:IconViewSettings:arrangeBy     string  grid"  \
-        -c "Set :${view}ViewSettings:IconViewSettings:gridSpacing   integer 100"   \
-        -c "Set :${view}ViewSettings:IconViewSettings:iconSize      integer 32"    \
+        -c "Set :${view}ViewSettings:IconViewSettings:showItemInfo  true"  \
+        -c "Set :${view}ViewSettings:IconViewSettings:labelOnBottom false" \
+        -c "Set :${view}ViewSettings:IconViewSettings:arrangeBy     grid"  \
+        -c "Set :${view}ViewSettings:IconViewSettings:gridSpacing   100"   \
+        -c "Set :${view}ViewSettings:IconViewSettings:iconSize      32"    \
         ~/Library/Preferences/com.apple.finder.plist
 done
 
@@ -757,11 +757,11 @@ sudo command find / -name ".DS_Store" -print -delete
 #   logs : Size
 #   labl : Tags
 /usr/libexec/PlistBuddy \
-    -c "Set :StandardViewOptions:ColumnViewOptions:ColumnShowIcons    bool    true" \
-    -c "Set :StandardViewOptions:ColumnViewOptions:FontSize           integer 11"   \
-    -c "Set :StandardViewOptions:ColumnViewOptions:ShowPreview        bool    true" \
-    -c "Set :StandardViewOptions:ColumnViewOptions:ShowIconThumbnails bool    true" \
-    -c "Set :StandardViewOptions:ColumnViewOptions:ArrangeBy          string  dnam" \
+    -c "Set :StandardViewOptions:ColumnViewOptions:ColumnShowIcons    true" \
+    -c "Set :StandardViewOptions:ColumnViewOptions:FontSize           11"   \
+    -c "Set :StandardViewOptions:ColumnViewOptions:ShowPreview        true" \
+    -c "Set :StandardViewOptions:ColumnViewOptions:ShowIconThumbnails true" \
+    -c "Set :StandardViewOptions:ColumnViewOptions:ArrangeBy          dnam" \
     ~/Library/Preferences/com.apple.finder.plist
 
 # Disable the warning before emptying the Trash
@@ -1827,6 +1827,7 @@ defaults write com.adguard.mac.adguard IgnoreEvSslCertificates -bool false
 # iiNA                                                                        #
 ###############################################################################
 
+# XXX PlistBuddy seems to overflow with too much commands. Split in two to manage it.
 /usr/libexec/PlistBuddy \
     -c "Clear dict" \
     -c "Add :SUAutomaticallyUpdate          integer 1" \
@@ -1843,6 +1844,9 @@ defaults write com.adguard.mac.adguard IgnoreEvSslCertificates -bool false
     -c "Add :recordPlaybackHistory          integer 0" \
     -c "Add :trackAllFilesInRecentOpenMenu  integer 0" \
     -c "Add :playlistAutoAdd                integer 0" \
+    ~/Library/Preferences/com.colliderli.iina.plist
+
+/usr/libexec/PlistBuddy \
     -c "Add :playlistAutoPlayNext           integer 0" \
     -c "Add :screenShotFolder               string  '~/Desktop'" \
     -c "Add :themeMaterial                  integer 4" \
