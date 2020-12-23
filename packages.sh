@@ -1,5 +1,5 @@
-#!/usr/bin/env zsh
-set -x
+#!/bin/zsh
+set -Eeuxo pipefail
 
 # Packages installed from Brew.
 BREW_PACKAGES="

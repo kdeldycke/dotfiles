@@ -1,5 +1,5 @@
-#!/usr/bin/env zsh
-set -x
+#!/bin/zsh
+set -Eeuxo pipefail
 
 # Detect platform.
 if [ "$(uname -s)" != "Darwin" ]; then

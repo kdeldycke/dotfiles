@@ -1,4 +1,5 @@
-#!/usr/bin/env zsh
+#!/bin/zsh
+set -Eeuxo pipefail
 ###############################################################################
 # Plist and preferences                                                       #
 ###############################################################################
@@ -20,8 +21,6 @@
 #   * https://apps.tempel.org/PrefsEditor/index.php
 #
 # Some of these changes still require a logout/restart to take effect.
-
-set -x
 
 # Close any open System Preferences panes, to prevent them from overriding
 # settings we’re about to change
