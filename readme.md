@@ -86,6 +86,7 @@ This is a list of manual post-installation steps required to fully configure the
     * `Logi Options Daemon`
     * `Logi Options`
     * `MonitorControl.app`
+    * `SwiftBar.app`
 
     ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/accessibility-preferences.png)
 
