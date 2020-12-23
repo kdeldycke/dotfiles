@@ -7,8 +7,7 @@ if [ "$(uname -s)" != "Darwin" ]; then
     exit 1
 fi
 echo $SHELL
-echo $SHELL | grep 'zsh'
-if [[ $? -ne 0 ]]; then
+if [ "$(basename -- "$SHELL")" != "zsh" ]; then
     echo "These dotfiles were only tested with Zsh shell."
     exit 1
 fi
