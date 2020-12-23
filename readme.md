@@ -64,7 +64,7 @@ the macOS image](https://support.apple.com/en-us/HT201372):
 
 ```shell-session
 $ cd ~/dotfiles
-$ ./install.sh 2>&1 | tee ./install.log
+$ /bin/zsh ./install.sh 2>&1 | tee ./install.log
 ```
 
 ## Post-installation
