@@ -61,18 +61,8 @@ brew analytics off
 brew update
 brew upgrade
 
-# Add Cask
-brew tap homebrew/cask
-
-# Add drivers.
-brew tap homebrew/homebrew-cask-drivers
-
 # Add services
 brew tap homebrew/services
-
-# Add fonts; these formulas needs SVN.
-brew install subversion
-brew tap homebrew/cask-fonts
 
 # Load package lists to install.
 source ./packages.sh
@@ -153,9 +143,7 @@ GOOGLE_APPLICATION_CREDENTIALS=~/.google-cloud-auth.json gcsfuse --implicit-dirs
 # mount -t gcsfuse -o rw,user,keyfile="${HOME}/.google-cloud-auth.json" backup-imac-restic "${HOME}/gcs"
 
 
-# Install and configure swiftbar.
-brew tap melonamin/formulae
-brew install swiftbar
+# Configure swiftbar.
 defaults write com.ameba.SwiftBar PluginDirectory "~/.swiftbar"
 defaults write com.ameba.SwiftBar SUHasLaunchedBefore 1
 wget -O "${HOME}/.swiftbar/btc.17m.sh" https://github.com/matryer/bitbar-plugins/raw/master/Cryptocurrency/Bitcoin/bitstamp.net/last.10s.sh

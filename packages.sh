@@ -45,7 +45,6 @@ jnettop
 jq
 lame
 legit
-logitech-options
 mozjpeg
 neovim
 ntfs-3g
@@ -92,7 +91,6 @@ amethyst
 balenaetcher
 bisq
 blockblock
-caldigit-thunderbolt-charging
 caprine
 db-browser-for-sqlite
 disk-arbitrator
@@ -100,11 +98,14 @@ disk-drill
 dropbox
 dupeguru
 electrum
-font-sauce-code-pro-nerd-font
 fork
-ftdi-vcp-driver
 gimp
 google-drive-file-stream
+homebrew/cask-drivers/caldigit-thunderbolt-charging
+homebrew/cask-drivers/ftdi-vcp-driver
+homebrew/cask-drivers/logitech-options
+homebrew/cask-drivers/samsung-portable-ssd-t5
+homebrew/cask-fonts/font-sauce-code-pro-nerd-font
 iina
 java
 kap
@@ -114,12 +115,12 @@ libreoffice
 little-snitch
 lulu
 macdown
+melonamin/formulae/swiftbar
 monitorcontrol
 mullvadvpn
 musicbrainz-picard
 netnewswire
 osxfuse
-samsung-portable-ssd-t5
 signal
 subsurface
 telegram-desktop
