@@ -397,13 +397,15 @@ defaults write NSGlobalDomain com.apple.swipescrolldirection -bool false
 # Sources:
 #     https://www.reddit.com/r/apple/comments/5rfdj6/pro_tip_significantly_improve_bluetooth_audio/
 #     https://apple.stackexchange.com/questions/40259/bluetooth-audio-problems-on-a-macbook
-for bitpool_param in "Negotiated Bitpool" \
-                     "Negotiated Bitpool Max" \
-                     "Negotiated Bitpool Min" \
-                     "Apple Bitpool Max (editable)" \
-                     "Apple Bitpool Min (editable)" \
-                     "Apple Initial Bitpool (editable)" \
-                     "Apple Initial Bitpool Min (editable)"; do
+for bitpool_param (
+    "Negotiated Bitpool"
+    "Negotiated Bitpool Max"
+    "Negotiated Bitpool Min"
+    "Apple Bitpool Max (editable)"
+    "Apple Bitpool Min (editable)"
+    "Apple Initial Bitpool (editable)"
+    "Apple Initial Bitpool Min (editable)"
+); do
     defaults write com.apple.BluetoothAudioAgent "${bitpool_param}" -int 80
 done
 
@@ -717,7 +719,7 @@ defaults write com.apple.frameworks.diskimages auto-open-rw-root -bool false
 defaults write com.apple.finder OpenWindowForNewRemovableDisk -bool false
 
 # Set icon view settings on desktop and in icon views
-for view in 'Desktop' 'FK_Standard' 'Standard'; do
+for view ('Desktop' 'FK_Standard' 'Standard'); do
     # Show item info near icons on the desktop and in other icon views
     # Show item info to the right of the icons on the desktop
     # Enable snap-to-grid for icons on the desktop and in other icon views
@@ -964,16 +966,36 @@ defaults write com.apple.dock wvous-tl-corner -int 5
 defaults write com.apple.dock wvous-tl-modifier -int 0
 
 # Remove apps I don't use from the dock.
-for shortcut_label in "Launchpad" "Contacts" "Mail" \
-    "Siri" "Maps" "FaceTime" "iTunes" "iBooks" "Reminders" \
-    "Photos" "Pages" "News" "TV" "Podcasts"; do
+for shortcut_label (
+    "Contacts"
+    "FaceTime"
+    "Launchpad"
+    "Mail"
+    "Maps"
+    "Photos"
+    "Podcasts"
+    "Reminders"
+    "TV"
+); do
     dockutil --remove "${shortcut_label}" --allhomes --no-restart
 done
 
 # Add new app shortcuts to the dock.
-for app in "Fork" "Transmission" "LibreOffice" \
-    "Tor Browser" "Telegram Desktop" "Spark" \
-    "1Password 7"; do
+for app (
+    "1Password 7"
+    "Caprine"
+    "Fork"
+    "Home"
+    "LibreOffice"
+    "NetNewsWire"
+    "Signal"
+    "Spark"
+    "Telegram Desktop"
+    "Tor Browser"
+    "Transmission"
+    "Visual Studio Code"
+    "zoom.us"
+); do
     dockutil --find "${app}"
     if [ $? -ne 0 ]; then
         dockutil --add "/Applications/${app}.app" --replacing "${app}" --no-restart
@@ -2014,20 +2036,22 @@ defaults write com.ranchero.NetNewsWire-Evergreen refreshInterval -int 2
 # Kill affected applications                                                  #
 ###############################################################################
 
-for app in "Activity Monitor" \
-        "Address Book" \
-        "Calendar" \
-        "cfprefsd" \
-        "Contacts" \
-        "Dock" \
-        "Finder" \
-        "Mail" \
-        "Messages" \
-        "Photos" \
-        "Safari" \
-        "SystemUIServer" \
-        "Terminal" \
-        "Transmission" \
-        "iCal"; do
+for app (
+    "Activity Monitor"
+    "Address Book"
+    "Calendar"
+    "cfprefsd"
+    "Contacts"
+    "Dock"
+    "Finder"
+    "iCal"
+    "Mail"
+    "Messages"
+    "Photos"
+    "Safari"
+    "SystemUIServer"
+    "Terminal"
+    "Transmission"
+); do
     killall "${app}" &> /dev/null
 done
