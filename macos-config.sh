@@ -273,8 +273,6 @@ sudo defaults write /Library/Preferences/com.apple.driver.AppleIRController Devi
 
 # Turn Bluetooth off completely
 sudo defaults write /Library/Preferences/com.apple.Bluetooth ControllerPowerState -int 0
-sudo launchctl unload /System/Library/LaunchDaemons/com.apple.blued.plist
-sudo launchctl load /System/Library/LaunchDaemons/com.apple.blued.plist
 
 # Disable wifi captive portal
 sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.captive.control Active -bool false
@@ -296,8 +294,7 @@ sudo pmset -a ring 0
 sudo systemsetup -setwakeonnetworkaccess off
 sudo pmset -a womp 0
 
-# Disable file-sharing via AFP or SMB
-sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.AppleFileServer.plist
+# Disable file-sharing via SMB
 sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.smbd.plist
 
 # Display login window as name and password
