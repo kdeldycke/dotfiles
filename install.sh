@@ -7,13 +7,9 @@ if [ "$(uname -s)" != "Darwin" ]; then
     exit 1
 fi
 
-# Force our way into Zsh.
-cat /etc/shells
-echo $SHELL
-sudo chsh -s /bin/zsh $USERNAME
-sudo chsh -s /bin/zsh root
-echo $SHELL
-if [ "$(basename -- "$SHELL")" != "zsh" ]; then
+# Check current shell interpreter.
+ps -p $$ | grep "zsh"
+if [ $? != 0 ]; then
     echo "These dotfiles were only tested with Zsh shell."
     exit 1
 fi
