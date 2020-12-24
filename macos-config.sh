@@ -1438,6 +1438,10 @@ defaults write org.n8gray.QLColorCode extraHLFlags '-l -V'
 # Terminal                                                                    #
 ###############################################################################
 
+# Set Zsh as default shell
+sudo chsh -s /bin/zsh $USERNAME
+sudo chsh -s /bin/zsh root
+
 # Only use UTF-8 in Terminal.app
 defaults write com.apple.terminal StringEncodings -array "4"
 
