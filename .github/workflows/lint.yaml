@@ -8,9 +8,12 @@ jobs:
 
   lint-zsh:
     name: Check Zsh code
-    runs-on: ubuntu-20.04
+    runs-on: macos-11.0
     steps:
       - uses: actions/checkout@v2.3.4
+      - name: Install Zsh
+        run: |
+          brew install zsh
       - name: Lint
         run: |
           find . -iname "*.sh" -exec zsh --no-exec "{}" \;
