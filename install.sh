@@ -46,7 +46,7 @@ done
 ######### System upgrades #########
 
 # Update all macOS packages.
-sudo softwareupdate -i -a
+sudo softwareupdate --install --all
 
 
 ######### Brew install #########
