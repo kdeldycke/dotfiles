@@ -20,8 +20,7 @@ sudo -v
 # TODO: install git here.
 
 # Check if SIP is going to let us mess with some part of the system.
-csrutil status | grep --quiet "disabled"
-if [[ $? -ne 0 ]]; then
+if [[ "$(csrutil status | grep --quiet "disabled"; echo $?)" -ne 0 ]]; then
     echo "System Integrity Protection (SIP) is enabled."
 else
     echo "System Integrity Protection (SIP) is disabled."
