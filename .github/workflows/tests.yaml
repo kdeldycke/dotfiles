@@ -23,4 +23,11 @@ jobs:
         #   /0d93dd2fc97a0708d5f35ccda0e1be53c996630d/images/macos/provision
         #   /configuration/shell-change.sh#L3-L5
         run: |
-          sudo zsh ./install.sh
+          # Change default shell.
+          sudo chsh -s /bin/zsh $USERNAME
+          sudo chsh -s /bin/zsh root
+          # Ask for the administrator password upfront.
+          sudo -v
+          # Keep-alive: update existing `sudo` time stamp until script has finished.
+          while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+          zsh ./install.sh
