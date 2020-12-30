@@ -344,14 +344,6 @@ alias netstat="sudo lsof -i -P"
 # Lock the screen
 alias lock='/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend'
 
-# Link pinentry and GPG agent together
-if test -f $HOME/.gnupg/.gpg-agent-info -a -n "$(pgrep gpg-agent)"; then
-    source $HOME/.gnupg/.gpg-agent-info
-    export GPG_AGENT_INFO
-else
-    eval $(gpg-agent --daemon --write-env-file $HOME/.gnupg/.gpg-agent-info)
-fi
-
 # Deactivate git-delta diff pager.
 export BAT_PAGER=cat
 
