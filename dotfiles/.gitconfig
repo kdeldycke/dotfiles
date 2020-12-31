@@ -79,7 +79,7 @@
     co = checkout
     df = diff
     g  = grep -I
-    lg = log -p
+    lg = log --patch
     pp = !"echo 'Pull'; git pull; echo 'Push'; git push"
     rb = rbranch
     rv = review
@@ -92,10 +92,10 @@
     switch = !legit switch
     undo = !legit undo
     # View abbreviated SHA, description, and history graph of the latest 20 commits
-    l = log --pretty=oneline -n 20 --graph --abbrev-commit --decorate
+    l = log --pretty=oneline --max-count=20 --graph --abbrev-commit --decorate
     hist = log --pretty=format:\"%C(yellow)%h%C(reset) %C(green)%ad%C(reset) %C(red)|%C(reset) %s %C(bold blue)[%an]%C(reset)%C(yellow)%d%C(reset)\" --graph --date=short
     # View the current working tree status using the short format
-    s = status -sb
+    s = status --short --branch
     # Show the diff between the latest commit and the current state
     d = !"git diff-index --quiet HEAD -- || clear; git diff --patch-with-stat"
     # `git di $number` shows the diff between the state `$number` revisions ago and the current state
@@ -105,20 +105,20 @@
     # Clone a repository including all submodules
     c = clone --recursive
     # Commit all changes
-    ca = !git add -A && git commit -av
+    ca = !git add --all && git commit --all --verbose
     # Switch to a branch, creating it if necessary
     go = !git checkout -b "$1" || git checkout "$1"
     # Create a new branch and push it upstream
     nb = "!f() { git checkout -b ${1} && git push --set-upstream origin ${1}:${1}; }; f"
     # Show verbose output about tags and remotes
-    tags = tag -l
-    remotes = remote -v
+    tags = tag --list
+    remotes = remote --verbose
     # Credit an author on the latest commit
-    credit = "!f() { git commit --amend --author \"$1 <$2>\" -C HEAD; }; f"
+    credit = "!f() { git commit --amend --author \"$1 <$2>\" --reuse-message=HEAD; }; f"
     # Interactive rebase with the given number of latest commits
-    reb = "!r() { git rebase -i HEAD~$1; }; r"
+    reb = "!r() { git rebase --interactive HEAD~$1; }; r"
     # Find branches containing commit
-    fb = "!f() { git branch -a --contains $1; }; f"
+    fb = "!f() { git branch --all --contains $1; }; f"
     # Find tags containing commit
     ft = "!f() { git describe --always --contains $1; }; f"
     # Find commits by sourcecode
@@ -126,7 +126,7 @@
     # Find commits by commit message
     fm = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short --grep=$1; }; f"
     # Remove already merged branches
-    dm = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
+    dm = "!git branch --merged | grep --invert-match '\\*' | xargs --max-args=1 git branch --delete"
 
 [url "git@github.com:"]
     insteadOf = "gh:"
