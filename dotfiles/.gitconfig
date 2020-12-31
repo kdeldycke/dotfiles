@@ -66,6 +66,8 @@
     keepBackup = false
 [branch]
     autosetuprebase = remote
+[init]
+ 	defaultBranch = main
 [rebase]
     # Automatically stash and unstash the working directory before and after
     # rebases.
