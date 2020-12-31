@@ -75,7 +75,21 @@ then
     CI=true /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 fi
 brew analytics off
+
+# Refresh our local copy of package index.
 brew update
+
+# Upgrade Python ourselves instead of relying to the common "brew upgrade"
+# below. This way we fix the following issue:
+#   Error: The `brew link` step did not complete successfully
+#   The formula built, but is not symlinked into /usr/local
+#   Could not symlink bin/2to3
+#   Target /usr/local/bin/2to3 already exists. You may want to remove it:
+#     rm '/usr/local/bin/2to3'
+brew install python
+brew link --overwrite python
+
+# Fetch latest packages.
 brew upgrade
 
 # Add services
