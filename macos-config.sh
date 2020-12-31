@@ -850,7 +850,7 @@ defaults write com.apple.NetworkBrowser BrowseAllInterfaces -bool true
 #sudo nvram boot-args="mbasd=1"
 
 # Show the ~/Library folder
-chflags nohidden "${HOME}/Library"
+chflags nohidden "${HOME}/Library" && xattr -d com.apple.FinderInfo "${HOME}/Library" 2>/dev/null
 
 # Show the /Volumes folder
 sudo chflags nohidden /Volumes
