@@ -29,7 +29,10 @@ fi
 # Source: https://gist.github.com/cowboy/3118588
 
 # Ask for the administrator password upfront.
-sudo --validate --stdin
+# Ignore the following error returns within GitHub actions workflows:
+#   sudo: a terminal is required to read the password; either use the -S option to
+#   read from standard input or configure an askpass helper
+sudo --validate || true
 
 # Update existing `sudo` time stamp until script has finished.
 while true; do sleep 60; sudo --non-interactive true; kill -0 "$$" || exit; done 2>/dev/null &
