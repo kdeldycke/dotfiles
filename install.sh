@@ -92,7 +92,7 @@ brew link --overwrite python
 # Fetch latest packages.
 brew upgrade
 
-# Add services
+# Add services.
 brew tap homebrew/services
 
 # Load package lists to install.
