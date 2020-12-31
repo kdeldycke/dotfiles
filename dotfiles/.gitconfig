@@ -66,6 +66,8 @@
     keepBackup = false
 [branch]
     autosetuprebase = remote
+    # Show most recently changed branches first.
+ 	sort = -committerdate
 [init]
  	defaultBranch = main
 [rebase]
