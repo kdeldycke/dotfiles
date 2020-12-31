@@ -106,6 +106,7 @@ homebrew/cask-drivers/ftdi-vcp-driver
 homebrew/cask-drivers/logitech-options
 homebrew/cask-drivers/samsung-portable-ssd-t5
 homebrew/cask-fonts/font-sauce-code-pro-nerd-font
+iglance
 iina
 java
 kap
