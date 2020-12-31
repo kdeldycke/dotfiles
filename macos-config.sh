@@ -850,7 +850,7 @@ defaults write com.apple.NetworkBrowser BrowseAllInterfaces -bool true
 #sudo nvram boot-args="mbasd=1"
 
 # Show the ~/Library folder
-chflags nohidden "${HOME}/Library" && xattr -d com.apple.FinderInfo "${HOME}/Library" 2>/dev/null
+chflags nohidden "${HOME}/Library" && xattr -d com.apple.FinderInfo "${HOME}/Library" 2> /dev/null
 
 # Show the /Volumes folder
 sudo chflags nohidden /Volumes
@@ -1402,7 +1402,7 @@ defaults write com.apple.spotlight orderedItems -array \
     '{"enabled" = 0;"name" = "MENU_WEBSEARCH";}' \
     '{"enabled" = 0;"name" = "MENU_SPOTLIGHT_SUGGESTIONS";}'
 # Load new settings before rebuilding the index
-killall mds > /dev/null 2>&1
+killall mds &> /dev/null
 # Make sure indexing is enabled for the main volume
 sudo mdutil -i on / > /dev/null
 # Rebuild the index from scratch

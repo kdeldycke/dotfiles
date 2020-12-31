@@ -35,7 +35,7 @@ fi
 sudo --validate || true
 
 # Update existing `sudo` time stamp until script has finished.
-while true; do sleep 60; sudo --non-interactive true; kill -0 "$$" || exit; done 2>/dev/null &
+while true; do sleep 60; sudo --non-interactive true; kill -0 "$$" || exit; done 2> /dev/null &
 
 
 ######### Basic dependencies #########
