@@ -1,6 +1,9 @@
 #!/usr/bin/env zsh
 set -Eeuxo pipefail
 
+
+######### Pre-checks #########
+
 # Detect platform.
 if [ "$(uname -s)" != "Darwin" ]; then
     echo "These dotfiles only targets macOS."
@@ -14,17 +17,27 @@ if [ $? != 0 ]; then
     exit 1
 fi
 
-# Ask for the administrator password upfront.
-sudo -v
-
-# TODO: install git here.
-
 # Check if SIP is going to let us mess with some part of the system.
 if [[ "$(csrutil status | grep --quiet "disabled"; echo $?)" -ne 0 ]]; then
     echo "System Integrity Protection (SIP) is enabled."
 else
     echo "System Integrity Protection (SIP) is disabled."
 fi
+
+
+######### Sudo keep-alive #########
+# Source: https://gist.github.com/cowboy/3118588
+
+# Ask for the administrator password upfront.
+sudo --validate --stdin
+
+# Update existing `sudo` time stamp until script has finished.
+while true; do sleep 60; sudo --non-interactive true; kill -0 "$$" || exit; done 2>/dev/null &
+
+
+######### Basic dependencies #########
+
+# TODO: install git here.
 
 
 ######### Dotfiles install #########

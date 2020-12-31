@@ -17,16 +17,14 @@ jobs:
       - name: Install Zsh
         run: |
           brew install zsh
-      - name: Run install
+      - name: Force default shell
         # GitHub macOS images forces bash as default:
         #   https://github.com/actions/virtual-environments/blob
         #   /0d93dd2fc97a0708d5f35ccda0e1be53c996630d/images/macos/provision
         #   /configuration/shell-change.sh#L3-L5
         run: |
-          # Change default shell.
-          sudo chsh -s /bin/zsh $USERNAME
-          sudo chsh -s /bin/zsh root
-          sudo cat /etc/sudoers
-          # Keep-alive: update existing `sudo` time stamp until script has finished.
-          while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+          sudo chsh -s "$(brew --prefix curl)/bin/zsh" root
+          sudo chsh -s "$(brew --prefix curl)/bin/zsh" "$USERNAME"
+      - name: Run install
+        run: |
           zsh ./install.sh
