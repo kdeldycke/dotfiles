@@ -86,7 +86,7 @@ brew update
 #   Could not symlink bin/2to3
 #   Target /usr/local/bin/2to3 already exists. You may want to remove it:
 #     rm '/usr/local/bin/2to3'
-brew install python
+brew upgrade python
 brew link --overwrite python
 
 # Fetch latest packages.
