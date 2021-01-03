@@ -70,6 +70,7 @@ shntool
 smudge/smudge/nightlight
 spoof-mac
 ssh-copy-id
+tccutil
 testdisk
 tldr
 tree

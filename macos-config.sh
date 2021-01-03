@@ -34,19 +34,19 @@ HOST_UUID=$(ioreg -d2 -c IOPlatformExpertDevice | awk -F\" '/IOPlatformUUID/{pri
 ###############################################################################
 # Permissions and Access                                                      #
 ###############################################################################
+# XXX tccutil commands below only works if SIP is disabled.
+
+# CLI to open the automation preference panel:
+#   ❯ open "x-apple.systempreferences:com.apple.preference.security?Privacy_Automation"
+
+# Raw list of permission names:
+#   ❯ strings /System/Library/PrivateFrameworks/TCC.framework/Versions/Current/Resources/tccd | grep "^kTCCService[A-Z a-z]" | sort | uniq
 
 # Ask for the administrator password upfront
 sudo -v
 
-# Some plist preferences files are not readable either by the user or root
-# unless the Terminal.app gets Full Disk Access permission.
-#
-# ❯ cat /Users/kde/Library/Preferences/com.apple.AddressBook.plist
-# cat: /Users/kde/Library/Preferences/com.apple.AddressBook.plist: Operation not permitted
-#
-# ❯ sudo cat /Users/kde/Library/Preferences/com.apple.AddressBook.plist
-# Password:
-# cat: /Users/kde/Library/Preferences/com.apple.AddressBook.plist: Operation not permitted
+# List existing entries for debug.
+sudo tccutil --list
 
 # Add Terminal as a developer tool. Any app referenced in the hidden Developer
 # Tools category will be able to bypass GateKeeper.
@@ -54,6 +54,44 @@ sudo -v
 #   https://news.ycombinator.com/item?id=23278629
 #   https://news.ycombinator.com/item?id=23273867
 sudo spctl developer-mode enable-terminal
+sudo tccutil --service "kTCCServiceDeveloperTool" --insert "com.apple.Terminal"
+sudo tccutil --service "kTCCServiceDeveloperTool" --enable "com.apple.Terminal"
+
+# Since 10.15, BSD-userland processes now also deal with sandboxing, since the
+# BSD syscall ABI is now reimplemented in terms of macOS security capabilities.
+# Source: https://news.ycombinator.com/item?id=23274213
+#
+# Also, some plist preferences files are not readable either by the user or root
+# unless the Terminal.app gets Full Disk Access permission.
+#
+#   ❯ cat /Users/kde/Library/Preferences/com.apple.AddressBook.plist
+#   cat: /Users/kde/Library/Preferences/com.apple.AddressBook.plist: Operation not permitted
+#
+#   ❯ sudo cat /Users/kde/Library/Preferences/com.apple.AddressBook.plist
+#   Password:
+#   cat: /Users/kde/Library/Preferences/com.apple.AddressBook.plist: Operation not permitted
+
+# Grant Full Disk Access permission
+for app (
+    "com.apple.Terminal"
+    "/Applications/BlockBlock.app"
+    "/Applications/KnockKnock.app"
+); do
+    sudo tccutil --service "kTCCServiceSystemPolicyAllFiles" --insert "${app}"
+    sudo tccutil --service "kTCCServiceSystemPolicyAllFiles" --enable "${app}"
+done
+
+# Grant Accessibility permission
+for app (
+    "/Applications/Amethyst.app"
+    "/Library/Application Support/Logitech.localized/Logitech Options.localized/Logi Options Daemon.app"
+    "/Applications/Logi Options.app"
+    "/Applications/MonitorControl.app"
+    "/Applications/SwiftBar.app"
+); do
+    sudo tccutil --insert "${app}"
+    sudo tccutil --enable "${app}"
+done
 
 
 ###############################################################################
