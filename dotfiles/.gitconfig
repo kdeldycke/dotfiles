@@ -42,7 +42,6 @@
     # Source: https://mobile.twitter.com/brandur/status/1182066723337293828
     noprefix = true
 [commit]
-    # Source: https://github.com/pstadler/keybase-gpg-github
     gpgsign = true
 [log]
     decorate = full

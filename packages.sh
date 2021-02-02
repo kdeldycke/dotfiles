@@ -111,7 +111,6 @@ iglance
 iina
 java
 kap
-keybase
 knockknock
 libreoffice
 little-snitch
