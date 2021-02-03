@@ -107,12 +107,6 @@ sudo scutil --set HostName "${COMPUTER_NAME}"
 sudo scutil --set LocalHostName "${COMPUTER_NAME}"
 sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "${COMPUTER_NAME}"
 
-# Increase limit of open files.
-sudo tee -a /etc/sysctl.conf <<-EOF
-kern.maxfiles=20480
-kern.maxfilesperproc=18000
-EOF
-
 # Remove default content
 sudo rm -rf "${HOME}/Public/Drop Box"
 rm -rf "${HOME}/Public/.com.apple.timemachine.supported"
