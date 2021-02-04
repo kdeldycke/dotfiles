@@ -232,6 +232,9 @@ python -m pip install --upgrade pip
 # Install & upgrade all global python modules
 for p (${(f)PYTHON_PACKAGES}) python -m pip install --upgrade "$p"
 
+# Install Visual Studio Code extensions.
+for ext (${(f)VSCODE_PLUGINS}) code --install-extension "$ext"
+
 # Generate pip and poetry completion.
 python -m pip completion --zsh > ~/.zfunc/_pip
 poetry completions zsh > ~/.zfunc/_poetry

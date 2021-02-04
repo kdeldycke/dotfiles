@@ -157,3 +157,7 @@ pytest-sugar
 setuptools
 twine
 "
+
+VSCODE_PLUGINS="
+ms-python.python
+"
