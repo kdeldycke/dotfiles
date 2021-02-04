@@ -13,7 +13,6 @@
     "editor.renderLineHighlightOnlyWhenFocus": true,
     "editor.roundedSelection": false,
     "editor.stablePeek": true,
-    "editor.wordWrap": "wordWrapColumn",
     "files.trimTrailingWhitespace": true,
     "editor.wrappingIndent": "deepIndent",
     "python.experiments.enabled": false,
@@ -25,14 +24,24 @@
     "python.sortImports.path": "isort",
     "python.sortImports.args": [
         "--trailing-comma",
-        "--line-length 88",
-        "--multi-line 3"
-    ],
-    "python.formatting.blackArgs": [
-        "--target-version py37",
-        "--target-version py38"
+        "--line-length",
+        "88",
+        "--multi-line",
+        "3"
     ],
     "python.linting.pylintArgs": [
         "--max-line-length=88"
+    ],
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.python",
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true
+        }
+    },
+    "python.formatting.blackArgs": [
+        "--target-version",
+        "py37",
+        "--target-version",
+        "py38"
     ]
 }
