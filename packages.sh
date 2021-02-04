@@ -140,6 +140,7 @@ check-wheel-contents
 coverage[toml]
 gmvault
 ipython-autotime
+isort
 jupyterlab
 meta-package-manager
 neovim
