@@ -133,11 +133,18 @@ zoom
 
 # Python packages to install from PyPi.
 PYTHON_PACKAGES="
+black
+boltons
+bump2version
+check-wheel-contents
+coverage[toml]
 gmvault
-jupyter
+ipython-autotime
+jupyterlab
 meta-package-manager
 neovim
 pgcli
+pipdeptree[graphviz]
 poetry
 pycodestyle
 pydocstyle
@@ -145,9 +152,8 @@ pygments
 pylint
 pytest
 pytest-cov
+pytest-randomly
 pytest-sugar
 setuptools
-tox
-wheel
-yapf
+twine
 "
