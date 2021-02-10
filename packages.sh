@@ -37,8 +37,8 @@ gpg
 graphviz
 grc
 grep
+ht-rust
 htop
-httpie
 id3v2
 imagemagick
 jnettop
