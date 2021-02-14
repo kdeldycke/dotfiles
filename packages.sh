@@ -37,7 +37,6 @@ gpg
 graphviz
 grc
 grep
-ht-rust
 htop
 id3v2
 imagemagick
@@ -79,6 +78,7 @@ watch
 webkit2png
 wget
 x264
+xh
 youtube-dl
 zsh
 "
