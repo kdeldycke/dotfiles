@@ -96,16 +96,10 @@ caprine
 db-browser-for-sqlite
 disk-arbitrator
 disk-drill
-dropbox
 dupeguru
 electrum
 fork
 gimp
-google-drive-file-stream
-homebrew/cask-drivers/caldigit-thunderbolt-charging
-homebrew/cask-drivers/ftdi-vcp-driver
-homebrew/cask-drivers/logitech-options
-homebrew/cask-drivers/samsung-portable-ssd-t5
 homebrew/cask-fonts/font-sauce-code-pro-nerd-font
 iglance
 iina
@@ -128,7 +122,6 @@ telegram-desktop
 tor-browser
 transmission
 visual-studio-code
-zoom
 "
 
 # Python packages to install from PyPi.
