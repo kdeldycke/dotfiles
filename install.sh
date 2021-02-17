@@ -51,10 +51,10 @@ for FILEPATH (${(f)DOT_FILES}); do
     SOURCE="${PWD}/$FILEPATH"
     TARGET="${HOME}/$(basename "${FILEPATH}")"
     # Link files
-    if [ -e "${TARGET}" ] && [ ! -L "${TARGET}" ]; then
-        mv "$TARGET" "$TARGET.dotfiles.bak"
-    fi
-    ln -sf "${SOURCE}" "$(dirname "${TARGET}")"
+    # if [ -e "${TARGET}" ] && [ ! -L "${TARGET}" ]; then
+    #     mv "$TARGET" "$TARGET.dotfiles.bak"
+    # fi
+    # ln -sf "${SOURCE}" "$(dirname "${TARGET}")"
 done
 
 
