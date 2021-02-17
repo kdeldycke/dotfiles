@@ -108,7 +108,7 @@ sudo scutil --set LocalHostName "${COMPUTER_NAME}"
 sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "${COMPUTER_NAME}"
 
 # Remove default content
-sudo rm -rf "${HOME}/Public/Drop Box"
+# sudo rm -rf "${HOME}/Public/Drop Box"
 rm -rf "${HOME}/Public/.com.apple.timemachine.supported"
 
 # Disable the sound effects on boot
@@ -343,7 +343,7 @@ sudo defaults delete /Library/Preferences/com.apple.loginwindow autoLoginUser &>
 
 # A lost machine might be lucky and stumble upon a Good Samaritan.
 sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText \
-    "Found this computer? Please contact me at kevin@deldycke.com ."
+    "Found this computer? Please contact me at shipopatamus@gmail.com ."
 
 # Automatically lock the login keychain for inactivity after 6 hours.
 security set-keychain-settings -t 21600 -l "${HOME}/Library/Keychains/login.keychain"
@@ -569,13 +569,13 @@ sudo pmset -a autorestart 1
 sudo systemsetup -setrestartfreeze on
 
 # Sets displaysleep to 15 minutes
-sudo pmset -a displaysleep 15
+# sudo pmset -a displaysleep 15
 
 # Do not allow machine to sleep on charger
 sudo pmset -c sleep 0
 
 # Set machine sleep to 5 minutes on battery
-sudo pmset -b sleep 5
+# sudo pmset -b sleep 5
 
 # Set standby delay to default 1 hour
 # See: https://www.ewal.net/2012/09/09/slow-wake-for-macbook-pro-retina/
@@ -645,7 +645,7 @@ defaults write me.guillaumeb.MonitorControl allScreens -bool false
 ###############################################################################
 
 # Start screen saver after 10 minutes
-defaults -currentHost write com.apple.screensaver idleTime -int 600
+# defaults -currentHost write com.apple.screensaver idleTime -int 600
 
 # Require password immediately after sleep or screen saver begins
 defaults write com.apple.screensaver askForPassword -bool true
@@ -1087,26 +1087,26 @@ for shortcut_label (
 done
 
 # Add new app shortcuts to the dock.
-for app (
-    "1Password 7"
-    "Caprine"
-    "Fork"
-    "Home"
-    "LibreOffice"
-    "NetNewsWire"
-    "Signal"
-    "Spark"
-    "Telegram Desktop"
-    "Tor Browser"
-    "Transmission"
-    "Visual Studio Code"
-    "zoom.us"
-); do
-    dockutil --find "${app}"
-    if [ $? -ne 0 ]; then
-        dockutil --add "/Applications/${app}.app" --replacing "${app}" --no-restart
-    fi
-done
+# for app (
+#     "1Password 7"
+#     "Caprine"
+#     "Fork"
+#     "Home"
+#     "LibreOffice"
+#     "NetNewsWire"
+#     "Signal"
+#     "Spark"
+#     "Telegram Desktop"
+#     "Tor Browser"
+#     "Transmission"
+#     "Visual Studio Code"
+#     "zoom.us"
+# ); do
+#     dockutil --find "${app}"
+#     if [ $? -ne 0 ]; then
+#         dockutil --add "/Applications/${app}.app" --replacing "${app}" --no-restart
+#     fi
+# done
 
 
 ###############################################################################
@@ -1118,8 +1118,8 @@ defaults write com.apple.Safari UniversalSearchEnabled -bool false
 defaults write com.apple.Safari SuppressSearchSuggestions -bool true
 
 # Configure DuckDuckGo as main search engine
-defaults write com.apple.Safari SearchProviderIdentifier -string "com.duckduckgo"
-defaults write NSGlobalDomain NSProviderIdentifier -string "com.duckduckgo"
+# defaults write com.apple.Safari SearchProviderIdentifier -string "com.duckduckgo"
+# defaults write NSGlobalDomain NSProviderIdentifier -string "com.duckduckgo"
 
 # Press Tab to highlight each item on a web page
 defaults write com.apple.Safari WebKitPreferences.tabFocusesLinks -bool true
@@ -1343,28 +1343,28 @@ defaults write com.apple.Safari "com.apple.Safari.ContentPageGroupIdentifier.Web
 ###############################################################################
 
 # Disable send and reply animations in Mail.app
-defaults write com.apple.mail DisableReplyAnimations -bool true
-defaults write com.apple.mail DisableSendAnimations -bool true
+# defaults write com.apple.mail DisableReplyAnimations -bool true
+# defaults write com.apple.mail DisableSendAnimations -bool true
 
 # Copy email addresses as `foo@example.com` instead of `Foo Bar <foo@example.com>` in Mail.app
-defaults write com.apple.mail AddressesIncludeNameOnPasteboard -bool false
+# defaults write com.apple.mail AddressesIncludeNameOnPasteboard -bool false
 
 # Add the keyboard shortcut ⌘ + Enter to send an email in Mail.app
-defaults write com.apple.mail NSUserKeyEquivalents -dict-add "Send" "@\U21a9"
+# defaults write com.apple.mail NSUserKeyEquivalents -dict-add "Send" "@\U21a9"
 
 # Display emails in threaded mode, sorted by date (oldest at the top)
-defaults write com.apple.mail DraftsViewerAttributes -dict-add "DisplayInThreadedMode" -string "yes"
-defaults write com.apple.mail DraftsViewerAttributes -dict-add "SortedDescending" -string "yes"
-defaults write com.apple.mail DraftsViewerAttributes -dict-add "SortOrder" -string "received-date"
+# defaults write com.apple.mail DraftsViewerAttributes -dict-add "DisplayInThreadedMode" -string "yes"
+# defaults write com.apple.mail DraftsViewerAttributes -dict-add "SortedDescending" -string "yes"
+# defaults write com.apple.mail DraftsViewerAttributes -dict-add "SortOrder" -string "received-date"
 
 # Disable inline attachments (just show the icons)
-defaults write com.apple.mail DisableInlineAttachmentViewing -bool true
+# defaults write com.apple.mail DisableInlineAttachmentViewing -bool true
 
 # Disable automatic spell checking
-defaults write com.apple.mail SpellCheckingBehavior -string "NoSpellCheckingEnabled"
+# defaults write com.apple.mail SpellCheckingBehavior -string "NoSpellCheckingEnabled"
 
 # Show To/Cc label in message list
-defaults write com.apple.mail EnableToCcInMessageList -bool true
+# defaults write com.apple.mail EnableToCcInMessageList -bool true
 
 
 ###############################################################################
@@ -1374,20 +1374,20 @@ defaults write com.apple.mail EnableToCcInMessageList -bool true
 ## Keynote
 
 #defaults write com.apple.iWork.Keynote 'ShowStartingPointsForNewDocument' -bool false
-defaults write com.apple.iWork.Keynote 'dontShowWhatsNew' -bool true
-defaults write com.apple.iWork.Keynote 'FirstRunFlag' -bool true
+# defaults write com.apple.iWork.Keynote 'dontShowWhatsNew' -bool true
+# defaults write com.apple.iWork.Keynote 'FirstRunFlag' -bool true
 
 ## Numbers
 
 #defaults write com.apple.iWork.Numbers 'ShowStartingPointsForNewDocument' -bool false
-defaults write com.apple.iWork.Numbers 'dontShowWhatsNew' -bool true
-defaults write com.apple.iWork.Numbers 'FirstRunFlag' -bool true
+# defaults write com.apple.iWork.Numbers 'dontShowWhatsNew' -bool true
+# defaults write com.apple.iWork.Numbers 'FirstRunFlag' -bool true
 
 ## Pages
 
 #defaults write com.apple.iWork.Pages 'ShowStartingPointsForNewDocument' -bool false
-defaults write com.apple.iWork.Pages 'dontShowWhatsNew' -bool true
-defaults write com.apple.iWork.Pages 'FirstRunFlag' -bool true
+# defaults write com.apple.iWork.Pages 'dontShowWhatsNew' -bool true
+# defaults write com.apple.iWork.Pages 'FirstRunFlag' -bool true
 
 
 ###############################################################################
@@ -1649,15 +1649,15 @@ defaults write com.apple.QuartzDebug QDShowWindowInfoOnMouseOver -bool YES
 ###############################################################################
 
 # Enable the debug menu in Address Book
-defaults write com.apple.addressbook ABShowDebugMenu -bool true
+# defaults write com.apple.addressbook ABShowDebugMenu -bool true
 
 # Show first name
 # false : Before last name
 # true  : Following last name
-defaults write com.apple.AddressBook ABNameDisplay -bool false
+# defaults write com.apple.AddressBook ABNameDisplay -bool false
 
 # Sort by
-defaults write com.apple.AddressBook ABNameSortingFormat -string "sortingLastName sortingFirstName"
+# defaults write com.apple.AddressBook ABNameSortingFormat -string "sortingLastName sortingFirstName"
 
 # Short name format
 # 0: Full Name
@@ -1665,35 +1665,35 @@ defaults write com.apple.AddressBook ABNameSortingFormat -string "sortingLastNam
 # 2: First Initial & Last Name
 # 3: First Name Only
 # 4: Last Name Only
-defaults write com.apple.AddressBook ABShortNameStyle -int 2
+# defaults write com.apple.AddressBook ABShortNameStyle -int 2
 
 # Prefer nicknames
-defaults write com.apple.AddressBook ABShortNamePrefersNickname -bool true
+# defaults write com.apple.AddressBook ABShortNamePrefersNickname -bool true
 
 # Address format
-defaults write com.apple.AddressBook ABDefaultAddressCountryCode -string "us"
+# defaults write com.apple.AddressBook ABDefaultAddressCountryCode -string "us"
 
 # vCard Format
 # falsec: 3.0
 # true  : 2.1
-defaults write com.apple.AddressBook ABUse21vCardFormat -bool false
+# defaults write com.apple.AddressBook ABUse21vCardFormat -bool false
 
 # Enable private me card
-defaults write com.apple.AddressBook ABPrivateVCardFieldsEnabled -bool false
+# defaults write com.apple.AddressBook ABPrivateVCardFieldsEnabled -bool false
 
 # Export notes in vCards
-defaults write com.apple.AddressBook ABIncludeNotesInVCard -bool false
+# defaults write com.apple.AddressBook ABIncludeNotesInVCard -bool false
 
 # Export photos in vCards
-defaults write com.apple.AddressBook ABIncludePhotosInVCard -bool false
+# defaults write com.apple.AddressBook ABIncludePhotosInVCard -bool false
 
 # Show first name:
 # 1: Before last name
 # 2: Following last name
-defaults write NSGlobalDomain NSPersonNameDefaultDisplayNameOrder -int 1
+# defaults write NSGlobalDomain NSPersonNameDefaultDisplayNameOrder -int 1
 
 # Prefer nicknames
-defaults write NSGlobalDomain NSPersonNameDefaultShouldPreferNicknamesPreference -bool true
+# defaults write NSGlobalDomain NSPersonNameDefaultShouldPreferNicknamesPreference -bool true
 
 
 ###############################################################################
@@ -1831,36 +1831,36 @@ defaults -currentHost write com.apple.ImageCapture disableHotPlug -bool true
 ###############################################################################
 
 # Disable automatic emoji substitution (i.e. use plain text smileys)
-defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "automaticEmojiSubstitutionEnablediMessage" -bool false
+# defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "automaticEmojiSubstitutionEnablediMessage" -bool false
 
 # Disable smart quotes as it’s annoying for messages that contain code
-defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "automaticQuoteSubstitutionEnabled" -bool false
+# defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "automaticQuoteSubstitutionEnabled" -bool false
 
 # Disable continuous spell checking
-defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "continuousSpellCheckingEnabled" -bool false
+# defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "continuousSpellCheckingEnabled" -bool false
 
 # Save history when conversations are closed
-defaults write com.apple.iChat SaveConversationsOnClose -bool true
+# defaults write com.apple.iChat SaveConversationsOnClose -bool true
 
 # Text size
 # 1: Small
 # 7: Large
-defaults write com.apple.iChat TextSize -int 2
+# defaults write com.apple.iChat TextSize -int 2
 
 # Animate buddy pictures
-defaults write com.apple.iChat AnimateBuddyPictures -bool false
+# defaults write com.apple.iChat AnimateBuddyPictures -bool false
 
 # Play sound effects
-defaults write com.apple.messageshelper.AlertsController PlaySoundsKey -bool false
+# defaults write com.apple.messageshelper.AlertsController PlaySoundsKey -bool false
 
 # Notify me when my name is mentioned
-defaults write com.apple.messageshelper.AlertsController SOAlertsAddressMeKey -bool false
+# defaults write com.apple.messageshelper.AlertsController SOAlertsAddressMeKey -bool false
 
 # Notify me about messages form unknown contacts
-defaults write com.apple.messageshelper.AlertsController NotifyAboutKnockKnockKey -bool false
+# defaults write com.apple.messageshelper.AlertsController NotifyAboutKnockKnockKey -bool false
 
 # Show all buddy pictures in conversations
-defaults write com.apple.iChat ShowAllBuddyPictures -bool false
+# defaults write com.apple.iChat ShowAllBuddyPictures -bool false
 
 
 ###############################################################################
@@ -2082,30 +2082,30 @@ defaults write org.m0k.transmission DisplayProgressBarAvailable -bool false
 ###############################################################################
 
 # Auto-trigger new file analysis.
-defaults write com.musicbrainz.Picard setting.analyze_new_files -bool true
+# defaults write com.musicbrainz.Picard setting.analyze_new_files -bool true
 
 # Do not ask confirmation on quit.
-defaults write com.musicbrainz.Picard setting.quit_confirmation -bool false
+# defaults write com.musicbrainz.Picard setting.quit_confirmation -bool false
 
 # Allow auth connection to MusicBrainz website for contributions.
-defaults write com.musicbrainz.Picard setting.server_host -string "musicbrainz.org"
-defaults write com.musicbrainz.Picard setting.username -string "kdeldycke"
-defaults write com.musicbrainz.Picard setting.password -string ""
+# defaults write com.musicbrainz.Picard setting.server_host -string "musicbrainz.org"
+# defaults write com.musicbrainz.Picard setting.username -string "kdeldycke"
+# defaults write com.musicbrainz.Picard setting.password -string ""
 
 # Setup file renaming settings.
-defaults write com.musicbrainz.Picard setting.rename_files -bool true
-defaults write com.musicbrainz.Picard setting.ascii_filenames -bool false
-defaults write com.musicbrainz.Picard setting.windows_compatibility -bool true
-defaults write com.musicbrainz.Picard setting.move_files -bool true
-defaults write com.musicbrainz.Picard setting.move_files_to -string "${HOME}/Music"
-defaults write com.musicbrainz.Picard setting.delete_empty_dirs -bool true
+# defaults write com.musicbrainz.Picard setting.rename_files -bool true
+# defaults write com.musicbrainz.Picard setting.ascii_filenames -bool false
+# defaults write com.musicbrainz.Picard setting.windows_compatibility -bool true
+# defaults write com.musicbrainz.Picard setting.move_files -bool true
+# defaults write com.musicbrainz.Picard setting.move_files_to -string "${HOME}/Music"
+# defaults write com.musicbrainz.Picard setting.delete_empty_dirs -bool true
 
 # Fallback on image release group if no front-cover found.
-defaults write com.musicbrainz.Picard setting.ca_provider_use_caa_release_group_fallback -bool true
+# defaults write com.musicbrainz.Picard setting.ca_provider_use_caa_release_group_fallback -bool true
 
 # Allow connections to AcoustID.
-defaults write com.musicbrainz.Picard setting.fingerprinting_system -string "acoustid"
-defaults write com.musicbrainz.Picard setting.acoustid_apikey -string "lP2ph5Sm"
+# defaults write com.musicbrainz.Picard setting.fingerprinting_system -string "acoustid"
+# defaults write com.musicbrainz.Picard setting.acoustid_apikey -string "lP2ph5Sm"
 
 
 ###############################################################################
@@ -2135,11 +2135,11 @@ defaults write com.DanPristupov.Fork gitInstanceType -int 3
 # NetNewsWire                                                                 #
 ###############################################################################
 
-defaults write com.ranchero.NetNewsWire-Evergreen SUAutomaticallyUpdate -int 1
-defaults write com.ranchero.NetNewsWire-Evergreen SUEnableAutomaticChecks -int 1
-defaults write com.ranchero.NetNewsWire-Evergreen SUHasLaunchedBefore -int 1
+# defaults write com.ranchero.NetNewsWire-Evergreen SUAutomaticallyUpdate -int 1
+# defaults write com.ranchero.NetNewsWire-Evergreen SUEnableAutomaticChecks -int 1
+# defaults write com.ranchero.NetNewsWire-Evergreen SUHasLaunchedBefore -int 1
 
-defaults write com.ranchero.NetNewsWire-Evergreen refreshInterval -int 2
+# defaults write com.ranchero.NetNewsWire-Evergreen refreshInterval -int 2
 
 
 ###############################################################################
