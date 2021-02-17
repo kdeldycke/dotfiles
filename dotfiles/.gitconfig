@@ -13,9 +13,9 @@
 [pack]
     useSparse = true
 [user]
-    name = Kevin Deldycke
-    email = kevin@deldycke.com
-    signingkey = C572BB01B1ED5A3A
+    # name = Kevin Deldycke
+    # email = kevin@deldycke.com
+    # signingkey = C572BB01B1ED5A3A
 [color]
     diff = auto
     status = auto
