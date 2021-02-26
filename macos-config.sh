@@ -1990,6 +1990,7 @@ defaults write com.adguard.mac.adguard IgnoreEvSslCertificates -bool false
     -c "Add :controlBarToolbarButtons:0     integer 0" \
     -c "Add :showChapterPos                 integer 1" \
     -c "Add :autoSearchOnlineSub            integer 1" \
+    -c "Add :ytdlSearchPath                 string  '/usr/local/bin/'" \
     ~/Library/Preferences/com.colliderli.iina.plist
 
 
