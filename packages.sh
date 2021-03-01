@@ -90,7 +90,6 @@ aerial
 altserver
 amethyst
 balenaetcher
-bisq
 blockblock
 caprine
 db-browser-for-sqlite
