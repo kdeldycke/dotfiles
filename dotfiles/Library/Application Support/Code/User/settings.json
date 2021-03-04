@@ -47,7 +47,7 @@
     "html.format.indentInnerHtml": true,
     "html.format.templating": true,
     "files.associations": {
-        "*.html": "jinja-html"
+        "**/templates/**/*.html": "jinja-html"
     },
     "html.format.indentHandlebars": true
 }
