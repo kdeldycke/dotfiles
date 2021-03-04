@@ -160,4 +160,5 @@ twine
 
 VSCODE_PLUGINS="
 ms-python.python
+samuelcolvin.jinjahtml
 "

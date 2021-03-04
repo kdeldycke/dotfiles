@@ -43,5 +43,11 @@
         "py37",
         "--target-version",
         "py38"
-    ]
+    ],
+    "html.format.indentInnerHtml": true,
+    "html.format.templating": true,
+    "files.associations": {
+        "*.html": "jinja-html"
+    },
+    "html.format.indentHandlebars": true
 }
