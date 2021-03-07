@@ -132,6 +132,7 @@ zoom
 
 # Python packages to install from PyPi.
 PYTHON_PACKAGES="
+arrow
 black
 boltons
 bump2version
@@ -141,8 +142,12 @@ gmvault
 ipython-autotime
 isort
 jupyterlab
+jupyterlab-code-formatter
+matplotlib
 meta-package-manager
 neovim
+numpy
+pandas
 pgcli
 pipdeptree[graphviz]
 poetry
