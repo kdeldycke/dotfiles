@@ -100,7 +100,7 @@ dupeguru
 electrum
 fork
 gimp
-google-drive-file-stream
+google-drive
 homebrew/cask-drivers/caldigit-thunderbolt-charging
 homebrew/cask-drivers/ftdi-vcp-driver
 homebrew/cask-drivers/logitech-options
