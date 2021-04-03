@@ -49,5 +49,28 @@
     "files.associations": {
         "**/templates/**/*.html": "jinja-html"
     },
-    "html.format.indentHandlebars": true
+    "html.format.indentHandlebars": true,
+    "jupyter.themeMatplotlibPlots": true,
+    "jupyter.experiments.enabled": false,
+    "jupyter.askForKernelRestart": false,
+    "workbench.editorAssociations": [
+        {
+            "viewType": "jupyter.notebook.ipynb",
+            "filenamePattern": "*.ipynb"
+        }
+    ],
+    "python.venvPath": "~/Library/Caches/pypoetry/virtualenvs/",
+    "jupyter.runStartupCommands": [
+        "!pip install ipython-autotime",
+        "%reload_ext autotime",
+        "!pip install jupyterlab-code-formatter black isort",
+        "%reload_ext jupyterlab_code_formatter",
+        "# TODO: find a way to trigger jupyterlab_code_formatter:format_all keyboard shortcut",
+        "# or better: force jupyterlab_code_formatter formatOnSave settings to true",
+        "%precision 10"
+    ],
+    "python.showStartPage": false,
+    "workbench.editor.wrapTabs": true,
+    "workbench.enableExperiments": false,
+    "workbench.startupEditor": "none"
 }
