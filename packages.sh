@@ -115,6 +115,7 @@ libreoffice
 little-snitch
 lulu
 macdown
+mactex
 melonamin/formulae/swiftbar
 monitorcontrol
 mullvadvpn
