@@ -1,6 +1,8 @@
 " Drop total compatibility with ancient vi.
-set nocompatible
-
+if &compatible
+  " `:set nocompatible` has many side effects. Therefore this should be done only when 'compatible' is set.
+  set nocompatible
+endif
 
 " Figure out our config directory.
 let config_dir = has("nvim") ? '~/.config/nvim' : '~/.vim'
