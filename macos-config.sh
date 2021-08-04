@@ -87,7 +87,6 @@ for app (
     "/Library/Application Support/Logitech.localized/Logitech Options.localized/Logi Options Daemon.app"
     "/Applications/Logi Options.app"
     "/Applications/MonitorControl.app"
-    "/Applications/SwiftBar.app"
 ); do
     sudo tccutil --insert "${app}"
     sudo tccutil --enable "${app}"

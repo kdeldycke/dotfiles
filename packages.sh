@@ -116,7 +116,6 @@ little-snitch
 lulu
 macdown
 mactex
-melonamin/formulae/swiftbar
 monitorcontrol
 mullvadvpn
 musicbrainz-picard
@@ -129,6 +128,7 @@ tor-browser
 transmission
 visual-studio-code
 zoom
+xbar
 "
 
 # Python packages to install from PyPi.

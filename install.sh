@@ -173,14 +173,13 @@ GOOGLE_APPLICATION_CREDENTIALS=~/.google-cloud-auth.json gcsfuse --implicit-dirs
 # mount -t gcsfuse -o rw,user,keyfile="${HOME}/.google-cloud-auth.json" backup-imac-restic "${HOME}/gcs"
 
 
-# Configure swiftbar.
-defaults write com.ameba.SwiftBar PluginDirectory "~/.swiftbar"
-defaults write com.ameba.SwiftBar SUHasLaunchedBefore 1
-wget -O "${HOME}/.swiftbar/btc.17m.sh" https://github.com/matryer/bitbar-plugins/raw/master/Cryptocurrency/Bitcoin/bitstamp.net/last.10s.sh
-sed -i "s/Bitstamp: /Ƀ/" "${HOME}/.swiftbar/btc.17m.sh"
-wget -O "${HOME}/.swiftbar/brew-services.7m.rb" https://github.com/matryer/bitbar-plugins/raw/master/Dev/Homebrew/brew-services.10m.rb
-chmod +x ${HOME}/.swiftbar/*.{sh,py,rb}
-open -a SwiftBar
+# Configure xbar.
+XBAR_PLUGINS_FOLDER="${HOME}/Library/Application Support/xbar/plugins"
+wget -O "${XBAR_PLUGINS_FOLDER}/btc.17m.sh" https://raw.githubusercontent.com/matryer/xbar-plugins/master/Cryptocurrency/Bitcoin/bitstamp.net/last.10s.sh
+sed -i "s/Bitstamp: /Ƀ/" "${XBAR_PLUGINS_FOLDER}/btc.17m.sh"
+wget -O "${XBAR_PLUGINS_FOLDER}/brew-services.7m.rb" https://raw.githubusercontent.com/matryer/xbar-plugins/master/Dev/Homebrew/brew-services.10m.rb
+chmod +x ${XBAR_PLUGINS_FOLDER}/*.{sh,py,rb}
+open -a xbar
 
 # Open Tor Browser at least once in the background to create a default profile.
 # Then close it after a while to not block script execution.
