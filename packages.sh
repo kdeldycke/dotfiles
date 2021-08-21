@@ -95,7 +95,6 @@ caprine
 db-browser-for-sqlite
 disk-arbitrator
 disk-drill
-dropbox
 dupeguru
 electrum
 fork

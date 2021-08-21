@@ -137,7 +137,6 @@ pluginkit -e use -i com.agilebits.onepassword7.1PasswordSafariAppExtension
 mas install 1408727408
 
 # Open apps so I'll not forget to login
-open -a Dropbox
 open -a adguard
 
 # Spark - Email App by Readdle
