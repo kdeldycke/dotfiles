@@ -197,6 +197,7 @@ PATH_CACHE="${HOME}/.path-env-cache"
             $(brew --prefix openssh)/bin
             $(brew --prefix curl)/bin
             $(brew --prefix python)/libexec/bin
+            ${HOME}/.cargo/bin
         )
         print -rl -- ${PATH_LIST} > ${PATH_CACHE}
     fi
