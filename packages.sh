@@ -125,7 +125,6 @@ telegram-desktop
 tor-browser
 transmission
 visual-studio-code
-zoom
 xbar
 "
 
