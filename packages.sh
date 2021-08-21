@@ -113,7 +113,6 @@ knockknock
 libreoffice
 little-snitch
 lulu
-macdown
 mactex
 monitorcontrol
 musicbrainz-picard
