@@ -116,7 +116,6 @@ lulu
 macdown
 mactex
 monitorcontrol
-mullvadvpn
 musicbrainz-picard
 netnewswire
 osxfuse
