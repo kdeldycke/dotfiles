@@ -1088,18 +1088,15 @@ done
 # Add new app shortcuts to the dock.
 for app (
     "1Password 7"
-    "Caprine"
     "Fork"
     "Home"
     "LibreOffice"
     "NetNewsWire"
     "Signal"
     "Spark"
-    "Telegram Desktop"
     "Tor Browser"
     "Transmission"
     "Visual Studio Code"
-    "zoom.us"
 ); do
     dockutil --find "${app}"
     if [ $? -ne 0 ]; then

@@ -91,7 +91,6 @@ altserver
 amethyst
 balenaetcher
 blockblock
-caprine
 db-browser-for-sqlite
 disk-arbitrator
 disk-drill
@@ -120,7 +119,6 @@ netnewswire
 osxfuse
 signal
 subsurface
-telegram-desktop
 tor-browser
 transmission
 visual-studio-code
