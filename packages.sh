@@ -79,7 +79,7 @@ webkit2png
 wget
 x264
 xh
-youtube-dl
+yt-dlp
 zsh
 "
 

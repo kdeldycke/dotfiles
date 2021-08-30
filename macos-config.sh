@@ -1992,6 +1992,9 @@ defaults write com.adguard.mac.adguard IgnoreEvSslCertificates -bool false
     -c "Add :ytdlSearchPath                 string  '/usr/local/bin/'" \
     ~/Library/Preferences/com.colliderli.iina.plist
 
+# Link legacy youtube-dl binary to maintained yt-dlp
+ln -s /usr/local/bin/yt-dlp /usr/local/bin/youtube-dl
+
 
 ###############################################################################
 # Transmission.app                                                            #
