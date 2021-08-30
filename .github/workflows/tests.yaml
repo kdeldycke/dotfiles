@@ -25,6 +25,11 @@ jobs:
         run: |
           sudo chsh -s "$(brew --prefix zsh)/bin/zsh" root
           sudo chsh -s "$(brew --prefix zsh)/bin/zsh" $USERNAME
+      - name: Fix GitHub worker
+        run: |
+          # aws-cli is already installed by hand in GitHub action runners.
+          # Remove it to avoid "brew install --formula awscli" error.
+          rm /usr/local/bin/aws
       - name: Run install
         run: |
           zsh ./install.sh
