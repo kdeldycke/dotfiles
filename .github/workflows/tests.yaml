@@ -30,6 +30,7 @@ jobs:
         # Remove it to avoid "brew install --formula awscli" error.
         run: |
           rm /usr/local/bin/aws
+          rm /usr/local/bin/aws_completer
       - name: Run install
         run: |
           zsh ./install.sh
