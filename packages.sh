@@ -86,11 +86,13 @@ zsh
 # Packages to install by the way of Brew's casks.
 CASK_PACKAGES="
 adguard
+adguard-vpn
 aerial
 altserver
 amethyst
 balenaetcher
 blockblock
+dangerzone
 db-browser-for-sqlite
 disk-arbitrator
 disk-drill
