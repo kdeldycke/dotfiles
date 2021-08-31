@@ -16,8 +16,6 @@ dockutil
 duti
 exa
 exiftool
-ext2fuse
-ext4fuse
 faac
 faad2
 fd
@@ -46,7 +44,6 @@ lame
 legit
 mozjpeg
 neovim
-ntfs-3g
 openssh
 openssl
 optipng
@@ -117,7 +114,6 @@ mactex
 monitorcontrol
 musicbrainz-picard
 netnewswire
-osxfuse
 signal
 stats
 subsurface

@@ -162,16 +162,6 @@ xattr -cr ~/Library/QuickLook/QLStephen.qlgenerator
 qlmanage -r
 qlmanage -r cache
 
-# Install and configure Google Cloud Storage bucket mount point.
-brew install gcsfuse
-mkdir -p "${HOME}/gcs"
-GOOGLE_APPLICATION_CREDENTIALS=~/.google-cloud-auth.json gcsfuse --implicit-dirs backup-imac-restic ./gcs
-# Mount doesn't work as macOS doesn't let us register a new filesystem plugin.
-# See: https://github.com/GoogleCloudPlatform/gcsfuse/issues/188
-# sudo ln -s /usr/local/sbin/mount_gcsfuse /sbin/
-# mount -t gcsfuse -o rw,user,keyfile="${HOME}/.google-cloud-auth.json" backup-imac-restic "${HOME}/gcs"
-
-
 # Configure xbar.
 XBAR_PLUGINS_FOLDER="${HOME}/Library/Application Support/xbar/plugins"
 wget -O "${XBAR_PLUGINS_FOLDER}/btc.17m.sh" https://raw.githubusercontent.com/matryer/xbar-plugins/master/Cryptocurrency/Bitcoin/bitstamp.net/last.10s.sh
