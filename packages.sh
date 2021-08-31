@@ -70,7 +70,7 @@ tccutil
 testdisk
 tldr
 tree
-unrar
+unar
 watch
 webkit2png
 wget
