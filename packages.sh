@@ -44,6 +44,7 @@ lame
 legit
 mozjpeg
 neovim
+openjdk
 openssh
 openssl
 optipng
@@ -103,7 +104,6 @@ homebrew/cask-drivers/logitech-options
 homebrew/cask-drivers/samsung-portable-ssd-t5
 homebrew/cask-fonts/font-sauce-code-pro-nerd-font
 iina
-java
 kap
 knockknock
 libreoffice
