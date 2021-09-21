@@ -1959,6 +1959,7 @@ defaults write com.adguard.mac.adguard IgnoreEvSslCertificates -bool false
     -c "Clear dict" \
     -c "Add :SUAutomaticallyUpdate          integer 1" \
     -c "Add :SUEnableAutomaticChecks        integer 1" \
+    -c "Add :SUScheduledCheckInterval       integer 604800" \
     -c "Add :receiveBetaUpdate              integer 0" \
     -c "Add :SUHasLaunchedBefore            integer 1" \
     -c "Add :SUSendProfileInfo              integer 0" \
