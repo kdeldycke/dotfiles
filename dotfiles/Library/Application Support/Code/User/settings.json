@@ -51,16 +51,13 @@
     },
     "html.format.indentHandlebars": true,
     "jupyter.themeMatplotlibPlots": true,
-    "jupyter.experiments.enabled": false,
     "jupyter.askForKernelRestart": false,
-    "workbench.editorAssociations": [
-        {
-            "viewType": "jupyter.notebook.ipynb",
-            "filenamePattern": "*.ipynb"
-        }
-    ],
+    "workbench.editorAssociations": {
+        "*.ipynb": "jupyter.notebook.ipynb"
+    },
     "python.venvPath": "~/Library/Caches/pypoetry/virtualenvs/",
     "jupyter.runStartupCommands": [
+        "# TODO: find a way to trigger jupyterlab_code_formatter:format_all keyboard shortcut"
         "!pip install ipython-autotime",
         "%reload_ext autotime",
         "!pip install jupyterlab-code-formatter black isort",
@@ -70,7 +67,12 @@
         "%precision 10"
     ],
     "python.showStartPage": false,
-    "workbench.editor.wrapTabs": true,
     "workbench.enableExperiments": false,
-    "workbench.startupEditor": "none"
+    "workbench.startupEditor": "none",
+    "python.languageServer": "Pylance",
+    "notebook.lineNumbers": "on",
+    "jupyter.alwaysScrollOnNewCell": true,
+    "jupyter.experiments.enabled": false,
+    "jupyter.enableNativeInteractiveWindow": true,
+    "jupyter.experimental.debugging": true
 }
