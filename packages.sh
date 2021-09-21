@@ -160,4 +160,5 @@ VSCODE_PLUGINS="
 ms-python.python
 samuelcolvin.jinjahtml
 tamasfe.even-better-toml
+trond-snekvik.simple-rst
 "
