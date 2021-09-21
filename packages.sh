@@ -113,6 +113,7 @@ mactex
 monitorcontrol
 musicbrainz-picard
 netnewswire
+pdf-images
 signal
 stats
 subsurface
