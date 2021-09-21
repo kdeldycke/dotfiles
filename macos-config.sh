@@ -976,14 +976,14 @@ defaults -currentHost write com.apple.coreservices.useractivityd "ActivityReceiv
 defaults write com.apple.dock mouse-over-hilite-stack -bool true
 
 # Set the icon size of Dock items to 36 pixels
-defaults write com.apple.dock tilesize -int 36
+defaults write com.apple.dock tilesize -int 52
 
-# Disable magnification
-defaults write com.apple.dock "magnification" -bool false
-defaults write com.apple.dock "largesize" -int 64
+# Enable magnification
+defaults write com.apple.dock "magnification" -bool true
+defaults write com.apple.dock "largesize" -int 90
 
-# Change minimize/maximize window effect
-defaults write com.apple.dock mineffect -string "scale"
+# Change minimize/maximize window effect ("scale" or "genie")
+defaults write com.apple.dock mineffect -string "genie"
 
 # Minimize windows into their application’s icon
 defaults write com.apple.dock minimize-to-application -bool true
@@ -1003,10 +1003,10 @@ defaults write com.apple.dock show-process-indicators -bool true
 defaults write com.apple.dock static-only -bool false
 
 # Don't show recent applications in the dock
-defaults write com.apple.dock show-recents -bool false
+defaults write com.apple.dock show-recents -bool true
 
 # Don’t animate opening applications from the Dock
-defaults write com.apple.dock launchanim -bool false
+defaults write com.apple.dock launchanim -bool true
 
 # Speed up Mission Control animations
 defaults write com.apple.dock expose-animation-duration -float 0.1
