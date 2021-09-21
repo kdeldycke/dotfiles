@@ -368,8 +368,7 @@ export PYTHONSTARTUP="$HOME/.python_startup.py"
 ###############################################################################
 # Source: https://thorsten-hans.com/5-types-of-zsh-aliases#suffix-aliases
 
-alias -s {py,rst,toml,json}=nvim
-alias -s {md,markdown}=code
+alias -s {md,markdown,rst,toml,json}=code
 alias -s {ape,avi,flv,m4a,mkv,mov,mp3,mp4,mpeg,mpg,ogg,ogm,wav,webm}=iina
 
 # Paste a repository URL in terminal, and have it cloned.
