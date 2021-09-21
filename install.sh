@@ -183,8 +183,8 @@ EOF
 # Set TorBrowser bookmarks in toolbar.
 # Source: https://yro.slashdot.org/story/16/06/08/151245/kickasstorrents-enters-the-dark-web-adds-official-tor-address
 BOOKMARKS="
-https://protonirockerxow.onion,ProtonMail,ehmwyurmkort,eqeiuuEyivna
-http://piratebayo3klnzokct3wt5yyxb2vpebbuyjl7m623iaxmqhsd52coid.onion,PirateBay,nnypemktnpya,dvzeeooowsgx
+https://protonmailrmez3lotccipshtkleegetolb73fuirgj7r4o4vfu7ozyd.onion,ProtonMail,ehmwyurmkort,eqeiuuEyivna
+https://piratebayo3klnzokct3wt5yyxb2vpebbuyjl7m623iaxmqhsd52coid.onion,PirateBay,nnypemktnpya,dvzeeooowsgx
 "
 TB_BOOKMARK_DB="$TB_CONFIG_DIR/places.sqlite"
 # Remove all bookmarks from the toolbar.
