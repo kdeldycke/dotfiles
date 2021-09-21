@@ -239,7 +239,7 @@ defaults write com.apple.universalaccess reduceTransparency -bool true
 defaults write com.apple.TextInputMenu visible -bool true
 defaults write com.apple.TextInputMenuAgent "NSStatusItem Visible Item-0" -bool true
 
-# Menu bar: hide the User icon
+# Menu bar: hide the User and Battery icons
 defaults -currentHost write dontAutoLoad -array \
         "/System/Library/CoreServices/Menu Extras/User.menu"
 defaults write com.apple.systemuiserver menuExtras -array \
@@ -248,7 +248,6 @@ defaults write com.apple.systemuiserver menuExtras -array \
         "/System/Library/CoreServices/Menu Extras/Bluetooth.menu" \
         "/System/Library/CoreServices/Menu Extras/TextInput.menu" \
         "/System/Library/CoreServices/Menu Extras/Volume.menu" \
-        "/System/Library/CoreServices/Menu Extras/Battery.menu" \
         "/System/Library/CoreServices/Menu Extras/Clock.menu"
 
 # Autohide dock and menubar.
