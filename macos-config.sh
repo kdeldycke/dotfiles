@@ -153,9 +153,9 @@ defaults write NSGlobalDomain NSCloseAlwaysConfirmsChanges -bool true
 osascript << EOF
   tell application "System Events"
     tell appearance preferences
-      set recent documents limit to 0
-      set recent applications limit to 0
-      set recent servers limit to 0
+      set recent documents limit to 5
+      set recent applications limit to 5
+      set recent servers limit to 5
     end tell
   end tell
 EOF
