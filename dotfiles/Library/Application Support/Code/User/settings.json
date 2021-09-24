@@ -57,7 +57,6 @@
     },
     "python.venvPath": "~/Library/Caches/pypoetry/virtualenvs/",
     "jupyter.runStartupCommands": [
-        "# TODO: find a way to trigger jupyterlab_code_formatter:format_all keyboard shortcut"
         "!pip install ipython-autotime",
         "%reload_ext autotime",
         "!pip install jupyterlab-code-formatter black isort",
