@@ -79,6 +79,15 @@ brew analytics off
 # Refresh our local copy of package index.
 brew update
 
+# Fetch latest packages.
+brew upgrade
+
+# Add services.
+brew tap homebrew/services
+
+
+######### Meta Package Manager #########
+
 # Upgrade Python ourselves instead of relying to the common "brew upgrade"
 # below. This way we fix the following issue:
 #   Error: The `brew link` step did not complete successfully
@@ -89,20 +98,17 @@ brew update
 brew upgrade python
 brew link --overwrite python
 
-# Fetch latest packages.
-brew upgrade
+# Use latest pip.
+python -m pip install --upgrade pip
 
-# Add services.
-brew tap homebrew/services
+# Install mpm.
+python -m pip install --upgrade meta-package-manager
 
-# Load package lists to install.
-source ./packages.sh
+# Install all my packages.
+mpm --verbosity INFO restore ./packages.toml
 
-# Install brew packages.
-for PACKAGE (${(f)BREW_PACKAGES}) brew install --formula "$PACKAGE"
 
-# Install cask packages.
-for PACKAGE (${(f)CASK_PACKAGES}) brew install --cask "$PACKAGE"
+######### Post-brew setup #########
 
 # htop-osx requires root privileges to correctly display all running processes.
 sudo chown root:wheel "$(brew --prefix)/bin/htop"
@@ -212,15 +218,6 @@ open --wait-apps -g -a "IINA" & sleep 20s; killall "IINA"
 # Clean things up.
 brew cleanup
 brew services cleanup
-
-# Use latest pip.
-python -m pip install --upgrade pip
-
-# Install & upgrade all global python modules
-for p (${(f)PYTHON_PACKAGES}) python -m pip install --upgrade "$p"
-
-# Install Visual Studio Code extensions.
-for ext (${(f)VSCODE_PLUGINS}) code --install-extension "$ext"
 
 # Generate pip and poetry completion.
 python -m pip completion --zsh > ~/.zfunc/_pip
