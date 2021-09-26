@@ -98,9 +98,8 @@ brew tap homebrew/services
 brew upgrade python
 brew link --overwrite python
 
-# Load our canonical shell configuration to force Python 3 as our default instead of
-# macOS default Python 2.7.
-source "${HOME}/.zshrc"
+# Expose Python 3 sa default.
+export PATH=$(brew --prefix python)/libexec/bin:$PATH
 
 # Use latest pip.
 python -m pip install --upgrade pip
