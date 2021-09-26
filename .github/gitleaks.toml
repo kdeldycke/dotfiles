@@ -1,0 +1,11 @@
+[allowlist]
+description = "False positives"
+commits = [
+    # A simple Twitter URL.
+    # https://github.com/kdeldycke/dotfiles/commit/76a09e4314b791077c7a0c95ccb1a55d7dbf5ab2
+    "76a09e4314b791077c7a0c95ccb1a55d7dbf5ab2",
+    # Service account credential for GCP that was properly anonymized.
+    # https://github.com/kdeldycke/dotfiles/commit/a1e242d19d7d5cb0acf8ee81cfe98b21b6bdfb77
+    "a1e242d19d7d5cb0acf8ee81cfe98b21b6bdfb77",
+
+]
