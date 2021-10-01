@@ -76,7 +76,6 @@ xh = ""
 yt-dlp = ""
 zsh = ""
 
-
 [cask]
 adguard = ""
 adguard-vpn = ""
@@ -116,6 +115,25 @@ tor-browser = ""
 transmission = ""
 visual-studio-code = ""
 xbar = ""
+# QuickLooks plugins
+# Source: https://github.com/sindresorhus/quick-look-plugins
+apparency = ""
+epubquicklook = ""
+qlcolorcode = ""
+qlimagesize = ""
+qlstephen = ""
+qlvideo = ""
+quicklook-json = ""
+sbarex-qlmarkdown = ""
+suspicious-package = ""
+
+[mas]
+"409183694" = ""  # Numbers
+"409203825" = ""  # Keynotes
+"1333542190" = "" # 1Password
+"1408727408" = "" # WiFi Explorer Lite
+"1176895641" = "" # Spark - Email App by Readdle
+"1295203466" = "" # Microsoft Remote Desktop
 
 [pip]
 arrow = ""
@@ -124,7 +142,6 @@ boltons = ""
 bump2version = ""
 check-wheel-contents = ""
 "coverage[toml]" = ""
-gmvault = ""
 ipython-autotime = ""
 isort = ""
 jupyterlab = ""
@@ -150,6 +167,9 @@ twine = ""
 
 [vscode]
 ms-python.python = ""
+ms-python.vscode-pylance = ""
+ms-toolsai.jupyter = ""
+ms-toolsai.jupyter-keymap = ""
 samuelcolvin.jinjahtml = ""
 tamasfe.even-better-toml = ""
 trond-snekvik.simple-rst = ""

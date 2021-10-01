@@ -101,11 +101,12 @@ brew link --overwrite python
 # Expose Python 3 sa default.
 export PATH=$(brew --prefix python)/libexec/bin:$PATH
 
-# Use latest pip.
-python -m pip install --upgrade pip
-
 # Install mpm.
+python -m pip install --upgrade pip
 python -m pip install --upgrade meta-package-manager
+
+# Refresh all package managers.
+mpm --verbosity INFO sync
 
 # Install all my packages.
 mpm --verbosity INFO restore ./packages.toml
@@ -127,43 +128,18 @@ sudo brew services start spoof-mac
 brew install mas
 mas upgrade
 
-# Remove Pages and GarageBand.
-sudo rm -rf /Applications/GarageBand.app
-sudo rm -rf /Applications/Pages.app
+# Remove unused apps.
+mas uninstall 682658836  # GarageBand
+mas uninstall 409201541  # Pages
 
-# Install Numbers and Keynotes
-mas install 409183694
-mas install 409203825
-
-# Install 1Password.
-mas install 1333542190
+# Open apps so I'll not forget to login.
+open -a adguard
 open -a "1Password 7"
+
 # Activate Safari extension.
 # Source: https://github.com/kdeldycke/kevin-deldycke-blog/blob/main/content/posts/macos-commands.md
 pluginkit -e use -i com.agilebits.onepassword7.1PasswordSafariAppExtension
 
-# WiFi Explorer Lite
-mas install 1408727408
-
-# Open apps so I'll not forget to login
-open -a adguard
-
-# Spark - Email App by Readdle
-mas install 1176895641
-
-# Microsoft Remote Desktop
-mas install 1295203466
-
-# Install QuickLooks plugins
-# Source: https://github.com/sindresorhus/quick-look-plugins
-brew install --cask epubquicklook
-brew install --cask qlcolorcode
-brew install --cask qlimagesize
-brew install --cask qlstephen
-brew install --cask qlvideo
-brew install --cask quicklook-json
-brew install --cask sbarex-qlmarkdown
-brew install --cask suspicious-package
 # Fix "QL*.qlgenerator cannot be opened because the developer cannot be verified."
 xattr -cr ~/Library/QuickLook/QLColorCode.qlgenerator
 xattr -cr ~/Library/QuickLook/QLStephen.qlgenerator
@@ -218,9 +194,6 @@ wget https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/addon-607
 # "XXX.app is an app downloaded from the Internet. Are you sure you want to open it?"
 open --wait-apps -g -a "IINA" & sleep 20s; killall "IINA"
 
-# Clean things up.
-brew cleanup
-brew services cleanup
 
 # Generate pip and poetry completion.
 python -m pip completion --zsh > ~/.zfunc/_pip
@@ -243,3 +216,10 @@ zinit update
 
 # Configure everything.
 source ./macos-config.sh
+
+
+######### Post-install #########
+
+# Clean things up.
+mpm --verbosity INFO cleanup
+brew services cleanup
