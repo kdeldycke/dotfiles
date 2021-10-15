@@ -10,7 +10,7 @@ jobs:
     name: Check Zsh code
     runs-on: macos-11.0
     steps:
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v2.3.5
       - name: Install Zsh
         run: |
           brew install zsh
@@ -22,7 +22,7 @@ jobs:
     name: Lint YAML files
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v2.3.5
       - uses: actions/setup-python@v2.2.2
       - name: Install linter
         run: |
@@ -35,7 +35,7 @@ jobs:
   check-secrets:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v2.3.5
         with:
           fetch-depth: '0'
       - name: gitleaks-action
