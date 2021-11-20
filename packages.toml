@@ -121,10 +121,10 @@ apparency = ""
 epubquicklook = ""
 qlcolorcode = ""
 qlimagesize = ""
+qlmarkdown = ""
 qlstephen = ""
 qlvideo = ""
 quicklook-json = ""
-sbarex-qlmarkdown = ""
 suspicious-package = ""
 
 [mas]
