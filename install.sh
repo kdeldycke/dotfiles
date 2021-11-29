@@ -204,7 +204,7 @@ _MPM_COMPLETE=source_zsh mpm > ~/.zfunc/_mpm
 nvim -c "try | call dein#update() | finally | qall! | endtry"
 
 # Install zinit
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/zdharma-continuum/zinit/master/doc/install.sh)"
+sh -c "$(curl -fsSL https://git.io/zinit-install)"
 
 # Fix "zsh compinit: insecure directories" error.
 sudo chown -R $(whoami) /usr/local/share/zsh /usr/local/share/zsh/site-functions
