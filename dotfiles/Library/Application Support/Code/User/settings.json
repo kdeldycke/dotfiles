@@ -73,5 +73,10 @@
     "jupyter.alwaysScrollOnNewCell": true,
     "jupyter.experiments.enabled": false,
     "jupyter.enableNativeInteractiveWindow": true,
-    "jupyter.experimental.debugging": true
+    "jupyter.experimental.debugging": true,
+    "testing.defaultGutterClickAction": "contextMenu",
+    "editor.bracketPairColorization.enabled": true,
+    "telemetry.telemetryLevel": "off",
+    "editor.guides.bracketPairs": true,
+    "explorer.confirmDelete": false
 }
