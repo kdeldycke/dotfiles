@@ -195,7 +195,6 @@ wget https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/addon-607
 # "XXX.app is an app downloaded from the Internet. Are you sure you want to open it?"
 open --wait-apps -g -a "IINA" & sleep 20s; killall "IINA"
 
-
 # Generate pip and poetry completion.
 python -m pip completion --zsh > ~/.zfunc/_pip
 poetry completions zsh > ~/.zfunc/_poetry
