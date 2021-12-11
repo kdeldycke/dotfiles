@@ -84,6 +84,7 @@ brew upgrade
 
 # Add services.
 brew tap homebrew/services
+brew tap gromgit/homebrew-fuse
 
 
 ######### Meta Package Manager #########
