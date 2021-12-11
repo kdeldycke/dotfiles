@@ -60,6 +60,7 @@
     fetchJobs = 2
 [merge]
     log = true
+    conflictstyle = diff3
 [mergetool]
     # Do not keep backup files around after a successful merge.
     keepBackup = false
