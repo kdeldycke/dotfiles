@@ -169,6 +169,7 @@ setuptools = ""
 twine = ""
 
 [vscode]
+executablebookproject.myst-highlight = ""
 ms-python.python = ""
 ms-python.vscode-pylance = ""
 ms-toolsai.jupyter = ""
