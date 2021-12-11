@@ -139,7 +139,7 @@ open -a "1Password 7"
 
 # Activate Safari extension.
 # Source: https://github.com/kdeldycke/kevin-deldycke-blog/blob/main/content/posts/macos-commands.md
-pluginkit -e use -i com.agilebits.onepassword7.1PasswordSafariAppExtension
+pluginkit -e use -i com.1password.safari.extension
 
 # Fix "QL*.qlgenerator cannot be opened because the developer cannot be verified."
 xattr -cr ~/Library/QuickLook/QLColorCode.qlgenerator
