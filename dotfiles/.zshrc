@@ -203,7 +203,7 @@ PATH_CACHE="${HOME}/.path-env-cache"
         # Ordered list of path.
         PATH_LIST=(
             /usr/local/sbin
-            $(brew --prefix coreutils)/libexec/gnubin
+            $(brew --prefix uutils-coreutils)/libexec/uubin
             $(brew --prefix grep)/libexec/gnubin
             $(brew --prefix findutils)/libexec/gnubin
             $(brew --prefix gnu-sed)/libexec/gnubin
