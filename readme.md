@@ -156,10 +156,6 @@ branches are available for archive.
 * [macOS 10.14 (Mojave)](https://github.com/kdeldycke/dotfiles/tree/macos-10.14)
 * [macOS 10.13 (High Sierra)](https://github.com/kdeldycke/dotfiles/tree/macos-10.13)
 * [macOS 10.12 (Sierra)](https://github.com/kdeldycke/dotfiles/tree/macos-10.12)
-* [Mac OS X 10.11 (El Capitan)](https://github.com/kdeldycke/dotfiles/tree/osx-10.11)
-* [Mac OS X 10.10 (Yosemite)](https://github.com/kdeldycke/dotfiles/tree/osx-10.10)
-* [Mac OS X 10.9 (Mavericks)](https://github.com/kdeldycke/dotfiles/tree/osx-10.9)
-* [Mac OS X 10.8 (Mountain Lion)](https://github.com/kdeldycke/dotfiles/tree/osx-10.8)
 
 Former [support of Kubuntu and Ubuntu Server Linux
 distributions has been dropped](https://github.com/kdeldycke/dotfiles/commit/e667245f6a4c90c6d41907e392adb74c5acfcf13). You can still find these as dedicated branches, but all are quite ancient (2016).
