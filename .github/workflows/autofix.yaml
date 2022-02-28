@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2.3.4
       - uses: sobolevn/misspell-fixer-action@0.1.0
-      - uses: peter-evans/create-pull-request@v3.10.1
+      - uses: peter-evans/create-pull-request@v3.14.0
         with:
           author: "Kevin Deldycke <kevin@deldycke.com>"
           commit-message: "[autofix] Typo"
@@ -36,7 +36,7 @@ jobs:
         with:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           compressOnly: true
-      - uses: peter-evans/create-pull-request@v3.10.1
+      - uses: peter-evans/create-pull-request@v3.14.0
         with:
           author: "Kevin Deldycke <kevin@deldycke.com>"
           commit-message: "[autofix] Optimize images"
@@ -72,7 +72,7 @@ jobs:
           linux macos microsoftoffice nohup python ssh test vim virtualenv
           visualstudiocode windows
           > ./dotfiles/.gitignore_global
-      - uses: peter-evans/create-pull-request@v3.10.1
+      - uses: peter-evans/create-pull-request@v3.14.0
         with:
           author: "Kevin Deldycke <kevin@deldycke.com>"
           commit-message: "[autofix] Regenerate .gitignore"
