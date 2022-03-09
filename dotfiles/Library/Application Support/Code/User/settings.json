@@ -78,5 +78,7 @@
   "editor.bracketPairColorization.enabled": true,
   "telemetry.telemetryLevel": "off",
   "editor.guides.bracketPairs": true,
-  "explorer.confirmDelete": false
+  "explorer.confirmDelete": false,
+  "git-graph.commitDetailsView.location": "Docked to Bottom",
+  "git-graph.date.format": "ISO Date & Time"
 }
