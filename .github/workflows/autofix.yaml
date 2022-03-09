@@ -13,7 +13,7 @@ jobs:
     uses: kdeldycke/workflows/.github/workflows/autofix.yaml@v0.9.0
     with:
       gitignore-location: ./dotfiles/.gitignore_global
-      gitignore-extra-categories: |
+      gitignore-extra-categories: >
         archive
         archives
         backup
