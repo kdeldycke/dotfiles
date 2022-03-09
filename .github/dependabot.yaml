@@ -9,6 +9,6 @@ updates:
     schedule:
       interval: "daily"
     labels:
-      - "CI/CD"
+      - "📦 dependencies"
     assignees:
       - "kdeldycke"
