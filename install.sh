@@ -89,15 +89,7 @@ brew tap gromgit/homebrew-fuse
 
 ######### Meta Package Manager #########
 
-# Upgrade Python ourselves instead of relying to the common "brew upgrade"
-# below. This way we fix the following issue:
-#   Error: The `brew link` step did not complete successfully
-#   The formula built, but is not symlinked into /usr/local
-#   Could not symlink bin/2to3
-#   Target /usr/local/bin/2to3 already exists. You may want to remove it:
-#     rm '/usr/local/bin/2to3'
-brew upgrade python
-brew link --overwrite python
+brew install python
 
 # Expose Python 3 sa default.
 export PATH=$(brew --prefix python)/libexec/bin:$PATH
