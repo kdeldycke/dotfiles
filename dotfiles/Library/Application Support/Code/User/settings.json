@@ -1,82 +1,82 @@
 {
-    "telemetry.enableCrashReporter": false,
-    "telemetry.enableTelemetry": false,
-    "editor.fontFamily": "\"SauceCodePro Nerd Font\", Menlo, Monaco, 'Courier New', monospace",
-    "editor.minimap.showSlider": "always",
-    "editor.cursorBlinking": "solid",
-    "workbench.colorTheme": "Monokai",
-    "workbench.tree.indent": 16,
-    "workbench.editor.showIcons": false,
-    "explorer.decorations.colors": false,
-    "editor.overviewRulerBorder": false,
-    "editor.renderLineHighlight": "gutter",
-    "editor.renderLineHighlightOnlyWhenFocus": true,
-    "editor.roundedSelection": false,
-    "editor.stablePeek": true,
-    "files.trimTrailingWhitespace": true,
-    "editor.wrappingIndent": "deepIndent",
-    "python.experiments.enabled": false,
-    "python.disableInstallationCheck": true,
-    "python.testing.pytestEnabled": true,
-    "python.formatting.provider": "black",
-    "python.globalModuleInstallation": true,
-    "editor.formatOnSave": true,
-    "python.sortImports.path": "isort",
-    "python.sortImports.args": [
-        "--trailing-comma",
-        "--line-length",
-        "88",
-        "--multi-line",
-        "3"
-    ],
-    "python.linting.pylintArgs": [
-        "--max-line-length=88"
-    ],
-    "[python]": {
-        "editor.defaultFormatter": "ms-python.python",
-        "editor.codeActionsOnSave": {
-            "source.organizeImports": true
-        }
-    },
-    "python.formatting.blackArgs": [
-        "--target-version",
-        "py37",
-        "--target-version",
-        "py38"
-    ],
-    "html.format.indentInnerHtml": true,
-    "html.format.templating": true,
-    "files.associations": {
-        "**/templates/**/*.html": "jinja-html"
-    },
-    "html.format.indentHandlebars": true,
-    "jupyter.themeMatplotlibPlots": true,
-    "jupyter.askForKernelRestart": false,
-    "workbench.editorAssociations": {
-        "*.ipynb": "jupyter.notebook.ipynb"
-    },
-    "python.venvPath": "~/Library/Caches/pypoetry/virtualenvs/",
-    "jupyter.runStartupCommands": [
-        "!pip install ipython-autotime",
-        "%reload_ext autotime",
-        "!pip install jupyterlab-code-formatter black isort",
-        "%reload_ext jupyterlab_code_formatter",
-        "# TODO: find a way to trigger jupyterlab_code_formatter:format_all keyboard shortcut",
-        "# or better: force jupyterlab_code_formatter formatOnSave settings to true",
-        "%precision 10"
-    ],
-    "python.showStartPage": false,
-    "workbench.enableExperiments": false,
-    "workbench.startupEditor": "none",
-    "python.languageServer": "Pylance",
-    "notebook.lineNumbers": "on",
-    "jupyter.alwaysScrollOnNewCell": true,
-    "jupyter.experiments.enabled": false,
-    "jupyter.enableNativeInteractiveWindow": true,
-    "jupyter.experimental.debugging": true,
-    "testing.defaultGutterClickAction": "contextMenu",
-    "editor.bracketPairColorization.enabled": true,
-    "telemetry.telemetryLevel": "off",
-    "editor.guides.bracketPairs": true,
-    "explorer.confirmDelete": false
+  "telemetry.enableCrashReporter": false,
+  "telemetry.enableTelemetry": false,
+  "editor.fontFamily": "\"SauceCodePro Nerd Font\", Menlo, Monaco, 'Courier New', monospace",
+  "editor.minimap.showSlider": "always",
+  "editor.cursorBlinking": "solid",
+  "workbench.colorTheme": "Monokai",
+  "workbench.tree.indent": 16,
+  "workbench.editor.showIcons": false,
+  "explorer.decorations.colors": false,
+  "editor.overviewRulerBorder": false,
+  "editor.renderLineHighlight": "gutter",
+  "editor.renderLineHighlightOnlyWhenFocus": true,
+  "editor.roundedSelection": false,
+  "editor.stablePeek": true,
+  "files.trimTrailingWhitespace": true,
+  "editor.wrappingIndent": "deepIndent",
+  "python.experiments.enabled": false,
+  "python.disableInstallationCheck": true,
+  "python.testing.pytestEnabled": true,
+  "python.formatting.provider": "black",
+  "python.globalModuleInstallation": true,
+  "editor.formatOnSave": true,
+  "python.sortImports.path": "isort",
+  "python.sortImports.args": [
+    "--trailing-comma",
+    "--line-length",
+    "88",
+    "--multi-line",
+    "3"
+  ],
+  "python.linting.pylintArgs": [
+    "--max-line-length=88"
+  ],
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.python",
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    }
+  },
+  "python.formatting.blackArgs": [
+    "--target-version",
+    "py37",
+    "--target-version",
+    "py38"
+  ],
+  "html.format.indentInnerHtml": true,
+  "html.format.templating": true,
+  "files.associations": {
+    "**/templates/**/*.html": "jinja-html"
+  },
+  "html.format.indentHandlebars": true,
+  "jupyter.themeMatplotlibPlots": true,
+  "jupyter.askForKernelRestart": false,
+  "workbench.editorAssociations": {
+    "*.ipynb": "jupyter.notebook.ipynb"
+  },
+  "python.venvPath": "~/Library/Caches/pypoetry/virtualenvs/",
+  "jupyter.runStartupCommands": [
+    "!pip install ipython-autotime",
+    "%reload_ext autotime",
+    "!pip install jupyterlab-code-formatter black isort",
+    "%reload_ext jupyterlab_code_formatter",
+    "# TODO: find a way to trigger jupyterlab_code_formatter:format_all keyboard shortcut",
+    "# or better: force jupyterlab_code_formatter formatOnSave settings to true",
+    "%precision 10"
+  ],
+  "python.showStartPage": false,
+  "workbench.enableExperiments": false,
+  "workbench.startupEditor": "none",
+  "python.languageServer": "Pylance",
+  "notebook.lineNumbers": "on",
+  "jupyter.alwaysScrollOnNewCell": true,
+  "jupyter.experiments.enabled": false,
+  "jupyter.enableNativeInteractiveWindow": true,
+  "jupyter.experimental.debugging": true,
+  "testing.defaultGutterClickAction": "contextMenu",
+  "editor.bracketPairColorization.enabled": true,
+  "telemetry.telemetryLevel": "off",
+  "editor.guides.bracketPairs": true,
+  "explorer.confirmDelete": false
 }
