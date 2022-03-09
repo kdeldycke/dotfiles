@@ -1,0 +1,14 @@
+# Format is:
+#   Prefered Name <preferred e-mail>  Other Name <other e-mail>
+#
+# Reference: https://git-scm.com/docs/git-blame#_mapping_authors
+
+Eliaz Bobadilla <71897736+UltiRequiem@users.noreply.github.com>
+GitHub <noreply@github.com>
+Kevin Deldycke <kdeldycke@scaleway.com>
+Kevin Deldycke <kdeldycke@users.noreply.github.com>
+Kevin Deldycke <kevin@deldycke.com>
+dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+kdeldycke <kdeldycke@users.noreply.github.com>
+ricktang <panda.twx@gmail.com>
