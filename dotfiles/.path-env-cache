@@ -6,4 +6,5 @@
 /usr/local/opt/gnu-tar/libexec/gnubin
 /usr/local/opt/openssh/bin
 /usr/local/opt/curl/bin
-/usr/local/opt/python/libexec/bin
+/usr/local/opt/python@3.9/libexec/bin
+/Users/kde/.cargo/bin
