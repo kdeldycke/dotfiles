@@ -72,7 +72,7 @@ if test ! "$(command -v brew)"
 then
     # Install Homebrew without prompting for user confirmation.
     # See: https://github.com/Homebrew/install/pull/139
-    CI=true /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+    CI=true /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 brew analytics off
 
