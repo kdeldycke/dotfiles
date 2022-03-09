@@ -1,6 +1,6 @@
 # Kevin's dotfiles
 
-Dot-files and system configuration for Python developers on **macOS**.
+Dot-files and system configuration for Python developers on **macOS** with Apple Silicon hardware.
 
 ![Mac OS X 10.13 High Sierra solarized terminal and vim](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/macos-10.13.jpeg)
 
