@@ -130,8 +130,8 @@ brew install mas
 mas upgrade
 
 # Remove unused apps.
-mas uninstall 682658836  # GarageBand
-mas uninstall 409201541  # Pages
+mas uninstall 682658836 || true  # GarageBand
+mas uninstall 409201541 || true  # Pages
 
 # Open apps so I'll not forget to login.
 open -a adguard
