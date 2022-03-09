@@ -1,6 +1,6 @@
 
-# Created by https://www.toptal.com/developers/gitignore/api/archive,archives,backup,bittorrent,certificates,compressed,compressedarchive,compression,database,datarecovery,dropbox,executable,games,git,gpg,jupyternotebooks,less,libreoffice,linux,macos,microsoftoffice,nohup,python,ssh,test,vim,virtualenv,visualstudiocode,windows
-# Edit at https://www.toptal.com/developers/gitignore?templates=archive,archives,backup,bittorrent,certificates,compressed,compressedarchive,compression,database,datarecovery,dropbox,executable,games,git,gpg,jupyternotebooks,less,libreoffice,linux,macos,microsoftoffice,nohup,python,ssh,test,vim,virtualenv,visualstudiocode,windows
+# Created by https://www.toptal.com/developers/gitignore/api/emacs,git,linux,macos,nohup,python,vim,virtualenv,visualstudiocode,windows,archive,archives,backup,bittorrent,certificates,compressed,compressedarchive,compression,database,datarecovery,dropbox,executable,games,gpg,jupyternotebooks,less,libreoffice,microsoftoffice,ssh,test
+# Edit at https://www.toptal.com/developers/gitignore?templates=emacs,git,linux,macos,nohup,python,vim,virtualenv,visualstudiocode,windows,archive,archives,backup,bittorrent,certificates,compressed,compressedarchive,compression,database,datarecovery,dropbox,executable,games,gpg,jupyternotebooks,less,libreoffice,microsoftoffice,ssh,test
 
 ### Archive ###
 
@@ -267,6 +267,57 @@
 .dropbox.attr
 .dropbox.cache
 
+### Emacs ###
+# -*- mode: gitignore; -*-
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Org-mode
+.org-id-locations
+*_archive
+
+# flymake-mode
+*_flymake.*
+
+# eshell files
+/eshell/history
+/eshell/lastdir
+
+# elpa packages
+/elpa/
+
+# reftex files
+*.rel
+
+# AUCTeX auto folder
+/auto/
+
+# cask packages
+.cask/
+dist/
+
+# Flycheck
+flycheck_*.el
+
+# server auth directory
+/server/
+
+# projectiles files
+.projectile
+
+# directory configuration
+.dir-locals.el
+
+# network security
+/network-security.data
+
+
 ### Executable ###
 *.app
 *.bat
@@ -324,7 +375,6 @@ ipython_config.py
 .~lock.*#
 
 ### Linux ###
-*~
 
 # temporary files which can be created if a process still has a handle open of a deleted file
 .fuse_hidden*
@@ -402,7 +452,6 @@ __pycache__/
 .Python
 build/
 develop-eggs/
-dist/
 downloads/
 eggs/
 .eggs/
@@ -482,6 +531,13 @@ target/
 #   install all needed dependencies.
 #Pipfile.lock
 
+# poetry
+#   Similar to Pipfile.lock, it is generally recommended to include poetry.lock in version control.
+#   This is especially recommended for binary packages to ensure reproducibility, and is more
+#   commonly ignored for libraries.
+#   https://python-poetry.org/docs/basic-usage/#commit-your-poetrylock-file-to-version-control
+#poetry.lock
+
 # PEP 582; used by e.g. github.com/David-OConnor/pyflow
 __pypackages__/
 
@@ -524,6 +580,13 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# PyCharm
+#  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
+#  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
+#  and can be added to the global gitignore or merged into this file.  For a more nuclear
+#  option (not recommended) you can uncomment the following to ignore the entire idea folder.
+#.idea/
 
 ### SSH ###
 **/.ssh/id_*
@@ -648,10 +711,13 @@ pip-selfcheck.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-*.code-workspace
+!.vscode/*.code-snippets
 
 # Local History for Visual Studio Code
 .history/
+
+# Built Visual Studio Code Extensions
+*.vsix
 
 ### VisualStudioCode Patch ###
 # Ignore all local history of files
@@ -659,7 +725,6 @@ pip-selfcheck.json
 .ionide
 
 # Support for Project snippet scope
-!.vscode/*.code-snippets
 
 ### Windows ###
 # Windows thumbnail cache files
@@ -691,4 +756,4 @@ $RECYCLE.BIN/
 *.pdb
 *.sqlite3
 
-# End of https://www.toptal.com/developers/gitignore/api/archive,archives,backup,bittorrent,certificates,compressed,compressedarchive,compression,database,datarecovery,dropbox,executable,games,git,gpg,jupyternotebooks,less,libreoffice,linux,macos,microsoftoffice,nohup,python,ssh,test,vim,virtualenv,visualstudiocode,windows
+# End of https://www.toptal.com/developers/gitignore/api/emacs,git,linux,macos,nohup,python,vim,virtualenv,visualstudiocode,windows,archive,archives,backup,bittorrent,certificates,compressed,compressedarchive,compression,database,datarecovery,dropbox,executable,games,gpg,jupyternotebooks,less,libreoffice,microsoftoffice,ssh,test
