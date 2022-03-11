@@ -101,8 +101,10 @@ python -m pip install --upgrade meta-package-manager
 # Refresh all package managers.
 mpm --verbosity INFO sync
 
-# Install all my packages.
-mpm --verbosity INFO restore ./packages.toml
+# Install all my packages but skip [mas] section (there is a circular
+# dependency as mas needs to be install by brew first).
+# XXX This edge-case should be taken care of upstream by mpm.
+mpm --verbosity INFO --exclude mas restore ./packages.toml
 
 
 ######### Post-brew setup #########
@@ -118,20 +120,22 @@ sudo brew services start spoof-mac
 ######### Mac App Store packages #########
 
 # Install Mac App Store CLI and upgrade all apps.
-brew install mas
-mas upgrade
+mpm --mas --verbosity INFO sync
+mpm --mas --verbosity INFO restore ./packages.toml
 
 # Remove unused apps.
 mas uninstall 682658836 || true  # GarageBand
 mas uninstall 409201541 || true  # Pages
 
 # Open apps so I'll not forget to login.
-open -a adguard
 open -a "1Password 7"
+open -a adguard
+open -a Bitwarden
+open -a ProtonVPN
 
 # Activate Safari extension.
 # Source: https://github.com/kdeldycke/kevin-deldycke-blog/blob/main/content/posts/macos-commands.md
-pluginkit -e use -i com.1password.safari.extension
+pluginkit -e use -i com.bitwarden.desktop.safari
 
 # Fix "QL*.qlgenerator cannot be opened because the developer cannot be verified."
 xattr -cr ~/Library/QuickLook/QLColorCode.qlgenerator
