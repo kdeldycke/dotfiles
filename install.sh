@@ -77,7 +77,15 @@ then
     # See: https://github.com/Homebrew/install/pull/139
     CI=true /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
-brew analytics off
+
+# Activate brew analytics in GitHub actions, to prevent overzealous maintainers for
+# removing perfectly working packages on the pretense nobody uses them.
+if test "${GITHUB_WORKFLOW}"
+then
+    brew analytics on
+else
+    brew analytics off
+fi
 
 # Refresh our local copy of package index.
 brew update
