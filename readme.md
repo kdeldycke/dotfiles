@@ -21,8 +21,6 @@ Apple Silicon hardware.
 
 We will reinstall macOS from scratch.
 
-1. [Set a firmware password](https://support.apple.com/en-gb/HT208198).
-
 1. Download macOS from the `App Store.app`.
 
 1. Plug a USB drive to your machine, format it with the Disk Utility app,
