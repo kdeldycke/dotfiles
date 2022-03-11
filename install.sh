@@ -155,10 +155,10 @@ qlmanage -r cache
 
 # Configure xbar.
 XBAR_PLUGINS_FOLDER="${HOME}/Library/Application Support/xbar/plugins"
-wget -O "${XBAR_PLUGINS_FOLDER}/btc.17m.sh" https://raw.githubusercontent.com/matryer/xbar-plugins/master/Cryptocurrency/Bitcoin/bitstamp.net/last.10s.sh
+wget -O "${XBAR_PLUGINS_FOLDER}/btc.17m.sh" https://raw.githubusercontent.com/matryer/xbar-plugins/main/Cryptocurrency/Bitcoin/bitstamp.net/last.10s.sh
 sed -i "s/Bitstamp: /Ƀ/" "${XBAR_PLUGINS_FOLDER}/btc.17m.sh"
-wget -O "${XBAR_PLUGINS_FOLDER}/brew-services.7m.rb" https://raw.githubusercontent.com/matryer/xbar-plugins/master/Dev/Homebrew/brew-services.10m.rb
 chmod +x ${XBAR_PLUGINS_FOLDER}/*.{sh,py,rb}
+wget -O "${XBAR_PLUGINS_FOLDER}/brew-services.7m.rb" https://raw.githubusercontent.com/matryer/xbar-plugins/main/Dev/Homebrew/brew-services.10m.rb
 open -a xbar
 
 # Open Tor Browser at least once in the background to create a default profile.
