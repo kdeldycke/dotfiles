@@ -155,6 +155,7 @@ qlmanage -r cache
 
 # Configure xbar.
 XBAR_PLUGINS_FOLDER="${HOME}/Library/Application Support/xbar/plugins"
+mkdir -p "${XBAR_PLUGINS_FOLDER}"
 wget -O "${XBAR_PLUGINS_FOLDER}/btc.17m.sh" https://raw.githubusercontent.com/matryer/xbar-plugins/main/Cryptocurrency/Bitcoin/bitstamp.net/last.10s.sh
 sed -i "s/Bitstamp: /Ƀ/" "${XBAR_PLUGINS_FOLDER}/btc.17m.sh"
 chmod +x ${XBAR_PLUGINS_FOLDER}/*.{sh,py,rb}
