@@ -194,7 +194,7 @@ sqlite3 -echo -header -column "$TB_BOOKMARK_DB" "SELECT * FROM moz_bookmarks; SE
 
 # Force installation of Firefox plugins.
 wget https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/addon-607454-latest.xpi -O "$TB_CONFIG_DIR/extensions/uBlock0@raymondhill.net.xpi"
-wget https://addons.mozilla.org/firefox/downloads/file/3885451/metamask-10.8.1-an+fx.xpi
+wget https://addons.mozilla.org/firefox/downloads/file/3885451/metamask-10.8.1-an+fx.xpi -O "$TB_CONFIG_DIR/extensions/webextension@metamask.io.xpi"
 
 # Open IINA at least once in the background to let it register its Safari extension.
 # Then close it after a while to not block script execution.
