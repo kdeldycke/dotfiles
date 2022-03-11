@@ -13,7 +13,7 @@ fi
 # Check current shell interpreter.
 ps -p $$ | grep "zsh"
 if [ $? != 0 ]; then
-    echo "These dotfiles were only tested with Zsh shell."
+    echo "These dotfiles were tested with Zsh shell only."
     exit 1
 fi
 
