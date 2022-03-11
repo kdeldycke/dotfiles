@@ -28,7 +28,7 @@ We will reinstall macOS from scratch.
    [flash it with the macOS image](https://support.apple.com/en-us/HT201372):
 
    ```shell-session
-   $ sudo /Applications/Install\ macOS\ Big\ Sur.app/Contents/Resources/createinstallmedia --volume /Volumes/Untitled --nointeraction
+   $ sudo /Applications/Install\ macOS\ Monterey.app/Contents/Resources/createinstallmedia --volume /Volumes/Untitled --nointeraction
    ```
 
 1. Reboot your machine, reinstall macOS, create a user.
