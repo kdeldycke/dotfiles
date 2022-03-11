@@ -125,7 +125,6 @@ xbar = ""
 # QuickLooks plugins
 # Source: https://github.com/sindresorhus/quick-look-plugins
 apparency = ""
-epubquicklook = ""
 qlcolorcode = ""
 qlimagesize = ""
 qlmarkdown = ""
