@@ -65,7 +65,12 @@ done
 sudo softwareupdate --install --all
 
 # Some packages still needs Rosetta 2 on Apple Silicon.
-sudo softwareupdate --install-rosetta --agree-to-license
+# Skip installation on GitHub runners, which are Intel-based.
+if test ! "${GITHUB_WORKFLOW}"
+then
+    sudo softwareupdate --install-rosetta --agree-to-license
+fi
+
 
 ######### Brew install #########
 
