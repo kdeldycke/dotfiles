@@ -66,18 +66,16 @@ sudo softwareupdate --install --all
 
 # Some packages still needs Rosetta 2 on Apple Silicon.
 # Skip installation on GitHub runners, which are Intel-based.
-if test ! "${GITHUB_WORKFLOW}"
-then
+if (( ! ${+GITHUB_WORKFLOW} )); then
     sudo softwareupdate --install-rosetta --agree-to-license
 fi
 
 
 ######### Brew install #########
 
-# Check if homebrew is already installed
-# This also install xcode command line tools
-if test ! "$(command -v brew)"
-then
+# Check if homebrew is already installed.
+# This also install xcode command line tools.
+if (( ! ${+commands[brew]} )); then
     # Install Homebrew without prompting for user confirmation.
     # See: https://github.com/Homebrew/install/pull/139
     CI=true /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -85,8 +83,7 @@ fi
 
 # Activate brew analytics in GitHub actions, to prevent overzealous maintainers for
 # removing perfectly working packages on the pretense nobody uses them.
-if test "${GITHUB_WORKFLOW}"
-then
+if (( ! ${+GITHUB_WORKFLOW} )); then
     brew analytics on
 else
     brew analytics off
