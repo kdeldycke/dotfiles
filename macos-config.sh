@@ -359,7 +359,7 @@ sudo pmset destroyfvkeyonstandby 1
 # This requires a user password, and outputs a recovery key that should be
 # copied to a secure location
 if [[ $(sudo fdesetup status | head -1) == "FileVault is Off." ]]; then
-  sudo fdesetup enable -user `whoami`
+  sudo fdesetup enable -user $(whoami)
 fi
 
 # Disable automatic login when FileVault is enabled
