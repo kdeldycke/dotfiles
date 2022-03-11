@@ -63,6 +63,8 @@ done
 # Update all macOS packages.
 sudo softwareupdate --install --all
 
+# Some packages still needs Rosetta 2 on Apple Silicon.
+sudo softwareupdate --install-rosetta --agree-to-license
 
 ######### Brew install #########
 
