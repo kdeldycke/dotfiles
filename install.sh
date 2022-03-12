@@ -129,6 +129,9 @@ sh -c "$(curl -fsSL https://git.io/zinit-install)"
 sudo chown -R $(whoami) /usr/local/share/zsh /usr/local/share/zsh/site-functions
 chmod u+w /usr/local/share/zsh /usr/local/share/zsh/site-functions
 
+# Reload the shell.
+source ~/.zshrc
+
 # Force zinit self-upgrade.
 zinit self-update
 zinit update
