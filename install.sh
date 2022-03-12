@@ -148,8 +148,10 @@ zinit update
 sudo chown root:wheel "$(brew --prefix)/bin/htop"
 sudo chmod u+s "$(brew --prefix)/bin/htop"
 
-# Activate auto MAC Address spoofing.
-sudo brew services restart spoof-mac
+# Activate and register MAC Address spoofing service if not already running.
+if [[ ! -n $(sudo brew services info spoof-mac --json | jq '.[] | select(.name == "spoof-mac" and .loaded == true)') ]]; then
+    sudo brew services restart spoof-mac
+fi
 
 
 ######### Mac App Store packages #########
