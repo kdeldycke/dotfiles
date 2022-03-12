@@ -2193,8 +2193,9 @@ for app (
     "Photos"
     "Safari"
     "SystemUIServer"
-    "Terminal"
     "Transmission"
+    # Kill terminal last
+    "Terminal"
 ); do
     killall "${app}" &> /dev/null || true
 done
