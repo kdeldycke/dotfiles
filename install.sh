@@ -120,6 +120,25 @@ mpm --verbosity INFO sync
 mpm --verbosity INFO --exclude mas restore ./packages.toml
 
 
+######### Zsh #########
+
+# Install zinit
+sh -c "$(curl -fsSL https://git.io/zinit-install)"
+
+# Fix "zsh compinit: insecure directories" error.
+sudo chown -R $(whoami) /usr/local/share/zsh /usr/local/share/zsh/site-functions
+chmod u+w /usr/local/share/zsh /usr/local/share/zsh/site-functions
+
+# Force zinit self-upgrade.
+zinit self-update
+zinit update
+
+# Generate pip and poetry completion.
+python -m pip completion --zsh > ~/.zfunc/_pip
+poetry completions zsh > ~/.zfunc/_poetry
+_MPM_COMPLETE=zsh_source mpm > ~/.zfunc/_mpm
+
+
 ######### Post-brew setup #########
 
 # htop-osx requires root privileges to correctly display all running processes.
@@ -167,7 +186,7 @@ qlmanage -r cache
 XBAR_PLUGINS_FOLDER="${HOME}/Library/Application Support/xbar/plugins"
 mkdir -p "${XBAR_PLUGINS_FOLDER}"
 wget -O "${XBAR_PLUGINS_FOLDER}/btc.17m.sh" https://raw.githubusercontent.com/matryer/xbar-plugins/main/Cryptocurrency/Bitcoin/bitstamp.net/last.10s.sh
-sed -i "" "s/Bitstamp: /Ƀ/" "${XBAR_PLUGINS_FOLDER}/btc.17m.sh"
+sed -i "s/Bitstamp: /Ƀ/" "${XBAR_PLUGINS_FOLDER}/btc.17m.sh"
 wget -O "${XBAR_PLUGINS_FOLDER}/brew-services.7m.rb" https://raw.githubusercontent.com/matryer/xbar-plugins/main/Dev/Homebrew/brew-services.10m.rb
 chmod +x "${XBAR_PLUGINS_FOLDER}/"*.(sh|py|rb)
 open -a xbar
@@ -212,24 +231,11 @@ wget https://addons.mozilla.org/firefox/downloads/latest/ether-metamask/addon-38
 # "XXX.app is an app downloaded from the Internet. Are you sure you want to open it?"
 open --wait-apps -g -a "IINA" & sleep 20s; killall "IINA"
 
-# Generate pip and poetry completion.
-python -m pip completion --zsh > ~/.zfunc/_pip
-poetry completions zsh > ~/.zfunc/_poetry
-_MPM_COMPLETE=zsh_source mpm > ~/.zfunc/_mpm
-
 # Force Neovim plugin upgrades
 nvim -c "try | call dein#update() | finally | qall! | endtry"
 
-# Install zinit
-sh -c "$(curl -fsSL https://git.io/zinit-install)"
 
-# Fix "zsh compinit: insecure directories" error.
-sudo chown -R $(whoami) /usr/local/share/zsh /usr/local/share/zsh/site-functions
-chmod u+w /usr/local/share/zsh /usr/local/share/zsh/site-functions
 
-# Force zinit self-upgrade.
-zinit self-update
-zinit update
 
 # Configure everything.
 export SIP_DISABLED
