@@ -1995,17 +1995,20 @@ defaults write com.adguard.mac.adguard IgnoreEvSslCertificates -bool false
     -c "Add :quitWhenNoOpenedWindow         integer 1" \
     -c "Add :keepOpenOnFileEnd              integer 0" \
     -c "Add :resumeLastPosition             integer 0" \
+    ~/Library/Preferences/com.colliderli.iina.plist
+
+/usr/libexec/PlistBuddy \
     -c "Add :recordRecentFiles              integer 0" \
     -c "Add :recordPlaybackHistory          integer 0" \
     -c "Add :trackAllFilesInRecentOpenMenu  integer 0" \
     -c "Add :playlistAutoAdd                integer 0" \
-    ~/Library/Preferences/com.colliderli.iina.plist
-
-/usr/libexec/PlistBuddy \
     -c "Add :playlistAutoPlayNext           integer 0" \
     -c "Add :screenShotFolder               string  '~/Desktop'" \
     -c "Add :themeMaterial                  integer 4" \
     -c "Add :resizeWindowTiming             integer 0" \
+    ~/Library/Preferences/com.colliderli.iina.plist
+
+/usr/libexec/PlistBuddy \
     -c "Add :controlBarToolbarButtons       array" \
     -c "Add :controlBarToolbarButtons:0     integer 2" \
     -c "Add :controlBarToolbarButtons:0     integer 1" \
