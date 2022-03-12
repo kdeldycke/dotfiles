@@ -1582,8 +1582,11 @@ defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool true
 # Source: http://www.defaults-write.com/time-machine-setup-a-size-limit-for-backup-volumes/
 sudo defaults write com.apple.TimeMachine MaxSize -integer 1048576
 
-# Exclude Aerial screen saver big video cache
-sudo tmutil addexclusion "~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Application Support/Aerial/Cache"
+# Exclude Aerial screen saver big video cache.
+AERIAL_CACHE="~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Application Support/Aerial/Cache"
+if [[ -f "${AERIAL_CACHE}" ]]; then
+    sudo tmutil addexclusion "${AERIAL_CACHE}"
+fi
 
 # Activate Time Machine backups (including local snapshots).
 sudo tmutil enable
