@@ -139,6 +139,7 @@ source ~/.zshrc
 
 # Force zinit self-upgrade.
 zinit self-update
+zinit delete --clean --yes
 zinit update
 
 
