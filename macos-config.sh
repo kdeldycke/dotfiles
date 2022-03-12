@@ -301,10 +301,11 @@ for net_service (${(f)net_interfaces}); do
     networksetup -setdnsservers "${net_service}" 1.1.1.1 1.0.0.1 2606:4700:4700::1111 2606:4700:4700::1001
     # Clear out all search domains.
     networksetup -setsearchdomains "${net_service}" "Empty"
+    # Setup 10G NIC.
+    if [ "${net_service}" == "Thunderbolt Ethernet Slot 1, Port 2" ]; then
+        networksetup -setMTU "${net_service}" 9000
+    fi
 done
-
-# Setup 10G NIC
-networksetup -setMTU "Thunderbolt Ethernet Slot 1, Port 2" 9000
 
 # Disable IR remote control
 sudo defaults write /Library/Preferences/com.apple.driver.AppleIRController DeviceEnabled -bool false
