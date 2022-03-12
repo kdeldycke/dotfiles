@@ -113,7 +113,7 @@ sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.serve
 # Remove default content
 sudo rm -rf "${HOME}/Public/Drop Box"
 rm -rf "${HOME}/Public/.com.apple.timemachine.supported"
-rm "${HOME}/Desktop/SamsungPortableSSD.app"
+rm -f "${HOME}/Desktop/SamsungPortableSSD.app"
 
 # Disable the sound effects on boot
 sudo nvram SystemAudioVolume=" "
