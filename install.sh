@@ -232,7 +232,9 @@ zinit self-update
 zinit update
 
 # Configure everything.
+export SIP_DISABLED
 source ./macos-config.sh
+unset SIP_DISABLED
 
 
 ######### Post-install #########
