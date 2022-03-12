@@ -132,8 +132,7 @@ sudo brew services restart spoof-mac
 
 ######### Mac App Store packages #########
 
-# Install Mac App Store CLI and upgrade all apps.
-mpm --mas --verbosity INFO sync
+# Upgrade all desktop apps.
 mpm --mas --verbosity INFO restore ./packages.toml
 
 # Remove unused apps.
