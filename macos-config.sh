@@ -302,7 +302,7 @@ for net_service (${(f)net_interfaces}); do
     # Clear out all search domains.
     networksetup -setsearchdomains "${net_service}" "Empty"
     # Setup 10G NIC.
-    if [ "${net_service}" == "Thunderbolt Ethernet Slot 1, Port 2" ]; then
+    if [ "${net_service}" = "Thunderbolt Ethernet Slot 1, Port 2" ]; then
         networksetup -setMTU "${net_service}" 9000
     fi
 done
