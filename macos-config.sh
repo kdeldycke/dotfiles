@@ -869,16 +869,18 @@ sudo command find / -name ".DS_Store" -print -delete || true
 #   logs : Size
 #   labl : Tags
 /usr/libexec/PlistBuddy \
-    -c "Delete :StandardViewOptions:ColumnViewOptions:ColumnShowIcons"                 \
-    -c "Add    :StandardViewOptions:ColumnViewOptions:ColumnShowIcons    bool    true" \
-    -c "Delete :StandardViewOptions:ColumnViewOptions:FontSize"                        \
-    -c "Add    :StandardViewOptions:ColumnViewOptions:FontSize           integer 11"   \
-    -c "Delete :StandardViewOptions:ColumnViewOptions:ShowPreview"                     \
-    -c "Add    :StandardViewOptions:ColumnViewOptions:ShowPreview        bool    true" \
-    -c "Delete :StandardViewOptions:ColumnViewOptions:ShowIconThumbnails"              \
-    -c "Add    :StandardViewOptions:ColumnViewOptions:ShowIconThumbnails bool    true" \
-    -c "Delete :StandardViewOptions:ColumnViewOptions:ArrangeBy"                       \
-    -c "Add    :StandardViewOptions:ColumnViewOptions:ArrangeBy          string  dnam" \
+    -c "Delete :StandardViewOptions:ColumnViewOptions:ColumnShowIcons"    \
+    -c "Delete :StandardViewOptions:ColumnViewOptions:FontSize"           \
+    -c "Delete :StandardViewOptions:ColumnViewOptions:ShowPreview"        \
+    -c "Delete :StandardViewOptions:ColumnViewOptions:ShowIconThumbnails" \
+    -c "Delete :StandardViewOptions:ColumnViewOptions:ArrangeBy"          \
+    ~/Library/Preferences/com.apple.finder.plist || true
+/usr/libexec/PlistBuddy \
+    -c "Add :StandardViewOptions:ColumnViewOptions:ColumnShowIcons    bool    true" \
+    -c "Add :StandardViewOptions:ColumnViewOptions:FontSize           integer 11"   \
+    -c "Add :StandardViewOptions:ColumnViewOptions:ShowPreview        bool    true" \
+    -c "Add :StandardViewOptions:ColumnViewOptions:ShowIconThumbnails bool    true" \
+    -c "Add :StandardViewOptions:ColumnViewOptions:ArrangeBy          string  dnam" \
     ~/Library/Preferences/com.apple.finder.plist
 
 # Disable the warning before emptying the Trash
