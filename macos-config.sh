@@ -972,6 +972,12 @@ defaults write com.apple.finder FXEnableRemoveFromICloudDriveWarning -bool false
 defaults -currentHost write com.apple.coreservices.useractivityd "ActivityAdvertisingAllowed" -bool true
 defaults -currentHost write com.apple.coreservices.useractivityd "ActivityReceivingAllowed" -bool true
 
+# Sync Downloads folders to iCloud
+# sudo rm -rf ~/Downloads/
+# ln -s ~/Library/Mobile\ Documents/com~apple~CloudDocs/Downloads/ ~/Downloads
+
+# Add an iCloud shortcut in home root.
+ln -s ~/Library/Mobile\ Documents/com~apple~CloudDocs ~/iCloud
 
 ###############################################################################
 # Dock, Dashboard, and hot corners                                            #
@@ -1170,7 +1176,7 @@ defaults write com.apple.Safari Command1Through9SwitchesTabs -bool true
 defaults write com.apple.Safari HomePage -string ""
 
 # Save downloded files to
-defaults write com.apple.Safari DownloadsPath -string '~/Downloads'
+defaults write com.apple.Safari DownloadsPath -string '~/Library/Mobile Documents/com~apple~CloudDocs/Downloads'
 
 # Prevent Safari from opening ‘safe’ files automatically after downloading
 defaults write com.apple.Safari AutoOpenSafeDownloads -bool false
