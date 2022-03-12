@@ -2196,5 +2196,5 @@ for app (
     "Terminal"
     "Transmission"
 ); do
-    killall "${app}" &> /dev/null
+    killall "${app}" &> /dev/null || true
 done
