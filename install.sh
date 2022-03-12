@@ -73,7 +73,7 @@ fi
 
 ######### Brew install #########
 
-# Check if homebrew is already installed.
+# Check if homebrew is already installed. See: https://unhexium.net/zsh/how-to-check-variables-in-zsh/
 # This also install xcode command line tools.
 if (( ! ${+commands[brew]} )); then
     # Install Homebrew without prompting for user confirmation.
