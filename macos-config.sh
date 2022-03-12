@@ -356,6 +356,11 @@ security set-keychain-settings -t 21600 -l "${HOME}/Library/Keychains/login.keyc
 # Source: https://web.archive.org/web/20160114141929/https://training.apple.com/pdf/WP_FileVault2.pdf
 sudo pmset destroyfvkeyonstandby 1
 
+# Add sudo 2FA based on Touch ID. Source: https://twitter.com/cabel/status/931292107372838912
+# sudo tee -a "/etc/pam.d/sudo" <<-EOF
+# auth       sufficient     pam_tid.so
+# EOF
+
 # Enable FileVault (if not already enabled)
 # This requires a user password, and outputs a recovery key that should be
 # copied to a secure location
