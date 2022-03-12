@@ -1559,10 +1559,12 @@ defaults write com.apple.terminal SecureKeyboardEntry -bool true
 defaults write com.apple.Terminal ShowLineMarks -int 0
 
 # Audible and Visual Bells
-/usr/libexec/PlistBuddy                                     \
-    -c "Delete :WindowSettings:Basic:Bell"                  \
+/usr/libexec/PlistBuddy \
+    -c "Delete :WindowSettings:Basic:Bell"       \
+    -c "Delete :WindowSettings:Basic:VisualBell" \
+    ~/Library/Preferences/com.apple.terminal.plist || true
+/usr/libexec/PlistBuddy \
     -c "Add    :WindowSettings:Basic:Bell       bool false" \
-    -c "Delete :WindowSettings:Basic:VisualBell"            \
     -c "Add    :WindowSettings:Basic:VisualBell bool true"  \
     ~/Library/Preferences/com.apple.terminal.plist
 
