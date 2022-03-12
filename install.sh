@@ -134,8 +134,8 @@ python -m pip completion --zsh > ~/.zfunc/_pip
 poetry completions zsh > ~/.zfunc/_poetry
 _MPM_COMPLETE=zsh_source mpm > ~/.zfunc/_mpm
 
-# Reload the shell.
-source ~/.zshrc
+# Restart the shell.
+exec zsh
 
 # Force zinit self-upgrade.
 zinit self-update
