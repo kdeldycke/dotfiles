@@ -1116,8 +1116,7 @@ for app (
     "Transmission"
     "Visual Studio Code"
 ); do
-    dockutil --find "${app}"
-    if [ $? -ne 0 ]; then
+    if [[ $(dockutil --find "${app}" > /dev/null; echo $?) -ne 0 ]]; then
         dockutil --add "/Applications/${app}.app" --replacing "${app}" --no-restart
     fi
 done
