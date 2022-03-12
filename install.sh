@@ -129,17 +129,17 @@ sh -c "$(curl -fsSL https://git.io/zinit-install)"
 sudo chown -R $(whoami) /usr/local/share/zsh /usr/local/share/zsh/site-functions
 chmod u+w /usr/local/share/zsh /usr/local/share/zsh/site-functions
 
+# Generate pip and poetry completion.
+python -m pip completion --zsh > ~/.zfunc/_pip
+poetry completions zsh > ~/.zfunc/_poetry
+_MPM_COMPLETE=zsh_source mpm > ~/.zfunc/_mpm
+
 # Reload the shell.
 source ~/.zshrc
 
 # Force zinit self-upgrade.
 zinit self-update
 zinit update
-
-# Generate pip and poetry completion.
-python -m pip completion --zsh > ~/.zfunc/_pip
-poetry completions zsh > ~/.zfunc/_poetry
-_MPM_COMPLETE=zsh_source mpm > ~/.zfunc/_mpm
 
 
 ######### Post-brew setup #########
