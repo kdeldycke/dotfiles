@@ -44,7 +44,7 @@ HOST_UUID=$(ioreg -d2 -c IOPlatformExpertDevice | awk -F\" '/IOPlatformUUID/{pri
 sudo -v
 
 # tccutil commands below only works if SIP is disabled.
-if [[ ${SIP_DISABLED} -ne 0 ]]; then
+if (( ${+SIP_DISABLED} )); then
     echo "System Integrity Protection (SIP) is disabled."
 
     # List existing entries for debug.
