@@ -1498,9 +1498,9 @@ sudo chsh -s /bin/zsh root
 # Only use UTF-8 in Terminal.app
 defaults write com.apple.terminal StringEncodings -array "4"
 
-# Use specific color shcene and settings in Terminal.app
-osascript <<EOD
-
+# Use specific color scheme and settings in Terminal.app
+(
+osascript <<EOF
 tell application "Terminal"
 
     local allOpenedWindows
@@ -1542,8 +1542,8 @@ tell application "Terminal"
     end repeat
 
 end tell
-
-EOD
+EOF
+) || true
 
 # Enable “focus follows mouse” for Terminal.app and all X11 apps
 # i.e. hover over a window and start typing in it without clicking first
