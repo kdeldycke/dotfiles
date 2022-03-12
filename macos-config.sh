@@ -1229,8 +1229,10 @@ defaults write com.apple.Safari ReadingListSaveArticlesOfflineAutomatically -boo
 # Enable the Develop menu and the Web Inspector in Safari
 defaults write com.apple.Safari IncludeDevelopMenu -bool true
 defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
-# Add a context menu item for showing the Web Inspector in web views
+# Add a context menu item for showing the Web Inspector in web views.
+# Source: https://blog.jim-nielsen.com/2022/inspecting-web-views-in-macos/
 defaults write NSGlobalDomain WebKitDeveloperExtras -bool true
+defaults write -g WebKitDeveloperExtras -bool YES
 # Enable Safari’s debug menu
 defaults write com.apple.Safari IncludeInternalDebugMenu -bool true
 
