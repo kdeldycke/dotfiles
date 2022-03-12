@@ -343,7 +343,7 @@ sudo defaults write /Library/Preferences/com.apple.loginwindow RetriesUntilHint 
 sudo defaults write /Library/Preferences/com.apple.loginwindow GuestEnabled -bool false
 
 # Disable automatic login
-sudo defaults delete /Library/Preferences/com.apple.loginwindow autoLoginUser &> /dev/null
+sudo defaults delete /Library/Preferences/com.apple.loginwindow autoLoginUser || true
 
 # A lost machine might be lucky and stumble upon a Good Samaritan.
 sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText \
@@ -853,7 +853,7 @@ done
 defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
 # After configuring preferred view style, clear all `.DS_Store` files
 # to ensure settings are applied for every directory
-sudo command find / -name ".DS_Store" -print -delete
+sudo command find / -name ".DS_Store" -print -delete || true
 
 # View Options
 # ColumnShowIcons    : Show preview column
