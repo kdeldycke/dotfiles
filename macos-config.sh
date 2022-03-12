@@ -893,7 +893,7 @@ defaults write com.apple.NetworkBrowser BrowseAllInterfaces -bool true
 #sudo nvram boot-args="mbasd=1"
 
 # Show the ~/Library folder
-chflags nohidden "${HOME}/Library" && xattr -d com.apple.FinderInfo "${HOME}/Library" 2> /dev/null
+chflags nohidden "${HOME}/Library" && xattr -d com.apple.FinderInfo "${HOME}/Library" 2> /dev/null || true
 
 # Show the /Volumes folder
 sudo chflags nohidden /Volumes
@@ -985,7 +985,7 @@ defaults -currentHost write com.apple.coreservices.useractivityd "ActivityReceiv
 # ln -s ~/Library/Mobile\ Documents/com~apple~CloudDocs/Downloads/ ~/Downloads
 
 # Add an iCloud shortcut in home root.
-ln -s ~/Library/Mobile\ Documents/com~apple~CloudDocs ~/iCloud
+ln -f -s ~/Library/Mobile\ Documents/com~apple~CloudDocs ~/iCloud
 
 ###############################################################################
 # Dock, Dashboard, and hot corners                                            #
@@ -1410,7 +1410,7 @@ defaults write com.apple.iWork.Pages 'FirstRunFlag' -bool true
 ###############################################################################
 
 # Hide Spotlight tray-icon (and subsequent helper)
-sudo chmod 600 /System/Library/CoreServices/Search.bundle/Contents/MacOS/Search
+sudo chmod 600 /System/Library/CoreServices/Search.bundle/Contents/MacOS/Search || true
 
 # Disable Spotlight indexing for any volume that gets mounted and has not yet
 # been indexed before.
