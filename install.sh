@@ -235,16 +235,14 @@ open --wait-apps -g -a "IINA" & sleep 20s; killall "IINA"
 nvim -c "try | call dein#update() | finally | qall! | endtry"
 
 
+######### Cleanup #########
+
+mpm --verbosity INFO cleanup
+brew services cleanup
 
 
-# Configure everything.
+######### Configuration #########
+
 export SIP_DISABLED
 source ./macos-config.sh
 unset SIP_DISABLED
-
-
-######### Post-install #########
-
-# Clean things up.
-mpm --verbosity INFO cleanup
-brew services cleanup
