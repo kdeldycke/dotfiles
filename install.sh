@@ -76,7 +76,11 @@ for FILEPATH (${(f)DOT_FILES}); do
         fi
         # Force symbolic link (re-)creation. It either doesn't exist or point to the wrong place.
         echo "Create link: ${LINK} -> ${DESTINATION}"
-        ln -sf "${DESTINATION}" "$(dirname "${LINK}")"
+        # Use sudo on GitHub runners.
+        if (( ${+GITHUB_WORKFLOW} )); then
+            SUDO_PREFIX="sudo"
+        fi
+        ${SUDO_PREFIX} ln -sf "${DESTINATION}" "$(dirname "${LINK}")"
     fi
 done
 
