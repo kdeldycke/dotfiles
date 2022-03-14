@@ -59,7 +59,7 @@ DOT_FILES=$(command find dotfiles -maxdepth 1 -not -path 'dotfiles' -not -name '
 for FILEPATH (${(f)DOT_FILES}); do
     DESTINATION="${PWD}/${FILEPATH}"
     LINK="${HOME}/$(basename "${FILEPATH}")"
-    CURRENT_LINK="$(readlink ${LINK})"
+    CURRENT_LINK="$(readlink ${LINK} || true)"
     if [[ "${CURRENT_LINK}" != "${DESTINATION}" ]]; then
         # Something (a link, a file, a directory...) already exists. Back it up.
         if [[ -f "${LINK}" ]]; then
