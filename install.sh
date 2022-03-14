@@ -45,21 +45,22 @@ while true; do sleep 60; sudo --non-interactive true; kill -0 "$$" || exit; done
 xcode-select --install || true
 
 
-######### Dotfiles install #########
+######### Symlink dotfiles in user's home #########
 
 # Collect all entries within the "dotfiles" sub-folder, but the "Library".
-DOT_FILES=$(command find dotfiles -maxdepth 1 -not -path 'dotfiles' -not -name '\.DS_Store' -not -name 'Library')
-
-# TODO: Treat "Library" content differently.
-# ❯ ln -s ~/dotfiles/dotfiles/Library/Application\ Support/Code
-# ❯ ln -s ~/dotfiles/dotfiles/Library/Application\ Support/pypoetry
-# ❯ ln -s ~/dotfiles/dotfiles/Library/Application\ Support/xbar
-# ❯ ln -s ~/dotfiles/dotfiles/Library/KeyBindings
+DOT_FILES=$(command find dotfiles -depth 1 -not -path 'dotfiles' -not -name '\.DS_Store' -not -name 'Library')
+# Manually add "Library" folder entries.
+DOT_FILES+="
+dotfiles/Library/Application Support/Code/User/settings.json
+dotfiles/Library/Application Support/pypoetry
+dotfiles/Library/Application Support/xbar
+dotfiles/Library/KeyBindings
+"
 
 for FILEPATH (${(f)DOT_FILES}); do
     DESTINATION="${PWD}/${FILEPATH}"
-    LINK="${HOME}/$(basename "${FILEPATH}")"
-    CURRENT_LINK="$(readlink ${LINK} || true)"
+    LINK="${HOME}/${FILEPATH#*/}"
+    CURRENT_LINK="$(readlink "${LINK}" || true)"
     if [[ "${CURRENT_LINK}" != "${DESTINATION}" ]]; then
         # Something (a link, a file, a directory...) already exists. Back it up.
         if [[ -f "${LINK}" ]]; then
@@ -75,7 +76,7 @@ for FILEPATH (${(f)DOT_FILES}); do
         fi
         # Force symbolic link (re-)creation. It either doesn't exist or point to the wrong place.
         echo "Create link: ${LINK} -> ${DESTINATION}"
-        ln -sf "${DESTINATION}" $(dirname "${LINK}")
+        ln -sf "${DESTINATION}" "$(dirname "${LINK}")"
     fi
 done
 
