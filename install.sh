@@ -125,7 +125,7 @@ brew tap gromgit/homebrew-fuse
 
 brew install python
 
-# Expose Python 3 sa default.
+# Expose Python 3 as default.
 export PATH=$(brew --prefix python)/libexec/bin:$PATH
 
 # Install mpm.
