@@ -48,7 +48,7 @@ xcode-select --install || true
 ######### Symlink dotfiles in user's home #########
 
 # Collect all entries within the "dotfiles" sub-folder, but the "Library".
-DOT_FILES=$(command find dotfiles -depth 1 -not -path 'dotfiles' -not -name '\.DS_Store' -not -name 'Library')
+DOT_FILES=$(command find dotfiles -depth 1 -not -path 'dotfiles' -not -name '\.DS_Store' -not -name 'Library' | sort)
 # Manually add "Library" folder entries.
 DOT_FILES+="
 dotfiles/Library/Application Support/Code/User/settings.json
