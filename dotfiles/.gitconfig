@@ -47,7 +47,7 @@
     decorate = full
 [pull]
     # Source: https://stackoverflow.com/a/18756102/487610
-    rebase = preserve
+    rebase = merges
 [push]
     # Prevent accidental pushes to branches which you’re not ready to push yet.
     # Source: http://mislav.uniqpath.com/2010/07/git-tips/
