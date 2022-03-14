@@ -68,7 +68,7 @@ for FILEPATH (${(f)DOT_FILES}); do
     CURRENT_LINK="$(readlink "${LINK}" || true)"
     if [[ "${CURRENT_LINK}" != "${DESTINATION}" ]]; then
         # Something (a link, a file, a directory...) already exists. Back it up.
-        if [[ -f "${LINK}" ]]; then
+        if [[ -e "${LINK}" ]]; then
             EXT=".dotfiles.bak"
             INC=0
             BACKUP="${LINK}${EXT}${INC}"
@@ -81,11 +81,7 @@ for FILEPATH (${(f)DOT_FILES}); do
         fi
         # Force symbolic link (re-)creation. It either doesn't exist or point to the wrong place.
         echo "Create link: ${LINK} -> ${DESTINATION}"
-        # Use sudo on GitHub runners.
-        if (( ${+GITHUB_WORKFLOW} )); then
-            SUDO_PREFIX="sudo"
-        fi
-        ${SUDO_PREFIX} ln -sf "${DESTINATION}" "$(dirname "${LINK}")"
+        ln -sf "${DESTINATION}" "$(dirname "${LINK}")"
     fi
 done
 
