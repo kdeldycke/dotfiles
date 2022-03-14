@@ -2173,11 +2173,16 @@ defaults write com.DanPristupov.Fork gitInstanceType -int 3
 # NetNewsWire                                                                 #
 ###############################################################################
 
+# Check for stable updates.
 defaults write com.ranchero.NetNewsWire-Evergreen SUAutomaticallyUpdate -int 1
 defaults write com.ranchero.NetNewsWire-Evergreen SUEnableAutomaticChecks -int 1
 defaults write com.ranchero.NetNewsWire-Evergreen SUHasLaunchedBefore -int 1
 
-defaults write com.ranchero.NetNewsWire-Evergreen refreshInterval -int 2
+# Refresh every 4 hours.
+defaults write com.ranchero.NetNewsWire-Evergreen refreshInterval -int 6
+
+# Hide read feeds.
+defaults write com.ranchero.NetNewsWire-Evergreen windowState -dict-add readFeedsFilterState -bool true
 
 
 ###############################################################################
