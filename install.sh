@@ -46,16 +46,36 @@ while true; do sleep 60; sudo --non-interactive true; kill -0 "$$" || exit; done
 
 ######### Dotfiles install #########
 
-# Search local dotfiles
-DOT_FILES=$(command find ./dotfiles -maxdepth 1 -not -path './dotfiles' -not -name '\.DS_Store')
+# Collect all entries within the "dotfiles" sub-folder, but the "Library".
+DOT_FILES=$(command find dotfiles -maxdepth 1 -not -path 'dotfiles' -not -name '\.DS_Store' -not -name 'Library')
+
+# TODO: Treat "Library" content differently.
+# ❯ ln -s ~/dotfiles/dotfiles/Library/Application\ Support/Code
+# ❯ ln -s ~/dotfiles/dotfiles/Library/Application\ Support/pypoetry
+# ❯ ln -s ~/dotfiles/dotfiles/Library/Application\ Support/xbar
+# ❯ ln -s ~/dotfiles/dotfiles/Library/KeyBindings
+
 for FILEPATH (${(f)DOT_FILES}); do
-    SOURCE="${PWD}/$FILEPATH"
-    TARGET="${HOME}/$(basename "${FILEPATH}")"
-    # Link files
-    if [ -e "${TARGET}" ] && [ ! -L "${TARGET}" ]; then
-        mv "$TARGET" "$TARGET.dotfiles.bak"
+    DESTINATION="${PWD}/${FILEPATH}"
+    LINK="${HOME}/$(basename "${FILEPATH}")"
+    CURRENT_LINK="$(readlink ${LINK})"
+    if [[ "${CURRENT_LINK}" != "${DESTINATION}" ]]; then
+        # Something (a link, a file, a directory...) already exists. Back it up.
+        if [[ -f "${LINK}" ]]; then
+            EXT=".dotfiles.bak"
+            INC=0
+            BACKUP="${LINK}${EXT}${INC}"
+            while [ -f "${BACKUP}" ]; do
+                ((INC++))
+                BACKUP="${LINK}${EXT}${INC}"
+            done
+            echo "Backup: ${LINK} -> ${BACKUP}"
+            mv "${LINK}" "${BACKUP}"
+        fi
+        # Force symbolic link (re-)creation. It either doesn't exist or point to the wrong place.
+        echo "Create link: ${LINK} -> ${DESTINATION}"
+        ln -sf "${DESTINATION}" $(dirname "${LINK}")
     fi
-    ln -sf "${SOURCE}" "$(dirname "${TARGET}")"
 done
 
 
