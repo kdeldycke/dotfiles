@@ -82,9 +82,12 @@ for FILEPATH (${(f)DOT_FILES}); do
             echo "Backup: ${LINK} -> ${BACKUP}"
             mv "${LINK}" "${BACKUP}"
         fi
-        # Force symbolic link (re-)creation. It either doesn't exist or point to the wrong place.
         echo "Create link: ${LINK} -> ${DESTINATION}"
-        ln -sf "${DESTINATION}" "$(dirname "${LINK}")"
+        # Create missing directory structure if missing.
+        LINK_FOLDER="$(dirname "${LINK}")"
+        mkdir -p "${LINK_FOLDER}"
+        # Force symbolic link (re-)creation. It either doesn't exist or point to the wrong place.
+        ln -sf "${DESTINATION}" "${LINK_FOLDER}"
     fi
 done
 
