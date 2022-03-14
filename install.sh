@@ -41,7 +41,8 @@ while true; do sleep 60; sudo --non-interactive true; kill -0 "$$" || exit; done
 
 ######### Basic dependencies #########
 
-# TODO: install git here.
+# Command line tools provides a copy of git.
+xcode-select --install || true
 
 
 ######### Dotfiles install #########
