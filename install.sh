@@ -48,14 +48,19 @@ xcode-select --install || true
 ######### Symlink dotfiles in user's home #########
 
 # Collect all entries within the "dotfiles" sub-folder, but the "Library".
-DOT_FILES=$(command find dotfiles -depth 1 -not -path 'dotfiles' -not -name '\.DS_Store' -not -name 'Library' | sort)
-# Manually add "Library" folder entries.
+DOT_FILES=$(command find dotfiles -depth 1 -not -name '\.DS_Store' -not -name 'Library')
+# Collect all "Library subfolders" but "Application Support" folder.
 DOT_FILES+="
-dotfiles/Library/Application Support/Code/User/settings.json
-dotfiles/Library/Application Support/pypoetry
-dotfiles/Library/Application Support/xbar
-dotfiles/Library/KeyBindings
-"
+$(command find dotfiles/Library -depth 1 -not -name '\.DS_Store' -not -name 'Application Support')"
+# Collect all "Application Support" subfolders but "Code" folder.
+DOT_FILES+="
+$(command find 'dotfiles/Library/Application Support' -depth 1 -not -name '\.DS_Store' -not -name 'Code')"
+# Manually add Code settings file.
+DOT_FILES+="
+dotfiles/Library/Application Support/Code/User/settings.json"
+
+echo "Collected dotfiles:"
+echo "${DOT_FILES}" | sort
 
 for FILEPATH (${(f)DOT_FILES}); do
     DESTINATION="${PWD}/${FILEPATH}"
