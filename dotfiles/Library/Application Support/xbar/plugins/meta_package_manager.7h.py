@@ -1,1 +1,1 @@
-/usr/local/lib/python3.9/site-packages/meta_package_manager/xbar/meta_package_manager.7h.py
+/opt/homebrew/opt/python@3.9/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/meta_package_manager/xbar/meta_package_manager.7h.py
