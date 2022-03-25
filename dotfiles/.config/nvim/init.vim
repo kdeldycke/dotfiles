@@ -65,12 +65,14 @@ endif
 
 call dein#end()
 
+
+filetype plugin indent on      " Indent and plugins by filetype
+syntax enable
+
+
 if dein#check_install()
   call dein#install()
 endif
-
-
-filetype plugin indent on      " Indent and plugins by filetype
 
 
 let mapleader = "\<Space>"
@@ -175,7 +177,6 @@ set undoreload=1000
 
 
 " Color scheme.
-syntax enable
 colorscheme monokai
 
 
