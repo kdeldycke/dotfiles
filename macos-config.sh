@@ -1891,6 +1891,54 @@ defaults write com.apple.iChat ShowAllBuddyPictures -bool false
 
 
 ###############################################################################
+# Stats                                                                       #
+###############################################################################
+
+# Activate custom config.
+defaults write eu.exelban.Stats version -string "2.7.8"
+
+# CPU widget:
+# - line chart display
+# - display line chart and hide all others
+# - show value
+# - colorize value
+# - colorize based on utilization
+defaults write eu.exelban.Stats CPU_widget -string "line_chart"
+defaults write eu.exelban.Stats CPU_line_chart_box -bool true
+defaults write eu.exelban.Stats CPU_line_chart_frame -bool false
+defaults write eu.exelban.Stats CPU_line_chart_value -bool true
+defaults write eu.exelban.Stats CPU_line_chart_valueColor -bool true
+defaults write eu.exelban.Stats CPU_line_chart_color -string "utilization"
+
+# Deactivate RAM widget.
+defaults write eu.exelban.Stats RAM_state -bool false
+
+# Disk widget:
+# - hide removable disks
+defaults write eu.exelban.Stats Disk_state -bool true
+defaults write eu.exelban.Stats Disk_widget -string "memory"
+defaults write eu.exelban.Stats Disk_removable -bool false
+
+# Sensors widget:
+# - Show first efficiency and performance core temperatures
+defaults write eu.exelban.Stats Sensors_state -bool true
+defaults write eu.exelban.Stats sensor_Tp01 -bool true
+defaults write eu.exelban.Stats sensor_Tp09 -bool true
+
+# Network widget:
+# - arrows pictogram
+defaults write eu.exelban.Stats Network_speed_icon -string "arrows"
+
+# Battery widget:
+# - low level notification at 10%
+# - display percentage and time
+# - colorize
+defaults write eu.exelban.Stats Battery_battery_additional -string "percentageAndTime"
+defaults write eu.exelban.Stats Battery_lowLevelNotification -string "0.1"
+defaults write eu.exelban.Stats Battery_battery_color -bool true
+
+
+###############################################################################
 # AdGuard                                                                     #
 ###############################################################################
 
