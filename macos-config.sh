@@ -1244,9 +1244,12 @@ defaults write com.apple.SafariTechnologyPreview ShowFrequentlyVisitedSites -boo
 # Save article for offline reading automatically.
 defaults write com.apple.Safari ReadingListSaveArticlesOfflineAutomatically -bool true
 
-# Enable the Develop menu and the Web Inspector in Safari
+# Enable the Develop menu and the Web Inspector in Safari.
+# Source: https://apple.stackexchange.com/a/429820
+defaults write com.apple.Safari.SandboxBroker ShowDevelopMenu -bool true
 defaults write com.apple.Safari IncludeDevelopMenu -bool true
 defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
+
 # Add a context menu item for showing the Web Inspector in web views.
 # Source: https://blog.jim-nielsen.com/2022/inspecting-web-views-in-macos/
 defaults write NSGlobalDomain WebKitDeveloperExtras -bool true
