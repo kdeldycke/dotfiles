@@ -238,7 +238,7 @@ defaults write -globalDomain "com.apple.sound.beep.feedback" -int 0
 ##############################################################################
 
 # Disable transparency in the menu bar and elsewhere on Yosemite
-defaults write com.apple.universalaccess reduceTransparency -bool true
+#defaults write com.apple.universalaccess reduceTransparency -bool true
 
 # Enable input menu in menu bar.
 defaults write com.apple.TextInputMenu visible -bool true
