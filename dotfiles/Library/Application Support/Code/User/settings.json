@@ -80,5 +80,6 @@
   "editor.guides.bracketPairs": true,
   "explorer.confirmDelete": false,
   "git-graph.commitDetailsView.location": "Docked to Bottom",
-  "git-graph.date.format": "ISO Date & Time"
+  "git-graph.date.format": "ISO Date & Time",
+  "git.autofetch": true
 }
