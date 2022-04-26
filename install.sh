@@ -156,7 +156,7 @@ mpm --verbosity INFO --exclude mas restore ./packages.toml
 ######### Zsh #########
 
 # Install zinit
-sh -c "$(curl -fsSL https://git.io/zinit-install)"
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/zdharma-continuum/zinit/HEAD/scripts/install.sh)"
 
 # Fix "zsh compinit: insecure directories" error.
 sudo chown -R $(whoami) /usr/local/share/zsh /usr/local/share/zsh/site-functions
