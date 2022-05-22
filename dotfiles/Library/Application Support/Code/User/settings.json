@@ -81,5 +81,9 @@
   "explorer.confirmDelete": false,
   "git-graph.commitDetailsView.location": "Docked to Bottom",
   "git-graph.date.format": "ISO Date & Time",
-  "git.autofetch": true
+  "git.autofetch": true,
+  "isort.args": [
+    "--profile",
+    "black"
+  ]
 }
