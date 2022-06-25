@@ -135,14 +135,12 @@ brew tap gromgit/homebrew-fuse
 
 ######### Meta Package Manager #########
 
-brew install python
-
-# Expose Python 3 as default.
-export PATH=$(brew --prefix python)/libexec/bin:$PATH
+brew install "python@3.10"
+brew install pipx
+pipx ensurepath
 
 # Install mpm.
-python -m pip install --upgrade pip
-python -m pip install --upgrade meta-package-manager
+pipx install meta-package-manager
 
 # Refresh all package managers.
 mpm --verbosity INFO sync
