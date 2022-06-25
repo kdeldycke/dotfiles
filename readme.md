@@ -140,31 +140,32 @@ filter lists:
 
 ### Logi Options
 
-For productivity, setup custom trackball shortcuts with macOS desktop management tools and Amethyst windows commands.
+For productivity, setup custom trackball shortcuts with macOS desktop
+management tools and Amethyst windows commands.
 
 Page-up button assignment → `Smart zoom`:
 
-   ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/logitech-mx-ergo-page-up.png)
+![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/logitech-mx-ergo-page-up.png)
 
 Page-down button assignment → `Shift` + `Opt` + `Ctrl` + `J`:
 
-   ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/logitech-mx-ergo-page-down.png)
+![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/logitech-mx-ergo-page-down.png)
 
 Wheel click button assignment → `Misson Control`:
 
-   ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/logitech-mx-ergo-wheel-click.png)
+![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/logitech-mx-ergo-wheel-click.png)
 
 Wheel left click assignment → `Desktop (left)`:
 
-   ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/logitech-mx-ergo-wheel-left.png)
+![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/logitech-mx-ergo-wheel-left.png)
 
 Wheel right click assignment → `Desktop (right)`:
 
-   ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/logitech-mx-ergo-wheel-right.png)
+![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/logitech-mx-ergo-wheel-right.png)
 
 Side button assignment → `Shift` + `Opt` + `Space`:
 
-   ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/logitech-mx-ergo-side-button.png)
+![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/logitech-mx-ergo-side-button.png)
 
 ## Upgrade
 
