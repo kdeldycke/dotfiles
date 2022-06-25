@@ -197,7 +197,7 @@ mas uninstall 409201541 || true  # Pages
 
 # Open apps so I'll not forget to login.
 APP_NAMES="
-1Password 7
+1Password
 adguard
 Bitwarden
 ProtonVPN
