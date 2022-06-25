@@ -78,6 +78,7 @@ xh = ""
 zsh = ""
 
 [cask]
+1password = ""
 adguard = ""
 adguard-vpn = ""
 aerial = ""
@@ -135,7 +136,6 @@ suspicious-package = ""
 [mas]
 "409183694" = ""  # Numbers
 "409203825" = ""  # Keynotes
-"1333542190" = "" # 1Password
 "1569813296" = "" # 1Password for Safari
 "1408727408" = "" # WiFi Explorer Lite
 "1176895641" = "" # Spark - Email App by Readdle
