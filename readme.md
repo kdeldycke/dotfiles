@@ -138,6 +138,34 @@ filter lists:
 
 ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/adguard-filter-lists-subscription.png)
 
+### Logi Options
+
+For productivity, setup custom trackball shortcuts with macOS desktop management tools and Amethyst windows commands.
+
+Page-up button assignment → `Smart zoom`:
+
+   ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/logitech-mx-ergo-page-up.png)
+
+Page-down button assignment → `Shift` + `Opt` + `Ctrl` + `J`:
+
+   ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/logitech-mx-ergo-page-down.png)
+
+Wheel click button assignment → `Misson Control`:
+
+   ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/logitech-mx-ergo-wheel-click.png)
+
+Wheel left click assignment → `Desktop (left)`:
+
+   ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/logitech-mx-ergo-wheel-left.png)
+
+Wheel right click assignment → `Desktop (right)`:
+
+   ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/logitech-mx-ergo-wheel-right.png)
+
+Side button assignment → `Shift` + `Opt` + `Space`:
+
+   ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/logitech-mx-ergo-side-button.png)
+
 ## Upgrade
 
 I'm trying to make the install procedure indempotent so you'll just have to
