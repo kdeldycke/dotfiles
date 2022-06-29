@@ -279,6 +279,11 @@ mpm --verbosity INFO cleanup
 brew services cleanup
 
 
+######### Update package versions #########
+
+mpm --verbosity INFO snapshot --update-version ./packages.toml
+
+
 ######### Configuration #########
 
 export SIP_DISABLED
