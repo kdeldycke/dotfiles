@@ -357,14 +357,8 @@ export BAT_PAGER=cat
 # Python
 ###############################################################################
 
-# Don't let Python produce .pyc or .pyo. Left-overs can produce strange side-effects.
-export PYTHONDONTWRITEBYTECODE=true
-
-# Python shell auto-completion and history.
-export PYTHONSTARTUP="$HOME/.python_startup.py"
-
-# Display DeprecationWarning
-#export PYTHONWARNINGS=d
+# Use pdbr for
+export PYTHONBREAKPOINT="pdbr.set_trace"
 
 
 ###############################################################################
