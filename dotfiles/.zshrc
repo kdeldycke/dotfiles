@@ -120,6 +120,47 @@ unsetopt beep
 
 
 ###############################################################################
+# Expends global searched path to look for brew-sourced utilities.
+###############################################################################
+# File where the list of path is cached.
+PATH_CACHE="${HOME}/.path-env-cache"
+
+# Force a cache refresh if file doesn't exist or older than 7 days.
+# Source: https://gist.github.com/ctechols/ca1035271ad134841284#gistcomment-3109177
+() {
+    setopt extendedglob local_options
+    if [[ ! -e ${PATH_CACHE} || -n ${PATH_CACHE}(#qN.md+7) ]]; then
+        # Ordered list of path.
+        PATH_LIST=(
+            /usr/local/sbin
+            $(brew --prefix uutils-coreutils)/libexec/uubin
+            $(brew --prefix grep)/libexec/gnubin
+            $(brew --prefix findutils)/libexec/gnubin
+            $(brew --prefix gnu-sed)/libexec/gnubin
+            $(brew --prefix gnu-tar)/libexec/gnubin
+            $(brew --prefix openssh)/bin
+            $(brew --prefix curl)/bin
+            # Python 3.9 is the canonical default Python on brew, not 3.10.
+            $(brew --prefix python@3.10)/libexec/bin
+            $(brew --prefix python@3.10)/bin
+            ${HOME}/.cargo/bin
+            # Required by pipx.
+            ${HOME}/.local/bin
+        )
+        print -rl -- ${PATH_LIST} > ${PATH_CACHE}
+    fi
+}
+
+# Cache exists and has been refreshed in the last 24 hours: load it.
+# Source: https://stackoverflow.com/a/41212803
+for line in "${(@f)"$(<${PATH_CACHE})"}"
+{
+    # Prepend paths. Source: https://stackoverflow.com/a/9352979
+    path[1,0]=${line}
+}
+
+
+###############################################################################
 # Zsh Packages
 ###############################################################################
 
@@ -159,7 +200,7 @@ ZSH_AUTOSUGGEST_USE_ASYNC=1
 #ZSH_AUTOSUGGEST_MANUAL_REBIND=1
 zinit light zsh-users/zsh-autosuggestions
 
-zinit light darvid/zsh-poetry
+zinit light MichaelAquilina/zsh-autoswitch-virtualenv
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 zinit ice depth"1" # git clone depth
@@ -187,47 +228,6 @@ export EDITOR="nvim"
 alias vim='nvim'
 alias vi='nvim'
 alias v="nvim"
-
-
-###############################################################################
-# Expends global searched path to look for brew-sourced utilities.
-###############################################################################
-# File where the list of path is cached.
-PATH_CACHE="${HOME}/.path-env-cache"
-
-# Force a cache refresh if file doesn't exist or older than 7 days.
-# Source: https://gist.github.com/ctechols/ca1035271ad134841284#gistcomment-3109177
-() {
-    setopt extendedglob local_options
-    if [[ ! -e ${PATH_CACHE} || -n ${PATH_CACHE}(#qN.md+7) ]]; then
-        # Ordered list of path.
-        PATH_LIST=(
-            /usr/local/sbin
-            $(brew --prefix uutils-coreutils)/libexec/uubin
-            $(brew --prefix grep)/libexec/gnubin
-            $(brew --prefix findutils)/libexec/gnubin
-            $(brew --prefix gnu-sed)/libexec/gnubin
-            $(brew --prefix gnu-tar)/libexec/gnubin
-            $(brew --prefix openssh)/bin
-            $(brew --prefix curl)/bin
-            # Python 3.9 is the canonical default Python on brew, not 3.10.
-            $(brew --prefix python@3.10)/libexec/bin
-            $(brew --prefix python@3.10)/bin
-            ${HOME}/.cargo/bin
-            # Required by pipx.
-            ${HOME}/.local/bin
-        )
-        print -rl -- ${PATH_LIST} > ${PATH_CACHE}
-    fi
-}
-
-# Cache exists and has been refreshed in the last 24 hours: load it.
-# Source: https://stackoverflow.com/a/41212803
-for line in "${(@f)"$(<${PATH_CACHE})"}"
-{
-    # Prepend paths. Source: https://stackoverflow.com/a/9352979
-    path[1,0]=${line}
-}
 
 
 ###############################################################################
