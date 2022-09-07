@@ -52,15 +52,18 @@ DOT_FILES=$(command find dotfiles -depth 1 -not -name '\.DS_Store' -not -name 'L
 # Collect all ".config" content .
 DOT_FILES+="
 $(command find dotfiles/.config -depth 1 -not -name '\.DS_Store')"
-# Collect all "Library" subfolders but "Application Support" folder.
+# Collect all "Library" subfolders but "Application Support" and "Preferences" folders.
 DOT_FILES+="
-$(command find dotfiles/Library -depth 1 -not -name '\.DS_Store' -not -name 'Application Support')"
+$(command find dotfiles/Library -depth 1 -not -name '\.DS_Store' -not -name 'Application Support' -not -name 'Preferences')"
 # Collect all "Application Support" subfolders but "Code" folder.
 DOT_FILES+="
 $(command find 'dotfiles/Library/Application Support' -depth 1 -not -name '\.DS_Store' -not -name 'Code')"
 # Manually add Code settings file.
 DOT_FILES+="
 dotfiles/Library/Application Support/Code/User/settings.json"
+# Collect all "Preferences" subfolders.
+DOT_FILES+="
+$(command find 'dotfiles/Library/Preferences' -depth 1 -not -name '\.DS_Store')"
 
 echo "Collected dotfiles:"
 echo "${DOT_FILES}" | sort
