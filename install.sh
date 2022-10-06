@@ -113,8 +113,7 @@ fi
 # This also install xcode command line tools.
 if (( ! ${+commands[brew]} )); then
     # Install Homebrew without prompting for user confirmation.
-    # See: https://github.com/Homebrew/install/pull/139
-    CI=true /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
 # Activate brew analytics in GitHub actions, to prevent overzealous maintainers for
