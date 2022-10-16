@@ -380,6 +380,11 @@ sudo defaults write /Library/Preferences/com.apple.mDNSResponder.plist NoMultica
 # Show location icon in menu bar when System Services request your location.
 sudo defaults write /Library/Preferences/com.apple.locationmenu.plist ShowSystemServices -bool true
 
+# Install certs
+wget -O "${HOME}/NextDNS.cer" https://nextdns.io/ca
+security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain "${HOME}/*.cer"
+rm -rf "${HOME}/*.cer"
+
 # Log firewall events for 90 days.
 sudo perl -p -i -e 's/rotate=seq compress file_max=5M all_max=50M/rotate=utc compress file_max=5M ttl=90/g' "/etc/asl.conf"
 sudo perl -p -i -e 's/appfirewall.log file_max=5M all_max=50M/appfirewall.log rotate=utc compress file_max=5M ttl=90/g' "/etc/asl.conf"
