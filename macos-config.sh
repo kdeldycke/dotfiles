@@ -2156,37 +2156,6 @@ defaults write org.m0k.transmission DisplayProgressBarAvailable -bool false
 
 
 ###############################################################################
-# MusicBrainz.app                                                             #
-###############################################################################
-
-# Auto-trigger new file analysis.
-defaults write com.musicbrainz.Picard setting.analyze_new_files -bool true
-
-# Do not ask confirmation on quit.
-defaults write com.musicbrainz.Picard setting.quit_confirmation -bool false
-
-# Allow auth connection to MusicBrainz website for contributions.
-defaults write com.musicbrainz.Picard setting.server_host -string "musicbrainz.org"
-defaults write com.musicbrainz.Picard setting.username -string "kdeldycke"
-defaults write com.musicbrainz.Picard setting.password -string ""
-
-# Setup file renaming settings.
-defaults write com.musicbrainz.Picard setting.rename_files -bool true
-defaults write com.musicbrainz.Picard setting.ascii_filenames -bool false
-defaults write com.musicbrainz.Picard setting.windows_compatibility -bool true
-defaults write com.musicbrainz.Picard setting.move_files -bool true
-defaults write com.musicbrainz.Picard setting.move_files_to -string "${HOME}/Music"
-defaults write com.musicbrainz.Picard setting.delete_empty_dirs -bool true
-
-# Fallback on image release group if no front-cover found.
-defaults write com.musicbrainz.Picard setting.ca_provider_use_caa_release_group_fallback -bool true
-
-# Allow connections to AcoustID.
-defaults write com.musicbrainz.Picard setting.fingerprinting_system -string "acoustid"
-defaults write com.musicbrainz.Picard setting.acoustid_apikey -string "lP2ph5Sm"
-
-
-###############################################################################
 # Fork                                                                        #
 ###############################################################################
 
