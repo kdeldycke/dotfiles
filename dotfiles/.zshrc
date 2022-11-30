@@ -140,9 +140,9 @@ PATH_CACHE="${HOME}/.path-env-cache"
             $(brew --prefix gnu-tar)/libexec/gnubin
             $(brew --prefix openssh)/bin
             $(brew --prefix curl)/bin
-            # Python 3.9 is the canonical default Python on brew, not 3.10.
-            $(brew --prefix python@3.10)/libexec/bin
-            $(brew --prefix python@3.10)/bin
+            # Python 3.9 is the canonical default Python on brew, not 3.11.
+            $(brew --prefix python@3.11)/libexec/bin
+            $(brew --prefix python@3.11)/bin
             ${HOME}/.cargo/bin
             # Required by pipx.
             ${HOME}/.local/bin

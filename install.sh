@@ -137,7 +137,7 @@ brew tap gromgit/homebrew-fuse
 
 ######### Meta Package Manager #########
 
-brew install "python@3.10"
+brew install "python@3.11"
 brew install pipx
 pipx ensurepath
 
