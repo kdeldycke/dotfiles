@@ -210,7 +210,7 @@ You can still find these as dedicated branches, but all are quite ancient
 
 ## Resources
 
-- [Awesome OSX command line](https://github.com/herrbischoff/awesome-osx-command-line)
+- [Awesome macOS command line](https://git.herrbischoff.com/awesome-macos-command-line/about/)
 - [`ingrino`'s dotfiles](https://github.com/lingrino/dotfiles)
 - [Mathias Bynens `.macos`](https://github.com/mathiasbynens/dotfiles/blob/master/.macos)
 
