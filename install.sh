@@ -262,6 +262,7 @@ done
 sqlite3 -echo -header -column "$TB_BOOKMARK_DB" "SELECT * FROM moz_bookmarks; SELECT * FROM moz_places;"
 
 # Force installation of Firefox plugins.
+# For privacy extensions, see: https://github.com/arkenfox/user.js/wiki/4.1-Extensions
 wget https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/addon-607454-latest.xpi -O "$TB_CONFIG_DIR/extensions/uBlock0@raymondhill.net.xpi"
 wget https://addons.mozilla.org/firefox/downloads/latest/ether-metamask/addon-3885451-latest.xpi -O "$TB_CONFIG_DIR/extensions/webextension@metamask.io.xpi"
 
