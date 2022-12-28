@@ -249,6 +249,16 @@
 *.??_
 
 
+### Database ###
+*.accdb
+*.db
+*.dbf
+*.mdb
+*.pdb
+*.sqlite3
+*.db-shm
+*.db-wal
+
 ### DataRecovery ###
 
 
@@ -761,15 +771,5 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
-
-### Database ###
-*.accdb
-*.db
-*.dbf
-*.mdb
-*.pdb
-*.sqlite3
-*.db-shm
-*.db-wal
 
 # End of https://www.toptal.com/developers/gitignore/api/emacs,git,linux,macos,nohup,python,vim,virtualenv,visualstudiocode,windows,archive,archives,backup,bittorrent,certificates,compressed,compressedarchive,compression,database,datarecovery,dropbox,executable,games,gpg,jupyternotebooks,less,libreoffice,microsoftoffice,ssh,test
