@@ -227,7 +227,7 @@ mkdir -p "${XBAR_PLUGINS_FOLDER}"
 wget -O "${XBAR_PLUGINS_FOLDER}/btc.17m.sh" https://raw.githubusercontent.com/matryer/xbar-plugins/main/Cryptocurrency/Bitcoin/bitstamp.net/last.10s.sh
 sed -i "s/Bitstamp: /Ƀ/" "${XBAR_PLUGINS_FOLDER}/btc.17m.sh"
 wget -O "${XBAR_PLUGINS_FOLDER}/brew-services.7m.rb" https://raw.githubusercontent.com/matryer/xbar-plugins/main/Dev/Homebrew/brew-services.10m.rb
-ln -sf "$(mpm --bar-plugin-path)" "${XBAR_PLUGINS_FOLDER}"
+ln -sf "$(mpm --bar-plugin-path)" "${XBAR_PLUGINS_FOLDER}/mpm.7h.py"
 chmod +x "${XBAR_PLUGINS_FOLDER}/"*.(sh|py|rb)
 open -a xbar
 
