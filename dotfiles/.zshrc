@@ -358,6 +358,11 @@ export BAT_PAGER=cat
 # Use pdbr for
 export PYTHONBREAKPOINT="pdbr.set_trace"
 
+# Setup pyenv to manage python versions.
+export PYENV_ROOT="$HOME/.pyenv"
+command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
+
 
 ###############################################################################
 # File associations, i.e. suffix aliases
