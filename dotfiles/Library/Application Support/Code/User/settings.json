@@ -21,19 +21,6 @@
   "python.formatting.provider": "black",
   "python.globalModuleInstallation": true,
   "editor.formatOnSave": true,
-  "python.sortImports.path": "isort",
-  "python.sortImports.args": [
-    "--profile",
-    "black"
-  ],
-  "python.linting.pylintArgs": [
-    "--output-format=colorized",
-    "--jobs=0",
-    "--max-line-length=88",
-    "--fail-under=7",
-    "--logging-format-style=new",
-    "--recursive=y"
-  ],
   "[python]": {
     "editor.defaultFormatter": "ms-python.black-formatter",
     "editor.formatOnSave": true,
@@ -102,15 +89,27 @@
     "E501",
     "--aggressive"
   ],
-  "python.linting.pylintEnabled": true,
-  "python.linting.pydocstyleEnabled": true,
-  "python.linting.pydocstyleArgs": [
-    "--match-dir='.*'",
-    "--source",
-    "--explain"
-  ],
   "autoDocstring.docstringFormat": "sphinx",
   "autoDocstring.includeExtendedSummary": true,
   "autoDocstring.includeName": true,
   "autoDocstring.startOnNewLine": true,
+  "git.mergeEditor": true,
+  "terminal.integrated.shellIntegration.enabled": true,
+  "markdown.experimental.validate.enabled": true,
+  "editor.semanticHighlighting.enabled": true,
+  "python.analysis.completeFunctionParens": true,
+  "editor.stickyScroll.enabled": true,
+  "markdown.validate.enabled": true,
+  "github.copilot.enable": {
+    "*": true,
+    "yaml": true,
+    "plaintext": true,
+    "markdown": false
+  },
+  "editor.inlineSuggest.enabled": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
+  "editor.formatOnType": true,
+  "isort.check": true,
 }
