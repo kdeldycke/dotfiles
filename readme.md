@@ -190,9 +190,9 @@ It mainly consist in refreshing some assets at every macOS major release:
 
 - Keep list of packages up-to-date:
 
-   ```shell-session
-   $ mpm snapshot --update-version ./packages.toml
-   ```
+  ```shell-session
+  $ mpm snapshot --update-version ./packages.toml
+  ```
 
 - Update screenshots. 😖
 
