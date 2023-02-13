@@ -188,6 +188,12 @@ It mainly consist in refreshing some assets at every macOS major release:
   with the
   [same parameters as before](https://github.com/kdeldycke/dotfiles/blob/main/dotfiles/.p10k.zsh#L3-L6).
 
+- Keep list of packages up-to-date:
+
+   ```shell-session
+   $ mpm snapshot --update-version ./packages.toml
+   ```
+
 - Update screenshots. 😖
 
 ## Versions
