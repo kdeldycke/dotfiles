@@ -47,23 +47,26 @@ xcode-select --install || true
 
 ######### Symlink dotfiles in user's home #########
 
+# Use system, BSD find command.
+FIND_CLI="/usr/bin/find"
+
 # Collect all entries within the "dotfiles" sub-folder, but the "Library" and ".config".
-DOT_FILES=$(command find dotfiles -depth 1 -not -name '\.DS_Store' -not -name 'Library' -not -name '.config')
+DOT_FILES=$($FIND_CLI dotfiles -depth 1 -not -name '\.DS_Store' -not -name 'Library' -not -name '.config')
 # Collect all ".config" content .
 DOT_FILES+="
-$(command find dotfiles/.config -depth 1 -not -name '\.DS_Store')"
+$($FIND_CLI dotfiles/.config -depth 1 -not -name '\.DS_Store')"
 # Collect all "Library" subfolders but "Application Support" and "Preferences" folders.
 DOT_FILES+="
-$(command find dotfiles/Library -depth 1 -not -name '\.DS_Store' -not -name 'Application Support' -not -name 'Preferences')"
+$($FIND_CLI dotfiles/Library -depth 1 -not -name '\.DS_Store' -not -name 'Application Support' -not -name 'Preferences')"
 # Collect all "Application Support" subfolders but "Code" folder.
 DOT_FILES+="
-$(command find 'dotfiles/Library/Application Support' -depth 1 -not -name '\.DS_Store' -not -name 'Code')"
+$($FIND_CLI 'dotfiles/Library/Application Support' -depth 1 -not -name '\.DS_Store' -not -name 'Code')"
 # Manually add Code settings file.
 DOT_FILES+="
 dotfiles/Library/Application Support/Code/User/settings.json"
 # Collect all "Preferences" subfolders.
 DOT_FILES+="
-$(command find 'dotfiles/Library/Preferences' -depth 1 -not -name '\.DS_Store')"
+$($FIND_CLI 'dotfiles/Library/Preferences' -depth 1 -not -name '\.DS_Store')"
 
 echo "Collected dotfiles:"
 echo "${DOT_FILES}" | sort
@@ -235,7 +238,7 @@ open -a xbar
 # Then close it after a while to not block script execution.
 open --wait-apps -g -a "Tor Browser" & sleep 20s; killall "firefox"
 # Show TorBrowser bookmark toolbar.
-TB_CONFIG_DIR=$(command find "${HOME}/Library/Application Support/TorBrowser-Data/Browser" -maxdepth 1 -iname "*.default")
+TB_CONFIG_DIR=$($FIND_CLI "${HOME}/Library/Application Support/TorBrowser-Data/Browser" -maxdepth 1 -iname "*.default")
 tee -a "$TB_CONFIG_DIR/xulstore.json" <<-EOF
 {"chrome://browser/content/browser.xhtml": {
     "PersonalToolbar": {"collapsed": "false"}
