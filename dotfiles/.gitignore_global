@@ -1,5 +1,5 @@
-# Created by https://www.toptal.com/developers/gitignore/api/emacs,git,linux,macos,nohup,python,vim,virtualenv,visualstudiocode,windows,archive,archives,backup,bittorrent,certificates,compressed,compressedarchive,compression,database,datarecovery,dropbox,executable,games,gpg,jupyternotebooks,less,libreoffice,microsoftoffice,ssh,test
-# Edit at https://www.toptal.com/developers/gitignore?templates=emacs,git,linux,macos,nohup,python,vim,virtualenv,visualstudiocode,windows,archive,archives,backup,bittorrent,certificates,compressed,compressedarchive,compression,database,datarecovery,dropbox,executable,games,gpg,jupyternotebooks,less,libreoffice,microsoftoffice,ssh,test
+# Created by https://www.toptal.com/developers/gitignore/api/emacs,git,linux,macos,nohup,python,vim,virtualenv,visualstudiocode,windows,archive,archives,backup,bittorrent,certificates,compressed,compressedarchive,compression,database,datarecovery,dropbox,executable,games,gpg,jupyternotebooks,less,libreoffice,microsoftoffice,ssh
+# Edit at https://www.toptal.com/developers/gitignore?templates=emacs,git,linux,macos,nohup,python,vim,virtualenv,visualstudiocode,windows,archive,archives,backup,bittorrent,certificates,compressed,compressedarchive,compression,database,datarecovery,dropbox,executable,games,gpg,jupyternotebooks,less,libreoffice,microsoftoffice,ssh
 
 ### Archive ###
 
@@ -621,86 +621,6 @@ poetry.toml
 **/.ssh/*_id_*
 **/.ssh/known_hosts
 
-### Test ###
-### Ignore all files that could be used to test your code and
-### you wouldn't want to push
-
-# Reference https://en.wikipedia.org/wiki/Metasyntactic_variable
-
-# Most common
-*foo
-*bar
-*fubar
-*foobar
-*baz
-
-# Less common
-*qux
-*quux
-*bongo
-*bazola
-*ztesch
-
-# UK, Australia
-*wibble
-*wobble
-*wubble
-*flob
-*blep
-*blah
-*boop
-*beep
-
-# Japanese
-*hoge
-*piyo
-*fuga
-*hogera
-*hogehoge
-
-# Portugal, Spain
-*fulano
-*sicrano
-*beltrano
-*mengano
-*perengano
-*zutano
-
-# France, Italy, the Netherlands
-*toto
-*titi
-*tata
-*tutu
-*pipppo
-*pluto
-*paperino
-*aap
-*noot
-*mies
-
-# Other names that would make sense
-*tests
-*testsdir
-*testsfile
-*testsfiles
-*test
-*testdir
-*testfile
-*testfiles
-*testing
-*testingdir
-*testingfile
-*testingfiles
-*temp
-*tempdir
-*tempfile
-*tempfiles
-*tmp
-*tmpdir
-*tmpfile
-*tmpfiles
-*lol
-
 ### Vim ###
 # Swap
 [._]*.s[a-v][a-z]
@@ -774,4 +694,4 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# End of https://www.toptal.com/developers/gitignore/api/emacs,git,linux,macos,nohup,python,vim,virtualenv,visualstudiocode,windows,archive,archives,backup,bittorrent,certificates,compressed,compressedarchive,compression,database,datarecovery,dropbox,executable,games,gpg,jupyternotebooks,less,libreoffice,microsoftoffice,ssh,test
+# End of https://www.toptal.com/developers/gitignore/api/emacs,git,linux,macos,nohup,python,vim,virtualenv,visualstudiocode,windows,archive,archives,backup,bittorrent,certificates,compressed,compressedarchive,compression,database,datarecovery,dropbox,executable,games,gpg,jupyternotebooks,less,libreoffice,microsoftoffice,ssh
