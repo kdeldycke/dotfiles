@@ -1,5 +1,5 @@
-# Created by https://www.toptal.com/developers/gitignore/api/emacs,git,linux,macos,nohup,python,vim,virtualenv,visualstudiocode,windows,archive,archives,backup,bittorrent,certificates,compressed,compressedarchive,compression,database,datarecovery,dropbox,executable,games,gpg,jupyternotebooks,less,libreoffice,microsoftoffice,ssh
-# Edit at https://www.toptal.com/developers/gitignore?templates=emacs,git,linux,macos,nohup,python,vim,virtualenv,visualstudiocode,windows,archive,archives,backup,bittorrent,certificates,compressed,compressedarchive,compression,database,datarecovery,dropbox,executable,games,gpg,jupyternotebooks,less,libreoffice,microsoftoffice,ssh
+# Created by https://www.toptal.com/developers/gitignore/api/archive,archives,backup,bittorrent,certificates,compressed,compressedarchive,compression,database,datarecovery,dropbox,executable,games,gpg,jupyternotebooks,less,libreoffice,microsoftoffice,ssh,emacs,git,linux,macos,nohup,python,vim,virtualenv,visualstudiocode,windows
+# Edit at https://www.toptal.com/developers/gitignore?templates=archive,archives,backup,bittorrent,certificates,compressed,compressedarchive,compression,database,datarecovery,dropbox,executable,games,gpg,jupyternotebooks,less,libreoffice,microsoftoffice,ssh,emacs,git,linux,macos,nohup,python,vim,virtualenv,visualstudiocode,windows
 
 ### Archive ###
 
@@ -694,4 +694,4 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# End of https://www.toptal.com/developers/gitignore/api/emacs,git,linux,macos,nohup,python,vim,virtualenv,visualstudiocode,windows,archive,archives,backup,bittorrent,certificates,compressed,compressedarchive,compression,database,datarecovery,dropbox,executable,games,gpg,jupyternotebooks,less,libreoffice,microsoftoffice,ssh
+# End of https://www.toptal.com/developers/gitignore/api/archive,archives,backup,bittorrent,certificates,compressed,compressedarchive,compression,database,datarecovery,dropbox,executable,games,gpg,jupyternotebooks,less,libreoffice,microsoftoffice,ssh,emacs,git,linux,macos,nohup,python,vim,virtualenv,visualstudiocode,windows
