@@ -42,6 +42,7 @@
   "html.format.indentInnerHtml": true,
   "html.format.templating": true,
   "files.associations": {
+    // Forces recognition of Pelican's themes templates as Jinja2 files.
     "**/templates/**/*.html": "jinja-html"
   },
   "html.format.indentHandlebars": true,
@@ -108,4 +109,9 @@
     "source.fixAll": true
   },
   "editor.formatOnType": true,
+  "djlint.formatCss": true,
+  "djlint.formatJs": true,
+  "[html][django-html][handlebars][hbs][mustache][jinja][jinja-html][nj][njk][nunjucks][twig]": {
+    "editor.defaultFormatter": "monosans.djlint"
+  }
 }
