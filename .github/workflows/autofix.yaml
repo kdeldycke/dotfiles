@@ -24,7 +24,6 @@ jobs:
         compression
         database
         datarecovery
-        dropbox
         executable
         games
         gpg
