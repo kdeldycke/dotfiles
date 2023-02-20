@@ -256,7 +256,7 @@ function cls {
 alias c='cls'
 
 # Use GRC for additionnal colorization
-GRC=$(which grc)
+GRC=$(command -v grc)
 if [ -n GRC ]; then
     alias colourify='$GRC -es --colour=auto'
     alias as='colourify as'

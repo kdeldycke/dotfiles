@@ -2068,7 +2068,7 @@ defaults write com.adguard.mac.adguard IgnoreEvSslCertificates -bool false
 # https://github.com/iina/iina/issues/3327#issuecomment-998184733
 # https://github.com/iina/iina/issues/3502
 sudo rm /Applications/IINA.app/Contents/MacOS/youtube-dl
-sudo ln -fs $(which yt-dlp) /Applications/IINA.app/Contents/MacOS/youtube-dl
+sudo ln -fs $(command -v yt-dlp) /Applications/IINA.app/Contents/MacOS/youtube-dl
 
 
 ###############################################################################
