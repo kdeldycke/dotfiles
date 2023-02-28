@@ -181,6 +181,9 @@ zinit update
 
 ######### Post-brew setup #########
 
+# Let the system Java wrappers find this JDK.
+sudo ln -sfn /opt/homebrew/opt/openjdk/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk.jdk
+
 # htop-osx requires root privileges to correctly display all running processes.
 sudo chown root:wheel "$(brew --prefix)/bin/htop"
 sudo chmod u+s "$(brew --prefix)/bin/htop"
