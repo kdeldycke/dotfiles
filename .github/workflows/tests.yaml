@@ -21,12 +21,10 @@ jobs:
           brew install zsh
       - name: Force default shell
         # GitHub macOS images forces bash as default:
-        #   https://github.com/actions/virtual-environments/blob
-        #   /0d93dd2fc97a0708d5f35ccda0e1be53c996630d/images/macos/provision
-        #   /configuration/shell-change.sh#L3-L5
+        # https://github.com/actions/virtual-environments/blob/0d93dd2/images/macos/provision/configuration/shell-change.sh#L3-L5
         run: |
           sudo chsh -s "$(brew --prefix zsh)/bin/zsh" root
-          sudo chsh -s "$(brew --prefix zsh)/bin/zsh" "$USERNAME"
+          sudo chsh -s "$(brew --prefix zsh)/bin/zsh" "$USER"
       - name: Fix GitHub worker
         # aws-cli is already installed by hand in GitHub action runners.
         # Remove it to avoid "brew install --formula awscli" error.
