@@ -102,7 +102,7 @@
     "*": true,
     "yaml": true,
     "plaintext": true,
-    "markdown": false
+    "markdown": true
   },
   "editor.inlineSuggest.enabled": true,
   "editor.codeActionsOnSave": {
