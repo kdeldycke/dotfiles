@@ -10,7 +10,7 @@ name: Autofix
 jobs:
 
   autofix:
-    uses: kdeldycke/workflows/.github/workflows/autofix.yaml@v2.8.3
+    uses: kdeldycke/workflows/.github/workflows/autofix.yaml@v2.12.3
     with:
       gitignore-location: ./dotfiles/.gitignore_global
       gitignore-extra-categories: >
@@ -18,7 +18,6 @@ jobs:
         archives
         backup
         bittorrent
-        certificates
         compressed
         compressedarchive
         compression
@@ -26,9 +25,7 @@ jobs:
         datarecovery
         executable
         games
-        gpg
         jupyternotebooks
         less
         libreoffice
         microsoftoffice
-        ssh
