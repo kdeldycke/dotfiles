@@ -1,5 +1,5 @@
-# Created by https://www.toptal.com/developers/gitignore/api/archive,archives,backup,bittorrent,certificates,compressed,compressedarchive,compression,database,datarecovery,executable,games,gpg,jupyternotebooks,less,libreoffice,microsoftoffice,ssh,emacs,git,linux,macos,nohup,python,vim,virtualenv,visualstudiocode,windows
-# Edit at https://www.toptal.com/developers/gitignore?templates=archive,archives,backup,bittorrent,certificates,compressed,compressedarchive,compression,database,datarecovery,executable,games,gpg,jupyternotebooks,less,libreoffice,microsoftoffice,ssh,emacs,git,linux,macos,nohup,python,vim,virtualenv,visualstudiocode,windows
+# Created by https://www.toptal.com/developers/gitignore/api/archive,archives,backup,bittorrent,compressed,compressedarchive,compression,database,datarecovery,executable,games,jupyternotebooks,less,libreoffice,microsoftoffice,certificates,emacs,git,gpg,linux,macos,nohup,python,ssh,vim,virtualenv,visualstudiocode,windows
+# Edit at https://www.toptal.com/developers/gitignore?templates=archive,archives,backup,bittorrent,compressed,compressedarchive,compression,database,datarecovery,executable,games,jupyternotebooks,less,libreoffice,microsoftoffice,certificates,emacs,git,gpg,linux,macos,nohup,python,ssh,vim,virtualenv,visualstudiocode,windows
 
 ### Archive ###
 
@@ -610,6 +610,9 @@ poetry.toml
 # ruff
 .ruff_cache/
 
+# LSP config files
+pyrightconfig.json
+
 ### SSH ###
 **/.ssh/id_*
 **/.ssh/*_id_*
@@ -688,4 +691,4 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# End of https://www.toptal.com/developers/gitignore/api/archive,archives,backup,bittorrent,certificates,compressed,compressedarchive,compression,database,datarecovery,executable,games,gpg,jupyternotebooks,less,libreoffice,microsoftoffice,ssh,emacs,git,linux,macos,nohup,python,vim,virtualenv,visualstudiocode,windows
+# End of https://www.toptal.com/developers/gitignore/api/archive,archives,backup,bittorrent,compressed,compressedarchive,compression,database,datarecovery,executable,games,jupyternotebooks,less,libreoffice,microsoftoffice,certificates,emacs,git,gpg,linux,macos,nohup,python,ssh,vim,virtualenv,visualstudiocode,windows
