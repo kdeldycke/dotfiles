@@ -145,7 +145,7 @@ brew install pipx
 pipx ensurepath
 
 # Install mpm.
-pipx install meta-package-manager
+brew install meta-package-manager
 
 # Refresh all package managers.
 mpm --verbosity INFO sync
