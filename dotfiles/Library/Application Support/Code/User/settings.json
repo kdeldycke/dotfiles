@@ -16,7 +16,6 @@
   "python.experiments.enabled": false,
   "python.testing.pytestEnabled": true,
   "python.globalModuleInstallation": true,
-  "editor.formatOnSave": true,
   "python.formatting.blackArgs": [
     "--target-version",
     "py37",
@@ -85,7 +84,6 @@
     "markdown": true
   },
   "editor.inlineSuggest.enabled": true,
-  "editor.formatOnType": true,
   "djlint.formatCss": true,
   "djlint.formatJs": true,
   "[html][django-html][handlebars][hbs][mustache][jinja][jinja-html][nj][njk][nunjucks][twig]": {
@@ -96,11 +94,13 @@
   "notebook.output.scrolling": true,
   "autoDocstring.startOnNewLine": true,
   "[python]": {
-    "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
-      "source.fixAll": true
+      "source.fixAll": true,
+      "source.organizeImports": true
     }
   },
+  "editor.formatOnType": true,
+  "editor.formatOnSave": true,
   "python.formatting.provider": "black",
   "ruff.args": [
     "--select=ALL"
