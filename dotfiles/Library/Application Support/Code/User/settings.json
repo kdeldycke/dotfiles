@@ -1,6 +1,4 @@
 {
-  "telemetry.enableCrashReporter": false,
-  "telemetry.enableTelemetry": false,
   "editor.fontFamily": "\"SauceCodePro Nerd Font\", Menlo, Monaco, 'Courier New', monospace",
   "editor.minimap.showSlider": "always",
   "editor.cursorBlinking": "solid",
@@ -16,17 +14,9 @@
   "files.trimTrailingWhitespace": true,
   "editor.wrappingIndent": "deepIndent",
   "python.experiments.enabled": false,
-  "python.disableInstallationCheck": true,
   "python.testing.pytestEnabled": true,
-  "python.formatting.provider": "black",
   "python.globalModuleInstallation": true,
   "editor.formatOnSave": true,
-  "[python]": {
-    "editor.formatOnSave": true,
-    "editor.codeActionsOnSave": {
-      "source.organizeImports": true
-    }
-  },
   "python.formatting.blackArgs": [
     "--target-version",
     "py37",
@@ -61,15 +51,10 @@
     "# or better: force jupyterlab_code_formatter formatOnSave settings to true",
     "%precision 10"
   ],
-  "python.showStartPage": false,
   "workbench.enableExperiments": false,
   "workbench.startupEditor": "none",
   "python.languageServer": "Pylance",
   "notebook.lineNumbers": "on",
-  "jupyter.alwaysScrollOnNewCell": true,
-  "jupyter.experiments.enabled": false,
-  "jupyter.enableNativeInteractiveWindow": true,
-  "jupyter.experimental.debugging": true,
   "testing.defaultGutterClickAction": "contextMenu",
   "editor.bracketPairColorization.enabled": true,
   "telemetry.telemetryLevel": "off",
@@ -87,17 +72,12 @@
     "E501",
     "--aggressive"
   ],
-  "autoDocstring.docstringFormat": "sphinx",
-  "autoDocstring.includeExtendedSummary": true,
-  "autoDocstring.includeName": true,
-  "autoDocstring.startOnNewLine": true,
+  "autoDocstring.docstringFormat": "sphinx-notypes",
   "git.mergeEditor": true,
   "terminal.integrated.shellIntegration.enabled": true,
-  "markdown.experimental.validate.enabled": true,
   "editor.semanticHighlighting.enabled": true,
   "python.analysis.completeFunctionParens": true,
   "editor.stickyScroll.enabled": true,
-  "markdown.validate.enabled": true,
   "github.copilot.enable": {
     "*": true,
     "yaml": true,
@@ -105,13 +85,27 @@
     "markdown": true
   },
   "editor.inlineSuggest.enabled": true,
-  "editor.codeActionsOnSave": {
-    "source.fixAll": true
-  },
   "editor.formatOnType": true,
   "djlint.formatCss": true,
   "djlint.formatJs": true,
   "[html][django-html][handlebars][hbs][mustache][jinja][jinja-html][nj][njk][nunjucks][twig]": {
     "editor.defaultFormatter": "monosans.djlint"
-  }
+  },
+  "black-formatter.importStrategy": "fromEnvironment",
+  "notebook.formatOnSave.enabled": true,
+  "notebook.output.scrolling": true,
+  "autoDocstring.startOnNewLine": true,
+  "[python]": {
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll": true
+    }
+  },
+  "python.formatting.provider": "black",
+  "ruff.args": [
+    "--select=ALL"
+  ],
+  "markdown.validate.enabled": true,
+  "jupyter.experiments.enabled": false,
+  "python.linting.mypyEnabled": true
 }
