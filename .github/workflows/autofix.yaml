@@ -10,7 +10,7 @@ name: Autofix
 jobs:
 
   autofix:
-    uses: kdeldycke/workflows/.github/workflows/autofix.yaml@v2.15.1
+    uses: kdeldycke/workflows/.github/workflows/autofix.yaml@v2.16.0
     with:
       gitignore-location: ./dotfiles/.gitignore_global
       gitignore-extra-categories: >
