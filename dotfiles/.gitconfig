@@ -7,9 +7,6 @@
     # Prevent macOS's revisiond daemon to mess up with our files.
     # See: https://www.git-tower.com/blog/make-git-rebase-safe-on-osx/
     trustctime = false
-#[protocol]
-#    GitLab does not support protocol v2 yet: https://gitlab.com/gitlab-org/gitlab/-/issues/27828
-#    version = 2
 [pack]
     useSparse = true
 [user]
@@ -30,9 +27,6 @@
     line-numbers
 [interactive]
     diffFilter = delta --color-only
-[add.interactive]
-    # Git 2.37.0 workaround. See: https://github.com/dandavison/delta/issues/1114
-    useBuiltin = false
 [help]
     # Autocorrect for simple typos
     autocorrect = 1
