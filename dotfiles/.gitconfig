@@ -143,11 +143,3 @@
     pushInsteadOf = "git://gist.github.com/"
 [url "git://gist.github.com/"]
     pushInsteadOf = "gist:"
-
-[url "git@bitbucket.org:"]
-    insteadOf = "bb:"
-    pushInsteadOf = "bitbucket:"
-    pushInsteadOf = "https://bitbucket.org/"
-    pushInsteadOf = "git://bitbucket.org/"
-[url "git://bitbucket.org/"]
-    insteadOf = "bitbucket:"
