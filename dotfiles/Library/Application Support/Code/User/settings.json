@@ -98,6 +98,7 @@
   "editor.formatOnSave": true,
   "python.formatting.provider": "black",
   "ruff.args": [
+    "--target-version py38",
     "--select=ALL"
   ],
   "markdown.validate.enabled": true,
