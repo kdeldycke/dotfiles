@@ -18,8 +18,6 @@
   "python.globalModuleInstallation": true,
   "python.formatting.blackArgs": [
     "--target-version",
-    "py37",
-    "--target-version",
     "py38",
     "--target-version",
     "py39",
@@ -37,17 +35,15 @@
   "html.format.indentHandlebars": true,
   "jupyter.themeMatplotlibPlots": true,
   "jupyter.askForKernelRestart": false,
-  "workbench.editorAssociations": {
-    "*.ipynb": "jupyter.notebook.ipynb"
-  },
-  "python.venvPath": "~/Library/Caches/pypoetry/virtualenvs/",
   "jupyter.runStartupCommands": [
     "!pip install ipython-autotime",
     "%reload_ext autotime",
+    "# TODO: migrate to ruff",
     "!pip install jupyterlab-code-formatter black isort",
     "%reload_ext jupyterlab_code_formatter",
     "# TODO: find a way to trigger jupyterlab_code_formatter:format_all keyboard shortcut",
     "# or better: force jupyterlab_code_formatter formatOnSave settings to true",
+    "# TODO: install https://github.com/executablebooks/jupyterlab-myst",
     "%precision 10"
   ],
   "workbench.enableExperiments": false,
@@ -89,7 +85,6 @@
   "[html][django-html][handlebars][hbs][mustache][jinja][jinja-html][nj][njk][nunjucks][twig]": {
     "editor.defaultFormatter": "monosans.djlint"
   },
-  "black-formatter.importStrategy": "fromEnvironment",
   "notebook.formatOnSave.enabled": true,
   "notebook.output.scrolling": true,
   "autoDocstring.startOnNewLine": true,
@@ -107,5 +102,8 @@
   ],
   "markdown.validate.enabled": true,
   "jupyter.experiments.enabled": false,
-  "python.linting.mypyEnabled": true
+  "python.linting.mypyEnabled": true,
+  "python.analysis.autoFormatStrings": true,
+  "python.analysis.autoImportCompletions": true,
+  "black-formatter.importStrategy": "fromEnvironment"
 }

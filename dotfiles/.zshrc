@@ -146,6 +146,7 @@ PATH_CACHE="${HOME}/.path-env-cache"
             ${HOME}/.cargo/bin
             # Required by pipx.
             ${HOME}/.local/bin
+            /Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin
         )
         print -rl -- ${PATH_LIST} > ${PATH_CACHE}
     fi
