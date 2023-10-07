@@ -403,6 +403,10 @@ sudo perl -p -i -e 's|flags:lo,aa|flags:lo,aa,ad,fd,fm,-all,^-fa,^-fc,^-cl|g' /p
 sudo perl -p -i -e 's|filesz:2M|filesz:10M|g' /private/etc/security/audit_control
 sudo perl -p -i -e 's|expire-after:10M|expire-after: 30d |g' /private/etc/security/audit_control
 
+# Activates Touch ID for sudo and make it persistent.
+# See: https://sixcolors.com/post/2023/08/in-macos-sonoma-touch-id-for-sudo-can-survive-updates/
+sudo cp /etc/pam.d/sudo_local.template /etc/pam.d/sudo_local
+sudo sed -i "s/#auth/auth/" /etc/pam.d/sudo_local
 
 ##############################################################################
 # 1Password                                                                  #
