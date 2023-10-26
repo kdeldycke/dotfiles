@@ -6,8 +6,7 @@
 /opt/homebrew/opt/gnu-tar/libexec/gnubin
 /opt/homebrew/opt/openssh/bin
 /opt/homebrew/opt/curl/bin
-/opt/homebrew/opt/python@3.11/libexec/bin
-/opt/homebrew/opt/python@3.11/bin
+/opt/homebrew/opt/python@3.12/libexec/bin
 /Users/kde/.cargo/bin
 /Users/kde/.local/bin
 /Applications/Visual Studio Code.app/Contents/Resources/app/bin
