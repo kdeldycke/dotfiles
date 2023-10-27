@@ -286,8 +286,7 @@ if [ -n GRC ]; then
 fi
 
 # eza is a maintained fork of exa (a modern ls).
-export TIME_STYLE="long-iso"
-LS_FLAGS="--all --group-directories-first --sort=name"
+LS_FLAGS="--all --group-directories-first --sort=name --time-style=long-iso"
 alias ls="eza ${LS_FLAGS} --across"
 alias ll="eza ${LS_FLAGS} --long --group --header --binary --created --modified --git --classify"
 alias l="ls"
