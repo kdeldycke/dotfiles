@@ -1,4 +1,5 @@
 /usr/local/sbin
+/opt/homebrew/opt/eza/bin
 /opt/homebrew/opt/uutils-coreutils/libexec/uubin
 /opt/homebrew/opt/grep/libexec/gnubin
 /opt/homebrew/opt/findutils/libexec/gnubin
