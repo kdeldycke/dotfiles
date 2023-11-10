@@ -2,7 +2,8 @@
 /opt/homebrew/opt/eza/bin
 /opt/homebrew/opt/uutils-coreutils/libexec/uubin
 /opt/homebrew/opt/grep/libexec/gnubin
-/opt/homebrew/opt/findutils/libexec/gnubin
+/opt/homebrew/opt/uutils-findutils/libexec/uubin
+/opt/homebrew/opt/findutils/bin
 /opt/homebrew/opt/gnu-sed/libexec/gnubin
 /opt/homebrew/opt/gnu-tar/libexec/gnubin
 /opt/homebrew/opt/openssh/bin

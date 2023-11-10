@@ -136,7 +136,8 @@ PATH_CACHE="${HOME}/.path-env-cache"
             $(brew --prefix eza)/bin
             $(brew --prefix uutils-coreutils)/libexec/uubin
             $(brew --prefix grep)/libexec/gnubin
-            $(brew --prefix findutils)/libexec/gnubin
+            $(brew --prefix uutils-findutils)/libexec/uubin
+            $(brew --prefix findutils)/bin
             $(brew --prefix gnu-sed)/libexec/gnubin
             $(brew --prefix gnu-tar)/libexec/gnubin
             $(brew --prefix openssh)/bin
@@ -305,7 +306,7 @@ export LESSOPEN='| pygmentize -g %s'
 # output clean, tidy and easier to read.
 # Source: https://apple.stackexchange.com/a/353650
 find() {
-  { LC_ALL=C command find "$@" 3>&2 2>&1 1>&3 | \
+  { LC_ALL=C command gfind "$@" 3>&2 2>&1 1>&3 | \
     grep -v -e 'Permission denied' -e 'Operation not permitted' >&3; \
     [ $? = 1 ]; \
   } 3>&2 2>&1
