@@ -109,8 +109,6 @@ electrum = "4.3.4"
 fork = "2.19.2"
 ftdi-vcp-driver = "2.4.4"
 gimp = "2.10.32-1"
-"homebrew/cask-drivers/caldigit-thunderbolt-charging" = ""
-"ftdi-vcp-driver" = ""
 "logitech-options" = ""
 "homebrew/cask-drivers/samsung-portable-ssd-t5" = ""
 "homebrew/cask-fonts/font-sauce-code-pro-nerd-font" = "3.0.0"
@@ -125,6 +123,7 @@ little-snitch = "5.3.2"
 lulu = "2.4.1"
 macfuse = "4.2.5"
 mactex = "2022.0321"
+macwhisper = "4.1,310"
 monitorcontrol = "4.0.2"
 mullvadvpn = "2022.5"
 netnewswire = "6.0.3"
@@ -151,7 +150,6 @@ visual-studio-code = "1.65.0"
 xbar = "2.1.7-beta"
 
 [mas]
-1176895641 = "2.11.27"  # Spark - Email App by Readdle
 1295203466 = "10.8.1"   # Microsoft Remote Desktop
 1352778147 = "2023.1.1" # Bitwarden
 1408727408 = "1.6.1"    # WiFi Explorer Lite
