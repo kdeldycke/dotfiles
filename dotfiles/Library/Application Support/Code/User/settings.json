@@ -16,16 +16,6 @@
   "python.experiments.enabled": false,
   "python.testing.pytestEnabled": true,
   "python.globalModuleInstallation": true,
-  "python.formatting.blackArgs": [
-    "--target-version",
-    "py38",
-    "--target-version",
-    "py39",
-    "--target-version",
-    "py310",
-    "--target-version",
-    "py311"
-  ],
   "html.format.indentInnerHtml": true,
   "html.format.templating": true,
   "files.associations": {
@@ -38,12 +28,6 @@
   "jupyter.runStartupCommands": [
     "!pip install ipython-autotime",
     "%reload_ext autotime",
-    "# TODO: migrate to ruff",
-    "!pip install jupyterlab-code-formatter black isort",
-    "%reload_ext jupyterlab_code_formatter",
-    "# TODO: find a way to trigger jupyterlab_code_formatter:format_all keyboard shortcut",
-    "# or better: force jupyterlab_code_formatter formatOnSave settings to true",
-    "# TODO: install https://github.com/executablebooks/jupyterlab-myst",
     "%precision 10"
   ],
   "workbench.enableExperiments": false,
@@ -58,15 +42,6 @@
   "git-graph.commitDetailsView.location": "Docked to Bottom",
   "git-graph.date.format": "ISO Date & Time",
   "git.autofetch": true,
-  "python.formatting.autopep8Args": [
-    "--recursive",
-    "--in-place",
-    "--max-line-length",
-    "88",
-    "--select",
-    "E501",
-    "--aggressive"
-  ],
   "autoDocstring.docstringFormat": "sphinx-notypes",
   "git.mergeEditor": true,
   "terminal.integrated.shellIntegration.enabled": true,
@@ -85,26 +60,35 @@
   "[html][django-html][handlebars][hbs][mustache][jinja][jinja-html][nj][njk][nunjucks][twig]": {
     "editor.defaultFormatter": "monosans.djlint"
   },
-  "notebook.formatOnSave.enabled": true,
-  "notebook.output.scrolling": true,
-  "autoDocstring.startOnNewLine": true,
   "[python]": {
+    "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
       "source.fixAll": true,
       "source.organizeImports": true
-    }
+    },
+    "editor.defaultFormatter": "charliermarsh.ruff"
+  },
+  "autoDocstring.startOnNewLine": true,
+  "notebook.output.scrolling": true,
+  "notebook.formatOnSave.enabled": true,
+  "notebook.codeActionsOnSave": {
+    "source.fixAll": true,
+    "source.organizeImports": true
   },
   "editor.formatOnType": true,
   "editor.formatOnSave": true,
-  "python.formatting.provider": "black",
-  "ruff.args": [
+  "ruff.lint.args": [
+    // Parameters here must be kept in sync with
+    // https://github.com/kdeldycke/workflows/blob/main/.github/workflows/autofix.yaml
     "--target-version py38",
-    "--select=ALL"
+    "--preview",
+    "--unsafe-fixes",
+    "--ignore=D400",
+    "--ignore=ERA001"
   ],
   "markdown.validate.enabled": true,
   "jupyter.experiments.enabled": false,
-  "python.linting.mypyEnabled": true,
   "python.analysis.autoFormatStrings": true,
   "python.analysis.autoImportCompletions": true,
-  "black-formatter.importStrategy": "fromEnvironment"
+  "editor.accessibilitySupport": "off"
 }
