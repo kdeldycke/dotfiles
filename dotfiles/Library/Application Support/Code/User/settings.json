@@ -15,6 +15,9 @@
   "editor.wrappingIndent": "deepIndent",
   "python.experiments.enabled": false,
   "python.testing.pytestEnabled": true,
+  "python.testing.pytestArgs": [
+    "--color=yes"
+  ],
   "python.globalModuleInstallation": true,
   "html.format.indentInnerHtml": true,
   "html.format.templating": true,
@@ -63,8 +66,8 @@
   "[python]": {
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
-      "source.fixAll": true,
-      "source.organizeImports": true
+      "source.fixAll": "explicit",
+      "source.organizeImports": "explicit"
     },
     "editor.defaultFormatter": "charliermarsh.ruff"
   },
@@ -78,11 +81,12 @@
   "editor.formatOnType": true,
   "editor.formatOnSave": true,
   "ruff.lint.args": [
-    // Parameters here must be kept in sync with
-    // https://github.com/kdeldycke/workflows/blob/main/.github/workflows/autofix.yaml
-    "--target-version py38",
+    "--target-version=py38",
     "--preview",
+    "--fix",
     "--unsafe-fixes",
+    "--show-fixes",
+    "--show-source",
     "--ignore=D400",
     "--ignore=ERA001"
   ],
@@ -90,5 +94,9 @@
   "jupyter.experiments.enabled": false,
   "python.analysis.autoFormatStrings": true,
   "python.analysis.autoImportCompletions": true,
-  "editor.accessibilitySupport": "off"
+  "editor.accessibilitySupport": "off",
+  "ruff.format.args": [
+    "--target-version=py38",
+    "--preview"
+  ]
 }
