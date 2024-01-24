@@ -347,7 +347,7 @@ sudo defaults delete /Library/Preferences/com.apple.loginwindow autoLoginUser ||
 
 # A lost machine might be lucky and stumble upon a Good Samaritan.
 sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText \
-    "Found this computer? Please contact me at kevin@deldycke.com ."
+    "Found this computer? Please contact me at lost@deldycke.net"
 
 # Automatically lock the login keychain for inactivity after 6 hours.
 security set-keychain-settings -t 21600 -l "${HOME}/Library/Keychains/login.keychain"
