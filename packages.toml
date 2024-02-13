@@ -193,7 +193,6 @@ pytest-sugar = ""
 
 [pipx]
 autopep8 = "2.0.1"
-awscli = ""
 blacken-docs = "1.13.0"
 bump-my-version = "0.4.0"
 check-wheel-contents = "0.4.0"
