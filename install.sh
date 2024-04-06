@@ -202,9 +202,7 @@ mas uninstall 409201541 || true  # Pages
 
 # Open apps so I'll not forget to login.
 APP_NAMES="
-1Password
 adguard
-Bitwarden
 ProtonVPN
 "
 for APP_NAME (${(f)APP_NAMES})
@@ -212,10 +210,6 @@ do
     # Do not fail on missing app
     open -a "${APP_NAME}" || true
 done
-
-# Activate Safari extension.
-# Source: https://github.com/kdeldycke/kevin-deldycke-blog/blob/main/content/posts/macos-commands.md
-pluginkit -e use -i com.bitwarden.desktop.safari
 
 # Fix "QL*.qlgenerator cannot be opened because the developer cannot be verified."
 xattr -cr ~/Library/QuickLook/QLColorCode.qlgenerator

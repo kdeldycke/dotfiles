@@ -125,9 +125,10 @@ folders from Time Machine backups.
 
 In `Preferences...` → `Extensions`, activate:
 
-- `1Password`
 - `AdGuard Assistant`
-- `Open in IINA`
+- `Archive Page`
+- `Consent-O-Matic`
+- `SimpleLogin`
 
 ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/safari-active-extensions.png)
 
