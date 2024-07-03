@@ -162,9 +162,8 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/zdharma-continuum/zinit/HE
 sudo chown -R $(whoami) /usr/local/share/zsh /usr/local/share/zsh/site-functions
 chmod u+w /usr/local/share/zsh /usr/local/share/zsh/site-functions
 
-# Generate pip and poetry completion.
+# Generate pip and mpm completion.
 python -m pip completion --zsh > ~/.zfunc/_pip
-poetry completions zsh > ~/.zfunc/_poetry
 _MPM_COMPLETE=zsh_source mpm > ~/.zfunc/_mpm
 
 # Restart the shell.
