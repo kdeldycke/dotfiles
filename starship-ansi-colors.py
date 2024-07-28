@@ -16,7 +16,7 @@
 
 """Convert all hexadecimal color codes from Starship config to ANSI 8-bits codes.
 
-Starship will render colors as-is. So terminal not supporting 24 bits rendering, like
+Starship will render colors as-is. So terminal not supporting 24-bits rendering, like
 Apple's ``Terminal.app``, are not capable of rendering colors from presets. This
 missing feature is actually discussed upstrean in issue:
 https://github.com/starship/starship/issues/5048
