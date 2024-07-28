@@ -1,12 +1,3 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block, everything else may go below.
-# Source: https://github.com/romkatv/powerlevel10k#how-do-i-enable-instant-prompt
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
-
 ###############################################################################
 # Zinit
 ###############################################################################
@@ -42,10 +33,6 @@ SAVEHIST=$HISTSIZE
 
 # Make some commands not show up in history
 HISTORY_IGNORE='(l|ls|ll|cd|cd ..|pwd|exit|date|history)'
-
-# Get rid of extra empty space on the right.
-# See: https://github.com/romkatv/powerlevel10k#extra-space-without-background-on-the-right-side-of-right-prompt
-ZLE_RPROMPT_INDENT=0
 
 # Binds Up and Down to a history search, backwards and forwards.
 # Source: https://unix.stackexchange.com/a/97844
@@ -122,6 +109,10 @@ unsetopt beep
 ###############################################################################
 # Expends global searched path to look for brew-sourced utilities.
 ###############################################################################
+# Do not let homebrew send stats to Google Analytics.
+# See: https://github.com/Homebrew/brew/blob/master/share/doc/homebrew/Analytics.md#opting-out
+export HOMEBREW_NO_ANALYTICS=1
+
 # File where the list of path is cached.
 PATH_CACHE="${HOME}/.path-env-cache"
 
@@ -203,11 +194,6 @@ zinit light zsh-users/zsh-autosuggestions
 
 zinit light MichaelAquilina/zsh-autoswitch-virtualenv
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-zinit ice depth"1" # git clone depth
-zinit light romkatv/powerlevel10k
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
 
 ###############################################################################
 # Prompt
@@ -215,9 +201,8 @@ zinit light romkatv/powerlevel10k
 # Set user & root prompt
 export SUDO_PS1='\[\e[31m\]\u\[\e[37m\]:\[\e[33m\]\w\[\e[31m\]\$\[\033[00m\] '
 
-# Do not let homebrew send stats to Google Analytics.
-# See: https://github.com/Homebrew/brew/blob/master/share/doc/homebrew/Analytics.md#opting-out
-export HOMEBREW_NO_ANALYTICS=1
+# Initialize starship
+eval "$(starship init zsh)"
 
 
 ###############################################################################
