@@ -1,0 +1,5 @@
+[tool.typos]
+# Exclude terminal config.
+files.extend-exclude = [
+    "assets/Monokai Soda.terminal",
+]
