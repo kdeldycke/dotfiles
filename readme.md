@@ -197,7 +197,8 @@ It mainly consist in refreshing some assets at every macOS major release:
 Only the current default `main` branch is supported and actively maintained.
 Older branches are available for archive.
 
-- [macOS 13.0 (Ventura)](https://github.com/kdeldycke/dotfiles/tree/main) (current)
+- [macOS 14.0 (Sonoma)](https://github.com/kdeldycke/dotfiles/tree/main) (current)
+- [macOS 13.0 (Ventura)](https://github.com/kdeldycke/dotfiles/tree/macos-13)
 - [macOS 12.0 (Monterey)](https://github.com/kdeldycke/dotfiles/tree/macos-12)
 - [macOS 11.0 (Big Sur)](https://github.com/kdeldycke/dotfiles/tree/macos-11)
 - [macOS 10.15 (Catalina)](https://github.com/kdeldycke/dotfiles/tree/macos-10.15)
