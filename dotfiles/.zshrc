@@ -198,9 +198,6 @@ zinit light MichaelAquilina/zsh-autoswitch-virtualenv
 ###############################################################################
 # Prompt
 ###############################################################################
-# Set user & root prompt
-export SUDO_PS1='\[\e[31m\]\u\[\e[37m\]:\[\e[33m\]\w\[\e[31m\]\$\[\033[00m\] '
-
 # Initialize starship
 eval "$(starship init zsh)"
 
