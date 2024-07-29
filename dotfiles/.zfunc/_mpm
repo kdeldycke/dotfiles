@@ -31,4 +31,10 @@ _mpm_completion() {
     fi
 }
 
-compdef _mpm_completion mpm;
+if [[ $zsh_eval_context[-1] == loadautofunc ]]; then
+    # autoload from fpath, call function directly
+    _mpm_completion "$@"
+else
+    # eval/source/. command, register function for later
+    compdef _mpm_completion mpm
+fi
