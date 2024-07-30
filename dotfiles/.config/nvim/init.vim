@@ -172,8 +172,6 @@ set ignorecase     " ignore case letters
 
 " History and permanent undo levels
 set history=1000
-set undofile
-set undoreload=1000
 
 
 " Color scheme.
@@ -185,25 +183,7 @@ colorscheme monokai
 set guifont=SauceCodePro\ Nerd\ Font:h11
 
 
-" Make a dir if no exists
-function! MakeDirIfNoExists(path)
-    if !isdirectory(expand(a:path))
-        call mkdir(expand(a:path), "p")
-    endif
-endfunction
-
-
-" Backups
-set backup
 set noswapfile
-set backupdir=~/.config/nvim/tmp/backup/
-set undodir=~/.config/nvim/tmp/undo/
-set directory=~/.config/nvim/tmp/swap/
-set viminfo+=n~/.config/nvim/tmp/viminfo
-" Make this dirs if no exists previously
-silent! call MakeDirIfNoExists(&undodir)
-silent! call MakeDirIfNoExists(&backupdir)
-silent! call MakeDirIfNoExists(&directory)
 
 
 " Delete trailing whitespaces
