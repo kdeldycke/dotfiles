@@ -1,20 +1,25 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
 format = """
-[](color_orange)\
-$os\
+[](bg:color_orange)\
 $username\
-[](bg:color_yellow fg:color_orange)\
+$sudo\
+[](fg:prev_bg bg:color_yellow)\
 $directory\
-[](fg:color_yellow bg:color_aqua)\
+[](fg:prev_bg bg:color_aqua)\
 $git_branch\
 $git_status\
-[](fg:color_aqua bg:color_blue)\
+$git_state\
+[](fg:prev_bg bg:color_blue)\
 $python\
-[](fg:color_blue bg:color_bg1)\
-$time\
-[ ](fg:color_bg1)\
-$line_break$character"""
+$package\
+[](fg:prev_bg bg:color_bg1)\
+[](fg:prev_bg)\
+$fill\
+[](fg:color_bg1)\
+$status\
+$cmd_duration
+$character"""
 
 palette = 'gruvbox_dark'
 
@@ -30,36 +35,17 @@ color_purple = '132'
 color_red = '160'
 color_yellow = '172'
 
-[os]
-disabled = false
-style = "bg:color_orange fg:color_fg0"
-
-[os.symbols]
-Windows = "󰍲"
-Ubuntu = "󰕈"
-SUSE = ""
-Raspbian = "󰐿"
-Mint = "󰣭"
-Macos = "󰀵"
-Manjaro = ""
-Linux = "󰌽"
-Gentoo = "󰣨"
-Fedora = "󰣛"
-Alpine = ""
-Amazon = ""
-Android = ""
-Arch = "󰣇"
-Artix = "󰣇"
-CentOS = ""
-Debian = "󰣚"
-Redhat = "󱄛"
-RedHatEnterprise = "󱄛"
-
 [username]
 show_always = true
 style_user = "bg:color_orange fg:color_fg0"
 style_root = "bg:color_orange fg:color_fg0"
-format = '[ $user ]($style)'
+format = '[  $user ]($style)'
+
+[sudo]
+format = '[ ](fg:red bold)[as $symbol]($style)'
+style = 'fg:red bold'
+symbol = ' ' # ' ❯ '
+disabled = false
 
 [directory]
 style = "fg:color_fg0 bg:color_yellow"
@@ -79,13 +65,23 @@ format = '[[($all_status$ahead_behind )](fg:color_fg0 bg:color_aqua)]($style)'
 [python]
 symbol = ""
 style = "bg:color_blue"
-format = '[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)'
+format = '[[ $symbol$pyenv_prefix( $version) ](fg:color_fg0 bg:color_blue)]($style)'
 
-[time]
-disabled = false
-time_format = "%R"
+[package]
+format = '[$symbol$version](fg:color_fg0 bg:color_blue)'
+
+[cmd_duration]
+min_time = 50
+show_milliseconds = true
 style = "bg:color_bg1"
-format = '[[  $time ](fg:color_fg0 bg:color_bg1)]($style)'
+format = '[[  $duration ](fg:color_fg0 bg:color_bg1)]($style)'
 
-[line_break]
+[status]
 disabled = false
+style = "red"
+symbol = "\\(╯°□°）╯︵ ┻━┻ "
+format = "\b[](bg:$style fg:#4169e1)[$symbol$status](bg:$style)[](fg:$style)"
+
+[fill]
+symbol = '─'
+style = 'fg:prev_fg'
