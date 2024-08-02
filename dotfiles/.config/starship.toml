@@ -17,8 +17,9 @@ $package\
 [](fg:prev_bg)\
 $fill\
 [](fg:color_bg1)\
+$cmd_duration\
 $status\
-$cmd_duration
+$line_break\
 $character"""
 
 palette = 'gruvbox_dark'
@@ -42,10 +43,10 @@ style_root = "bg:color_orange fg:color_fg0"
 format = '[  $user ]($style)'
 
 [sudo]
-format = '[ ](fg:red bold)[as $symbol]($style)'
-style = 'fg:red bold'
-symbol = ' ' # ' ❯ '
 disabled = false
+symbol = ' ' # ' ❯ '
+style = 'fg:red bold'
+format = '[ ](fg:red bold)[as $symbol]($style)'
 
 [directory]
 style = "fg:color_fg0 bg:color_yellow"
@@ -71,16 +72,16 @@ format = '[[ $symbol$pyenv_prefix( $version) ](fg:color_fg0 bg:color_blue)]($sty
 format = '[$symbol$version](fg:color_fg0 bg:color_blue)'
 
 [cmd_duration]
-min_time = 50
-show_milliseconds = true
 style = "bg:color_bg1"
 format = '[[  $duration ](fg:color_fg0 bg:color_bg1)]($style)'
+min_time = 50
+show_milliseconds = true
 
 [status]
 disabled = false
-style = "red"
 symbol = "\\(╯°□°）╯︵ ┻━┻ "
-format = "\b[](bg:$style fg:#4169e1)[$symbol$status](bg:$style)[](fg:$style)"
+style = "bg:red"
+format = "[](bg:prev_bg fg:red)[$status $symbol]($style)"
 
 [fill]
 symbol = '─'
