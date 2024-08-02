@@ -1,9 +1,8 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
 format = """
-[](bg:color_orange)\
-$username\
 $sudo\
+$username\
 [](fg:prev_bg bg:color_yellow)\
 $directory\
 [](fg:prev_bg bg:color_aqua)\
@@ -36,17 +35,17 @@ color_purple = '132'
 color_red = '160'
 color_yellow = '172'
 
-[username]
-show_always = true
-style_user = "bg:color_orange fg:color_fg0"
-style_root = "bg:color_orange fg:color_fg0"
-format = '[  $user ]($style)'
-
 [sudo]
 disabled = false
-symbol = ' ' # ' ❯ '
-style = 'fg:red bold'
-format = '[ ](fg:red bold)[as $symbol]($style)'
+symbol = ' '
+style = 'bg:color_red fg:color_fg0'
+format = '[ $symbol ]($style)[](fg:prev_bg bg:color_orange)'
+
+[username]
+show_always = true
+style_user = "fg:color_fg0"
+style_root = "fg:color_fg0"
+format = '[  $user ]($style bg:color_orange)'
 
 [directory]
 style = "fg:color_fg0 bg:color_yellow"
@@ -80,8 +79,8 @@ show_milliseconds = true
 [status]
 disabled = false
 symbol = "\\(╯°□°）╯︵ ┻━┻ "
-style = "bg:red"
-format = "[](bg:prev_bg fg:red)[$status $symbol]($style)"
+style = "bg:color_red fg:color_fg0"
+format = "[](bg:prev_bg fg:color_red)[$status $symbol]($style)"
 
 [fill]
 symbol = '─'
