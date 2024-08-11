@@ -132,7 +132,7 @@ mullvadvpn = "2024.4"
 netnewswire = "6.0.3"
 pdf-images = "1.1"
 proton-drive = "1.0.2"
-protonmail-bridge = "2.1.1"
+proton-pass = "1.22.0"
 protonvpn = "4.3.0"
 qlimagesize = "2.6.1"
 qlmarkdown = "1.0.14"
@@ -162,7 +162,7 @@ xbar = "2.1.7-beta"
 408981434 = "10.4.1"  # iMovie
 409183694 = "14.1"    # Numbers
 409203825 = "14.1"    # Keynotes
-6443490629 = "1.10.1" # Proton Pass
+6502835663 = "1.21.2" # Proton Pass for Safari
 682658836 = "10.4.11" # GarageBand
 
 [pip]
