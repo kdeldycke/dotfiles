@@ -82,21 +82,23 @@
   "editor.formatOnSave": true,
   "ruff.lint.args": [
     "--target-version=py38",
-    "--preview",
-    "--fix",
     "--unsafe-fixes",
     "--show-fixes",
-    "--show-source",
     "--ignore=D400",
     "--ignore=ERA001"
   ],
-  "markdown.validate.enabled": true,
   "jupyter.experiments.enabled": false,
   "python.analysis.autoFormatStrings": true,
   "python.analysis.autoImportCompletions": true,
   "editor.accessibilitySupport": "off",
   "ruff.format.args": [
-    "--target-version=py38",
-    "--preview"
-  ]
+    "--target-version=py38"
+  ],
+  "diffEditor.ignoreTrimWhitespace": false,
+  "notebook.output.minimalErrorRendering": true,
+  "markdown.experimental.updateLinksOnPaste": true,
+  "github.copilot.editor.enableAutoCompletions": true,
+  "djlint.showInstallError": false,
+  "ruff.format.preview": true,
+  "ruff.lint.preview": true,
 }
