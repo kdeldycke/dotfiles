@@ -334,15 +334,6 @@ export BAT_PAGER=cat
 
 
 ###############################################################################
-# Python
-###############################################################################
-# Setup pyenv to manage python versions.
-export PYENV_ROOT="$HOME/.pyenv"
-command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
-
-
-###############################################################################
 # File associations, i.e. suffix aliases
 ###############################################################################
 # Source: https://thorsten-hans.com/5-types-of-zsh-aliases#suffix-aliases
