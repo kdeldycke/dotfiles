@@ -175,11 +175,18 @@ fpath=( ~/.zfunc "${fpath[@]}" )
 # See: https://github.com/Aloxaf/fzf-tab/issues/61
 zpcompinit; zpcdreplay
 
-# Configure fzf and its Zsh integration.
-# Source: https://mike.place/2017/fzf-fd/
-export FZF_DEFAULT_COMMAND="fd --one-file-system --type f --hidden . $HOME"
+# Default options for fd, a faster find.
+# XXX Replace FD_DEFAULTS with proper standard envvar in the future: https://github.com/sharkdp/fd/issues/362
+export FD_DEFAULTS="--one-file-system --follow --unrestricted --exclude .git --exclude node_modules"
+alias fd="fd $FD_DEFAULTS"
+
+# Configure fzf and its Zsh integration. Sources:
+# https://github.com/sharkdp/fd?tab=readme-ov-file#using-fd-with-fzf
+# https://github.com/junegunn/fzf?tab=readme-ov-file#respecting-gitignore
+export FZF_DEFAULT_COMMAND="fd $FD_DEFAULTS --type file"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-export FZF_ALT_C_COMMAND="fd --one-file-system --type d --hidden --exclude .git . $HOME"
+export FZF_ALT_C_COMMAND="fd $FD_DEFAULTS --type directory"
+export FZF_DEFAULT_OPTS="--ansi"
 zinit light Aloxaf/fzf-tab
 
 zinit light zdharma-continuum/fast-syntax-highlighting
@@ -293,9 +300,6 @@ find() {
     [ $? = 1 ]; \
   } 3>&2 2>&1
 }
-
-# Default options for fd, a faster find.
-alias fd='fd --one-file-system --hidden'
 
 # Extract most know archives with one command
 extract () {
