@@ -159,7 +159,7 @@ for line in "${(@f)"$(<${PATH_CACHE})"}"
 # Invoke first to let it color GCC, Less, Grep, ag and fast-syntax-highlighting.
 zinit pack for dircolors-material
 
-# Ovverrides the LS_COLORS environment variable set above with more up to date and finer details.
+# Overrides the LS_COLORS environment variable set above with more up to date and finer details.
 zinit pack for ls_colors
 
 
@@ -238,7 +238,7 @@ function cls {
 }
 alias c='cls'
 
-# Use GRC for additionnal colorization
+# Use GRC for additional colorization.
 GRC=$(command -v grc)
 if [ -n GRC ]; then
     alias colourify='$GRC -es --colour=auto'
