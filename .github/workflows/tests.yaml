@@ -15,7 +15,7 @@ jobs:
     name: Run full installation
     runs-on: macos-14
     steps:
-      - uses: actions/checkout@v4.1.7
+      - uses: actions/checkout@v4.2.0
       - name: Install Zsh
         run: |
           brew install zsh
