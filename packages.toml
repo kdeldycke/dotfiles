@@ -149,11 +149,11 @@ transmission = "3.00"
 usbimager = "1.0.10"
 utm = "4.5.3"
 visual-studio-code = "1.65.0"
+wifiman = "0.3.0"
 xbar = "2.1.7-beta"
 
 [mas]
 1295203466 = "10.9.9" # Microsoft Remote Desktop
-1408727408 = "1.7.1"  # WiFi Explorer Lite
 1464122853 = "1.5.1"  # NextDNS
 1494051017 = "1.3"    # SimpleLogin for Safari
 1606897889 = "1.1.0"  # Consent-O-Matic
