@@ -151,15 +151,13 @@ wifiman = "0.3.0"
 xbar = "2.1.7-beta"
 
 [mas]
-1295203466 = "10.9.9" # Microsoft Remote Desktop
-1464122853 = "1.5.1"  # NextDNS
-1494051017 = "1.3"    # SimpleLogin for Safari
-1606897889 = "1.1.0"  # Consent-O-Matic
-408981434 = "10.4.1"  # iMovie
-409183694 = "14.1"    # Numbers
-409203825 = "14.1"    # Keynotes
-6502835663 = "1.21.2" # Proton Pass for Safari
+6446372766 = "1.5"    # Archive Page Extension
+1606897889 = "1.1.3"  # Consent-O-Matic
 682658836 = "10.4.11" # GarageBand
+408981434 = "10.4.2"  # iMovie
+409183694 = "14.2"    # Keynote
+409203825 = "14.2"    # Numbers
+6502835663 = "1.21.2" # Proton Pass for Safari
 
 [pip]
 ipython-autotime = ""
