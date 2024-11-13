@@ -81,7 +81,7 @@
   "editor.formatOnType": true,
   "editor.formatOnSave": true,
   "ruff.lint.args": [
-    "--target-version=py38",
+    "--target-version=py39",
     "--unsafe-fixes",
     "--show-fixes",
     "--ignore=D400",
@@ -92,7 +92,7 @@
   "python.analysis.autoImportCompletions": true,
   "editor.accessibilitySupport": "off",
   "ruff.format.args": [
-    "--target-version=py38"
+    "--target-version=py39"
   ],
   "diffEditor.ignoreTrimWhitespace": false,
   "notebook.output.minimalErrorRendering": true,
