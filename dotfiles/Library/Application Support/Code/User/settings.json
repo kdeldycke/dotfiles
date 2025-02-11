@@ -75,25 +75,15 @@
   "notebook.output.scrolling": true,
   "notebook.formatOnSave.enabled": true,
   "notebook.codeActionsOnSave": {
-    "source.fixAll": true,
-    "source.organizeImports": true
+    "notebook.source.fixAll": "explicit",
+    "notebook.source.organizeImports": "explicit"
   },
   "editor.formatOnType": true,
   "editor.formatOnSave": true,
-  "ruff.lint.args": [
-    "--target-version=py39",
-    "--unsafe-fixes",
-    "--show-fixes",
-    "--ignore=D400",
-    "--ignore=ERA001"
-  ],
   "jupyter.experiments.enabled": false,
   "python.analysis.autoFormatStrings": true,
   "python.analysis.autoImportCompletions": true,
   "editor.accessibilitySupport": "off",
-  "ruff.format.args": [
-    "--target-version=py39"
-  ],
   "diffEditor.ignoreTrimWhitespace": false,
   "notebook.output.minimalErrorRendering": true,
   "markdown.experimental.updateLinksOnPaste": true,
@@ -101,4 +91,13 @@
   "djlint.showInstallError": false,
   "ruff.format.preview": true,
   "ruff.lint.preview": true,
+  "ruff.lint.ignore": [
+    "D400",
+    "ERA001"
+  ],
+  "python.analysis.supportDocstringTemplate": true,
+  "python.analysis.aiCodeActions": {
+    "generateSymbol": true,
+    "generateDocstring": true
+  },
 }
