@@ -1,5 +1,5 @@
 {
-  "editor.fontFamily": "\"SauceCodePro Nerd Font\", Menlo, Monaco, 'Courier New', monospace",
+  "editor.fontFamily": "'SauceCodePro Nerd Font', Menlo, Monaco, 'Courier New', monospace, 'Apple Color Emoji'",
   "editor.minimap.showSlider": "always",
   "editor.cursorBlinking": "solid",
   "workbench.colorTheme": "Monokai",
