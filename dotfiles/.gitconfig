@@ -7,6 +7,8 @@
     # Prevent macOS's revisiond daemon to mess up with our files.
     # See: https://www.git-tower.com/blog/make-git-rebase-safe-on-osx/
     trustctime = false
+[column]
+    ui = auto
 [pack]
     useSparse = true
 [user]
@@ -28,20 +30,25 @@
 [interactive]
     diffFilter = delta --color-only
 [help]
-    # Autocorrect for simple typos
-    autocorrect = 1
+    autocorrect = prompt
 [apply]
     whitespace = fix
 [diff]
-    renames = copies
-    # Source: http://blog.apiaxle.com/post/handy-git-tips-to-stop-you-getting-fired/
-    algorithm = patience
+    colorMoved = plain
+    renames = true
+    # histogram is an incremental improvement on patience
+    algorithm = histogram
     # Source: https://mobile.twitter.com/brandur/status/1182066723337293828
     noprefix = true
 [commit]
+    verbose = true
     gpgsign = true
 [log]
     decorate = full
+[fetch]
+    prune = true
+    pruneTags = true
+    all = true
 [pull]
     # Source: https://stackoverflow.com/a/18756102/487610
     rebase = merges
@@ -49,6 +56,8 @@
     # Prevent accidental pushes to branches which you’re not ready to push yet.
     # Source: http://mislav.uniqpath.com/2010/07/git-tips/
     default = tracking
+    autoSetupRemote = true
+    followTags = true
 [stash]
     # Shows the diff of a stash.
     showPatch = true
@@ -57,7 +66,7 @@
     fetchJobs = 2
 [merge]
     log = true
-    conflictstyle = diff3
+    conflictstyle = zdiff3
 [mergetool]
     # Do not keep backup files around after a successful merge.
     keepBackup = false
@@ -65,12 +74,19 @@
     autosetuprebase = remote
     # Show most recently changed branches first.
  	sort = -committerdate
+[tag]
+    sort = version:refname
 [init]
  	defaultBranch = main
 [rebase]
     # Automatically stash and unstash the working directory before and after
     # rebases.
-    autostash = true
+    autoStash = true
+    autoSquash = true
+    updateRefs = true
+[rerere]
+    enabled = true
+    autoupdate = true
 [alias]
     # Meta: Print supported aliases.
     aliases = config --get-regexp alias
