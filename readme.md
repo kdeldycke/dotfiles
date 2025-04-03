@@ -170,7 +170,7 @@ Side button assignment → `Shift` + `Opt` + `Space`:
 
 ## Upgrade
 
-I'm trying to make the install procedure indempotent so you'll just have to
+I'm trying to make the install procedure idempotent so you'll just have to
 call the script again to upgrade your system:
 
 ```shell-session
@@ -200,7 +200,7 @@ Older branches are available for archive.
 - [macOS 14.0 (Sonoma)](https://github.com/kdeldycke/dotfiles/tree/main) (current)
 - [macOS 13.0 (Ventura)](https://github.com/kdeldycke/dotfiles/tree/macos-13)
 - [macOS 12.0 (Monterey)](https://github.com/kdeldycke/dotfiles/tree/macos-12)
-- [macOS 11.0 (Big Sur)](https://github.com/kdeldycke/dotfiles/tree/macos-11)
+- [macOS 11.0 (Big Sure)](https://github.com/kdeldycke/dotfiles/tree/macos-11)
 - [macOS 10.15 (Catalina)](https://github.com/kdeldycke/dotfiles/tree/macos-10.15)
 - [macOS 10.14 (Mojave)](https://github.com/kdeldycke/dotfiles/tree/macos-10.14)
 - [macOS 10.13 (High Sierra)](https://github.com/kdeldycke/dotfiles/tree/macos-10.13)
