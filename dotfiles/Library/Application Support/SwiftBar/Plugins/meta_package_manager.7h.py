@@ -1,0 +1,1 @@
+/Users/kde/code/meta-package-manager/meta_package_manager/bar_plugin.py
