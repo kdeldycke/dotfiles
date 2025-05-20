@@ -217,14 +217,14 @@ xattr -cr ~/Library/QuickLook/QLStephen.qlgenerator
 qlmanage -r
 qlmanage -r cache
 
-# Configure xbar.
-XBAR_PLUGINS_FOLDER="${HOME}/Library/Application Support/xbar/plugins"
-mkdir -p "${XBAR_PLUGINS_FOLDER}"
-wget -O "${XBAR_PLUGINS_FOLDER}/btc.17m.sh" https://raw.githubusercontent.com/matryer/xbar-plugins/main/Cryptocurrency/Bitcoin/bitstamp.net/last.10s.sh
-sed -i "s/Bitstamp: /Ƀ/" "${XBAR_PLUGINS_FOLDER}/btc.17m.sh"
-ln -sf "$(mpm --bar-plugin-path)" "${XBAR_PLUGINS_FOLDER}/mpm.7h.py"
-chmod +x "${XBAR_PLUGINS_FOLDER}/"*.(sh|py|rb)
-open -a xbar
+# Configure SwiftBar.
+BAR_PLUGINS_FOLDER="${HOME}/Library/Application Support/SwiftBar/Plugins"
+mkdir -p "${BAR_PLUGINS_FOLDER}"
+wget -O "${BAR_PLUGINS_FOLDER}/btc.17m.sh" https://raw.githubusercontent.com/matryer/xbar-plugins/main/Cryptocurrency/Bitcoin/bitstamp.net/last.10s.sh
+sed -i "s/Bitstamp: /Ƀ/" "${BAR_PLUGINS_FOLDER}/btc.17m.sh"
+ln -sf "$(mpm --bar-plugin-path)" "${BAR_PLUGINS_FOLDER}/meta_package_manager.7h.py"
+chmod +x "${BAR_PLUGINS_FOLDER}/"*.(sh|py|rb)
+open -a SwifBar
 
 # Open Tor Browser at least once in the background to create a default profile.
 # Then close it after a while to not block script execution.
