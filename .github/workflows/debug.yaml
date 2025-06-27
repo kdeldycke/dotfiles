@@ -1,9 +1,0 @@
----
-name: Debug
-"on":
-  push:
-
-jobs:
-
-  debug:
-    uses: kdeldycke/workflows/.github/workflows/debug.yaml@v4.4.0
