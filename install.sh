@@ -220,8 +220,6 @@ qlmanage -r cache
 # Configure SwiftBar.
 BAR_PLUGINS_FOLDER="${HOME}/Library/Application Support/SwiftBar/Plugins"
 mkdir -p "${BAR_PLUGINS_FOLDER}"
-wget -O "${BAR_PLUGINS_FOLDER}/btc.17m.sh" https://raw.githubusercontent.com/matryer/xbar-plugins/main/Cryptocurrency/Bitcoin/bitstamp.net/last.10s.sh
-sed -i "s/Bitstamp: /Ƀ/" "${BAR_PLUGINS_FOLDER}/btc.17m.sh"
 ln -sf "$(mpm --bar-plugin-path)" "${BAR_PLUGINS_FOLDER}/meta_package_manager.7h.py"
 chmod +x "${BAR_PLUGINS_FOLDER}/"*.(sh|py|rb)
 open -a SwifBar
