@@ -134,6 +134,7 @@ PATH_CACHE="${HOME}/.path-env-cache"
             $(brew --prefix openssh)/bin
             $(brew --prefix curl)/bin
             $(brew --prefix python@3.13)/libexec/bin
+            $(brew --prefix node)/bin
             ${HOME}/.cargo/bin
             # Required by pipx.
             ${HOME}/.local/bin
