@@ -133,7 +133,7 @@ PATH_CACHE="${HOME}/.path-env-cache"
             $(brew --prefix gnu-tar)/libexec/gnubin
             $(brew --prefix openssh)/bin
             $(brew --prefix curl)/bin
-            $(brew --prefix python@3.13)/libexec/bin
+            $(brew --prefix python)/libexec/bin
             $(brew --prefix node)/bin
             ${HOME}/.cargo/bin
             # Required by pipx.
