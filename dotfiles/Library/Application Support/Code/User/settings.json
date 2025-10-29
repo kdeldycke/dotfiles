@@ -5,7 +5,6 @@
   "workbench.colorTheme": "Monokai",
   "workbench.tree.indent": 16,
   "workbench.editor.showIcons": false,
-  "explorer.decorations.colors": false,
   "editor.overviewRulerBorder": false,
   "editor.renderLineHighlight": "gutter",
   "editor.renderLineHighlightOnlyWhenFocus": true,
@@ -87,7 +86,6 @@
   "diffEditor.ignoreTrimWhitespace": false,
   "notebook.output.minimalErrorRendering": true,
   "markdown.experimental.updateLinksOnPaste": true,
-  "github.copilot.editor.enableAutoCompletions": true,
   "djlint.showInstallError": false,
   "ruff.format.preview": true,
   "ruff.lint.preview": true,
@@ -95,9 +93,13 @@
     "D400",
     "ERA001"
   ],
-  "python.analysis.supportDocstringTemplate": true,
   "python.analysis.aiCodeActions": {
     "generateSymbol": true,
     "generateDocstring": true
   },
+  "myst.preview.enable": false,
+  "markdown.editor.pasteUrlAsFormattedLink.enabled": "never",
+  "markdown.editor.updateLinksOnPaste.enabled": false,
+  "accessibility.voice.speechLanguage": "fr-FR",
+  "editor.colorDecorators": false,
 }
