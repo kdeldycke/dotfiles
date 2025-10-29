@@ -131,7 +131,6 @@ brew update
 brew upgrade
 
 # Add services.
-brew tap homebrew/services
 brew tap gromgit/homebrew-fuse
 
 
@@ -257,7 +256,6 @@ sqlite3 -echo -header -column "$TB_BOOKMARK_DB" "SELECT * FROM moz_bookmarks; SE
 # Force installation of Firefox plugins.
 # For privacy extensions, see: https://github.com/arkenfox/user.js/wiki/4.1-Extensions
 wget https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/addon-607454-latest.xpi -O "$TB_CONFIG_DIR/extensions/uBlock0@raymondhill.net.xpi"
-wget https://addons.mozilla.org/firefox/downloads/latest/ether-metamask/addon-3885451-latest.xpi -O "$TB_CONFIG_DIR/extensions/webextension@metamask.io.xpi"
 
 # Open IINA at least once in the background to let it register its Safari extension.
 # Then close it after a while to not block script execution.
