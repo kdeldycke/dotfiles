@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "defaultMode": "acceptEdits"
+  },
+  "model": "opus",
+  "alwaysThinkingEnabled": true,
+  "cleanupPeriodDays": 30,
+  "includeCoAuthoredBy": false
+}
