@@ -265,7 +265,7 @@ defaults write com.apple.systemuiserver menuExtras -array \
 # Also see: https://github.com/drduh/macOS-Security-and-Privacy-Guide
 # https://benchmarks.cisecurity.org/tools2/osx/CIS_Apple_OSX_10.12_Benchmark_v1.0.0.pdf
 
-# Enable Firewall. Possible values: 0 = off, 1 = on for specific sevices, 2 =
+# Enable Firewall. Possible values: 0 = off, 1 = on for specific services, 2 =
 # on for essential services.
 sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 1
 
@@ -646,7 +646,7 @@ defaults write ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSav
 # only allows preferences to be accounted for if all keys of a widget conf are
 # present. See: https://github.com/JohnCoates/Aerial/issues/976
 
-# Only shows clock on main diplays, without seconds or am/pm
+# Only shows clock on main displays, without seconds or am/pm
 defaults write ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost/com.JohnCoates.Aerial.plist \
     LayerClock -string \
     '{
@@ -1116,7 +1116,7 @@ defaults write com.apple.Safari Command1Through9SwitchesTabs -bool true
 # Set Safari’s home page to `about:blank` for faster loading
 defaults write com.apple.Safari HomePage -string ""
 
-# Save downloded files to
+# Save downloaded files to
 defaults write com.apple.Safari DownloadsPath -string '~/Library/Mobile Documents/com~apple~CloudDocs/Downloads'
 
 # Prevent Safari from opening ‘safe’ files automatically after downloading
@@ -1774,7 +1774,7 @@ defaults -currentHost write com.apple.ImageCapture disableHotPlug -bool true
 ###############################################################################
 
 # Disable automatic emoji substitution (i.e. use plain text smileys)
-defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "automaticEmojiSubstitutionEnablediMessage" -bool false
+defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "automaticEmojiSubstitutionEnabledMessage" -bool false
 
 # Disable smart quotes as it’s annoying for messages that contain code
 defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "automaticQuoteSubstitutionEnabled" -bool false
