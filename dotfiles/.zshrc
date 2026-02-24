@@ -136,7 +136,6 @@ PATH_CACHE="${HOME}/.path-env-cache"
             $(brew --prefix python)/libexec/bin
             $(brew --prefix node)/bin
             ${HOME}/.cargo/bin
-            # Required by pipx.
             ${HOME}/.local/bin
             /Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin
         )
@@ -144,7 +143,7 @@ PATH_CACHE="${HOME}/.path-env-cache"
     fi
 }
 
-# Cache exists and has been refreshed in the last 24 hours: load it.
+# Cache exists and has been refreshed in the last 7 days: load it.
 # Source: https://stackoverflow.com/a/41212803
 for line in "${(@f)"$(<${PATH_CACHE})"}"
 {
@@ -196,7 +195,6 @@ zinit light zsh-users/zsh-history-substring-search
 
 # Autosuggestion plugin config.
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
-ZSH_AUTOSUGGEST_USE_ASYNC=1
 #ZSH_AUTOSUGGEST_MANUAL_REBIND=1
 zinit light zsh-users/zsh-autosuggestions
 
@@ -229,12 +227,11 @@ alias du='du -csh'
 alias df='df -h'
 alias grep='grep --color=auto'
 alias diff="colordiff -ru"
-alias dmesg="dmesg --color"
 alias ccat='pygmentize -g'
 
 alias top="htop"
 alias gr='grep -RIi --no-messages'
-alias rg='rg -uuu'
+alias rg='rg -uu'
 alias g="git"
 alias h="history"
 alias q='exit'
@@ -248,12 +245,11 @@ alias c='cls'
 
 # Use GRC for additional colorization.
 GRC=$(command -v grc)
-if [ -n GRC ]; then
+if [ -n "$GRC" ]; then
     alias colourify='$GRC -es --colour=auto'
     alias as='colourify as'
     #cvs
     alias configure='colourify ./configure'
-    alias diff='colourify diff'
     alias dig='colourify dig'
     alias g++='colourify g++'
     alias gas='colourify gas'
@@ -267,7 +263,6 @@ if [ -n GRC ]; then
     alias make='colourify make'
     alias mount='colourify mount'
     #mtr
-    alias netstat='colourify netstat'
     alias ping='colourify ping'
     #proftpd
     alias ps='colourify ps'
