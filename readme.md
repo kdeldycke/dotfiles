@@ -28,7 +28,7 @@ We will reinstall macOS from scratch.
    [flash it with the macOS image](https://support.apple.com/en-us/HT201372):
 
    ```shell-session
-   $ sudo /Applications/Install\ macOS\ Monterey.app/Contents/Resources/createinstallmedia --volume /Volumes/Untitled --nointeraction
+   $ sudo /Applications/Install\ macOS\ Tahoe.app/Contents/Resources/createinstallmedia --volume /Volumes/Untitled --nointeraction
    ```
 
 1. Reboot your machine, reinstall macOS, create a user.
@@ -197,10 +197,12 @@ It mainly consist in refreshing some assets at every macOS major release:
 Only the current default `main` branch is supported and actively maintained.
 Older branches are available for archive.
 
-- [macOS 14.0 (Sonoma)](https://github.com/kdeldycke/dotfiles/tree/main) (current)
-- [macOS 13.0 (Ventura)](https://github.com/kdeldycke/dotfiles/tree/macos-13)
-- [macOS 12.0 (Monterey)](https://github.com/kdeldycke/dotfiles/tree/macos-12)
-- [macOS 11.0 (Big Sur)](https://github.com/kdeldycke/dotfiles/tree/macos-11)
+- [macOS 26 (Tahoe)](https://github.com/kdeldycke/dotfiles/tree/main) (current)
+- [macOS 15 (Sequoia)](https://github.com/kdeldycke/dotfiles/tree/macos-15)
+- [macOS 14 (Sonoma)](https://github.com/kdeldycke/dotfiles/tree/macos-14)
+- [macOS 13 (Ventura)](https://github.com/kdeldycke/dotfiles/tree/macos-13)
+- [macOS 12 (Monterey)](https://github.com/kdeldycke/dotfiles/tree/macos-12)
+- [macOS 11 (Big Sur)](https://github.com/kdeldycke/dotfiles/tree/macos-11)
 - [macOS 10.15 (Catalina)](https://github.com/kdeldycke/dotfiles/tree/macos-10.15)
 - [macOS 10.14 (Mojave)](https://github.com/kdeldycke/dotfiles/tree/macos-10.14)
 - [macOS 10.13 (High Sierra)](https://github.com/kdeldycke/dotfiles/tree/macos-10.13)
