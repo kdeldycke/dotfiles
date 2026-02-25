@@ -246,7 +246,7 @@ alias c='cls'
 # Use GRC for additional colorization.
 GRC=$(command -v grc)
 if [ -n "$GRC" ]; then
-    alias colourify='$GRC -es --colour=auto'
+    alias colourify="$GRC -es --colour=auto"
     alias as='colourify as'
     #cvs
     alias configure='colourify ./configure'
