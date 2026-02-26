@@ -25,17 +25,9 @@
     "**/templates/**/*.html": "jinja-html"
   },
   "html.format.indentHandlebars": true,
-  "jupyter.themeMatplotlibPlots": true,
-  "jupyter.askForKernelRestart": false,
-  "jupyter.runStartupCommands": [
-    "!pip install ipython-autotime",
-    "%reload_ext autotime",
-    "%precision 10"
-  ],
   "workbench.enableExperiments": false,
   "workbench.startupEditor": "none",
   "python.languageServer": "Pylance",
-  "notebook.lineNumbers": "on",
   "testing.defaultGutterClickAction": "contextMenu",
   "editor.bracketPairColorization.enabled": true,
   "telemetry.telemetryLevel": "off",
@@ -70,23 +62,22 @@
     },
     "editor.defaultFormatter": "charliermarsh.ruff"
   },
-  "autoDocstring.startOnNewLine": true,
-  "notebook.output.scrolling": true,
-  "notebook.formatOnSave.enabled": true,
-  "notebook.codeActionsOnSave": {
-    "notebook.source.fixAll": "explicit",
-    "notebook.source.organizeImports": "explicit"
+  // Disable TOML formatting to avoid conflicts with toml-fmt for pyproject.toml
+  "[toml]": {
+    "editor.formatOnSave": false
   },
+  "autoDocstring.startOnNewLine": true,
   "editor.formatOnType": true,
   "editor.formatOnSave": true,
-  "jupyter.experiments.enabled": false,
   "python.analysis.autoFormatStrings": true,
   "python.analysis.autoImportCompletions": true,
   "editor.accessibilitySupport": "off",
   "diffEditor.ignoreTrimWhitespace": false,
-  "notebook.output.minimalErrorRendering": true,
   "markdown.experimental.updateLinksOnPaste": true,
   "djlint.showInstallError": false,
+  "ruff.path": [
+    "/opt/homebrew/bin/ruff"
+  ],
   "ruff.format.preview": true,
   "ruff.lint.preview": true,
   "ruff.lint.ignore": [
@@ -112,8 +103,13 @@
     "uv run mypy": true,
     "uv run --frozen mypy ": true,
   },
-  "claudeCode.preferredLocation": "panel",
+  "claudeCode.preferredLocation": "sidebar",
   "telemetry.editStats.enabled": false,
   "telemetry.feedback.enabled": false,
-  "mermaid-chat.enabled": true
+  "mermaid-chat.enabled": true,
+  "editor.inlayHints.enabled": "offUnlessPressed",
+  "github.copilot.selectedCompletionModel": "",
+  "chat.viewSessions.orientation": "stacked",
+  "chat.tools.terminal.sandbox.enabled": true,
+  "claudeCode.selectedModel": "opus",
 }
