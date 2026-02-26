@@ -1,9 +1,59 @@
 {
-  "permissions": {
-    "defaultMode": "acceptEdits"
-  },
-  "model": "opus",
-  "alwaysThinkingEnabled": true,
+  "includeCoAuthoredBy": false,
   "cleanupPeriodDays": 30,
-  "includeCoAuthoredBy": false
+  "alwaysThinkingEnabled": true,
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "LLM": "1",
+    "NO_COLOR": "1"
+  },
+  "permissions": {
+    "defaultMode": "acceptEdits",
+    "allow": [
+      "Edit(**)",
+      "Bash(actionlint:*)",
+      "Bash(alias:*)",
+      "Bash(bash:*)",
+      "Bash(command:*)",
+      "Bash(curl:*)",
+      "Bash(echo:*)",
+      "Bash(env:*)",
+      "Bash(file:*)",
+      "Bash(find:*)",
+      "Bash(gh:*)",
+      "Bash(git:*)",
+      "Bash(grep:*)",
+      "Bash(head:*)",
+      "Bash(ls:*)",
+      "Bash(pip:*)",
+      "Bash(python:*)",
+      "Bash(python3:*)",
+      "Bash(rg:*)",
+      "Bash(ruff:*)",
+      "Bash(sort:*)",
+      "Bash(sphinx-build:*)",
+      "Bash(tail:*)",
+      "Bash(typos:*)",
+      "Bash(unzip:*)",
+      "Bash(uv:*)",
+      "Bash(uvx:*)",
+      "Bash(wc:*)",
+      "Bash(xargs:*)",
+      "Bash(xxd:*)",
+      "WebSearch",
+      "WebFetch(domain:api.github.com)",
+      "WebFetch(domain:docs.astral.sh)",
+      "WebFetch(domain:docs.github.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:kdeldycke.github.io)",
+      "WebFetch(domain:myst-parser.readthedocs.io)",
+      "WebFetch(domain:packaging.python.org)",
+      "WebFetch(domain:peps.python.org)",
+      "WebFetch(domain:pypi.org)",
+      "WebFetch(domain:raw.githubusercontent.com)"
+    ]
+  },
+  "enabledPlugins": {
+    "pyright-lsp@claude-plugins-official": true
+  }
 }
