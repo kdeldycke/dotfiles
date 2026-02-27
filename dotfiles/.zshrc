@@ -134,7 +134,6 @@ PATH_CACHE="${HOME}/.path-env-cache"
             $(brew --prefix openssh)/bin
             $(brew --prefix curl)/bin
             $(brew --prefix python)/libexec/bin
-            $(brew --prefix node)/bin
             ${HOME}/.cargo/bin
             ${HOME}/.local/bin
             /Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin
@@ -226,16 +225,13 @@ alias v="nvim"
 alias du='du -csh'
 alias df='df -h'
 alias grep='grep --color=auto'
-alias diff="colordiff -ru"
-alias ccat='pygmentize -g'
-
+alias diff="diff --color -ru"
 alias top="htop"
 alias gr='grep -RIi --no-messages'
 alias rg='rg -uu'
 alias g="git"
 alias h="history"
 alias q='exit'
-alias how="howdoi --color"
 
 function cls {
     # Source: https://stackoverflow.com/a/2198403
@@ -285,7 +281,6 @@ alias ....="cd ../../.."
 alias .....="cd ../../../.."
 
 export LESS="-eRX"
-export LESSOPEN='| pygmentize -g %s'
 
 # Remove spurious find error messages on access restrictions. Keeps find's
 # output clean, tidy and easier to read.

@@ -23,9 +23,9 @@ set -Eeuxo pipefail
 #
 # Some of these changes still require a logout/restart to take effect.
 
-# Close any open System Preferences panes, to prevent them from overriding
+# Close any open System Settings panes, to prevent them from overriding
 # settings we’re about to change
-osascript -e 'tell application "System Preferences" to quit'
+osascript -e 'tell application "System Settings" to quit'
 
 # Extract hardware UUID to reconstruct host-dependent plists.
 HOST_UUID=$(ioreg -d2 -c IOPlatformExpertDevice | awk -F\" '/IOPlatformUUID/{print $(NF-1)}')
@@ -104,7 +104,7 @@ fi
 # Transform '  |   "model" = <"MacBookAir8,1">' to 'MBA'
 COMPUTER_MODEL_SHORTHAND=$(ioreg -c IOPlatformExpertDevice -d 2 -r | grep '"model" =' | python -c "print(''.join([c for c in input() if c.isupper()]))")
 COMPUTER_NAME="$(whoami)-${COMPUTER_MODEL_SHORTHAND}"
-# Set computer name (as done via System Preferences → Sharing)
+# Set computer name (as done via System Settings → General → About)
 sudo scutil --set ComputerName "${COMPUTER_NAME}"
 sudo scutil --set HostName "${COMPUTER_NAME}"
 sudo scutil --set LocalHostName "${COMPUTER_NAME}"
@@ -279,13 +279,6 @@ sudo defaults write /Library/Preferences/com.apple.alf loggingenabled -bool true
 # Do not automatically allow signed software to receive incoming connections
 sudo defaults write /Library/Preferences/com.apple.alf allowsignedenabled -bool false
 
-# Reload the firewall
-# (uncomment if above is not commented out)
-launchctl unload /System/Library/LaunchAgents/com.apple.alf.useragent.plist
-sudo launchctl unload /System/Library/LaunchDaemons/com.apple.alf.agent.plist
-sudo launchctl load /System/Library/LaunchDaemons/com.apple.alf.agent.plist
-launchctl load /System/Library/LaunchAgents/com.apple.alf.useragent.plist
-
 # Apply configuration on all network interfaces.
 #   $ networksetup -listallnetworkservices
 #   An asterisk (*) denotes that a network service is disabled.
@@ -306,12 +299,6 @@ for net_service (${(f)net_interfaces}); do
         networksetup -setMTU "${net_service}" 9000
     fi
 done
-
-# Disable IR remote control
-sudo defaults write /Library/Preferences/com.apple.driver.AppleIRController DeviceEnabled -bool false
-
-# Turn Bluetooth off completely
-sudo defaults write /Library/Preferences/com.apple.Bluetooth ControllerPowerState -int 0
 
 # Disable wifi captive portal
 sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.captive.control Active -bool false
@@ -438,22 +425,6 @@ defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeF
 # Disable “natural” (Lion-style) scrolling
 defaults write NSGlobalDomain com.apple.swipescrolldirection -bool false
 
-# Increase sound quality for Bluetooth headphones/headsets.
-# Sources:
-#     https://www.reddit.com/r/apple/comments/5rfdj6/pro_tip_significantly_improve_bluetooth_audio/
-#     https://apple.stackexchange.com/questions/40259/bluetooth-audio-problems-on-a-macbook
-for bitpool_param (
-    "Negotiated Bitpool"
-    "Negotiated Bitpool Max"
-    "Negotiated Bitpool Min"
-    "Apple Bitpool Max (editable)"
-    "Apple Bitpool Min (editable)"
-    "Apple Initial Bitpool (editable)"
-    "Apple Initial Bitpool Min (editable)"
-); do
-    defaults write com.apple.BluetoothAudioAgent "${bitpool_param}" -int 80
-done
-
 # Enable full keyboard access for all controls
 # (e.g. enable Tab in modal dialogs)
 defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
@@ -550,13 +521,6 @@ defaults write com.apple.screencapture type -string "png"
 # Disable shadow in screenshots
 defaults write com.apple.screencapture disable-shadow -bool true
 
-# Enable subpixel font rendering on non-Apple LCDs
-# Reference: https://github.com/kevinSuttle/macOS-Defaults/issues/17#issuecomment-266633501
-defaults write NSGlobalDomain AppleFontSmoothing -int 1
-defaults write NSGlobalDomain CGFontRenderingFontSmoothingDisabled -bool false
-
-# Enable HiDPI display modes (requires restart)
-sudo defaults write /Library/Preferences/com.apple.windowserver DisplayResolutionEnabled -bool true
 
 
 ###############################################################################
@@ -784,7 +748,7 @@ done
 # Icon View   : `icnv`
 # List View   : `Nlsv`
 # Column View : `clmv`
-# Cover Flow  : `Flwv`
+# Gallery View: `glyv`
 defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
 # After configuring preferred view style, clear all `.DS_Store` files
 # to ensure settings are applied for every directory
@@ -883,7 +847,7 @@ com.colliderli.iina public.mpeg-2-video
 com.colliderli.iina public.mpeg-4
 com.colliderli.iina public.mpeg-4-audio'
 
-if test -x "/usr/local/bin/duti"; then
+if command -v duti &> /dev/null; then
     test -f "${HOME}/Library/Preferences/org.duti.plist" && \
         rm "${HOME}/Library/Preferences/org.duti.plist"
 
@@ -923,7 +887,7 @@ defaults -currentHost write com.apple.coreservices.useractivityd "ActivityReceiv
 ln -f -s ~/Library/Mobile\ Documents/com~apple~CloudDocs ~/iCloud
 
 ###############################################################################
-# Dock, Dashboard, and hot corners                                            #
+# Dock and hot corners                                                        #
 ###############################################################################
 
 # Enable highlight hover effect for the grid view of a stack (Dock)
@@ -969,12 +933,6 @@ defaults write com.apple.dock expose-animation-duration -float 0.1
 # (i.e. use the old Exposé behavior instead)
 #defaults write com.apple.dock expose-group-by-app -bool false
 
-# Disable Dashboard
-defaults write com.apple.dashboard mcx-disabled -bool true
-
-# Don’t show Dashboard as a Space
-defaults write com.apple.dock dashboard-in-overlay -bool true
-
 # Don’t automatically rearrange Spaces based on most recent use
 defaults write com.apple.dock mru-spaces -bool false
 
@@ -1015,7 +973,6 @@ command find "${HOME}/Library/Application Support/Dock" -maxdepth 1 -name "*-*.d
 #  4: Desktop
 #  5: Start screen saver
 #  6: Disable screen saver
-#  7: Dashboard
 # 10: Put display to sleep
 # 11: Launchpad
 # 12: Notification Center
@@ -1127,9 +1084,6 @@ defaults write com.apple.Safari AutoOpenSafeDownloads -bool false
 # 1: Web Archive
 defaults write com.apple.Safari SavePanelFileFormat -int 0
 
-# Allow hitting the Backspace key to go to the previous page in history
-defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2BackspaceKeyNavigationEnabled -bool true
-
 # Hide Safari’s bookmarks bar by default
 defaults write com.apple.Safari ShowFavoritesBar -bool false
 defaults write com.apple.Safari ShowFavoritesBar-v2 -bool false
@@ -1157,9 +1111,6 @@ defaults write com.apple.Safari SidebarViewModeIdentifier -string  "Bookmarks"
 
 # Preload Top Hit in the background
 defaults write com.apple.Safari PreloadTopHit -bool false
-
-# Disable Safari’s thumbnail cache for History and Top Sites
-defaults write com.apple.Safari DebugSnapshotsUpdatePolicy -int 2
 
 # Make Safari’s search banners default to Contains instead of Starts With
 defaults write com.apple.Safari FindOnPageMatchesWordStartsOnly -bool false
@@ -1207,18 +1158,6 @@ defaults write com.apple.Safari WarnAboutFraudulentWebsites -bool true
 # Enable JavaScript
 # defaults write com.apple.Safari WebKitJavaScriptEnabled -bool true
 # defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2JavaScriptEnabled -bool true
-
-# Disable plug-ins
-defaults write com.apple.Safari WebKitPluginsEnabled -bool false
-defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2PluginsEnabled -bool false
-
-# Stop internet plug-ins to save power
-defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2PlugInSnapshottingEnabled -bool true
-
-# Disable Java
-defaults write com.apple.Safari WebKitJavaEnabled -bool false
-defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2JavaEnabled -bool false
-defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2JavaEnabledForLocalFiles -bool false
 
 # Block pop-up windows
 defaults write com.apple.Safari WebKitJavaScriptCanOpenWindowsAutomatically -bool false
@@ -1394,18 +1333,6 @@ sudo mdutil -i on / > /dev/null
 # Rebuild the index from scratch
 sudo mdutil -E / > /dev/null
 
-
-###############################################################################
-# QuickLook plugins                                                           #
-###############################################################################
-
-# Text selection in Quick Look
-defaults write com.apple.finder QLEnableTextSelection -bool true
-
-# Fix for the ancient UTF-8 bug in QuickLook (https://mths.be/bbo)
-# Commented out, as this is known to cause problems in various Adobe apps :(
-# See https://github.com/mathiasbynens/dotfiles/issues/237
-#echo "0x08000100:0" > ~/.CFUserTextEncoding
 
 
 ###############################################################################
@@ -1643,9 +1570,6 @@ defaults write NSGlobalDomain NSPersonNameDefaultShouldPreferNicknamesPreference
 # Calendar                                                                    #
 ###############################################################################
 
-# Enable the debug menu in iCal (pre-10.8)
-defaults write com.apple.iCal IncludeDebugMenu -bool true
-
 # Days per week
 defaults write com.apple.iCal "n days of week" -int 7
 
@@ -1686,11 +1610,8 @@ defaults write com.apple.iCal WarnBeforeSendingInvitations -bool true
 
 
 ###############################################################################
-# Dashboard, TextEdit and Disk Utility                                        #
+# TextEdit and Disk Utility                                                   #
 ###############################################################################
-
-# Enable Dashboard dev mode (allows keeping widgets on the desktop)
-defaults write com.apple.dashboard devmode -bool true
 
 # Use plain text mode for new TextEdit documents
 defaults write com.apple.TextEdit RichText -int 0
@@ -1782,17 +1703,6 @@ defaults write com.apple.messageshelper.MessageController SOInputLineSettings -d
 # Disable continuous spell checking
 defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "continuousSpellCheckingEnabled" -bool false
 
-# Save history when conversations are closed
-defaults write com.apple.iChat SaveConversationsOnClose -bool true
-
-# Text size
-# 1: Small
-# 7: Large
-defaults write com.apple.iChat TextSize -int 2
-
-# Animate buddy pictures
-defaults write com.apple.iChat AnimateBuddyPictures -bool false
-
 # Play sound effects
 defaults write com.apple.messageshelper.AlertsController PlaySoundsKey -bool false
 
@@ -1801,9 +1711,6 @@ defaults write com.apple.messageshelper.AlertsController SOAlertsAddressMeKey -b
 
 # Notify me about messages form unknown contacts
 defaults write com.apple.messageshelper.AlertsController NotifyAboutKnockKnockKey -bool false
-
-# Show all buddy pictures in conversations
-defaults write com.apple.iChat ShowAllBuddyPictures -bool false
 
 
 ###############################################################################
@@ -1987,12 +1894,6 @@ defaults write com.adguard.mac.adguard IgnoreEvSslCertificates -bool false
     -c "Add :autoSearchOnlineSub            integer 1" \
     -c "Add :ytdlSearchPath                 string  ''" \
     ~/Library/Preferences/com.colliderli.iina.plist
-
-# Link legacy youtube-dl binary to maintained yt-dlp. Sources:
-# https://github.com/iina/iina/issues/3327#issuecomment-998184733
-# https://github.com/iina/iina/issues/3502
-sudo rm /Applications/IINA.app/Contents/MacOS/youtube-dl
-sudo ln -fs $(command -v yt-dlp) /Applications/IINA.app/Contents/MacOS/youtube-dl
 
 
 ###############################################################################
