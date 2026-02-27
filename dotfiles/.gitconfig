@@ -101,13 +101,6 @@
     rb = rbranch
     rv = review
     st = status
-    # Legit addons
-    branches = !legit branches
-    publish = !legit publish
-    unpublish = !legit unpublish
-    sync = !legit sync
-    switch = !legit switch
-    undo = !legit undo
     # View abbreviated SHA, description, and history graph of the latest 20 commits
     l = log --pretty=oneline --max-count=20 --graph --abbrev-commit --decorate
     hist = log --pretty=format:\"%C(yellow)%h%C(reset) %C(green)%ad%C(reset) %C(red)|%C(reset) %s %C(bold blue)[%an]%C(reset)%C(yellow)%d%C(reset)\" --graph --date=short
