@@ -9,18 +9,10 @@
     trustctime = false
 [column]
     ui = auto
-[pack]
-    useSparse = true
 [user]
     name = Kevin Deldycke
     email = kevin@deldycke.com
     signingkey = C572BB01B1ED5A3A
-[color]
-    diff = auto
-    status = auto
-    branch = auto
-    ui = true
-    interactive = auto
 [delta]
     dark
     theme = 'Monokai Extended'
@@ -35,7 +27,6 @@
     whitespace = fix
 [diff]
     colorMoved = plain
-    renames = true
     # histogram is an incremental improvement on patience
     algorithm = histogram
     # Source: https://mobile.twitter.com/brandur/status/1182066723337293828
@@ -43,8 +34,6 @@
 [commit]
     verbose = true
     gpgsign = true
-[log]
-    decorate = full
 [fetch]
     prune = true
     pruneTags = true
@@ -53,9 +42,6 @@
     # Source: https://stackoverflow.com/a/18756102/487610
     rebase = merges
 [push]
-    # Prevent accidental pushes to branches which you’re not ready to push yet.
-    # Source: http://mislav.uniqpath.com/2010/07/git-tips/
-    default = tracking
     autoSetupRemote = true
     followTags = true
 [stash]
