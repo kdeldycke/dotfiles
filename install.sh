@@ -130,8 +130,9 @@ brew update
 # Fetch latest packages.
 brew upgrade
 
-# Add services.
+# Add taps.
 brew tap gromgit/homebrew-fuse
+brew tap sbarex/SourceCodeSyntaxHighlight
 
 
 ######### Meta Package Manager #########
