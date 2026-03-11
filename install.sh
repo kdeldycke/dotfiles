@@ -132,7 +132,7 @@ brew upgrade
 
 # Add taps.
 brew tap gromgit/homebrew-fuse
-brew tap sbarex/SourceCodeSyntaxHighlight
+brew tap sbarex/SourceCodeSyntaxHighlight https://github.com/sbarex/SourceCodeSyntaxHighlight
 
 
 ######### Meta Package Manager #########
