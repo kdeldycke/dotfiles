@@ -53,7 +53,11 @@ Examples:
    - Remove redundant institution names if the folder context already makes it clear
 5. **Present a summary table** showing current name, detected date, and proposed new name
 6. **Rename all files** after presenting the plan
-7. **Verify** by listing the final result
+7. **Post-rename analysis** — after renaming, scan the folder for cleanup opportunities and present a report with three sections:
+   - **Duplicates**: Compare files with similar titles using MD5 checksums (`md5 -r`). Files with identical hashes are exact duplicates. Propose keeping one and trashing the others.
+   - **Superseded documents**: Identify files that are older versions of the same document type (e.g., "Personal banking general T&C" from 2023 vs 2025). The newer version supersedes the older. Propose trashing the older version.
+   - **Expired documents**: For time-bound documents (campaigns, offers, promotions) that specify a validity period (e.g., "1 November 2025 – 31 December 2025"), check if the end date has passed relative to today. Propose trashing expired ones. Do **not** flag standing T&Cs, KFS documents, or privacy policies — only documents with explicit campaign/offer end dates.
+8. **Verify** by listing the final result
 
 ## Multi-language PDF stripping
 
