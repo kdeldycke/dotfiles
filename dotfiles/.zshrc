@@ -206,6 +206,13 @@ zinit light MichaelAquilina/zsh-autoswitch-virtualenv
 # Initialize starship
 eval "$(starship init zsh)"
 
+# Tab title: <process> — <path>
+__tab_title_precmd() { print -Pn '\e]1;zsh — %~\a' }
+__tab_title_preexec() { print -n "\e]1;${1%% *} — ${(%):-'%~'}\a" }
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd  __tab_title_precmd
+add-zsh-hook preexec __tab_title_preexec
+
 
 ###############################################################################
 # Neovim
