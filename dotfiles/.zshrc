@@ -239,6 +239,7 @@ alias rg='rg -uu'
 alias g="git"
 alias h="history"
 alias q='exit'
+alias claude='command claude --name "${PWD/#$HOME/~}"'
 
 function cls {
     # Source: https://stackoverflow.com/a/2198403
