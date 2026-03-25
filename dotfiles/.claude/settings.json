@@ -125,7 +125,7 @@
       "Bash(gh repo delete *)",
       "Bash(gh release delete *)"
     ],
-    "defaultMode": "acceptEdits"
+    "defaultMode": "auto"
   },
   "enabledPlugins": {
     "pyright-lsp@claude-plugins-official": true
