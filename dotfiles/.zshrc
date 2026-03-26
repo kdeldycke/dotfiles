@@ -239,7 +239,11 @@ alias rg='rg -uu'
 alias g="git"
 alias h="history"
 alias q='exit'
-alias claude='command claude --name "${PWD/#$HOME/~}"'
+# claude --resume shows session names. Without --name they all look identical for a
+# given directory. Timestamp first, folder last: Terminal.app truncates from the
+# left, so the folder path survives in narrow tabs, keeping them visually grouped
+# by project. The timestamp differentiates sessions in the --resume picker.
+alias claude='command claude --name "$(date +%m-%d@%H:%M) ${PWD/#$HOME/~}"'
 
 function cls {
     # Source: https://stackoverflow.com/a/2198403
