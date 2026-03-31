@@ -354,6 +354,9 @@ flycheck_*.el
 
 ### GPG ###
 secring.*
+dotfiles/.gnupg/*
+!dotfiles/.gnupg/gpg.conf
+!dotfiles/.gnupg/gpg-agent.conf
 
 
 ### JupyterNotebooks ###
