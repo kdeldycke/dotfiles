@@ -1,0 +1,3 @@
+# Mitigate supply chain attacks by requiring packages to have been
+# published for at least 7 days before they can be installed.
+minimum-release-age=10080

@@ -55,9 +55,12 @@ DOT_FILES=$($FIND_CLI dotfiles -depth 1 -not -name '\.DS_Store' -not -name 'Libr
 # Collect all ".config" content .
 DOT_FILES+="
 $($FIND_CLI dotfiles/.config -depth 1 -not -name '\.DS_Store')"
-# Collect all "Library" subfolders but "Application Support" folder.
+# Collect all "Library" subfolders but "Application Support" and "Preferences" folders.
 DOT_FILES+="
-$($FIND_CLI dotfiles/Library -depth 1 -not -name '\.DS_Store' -not -name 'Application Support')"
+$($FIND_CLI dotfiles/Library -depth 1 -not -name '\.DS_Store' -not -name 'Application Support' -not -name 'Preferences')"
+# Collect all "Preferences" subfolders.
+DOT_FILES+="
+$($FIND_CLI dotfiles/Library/Preferences -depth 1 -not -name '\.DS_Store')"
 # Collect all "Application Support" subfolders but "Code" folder.
 DOT_FILES+="
 $($FIND_CLI 'dotfiles/Library/Application Support' -depth 1 -not -name '\.DS_Store' -not -name 'Code')"
