@@ -127,6 +127,19 @@
     ],
     "defaultMode": "auto"
   },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "case \"$CLAUDE_FILE_PATH\" in *.py) python3 -m py_compile \"$CLAUDE_FILE_PATH\" 2>&1 || true ;; esac"
+          }
+        ]
+      }
+    ]
+  },
   "enabledPlugins": {
     "pyright-lsp@claude-plugins-official": true
   },
