@@ -2,6 +2,12 @@
 
 Also avoid patterns described at https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing
 
+## Voice and punctuation
+
+Use first-person singular ("I", "my") in all prose written on behalf of the user: issue descriptions, PR bodies, feature requests, comments, documentation. Never use first-person plural ("we", "our") unless the text genuinely refers to a group.
+
+Use ":" instead of em dashes for inline elaboration or appositive clauses.
+
 ## Code organization
 
 Do not make autonomous decisions about module boundaries, file placement, or architectural structure. When intent is ambiguous, ask before reorganizing. The user has strong opinions about where code lives and how modules are scoped.
@@ -15,3 +21,7 @@ Write commit messages as a human developer would — describe what the code chan
 ## Shell commands
 
 Never use `$()` command substitutions inside `gh` (or any other) Bash calls. The sandbox flags `$()` as a separate security check that fires regardless of permission allow rules — it can't statically verify what executes inside a substitution. Instead, run compound commands as separate sequential Bash calls: capture the inner result first, then use it in the next call. Both commands then match the allow rules individually and auto-approve.
+
+## Code generation preferences
+
+For any non-trivial workflow, data processing, or multi-step logic: write Python, not Bash. The user is an advanced Python developer and can quickly read, inspect, and validate Python code. Short one-liners and simple Bash scripts are fine for convenience and performance, but anything with branching logic, string manipulation, data transformation, or error handling should be Python.
