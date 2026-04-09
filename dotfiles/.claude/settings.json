@@ -149,6 +149,25 @@
   "enabledPlugins": {
     "pyright-lsp@claude-plugins-official": true
   },
+  "sandbox": {
+    "enabled": true,
+    "allowUnsandboxedCommands": false,
+    "filesystem": {
+      "denyRead": ["~/.ssh"],
+      "allowWrite": ["/tmp", "/private/tmp", "~/.cache/uv"]
+    },
+    "network": {
+      "allowedDomains": [
+        "github.com",
+        "*.github.com",
+        "*.githubusercontent.com",
+        "pypi.org",
+        "*.pypi.org",
+        "files.pythonhosted.org"
+      ]
+    }
+  },
   "alwaysThinkingEnabled": true,
-  "effortLevel": "high"
+  "effortLevel": "high",
+  "skipDangerousModePermissionPrompt": true
 }
