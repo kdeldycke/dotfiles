@@ -139,6 +139,12 @@ filter lists:
 
 ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/adguard-filter-lists-subscription.png)
 
+### Claude Code
+
+`~/.claude/settings.json` is symlinked to this repo and committed. There is no global `settings.local.json`: `~/.claude/settings.local.json` is [not a supported file](https://github.com/anthropics/claude-code/issues/35703#issuecomment-2818474293). Per-machine secret env vars (like `GH_TOKEN`) must go in `~/.claude/settings.json` or be exported from the shell (e.g. `~/.zshenv`).
+
+The sandbox blocks macOS `Security.framework` IPC to `trustd`, which breaks TLS certificate verification for all CGO-compiled Go binaries (`gh`, `terraform`, `tofu`, etc.). `SSL_CERT_FILE` does not help because these binaries use `Security.framework` directly and ignore file-based certs. `enableWeakerNetworkIsolation: true` in the sandbox config allows `trustd` IPC specifically while keeping the rest of the sandbox intact ([anthropics/claude-code#34876](https://github.com/anthropics/claude-code/issues/34876)).
+
 ### Logi Options
 
 For productivity, setup custom trackball shortcuts with macOS desktop

@@ -13,6 +13,7 @@
       "Bash(alias:*)",
       "Bash(bash:*)",
       "Bash(command:*)",
+      "Bash(convert:*)",
       "Bash(echo:*)",
       "Bash(env:*)",
       "Bash(file:*)",
@@ -74,10 +75,13 @@
       "Bash(git tag *)",
       "Bash(git worktree *)",
       "Bash(grep:*)",
+      "Bash(gs:*)",
       "Bash(head:*)",
       "Bash(exiftool:*)",
       "Bash(ls:*)",
+      "Bash(magick:*)",
       "Bash(md5:*)",
+      "Bash(mdfind:*)",
       "Bash(mdls:*)",
       "Bash(mkdir:*)",
       "Bash(mv:*)",
@@ -151,10 +155,19 @@
   },
   "sandbox": {
     "enabled": true,
-    "allowUnsandboxedCommands": false,
+    "enableWeakerNetworkIsolation": true,
     "filesystem": {
-      "denyRead": ["~/.ssh"],
-      "allowWrite": ["/tmp", "/private/tmp", "~/.cache/uv"]
+      "denyRead": [
+        "~/.ssh"
+      ],
+      "allowWrite": [
+        "/tmp",
+        "/private/tmp",
+        "~/.cache/uv",
+        "~/.gnupg/.#*",
+        "~/.gnupg/*.lock",
+        "~/.gnupg/random_seed"
+      ]
     },
     "network": {
       "allowedDomains": [
