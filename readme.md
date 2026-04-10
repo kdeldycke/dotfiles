@@ -141,9 +141,12 @@ filter lists:
 
 ### Claude Code
 
-`~/.claude/settings.json` is symlinked to this repo and committed. There is no global `settings.local.json`: `~/.claude/settings.local.json` is [not a supported file](https://github.com/anthropics/claude-code/issues/35703#issuecomment-2818474293). Per-machine secret env vars (like `GH_TOKEN`) must go in `~/.claude/settings.json` or be exported from the shell (e.g. `~/.zshenv`).
+`~/.claude/settings.json` is symlinked to this repo and committed. There is no global `settings.local.json`: `~/.claude/settings.local.json` is [not a supported file](https://github.com/anthropics/claude-code/issues/35703#issuecomment-2818474293).
 
-The sandbox blocks macOS `Security.framework` IPC to `trustd`, which breaks TLS certificate verification for all CGO-compiled Go binaries (`gh`, `terraform`, `tofu`, etc.). `SSL_CERT_FILE` does not help because these binaries use `Security.framework` directly and ignore file-based certs. `enableWeakerNetworkIsolation: true` in the sandbox config allows `trustd` IPC specifically while keeping the rest of the sandbox intact ([anthropics/claude-code#34876](https://github.com/anthropics/claude-code/issues/34876)).
+`allowUnsandboxedCommands: true` is set in the sandbox config to work around two macOS sandbox limitations:
+
+- The sandbox blocks `Security.framework` IPC to `trustd`, breaking TLS certificate verification for all CGO-compiled Go binaries (`gh`, `terraform`, `tofu`, etc.). `SSL_CERT_FILE` does not help because these binaries use `Security.framework` directly and ignore file-based certs. `enableWeakerNetworkIsolation: true` is a more targeted fix for this alone ([anthropics/claude-code#34876](https://github.com/anthropics/claude-code/issues/34876)).
+- The sandbox blocks `bind()` and `connect()` on Unix domain sockets, preventing GPG signing: `gpg` cannot communicate with `gpg-agent` through its socket at `~/.gnupg/S.gpg-agent`. `allowUnixSockets` could be a more targeted fix once path-scoped socket support is stable ([anthropics/claude-code#39257](https://github.com/anthropics/claude-code/issues/39257), [anthropics/claude-code#41817](https://github.com/anthropics/claude-code/issues/41817)).
 
 ### Logi Options
 
