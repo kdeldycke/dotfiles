@@ -101,7 +101,7 @@
   },
   "sandbox": {
     "enabled": true,
-    "allowUnsandboxedCommands": true,
+    "enableWeakerNetworkIsolation": true,
     "filesystem": {
       "denyRead": [
         "~/.ssh"

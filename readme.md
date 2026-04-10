@@ -142,7 +142,7 @@ filter lists:
 
 `~/.claude/settings.json` is symlinked to this repo and committed. There is no global `settings.local.json`: `~/.claude/settings.local.json` is [not a supported file](https://github.com/anthropics/claude-code/issues/35703#issuecomment-2818474293).
 
-`allowUnsandboxedCommands: true` is set in the sandbox config to work around a macOS sandbox limitation: the sandbox blocks `Security.framework` IPC to `trustd`, breaking TLS certificate verification for all CGO-compiled Go binaries (`gh`, `terraform`, `tofu`, etc.). `SSL_CERT_FILE` does not help because these binaries use `Security.framework` directly and ignore file-based certs. `enableWeakerNetworkIsolation: true` is a more targeted alternative ([anthropics/claude-code#34876](https://github.com/anthropics/claude-code/issues/34876)).
+`enableWeakerNetworkIsolation: true` is set in the sandbox config to work around a macOS sandbox limitation: the sandbox blocks `Security.framework` IPC to `trustd`, breaking TLS certificate verification for all CGO-compiled Go binaries (`gh`, `terraform`, `tofu`, etc.) and Keychain access. `SSL_CERT_FILE` does not help because these binaries use `Security.framework` directly and ignore file-based certs ([anthropics/claude-code#34876](https://github.com/anthropics/claude-code/issues/34876)).
 
 ### Logi Options
 
