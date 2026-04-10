@@ -116,10 +116,9 @@ the system. Haven't found any way to automate them all.
 
    ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/developer-tools-preferences.png)
 
-### SSH & GPG
+### SSH
 
-Copy SSH (`./dotfiles/dotfiles/.ssh/`) and GPG (`./dotfiles/dotfiles/.gnupg/`)
-folders from Time Machine backups.
+Copy the SSH folder (`./dotfiles/dotfiles/.ssh/`) from Time Machine backups. After restoring, add the public key to GitHub as both an "Authentication key" and a "Signing key" at https://github.com/settings/keys.
 
 ### Safari
 
@@ -143,10 +142,7 @@ filter lists:
 
 `~/.claude/settings.json` is symlinked to this repo and committed. There is no global `settings.local.json`: `~/.claude/settings.local.json` is [not a supported file](https://github.com/anthropics/claude-code/issues/35703#issuecomment-2818474293).
 
-`allowUnsandboxedCommands: true` is set in the sandbox config to work around two macOS sandbox limitations:
-
-- The sandbox blocks `Security.framework` IPC to `trustd`, breaking TLS certificate verification for all CGO-compiled Go binaries (`gh`, `terraform`, `tofu`, etc.). `SSL_CERT_FILE` does not help because these binaries use `Security.framework` directly and ignore file-based certs. `enableWeakerNetworkIsolation: true` is a more targeted fix for this alone ([anthropics/claude-code#34876](https://github.com/anthropics/claude-code/issues/34876)).
-- The sandbox blocks `bind()` and `connect()` on Unix domain sockets, preventing GPG signing: `gpg` cannot communicate with `gpg-agent` through its socket at `~/.gnupg/S.gpg-agent`. `allowUnixSockets` could be a more targeted fix once path-scoped socket support is stable ([anthropics/claude-code#39257](https://github.com/anthropics/claude-code/issues/39257), [anthropics/claude-code#41817](https://github.com/anthropics/claude-code/issues/41817)).
+`allowUnsandboxedCommands: true` is set in the sandbox config to work around a macOS sandbox limitation: the sandbox blocks `Security.framework` IPC to `trustd`, breaking TLS certificate verification for all CGO-compiled Go binaries (`gh`, `terraform`, `tofu`, etc.). `SSL_CERT_FILE` does not help because these binaries use `Security.framework` directly and ignore file-based certs. `enableWeakerNetworkIsolation: true` is a more targeted alternative ([anthropics/claude-code#34876](https://github.com/anthropics/claude-code/issues/34876)).
 
 ### Logi Options
 

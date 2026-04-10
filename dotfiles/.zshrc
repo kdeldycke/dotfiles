@@ -350,12 +350,3 @@ alias -s {ape,avi,flv,m4a,mkv,mov,mp3,mp4,mpeg,mpg,ogg,ogm,wav,webm}=iina
 
 # Paste a repository URL in terminal, and have it cloned.
 alias -s git="git clone"
-
-
-###############################################################################
-# GPG
-###############################################################################
-# Ensure gpg-agent is running so signing operations (including git commits)
-# have a cached agent to talk to. gpgconf --launch is idempotent: it's a no-op
-# if an agent is already alive, so running it per shell is cheap.
-gpgconf --launch gpg-agent 2>/dev/null

@@ -12,7 +12,11 @@
 [user]
     name = Kevin Deldycke
     email = kevin@deldycke.com
-    signingkey = C572BB01B1ED5A3A
+    signingkey = ~/.ssh/id_ed25519.pub
+[gpg]
+    format = ssh
+[gpg "ssh"]
+    allowedSignersFile = ~/.ssh/allowed_signers
 [delta]
     dark
     theme = 'Monokai Extended'
