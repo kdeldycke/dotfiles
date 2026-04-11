@@ -1,7 +1,7 @@
 ---
 name: fill-web-form
 description: Fill a web form using data extracted from local documents (PDFs, images, spreadsheets). Uses Claude Desktop (Cowork) with Chrome integration to read source documents and navigate/fill browser forms. Use when the user wants to automate filling an online form from document data.
-argument-hint: "[URL of the form] [path to source documents]"
+argument-hint: '[URL of the form] [path to source documents]'
 ---
 
 # Fill Web Form from Document Data
@@ -21,6 +21,7 @@ Download from https://claude.ai/download if not already installed.
 ### 2. Install Claude in Chrome
 
 Install the "Claude" extension in Chrome or Chromium:
+
 - Chrome Web Store: search "Claude" by Anthropic
 - Extension ID: `fcoeoabgfenejglbffodgkkbkcdhcgfn`
 
@@ -68,6 +69,7 @@ open -a Claude
 ```
 
 To open Claude Desktop to a specific conversation via URL scheme:
+
 ```bash
 open "claude://conversation/SESSION_UUID"
 ```
@@ -120,7 +122,7 @@ For each form field:
 
 ```python
 read_page(filter="interactive")  # Returns ref_XXXX for each input/button
-read_page(filter="all")          # Returns full page content with refs
+read_page(filter="all")  # Returns full page content with refs
 ```
 
 ### Filling text inputs
@@ -139,7 +141,7 @@ computer(action="left_click", ref="ref_XXXX")
 
 ```python
 computer(action="left_click", ref="ref_XXXX")  # Focus the field
-computer(action="key", text="some text")         # Type into it
+computer(action="key", text="some text")  # Type into it
 ```
 
 ### Handling dropdowns/selects
@@ -147,22 +149,23 @@ computer(action="key", text="some text")         # Type into it
 ```python
 form_input(ref="ref_XXXX", value="Option Text")  # For standard <select>
 # For custom dropdowns (common in SPA frameworks):
-computer(action="left_click", ref="ref_XXXX")     # Open dropdown
+computer(action="left_click", ref="ref_XXXX")  # Open dropdown
 wait(duration=1)
-read_page(filter="interactive")                     # Find the option
-computer(action="left_click", ref="ref_YYYY")      # Click the option
+read_page(filter="interactive")  # Find the option
+computer(action="left_click", ref="ref_YYYY")  # Click the option
 ```
 
 ### Waiting for page updates
 
 ```python
-wait(duration=2)    # After navigation or AJAX calls
-screenshot          # Verify the page state
+wait(duration=2)  # After navigation or AJAX calls
+screenshot  # Verify the page state
 ```
 
 ### Multi-step / wizard forms
 
 After completing each step:
+
 1. Find the "Next" / "Continue" button via `read_page`
 2. Click it: `computer(action="left_click", ref="ref_XXXX")`
 3. `wait(duration=3)` for the next step to load
@@ -182,15 +185,19 @@ After completing each step:
 ```javascript
 let filled = 0;
 document.querySelectorAll('input[type="text"]').forEach((el) => {
-  if (el.value.trim() === '') {
-    const setter = Object.getOwnPropertyDescriptor(
-      window.HTMLInputElement.prototype, 'value'
-    ).set;
-    setter.call(el, '0');
-    el.dispatchEvent(new Event('input', { bubbles: true }));
-    el.dispatchEvent(new Event('change', { bubbles: true }));
-    filled++;
-  }
+    if (el.value.trim() === '') {
+        const setter = Object.getOwnPropertyDescriptor(
+            window.HTMLInputElement.prototype, 'value'
+        ).set;
+        setter.call(el, '0');
+        el.dispatchEvent(new Event('input', {
+            bubbles: true
+        }));
+        el.dispatchEvent(new Event('change', {
+            bubbles: true
+        }));
+        filled++;
+    }
 });
 `Filled ${filled} fields`;
 ```
@@ -208,15 +215,15 @@ document.querySelectorAll('input[type="text"]').forEach((el) => {
 
 ## Common problems
 
-| Problem | Solution |
-|---|---|
-| Form field not accepting input | Try `computer(left_click)` to focus first, then `form_input` |
-| Radio/checkbox not responding to form_input | Use `computer(left_click, ref=...)` instead |
-| Dropdown options not visible | Click the dropdown trigger, `wait(1)`, then `read_page` to find options |
-| Page navigation returns 404 | SPA context may need to be established first: navigate to the app root, then click through to the form |
-| Validation error after filling | Check for red error indicators, use `read_page` to find error messages |
-| Field shows wrong value after fill | Tab out of the field to trigger formatting, then `screenshot` to verify |
-| Multi-page form loses progress | Use "Save as Draft" if available after each step |
+| Problem                                     | Solution                                                                                               |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Form field not accepting input              | Try `computer(left_click)` to focus first, then `form_input`                                           |
+| Radio/checkbox not responding to form_input | Use `computer(left_click, ref=...)` instead                                                            |
+| Dropdown options not visible                | Click the dropdown trigger, `wait(1)`, then `read_page` to find options                                |
+| Page navigation returns 404                 | SPA context may need to be established first: navigate to the app root, then click through to the form |
+| Validation error after filling              | Check for red error indicators, use `read_page` to find error messages                                 |
+| Field shows wrong value after fill          | Tab out of the field to trigger formatting, then `screenshot` to verify                                |
+| Multi-page form loses progress              | Use "Save as Draft" if available after each step                                                       |
 
 ## Important rules
 

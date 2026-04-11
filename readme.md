@@ -23,7 +23,7 @@ We will reinstall macOS from scratch.
 
 1. Download macOS from the `App Store.app`.
 
-1. Plug a USB drive to your machine, format it with the Disk Utility app,
+2. Plug a USB drive to your machine, format it with the Disk Utility app,
    double-check it is mounted at `/Volumes/Untitled`, and finally
    [flash it with the macOS image](https://support.apple.com/en-us/HT201372):
 
@@ -31,16 +31,16 @@ We will reinstall macOS from scratch.
    $ sudo /Applications/Install\ macOS\ Tahoe.app/Contents/Resources/createinstallmedia --volume /Volumes/Untitled --nointeraction
    ```
 
-1. Reboot your machine, reinstall macOS, create a user.
+3. Reboot your machine, reinstall macOS, create a user.
 
-1. Login to your new user, and launch `System Preferences.app`.
+4. Login to your new user, and launch `System Preferences.app`.
 
-1. Go to `Security & Privacy` → `Privacy` → `Click the lock to make changes`,
+5. Go to `Security & Privacy` → `Privacy` → `Click the lock to make changes`,
    and then unlock with touch ID or password:
 
    ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/system-preferences-security-privacy-unlock.png)
 
-1. Go to `Full Disk Access`, click the `+` button, go to `Applications` →
+6. Go to `Full Disk Access`, click the `+` button, go to `Applications` →
    `Utilities`, and choose `Terminal.app`:
 
    ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/terminal-full-disk-access.png)
@@ -64,7 +64,7 @@ We will reinstall macOS from scratch.
    $ curl -fsSL https://github.com/kdeldycke/dotfiles/tarball/main | tar --strip-components 1 -xvzf -
    ```
 
-1. Now you can install the dotfiles on your system:
+2. Now you can install the dotfiles on your system:
 
 ```shell-session
 $ cd ~/dotfiles
@@ -84,9 +84,9 @@ the system. Haven't found any way to automate them all.
 
    ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/external-display-scale.png)
 
-1. In `Touch ID` → `Add other fingerprints`.
+2. In `Touch ID` → `Add other fingerprints`.
 
-1. In `Security & Privacy` → `Privacy` → `Accessibility`, activate:
+3. In `Security & Privacy` → `Privacy` → `Accessibility`, activate:
 
    - `Amethyst.app`
    - `Logi Options Daemon`
@@ -95,23 +95,23 @@ the system. Haven't found any way to automate them all.
 
    ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/accessibility-preferences.png)
 
-1. In `Security & Privacy` → `Privacy` → `Full Disk Access`, click the `+`
+4. In `Security & Privacy` → `Privacy` → `Full Disk Access`, click the `+`
    button. Then go to `Applications` → `Utilities`, to add:
 
    - `BlockBlock.app`
    - `KnockKnock.app`
 
-1. In `Security & Privacy` → `Privacy` → `Analytics & Improvements`: uncheck
+5. In `Security & Privacy` → `Privacy` → `Analytics & Improvements`: uncheck
    all options to disallow analytics sharing.
 
    ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/analytics-and-improvements-preferences.png)
 
-1. In `Security & Privacy` → `Privacy` → `Apple Advertising`: uncheck
+6. In `Security & Privacy` → `Privacy` → `Apple Advertising`: uncheck
    `Personalized Ads` option.
 
    ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/apple-advertising-preferences.png)
 
-1. In `Security & Privacy` → `Privacy` → `Developer Tools`, activate
+7. In `Security & Privacy` → `Privacy` → `Developer Tools`, activate
    `Terminal`:
 
    ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/developer-tools-preferences.png)
