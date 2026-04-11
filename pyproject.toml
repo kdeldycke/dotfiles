@@ -1,3 +1,11 @@
+[tool.repomatic]
+exclude = [
+    "codecov",
+    "workflows/changelog.yaml",
+    "workflows/debug.yaml",
+    "workflows/release.yaml",
+]
+
 [tool.typos]
 # Exclude terminal config.
 files.extend-exclude = [
