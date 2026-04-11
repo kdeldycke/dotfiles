@@ -31,6 +31,10 @@ extend-exclude = [
     "dotfiles/Library/Application Support/SwiftBar/",
 ]
 
+[tool.biome.formatter]
+indentStyle = "space"
+indentWidth = 2
+
 [tool.typos]
 # Exclude terminal config.
 files.extend-exclude = [
