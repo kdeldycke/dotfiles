@@ -199,6 +199,17 @@ zinit light zsh-users/zsh-autosuggestions
 
 zinit light MichaelAquilina/zsh-autoswitch-virtualenv
 
+# Auto-launch Claude Code when entering a directory with .claude/.
+# Registered after zsh-autoswitch-virtualenv so the venv activates first.
+__auto_claude_chpwd() {
+    if [[ -d .claude ]] && [[ "$PWD" != "$HOME" ]] && [[ "$PWD" != "$__CLAUDE_LAST_AUTOLAUNCH" ]]; then
+        __CLAUDE_LAST_AUTOLAUNCH="$PWD"
+        claude
+    fi
+}
+autoload -Uz add-zsh-hook
+add-zsh-hook chpwd __auto_claude_chpwd
+
 
 ###############################################################################
 # Prompt
