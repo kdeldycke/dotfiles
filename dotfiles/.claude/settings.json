@@ -101,17 +101,6 @@
   },
   "sandbox": {
     "enabled": true,
-    "enableWeakerNetworkIsolation": true,
-    "filesystem": {
-      "denyRead": [
-        "~/.ssh"
-      ],
-      "allowWrite": [
-        "/tmp",
-        "/private/tmp",
-        "~/.cache/uv"
-      ]
-    },
     "network": {
       "allowedDomains": [
         "github.com",
@@ -121,9 +110,21 @@
         "*.pypi.org",
         "files.pythonhosted.org"
       ]
-    }
+    },
+    "filesystem": {
+      "allowWrite": [
+        "/tmp",
+        "/private/tmp",
+        "~/.cache/uv"
+      ],
+      "denyRead": [
+        "~/.ssh"
+      ]
+    },
+    "enableWeakerNetworkIsolation": true
   },
   "alwaysThinkingEnabled": true,
   "effortLevel": "high",
-  "skipDangerousModePermissionPrompt": true
+  "skipDangerousModePermissionPrompt": true,
+  "skipAutoPermissionPrompt": true
 }
