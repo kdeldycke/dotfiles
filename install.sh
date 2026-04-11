@@ -18,11 +18,12 @@ if [ $? != 0 ]; then
 fi
 
 # Check if SIP is going to let us mess with some part of the system.
-SIP_DISABLED=$(csrutil status | grep --quiet "enabled"; echo $?)
-if [[ ${SIP_DISABLED} -ne 0 ]]; then
-    echo "System Integrity Protection (SIP) is disabled."
-else
+if csrutil status 2>/dev/null | grep --quiet "enabled"; then
+    SIP_DISABLED=0
     echo "System Integrity Protection (SIP) is enabled."
+else
+    SIP_DISABLED=1
+    echo "System Integrity Protection (SIP) is disabled."
 fi
 
 
