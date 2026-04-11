@@ -110,6 +110,6 @@
   "editor.inlayHints.enabled": "offUnlessPressed",
   "github.copilot.selectedCompletionModel": "",
   "chat.viewSessions.orientation": "stacked",
-  "chat.tools.terminal.sandbox.enabled": true,
   "claudeCode.selectedModel": "opus",
+  "chat.agent.sandbox.enabled": "on",
 }
