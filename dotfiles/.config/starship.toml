@@ -65,7 +65,7 @@ format = '[[($all_status$ahead_behind )](fg:color_fg0 bg:color_aqua)]($style)'
 [python]
 symbol = ""
 style = "bg:color_blue"
-format = '[[ $symbol$pyenv_prefix( $version) ](fg:color_fg0 bg:color_blue)]($style)'
+format = '[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)'
 
 [package]
 format = '[$symbol$version](fg:color_fg0 bg:color_blue)'
