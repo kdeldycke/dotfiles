@@ -339,6 +339,9 @@ alias lock='/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resourc
 # Deactivate git-delta diff pager.
 export BAT_PAGER=cat
 
+# Always use maximum thinking effort for Claude Code.
+export CLAUDE_CODE_EFFORT_LEVEL=max
+
 
 ###############################################################################
 # File associations, i.e. suffix aliases
