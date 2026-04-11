@@ -1,5 +1,6 @@
 [tool.repomatic]
 exclude = [
+    "changelog",
     "codecov",
     "workflows/changelog.yaml",
     "workflows/debug.yaml",
