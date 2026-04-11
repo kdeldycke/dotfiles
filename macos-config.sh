@@ -265,7 +265,7 @@ defaults write com.apple.systemuiserver menuExtras -array \
 # Also see: https://github.com/drduh/macOS-Security-and-Privacy-Guide
 # https://benchmarks.cisecurity.org/tools2/osx/CIS_Apple_OSX_10.12_Benchmark_v1.0.0.pdf
 
-# Enable Firewall. Possible values: 0 = off, 1 = on for specific sevices, 2 =
+# Enable Firewall. Possible values: 0 = off, 1 = on for specific services, 2 =
 # on for essential services.
 sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 1
 
