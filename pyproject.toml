@@ -25,6 +25,12 @@ gitignore_extra_categories = [
     "microsoftoffice",
 ]
 
+[tool.ruff]
+# Broken symlink on CI: target only exists on the local macOS machine.
+extend-exclude = [
+    "dotfiles/Library/Application Support/SwiftBar/",
+]
+
 [tool.typos]
 # Exclude terminal config.
 files.extend-exclude = [
