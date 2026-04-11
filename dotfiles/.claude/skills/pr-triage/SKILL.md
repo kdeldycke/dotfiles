@@ -2,7 +2,7 @@
 name: pr-triage
 description: Audit open PRs across multiple repos for duplicates, stale drafts, Renovate noise, and conflicts. Produces a unified priority report.
 allowed-tools: Bash, Read, Grep, Glob, Agent
-argument-hint: "[owner/repo1 owner/repo2 ...] or blank for current repo"
+argument-hint: '[owner/repo1 owner/repo2 ...] or blank for current repo'
 ---
 
 # PR triage across repositories
@@ -34,6 +34,7 @@ Flag drafts where `updatedAt` is more than 7 days ago. Include age in days.
 #### Duplicate detection
 
 Compare PR titles and branch names within the same repo. Flag pairs where:
+
 - Titles share 3+ significant words (ignoring "fix", "update", "bump", "chore").
 - Branch names share the same `verb-noun` prefix (e.g., two `fix-typos-*` branches).
 
@@ -61,6 +62,7 @@ Merge results from all agents into one table, sorted by priority:
 ```
 
 Status values:
+
 - `merge` — Tests pass, approved, no conflicts. Merge-ready.
 - `review` — Needs review (non-draft, no review decision yet).
 - `stale` — Draft or non-draft with no activity for 7+ days.
@@ -70,6 +72,7 @@ Status values:
 - `major` — Major dependency bump, needs manual assessment.
 
 After the table, list:
+
 1. **Merge-ready PRs** that can be merged immediately.
 2. **Duplicates** with a recommendation on which to keep (prefer the older or more complete one).
 3. **Stale drafts** with a recommendation to close or revive.

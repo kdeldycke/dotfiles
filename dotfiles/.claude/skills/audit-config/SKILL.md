@@ -2,7 +2,7 @@
 name: audit-config
 description: Browse all global and local Claude Code config files (settings.json, settings.local.json, CLAUDE.md), audit them for issues, and percolate recurring local patterns into the global config.
 allowed-tools: Bash, Read, Grep, Glob, Edit, Agent
-argument-hint: "[~/code or parent directory to scan]"
+argument-hint: '[~/code or parent directory to scan]'
 ---
 
 # Audit and consolidate Claude Code configuration
@@ -13,15 +13,15 @@ Scan all Claude Code configuration files across projects, audit them for issues,
 
 Claude Code configuration lives in several layers, loaded in this order (later wins):
 
-| Scope | File | Purpose |
-|---|---|---|
-| Global user | `~/.claude/settings.json` | Permissions, hooks, env vars, plugins |
-| Global user local | `~/.claude/settings.local.json` | Machine-specific overrides (not committed) |
-| Global instructions | `~/.claude/CLAUDE.md` | User-wide behavioral instructions |
-| Project | `<project>/.claude/settings.json` | Project-level permissions and hooks |
-| Project local | `<project>/.claude/settings.local.json` | Machine-specific project overrides |
-| Project instructions | `<project>/CLAUDE.md` | Project-level behavioral instructions |
-| Subdirectory instructions | `<project>/<subdir>/CLAUDE.md` | Scoped instructions for a subtree |
+| Scope                     | File                                    | Purpose                                    |
+| ------------------------- | --------------------------------------- | ------------------------------------------ |
+| Global user               | `~/.claude/settings.json`               | Permissions, hooks, env vars, plugins      |
+| Global user local         | `~/.claude/settings.local.json`         | Machine-specific overrides (not committed) |
+| Global instructions       | `~/.claude/CLAUDE.md`                   | User-wide behavioral instructions          |
+| Project                   | `<project>/.claude/settings.json`       | Project-level permissions and hooks        |
+| Project local             | `<project>/.claude/settings.local.json` | Machine-specific project overrides         |
+| Project instructions      | `<project>/CLAUDE.md`                   | Project-level behavioral instructions      |
+| Subdirectory instructions | `<project>/<subdir>/CLAUDE.md`          | Scoped instructions for a subtree          |
 
 ## Argument handling
 
@@ -32,11 +32,13 @@ Claude Code configuration lives in several layers, loaded in this order (later w
 ### Phase 1: Discovery
 
 1. Read the global config files:
+
    - `~/.claude/settings.json`
    - `~/.claude/settings.local.json`
    - `~/.claude/CLAUDE.md`
 
 2. Find all projects under the scan directory. Use `/usr/bin/find` (not the shell alias) to locate:
+
    - `*/.claude/settings.json`
    - `*/.claude/settings.local.json`
    - `*/CLAUDE.md`
@@ -113,6 +115,7 @@ For each issue, show the file path, the problematic entry, and why it's flagged.
 #### Promotion candidates
 
 For each candidate:
+
 - The permission or instruction text
 - Which projects currently define it locally
 - Proposed change to the global config (exact diff)
@@ -120,6 +123,7 @@ For each candidate:
 #### Recommended actions
 
 A numbered list of concrete changes, ordered by impact:
+
 1. Entries to add to the global config
 2. Entries to remove from local configs (now redundant after promotion)
 3. Conflicts to resolve (with a suggested resolution)

@@ -1,7 +1,7 @@
 ---
 name: rename-with-dates
 description: Rename documents and files (PDFs, images, screenshots, etc.) by reading their content to extract the effective/publication date, then renaming them with a "YYYY-MM-DD - Clear descriptive title.ext" format. Use when the user wants to organize files with date prefixes based on document content.
-argument-hint: "[directory or files]"
+argument-hint: '[directory or files]'
 ---
 
 # Rename Documents with Date Prefixes
@@ -17,6 +17,7 @@ YYYY-MM-DD - Clear descriptive title.ext
 Title casing: capitalize only the first word and proper nouns (title case), like a sentence.
 
 Examples:
+
 - `2023-11-01 - General terms and conditions.pdf`
 - `2025-08-01 - Credit card fees and charges.pdf`
 - `2025-12-01 - Key facts statement - Term deposits.pdf`
@@ -91,11 +92,11 @@ Many legal/banking documents repeat the same content translated across several l
 
 This skill depends on third-party CLI tools. At the start of execution, check if each is available and propose to install any that are missing via `brew install`.
 
-| Tool | Brew package | Used for |
-|---|---|---|
-| `qpdf` | `qpdf` | Extracting page ranges from PDFs (multi-language stripping) |
-| `pdftotext` | `poppler` | Extracting text per page for language detection in large PDFs |
-| `exiftool` | `exiftool` | Reading PDF metadata (CreationDate, ModDate) as date fallback |
+| Tool        | Brew package | Used for                                                      |
+| ----------- | ------------ | ------------------------------------------------------------- |
+| `qpdf`      | `qpdf`       | Extracting page ranges from PDFs (multi-language stripping)   |
+| `pdftotext` | `poppler`    | Extracting text per page for language detection in large PDFs |
+| `exiftool`  | `exiftool`   | Reading PDF metadata (CreationDate, ModDate) as date fallback |
 
 `mdls` (macOS built-in) can also be used for metadata and does not need installation.
 
