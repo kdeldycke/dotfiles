@@ -1,7 +1,7 @@
 ---
 name: audit-repo-issues
 description: Analyze a GitHub repository's issues and PRs to find unaddressed feature requests, dismissed ideas, maintenance signals, and opportunities relevant to the current project. Use when you want to scout a related or competing repo for gaps your project could fill.
-argument-hint: "<owner/repo>"
+argument-hint: "{owner/repo}"
 ---
 
 # Audit repository issues and PRs
@@ -50,8 +50,8 @@ gh pr list -R $ARGUMENTS --state closed --limit 100 --json number,title,mergedAt
 2. **Identify feature requests**: filter out pure bug reports — focus on enhancement requests, scope expansions, and architectural proposals.
 3. **Deep-dive into top candidates**: for the ~20 most promising issues/PRs, fetch full details:
    ```bash
-   gh issue view -R $ARGUMENTS <number> --json title,body,comments,reactionGroups,labels,state,closedAt
-   gh pr view -R $ARGUMENTS <number> --json title,body,comments,state,mergedAt,closedAt
+   gh issue view -R $ARGUMENTS {number} --json title,body,comments,reactionGroups,labels,state,closedAt
+   gh pr view -R $ARGUMENTS {number} --json title,body,comments,state,mergedAt,closedAt
    ```
 4. **Check for current-project mentions**: search for the current project's name in the target repo's issues to see if users have already referenced it as an alternative.
 

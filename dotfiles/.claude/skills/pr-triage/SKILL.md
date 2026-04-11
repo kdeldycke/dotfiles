@@ -20,7 +20,7 @@ Audit open PRs across one or more GitHub repositories and produce a single prior
 For each repo, spawn a parallel Agent that runs:
 
 ```bash
-gh pr list -R <repo> --state open --json number,title,author,createdAt,isDraft,labels,headRefName,baseRefName,mergeable,reviewDecision,updatedAt
+gh pr list -R {repo} --state open --json number,title,author,createdAt,isDraft,labels,headRefName,baseRefName,mergeable,reviewDecision,updatedAt
 ```
 
 ### Phase 2: Per-PR analysis
@@ -41,7 +41,7 @@ Compare PR titles and branch names within the same repo. Flag pairs where:
 
 For PRs authored by `renovate[bot]` or `app/renovate`:
 
-1. Fetch the diff: `gh pr diff -R <repo> <number>`.
+1. Fetch the diff: `gh pr diff -R {repo} {number}`.
 2. Classify:
    - **Version bump**: changelog entries show actual version changes. Mark as merge-ready.
    - **SHA-only**: diff changes only pinned commit SHAs with no version change (e.g., annotated tag re-point). Flag as cosmetic.
@@ -50,7 +50,7 @@ For PRs authored by `renovate[bot]` or `app/renovate`:
 
 #### Conflict detection
 
-Compare `headRefName` across open PRs. Flag PRs that modify the same files (fetch file lists with `gh pr view -R <repo> <number> --json files --jq '.files[].path'`). Two PRs touching the same file are potential conflicts.
+Compare `headRefName` across open PRs. Flag PRs that modify the same files (fetch file lists with `gh pr view -R {repo} {number} --json files --jq '.files[].path'`). Two PRs touching the same file are potential conflicts.
 
 ### Phase 3: Unified report
 
