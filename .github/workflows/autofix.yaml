@@ -1,31 +1,15 @@
 ---
-name: Autofix
+name: 🪄 Autofix
 "on":
+  workflow_dispatch:
   push:
-    # Only targets main branch to avoid amplification effects of auto-fixing
-    # the exact same stuff in multiple non-rebased branches.
     branches:
       - main
 
 jobs:
 
   autofix:
-    uses: kdeldycke/workflows/.github/workflows/autofix.yaml@v4.18.1
-    with:
-      gitignore-location: ./dotfiles/.gitignore_global
-      gitignore-extra-categories: >
-        archive
-        archives
-        backup
-        bittorrent
-        compressed
-        compressedarchive
-        compression
-        database
-        datarecovery
-        executable
-        games
-        jupyternotebooks
-        less
-        libreoffice
-        microsoftoffice
+    uses: kdeldycke/repomatic/.github/workflows/autofix.yaml@d5cc7d628d3eae61734faf5ed914ec9df92e1e89 # v6.11.3
+    secrets:
+      REPOMATIC_PAT: ${{ secrets.REPOMATIC_PAT }}
+      VIRUSTOTAL_API_KEY: ${{ secrets.VIRUSTOTAL_API_KEY }}

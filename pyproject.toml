@@ -5,6 +5,24 @@ exclude = [
     "workflows/debug.yaml",
     "workflows/release.yaml",
 ]
+gitignore_location = "./dotfiles/.gitignore_global"
+gitignore_extra_categories = [
+    "archive",
+    "archives",
+    "backup",
+    "bittorrent",
+    "compressed",
+    "compressedarchive",
+    "compression",
+    "database",
+    "datarecovery",
+    "executable",
+    "games",
+    "jupyternotebooks",
+    "less",
+    "libreoffice",
+    "microsoftoffice",
+]
 
 [tool.typos]
 # Exclude terminal config.
