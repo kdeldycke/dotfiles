@@ -213,6 +213,9 @@ claude() {
 __auto_claude_chpwd() {
     if [[ -d .claude ]] && [[ "$PWD" != "$HOME" ]] && [[ "$PWD" != "$__CLAUDE_LAST_AUTOLAUNCH" ]]; then
         __CLAUDE_LAST_AUTOLAUNCH="$PWD"
+        # Report CWD to Terminal.app before Claude takes over the terminal,
+        # otherwise Cmd+T inherits the previous directory.
+        (( ${+functions[update_terminal_cwd]} )) && update_terminal_cwd
         claude
     fi
 }
