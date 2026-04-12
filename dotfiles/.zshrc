@@ -107,7 +107,7 @@ unsetopt beep
 
 
 ###############################################################################
-# Expends global searched path to look for brew-sourced utilities.
+# Homebrew & PATH
 ###############################################################################
 # Do not let homebrew send stats to Google Analytics.
 # See: https://github.com/Homebrew/brew/blob/master/share/doc/homebrew/Analytics.md#opting-out
@@ -152,7 +152,7 @@ for line in "${(@f)"$(<${PATH_CACHE})"}"
 
 
 ###############################################################################
-# Zsh Packages
+# Zinit Packages & Plugins
 ###############################################################################
 
 # Invoke first to let it color GCC, Less, Grep, ag and fast-syntax-highlighting.
@@ -161,10 +161,6 @@ zinit pack for dircolors-material
 # Overrides the LS_COLORS environment variable set above with more up to date and finer details.
 zinit pack for ls_colors
 
-
-###############################################################################
-# Zsh Plugins
-###############################################################################
 zinit light zsh-users/zsh-completions
 
 # Load custom completion.
@@ -242,7 +238,7 @@ add-zsh-hook preexec __tab_title_preexec
 
 
 ###############################################################################
-# Neovim
+# Editor
 ###############################################################################
 # Make Neovim the default editor
 export EDITOR="nvim"
@@ -253,7 +249,7 @@ alias v="nvim"
 
 
 ###############################################################################
-# Coloured output, aliases and good defaults.
+# Aliases
 ###############################################################################
 
 alias du='du -csh'
@@ -266,11 +262,24 @@ alias rg='rg -uu'
 alias g="git"
 alias h="history"
 alias q='exit'
-function cls {
-    # Source: https://stackoverflow.com/a/2198403
-    osascript -e 'tell application "System Events" to keystroke "k" using command down'
-}
-alias c='cls'
+
+# eza is a maintained fork of exa (a modern ls).
+LS_FLAGS="--all --group-directories-first --time-style=long-iso --sort=name --icons=always"
+alias ls="eza ${LS_FLAGS} --across"
+alias ll="eza ${LS_FLAGS} --long --group --header --binary --created --modified --git --classify"
+alias l="ls"
+alias tree="ll --tree"
+
+# Handy aliases for going up in a directory
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+
+
+###############################################################################
+# Tool defaults
+###############################################################################
 
 # Use GRC for additional colorization.
 GRC=$(command -v grc)
@@ -300,20 +309,21 @@ if [ -n "$GRC" ]; then
     #wdiff
 fi
 
-# eza is a maintained fork of exa (a modern ls).
-LS_FLAGS="--all --group-directories-first --time-style=long-iso --sort=name --icons=always"
-alias ls="eza ${LS_FLAGS} --across"
-alias ll="eza ${LS_FLAGS} --long --group --header --binary --created --modified --git --classify"
-alias l="ls"
-alias tree="ll --tree"
-
-# Handy aliases for going up in a directory
-alias ..="cd .."
-alias ...="cd ../.."
-alias ....="cd ../../.."
-alias .....="cd ../../../.."
-
 export LESS="-eRX"
+
+# Deactivate git-delta diff pager.
+export BAT_PAGER=cat
+
+
+###############################################################################
+# Utility functions
+###############################################################################
+
+function cls {
+    # Source: https://stackoverflow.com/a/2198403
+    osascript -e 'tell application "System Events" to keystroke "k" using command down'
+}
+alias c='cls'
 
 # Remove spurious find error messages on access restrictions. Keeps find's
 # output clean, tidy and easier to read.
@@ -348,6 +358,11 @@ extract () {
     fi
 }
 
+
+###############################################################################
+# macOS
+###############################################################################
+
 # Opens current directory in apps
 alias f='open -a Finder ./'
 
@@ -356,9 +371,6 @@ alias netstat="sudo lsof -i -P"
 
 # Lock the screen
 alias lock='/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend'
-
-# Deactivate git-delta diff pager.
-export BAT_PAGER=cat
 
 
 ###############################################################################
