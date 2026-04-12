@@ -204,6 +204,11 @@ export CLAUDE_CODE_EFFORT_LEVEL=max
 # given directory. Timestamp first, folder last: Terminal.app truncates from the
 # left, so the folder path survives in narrow tabs, keeping them visually grouped
 # by project. The timestamp differentiates sessions in the --resume picker.
+# XXX: Ideally the session would be auto-renamed with a conversation summary on
+# exit. No hook or CLI mechanism exists yet to automate /rename. Track upstream:
+#   https://github.com/anthropics/claude-code/issues/44786
+#   https://github.com/anthropics/claude-code/issues/34243
+#   https://github.com/anthropics/claude-code/issues/15762
 claude() {
     command claude --name "$(date +%m-%d@%H:%M) ${PWD/#$HOME/~}" "$@"
 }
