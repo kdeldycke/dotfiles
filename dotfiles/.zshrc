@@ -199,6 +199,22 @@ zinit light zsh-users/zsh-autosuggestions
 
 zinit light MichaelAquilina/zsh-autoswitch-virtualenv
 
+
+###############################################################################
+# Claude Code
+###############################################################################
+
+# Always use maximum thinking effort for Claude Code.
+export CLAUDE_CODE_EFFORT_LEVEL=max
+
+# claude --resume shows session names. Without --name they all look identical for a
+# given directory. Timestamp first, folder last: Terminal.app truncates from the
+# left, so the folder path survives in narrow tabs, keeping them visually grouped
+# by project. The timestamp differentiates sessions in the --resume picker.
+claude() {
+    command claude --name "$(date +%m-%d@%H:%M) ${PWD/#$HOME/~}" "$@"
+}
+
 # Auto-launch Claude Code when entering a directory with .claude/.
 # Registered after zsh-autoswitch-virtualenv so the venv activates first.
 __auto_claude_chpwd() {
@@ -250,12 +266,6 @@ alias rg='rg -uu'
 alias g="git"
 alias h="history"
 alias q='exit'
-# claude --resume shows session names. Without --name they all look identical for a
-# given directory. Timestamp first, folder last: Terminal.app truncates from the
-# left, so the folder path survives in narrow tabs, keeping them visually grouped
-# by project. The timestamp differentiates sessions in the --resume picker.
-alias claude='command claude --name "$(date +%m-%d@%H:%M) ${PWD/#$HOME/~}"'
-
 function cls {
     # Source: https://stackoverflow.com/a/2198403
     osascript -e 'tell application "System Events" to keystroke "k" using command down'
@@ -349,9 +359,6 @@ alias lock='/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resourc
 
 # Deactivate git-delta diff pager.
 export BAT_PAGER=cat
-
-# Always use maximum thinking effort for Claude Code.
-export CLAUDE_CODE_EFFORT_LEVEL=max
 
 
 ###############################################################################
