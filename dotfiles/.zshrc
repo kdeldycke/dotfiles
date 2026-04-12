@@ -2,7 +2,6 @@
 # Zinit
 ###############################################################################
 
-### Added by Zinit's installer
 if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
     print -P "%F{33} %F{220}Installing %F{33}ZDHARMA-CONTINUUM%F{220} Initiative Plugin Manager (%F{33}zdharma-continuum/zinit%F{220})…%f"
     command mkdir -p "$HOME/.local/share/zinit" && command chmod g-rwX "$HOME/.local/share/zinit"
@@ -14,8 +13,6 @@ fi
 source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
-
-### End of Zinit's installer chunk
 
 
 ###############################################################################
@@ -232,7 +229,6 @@ eval "$(starship init zsh)"
 # Tab title: <process> — <path>
 __tab_title_precmd() { print -Pn '\e]1;zsh — %~\a' }
 __tab_title_preexec() { print -n "\e]1;${1%% *} — ${(%):-'%~'}\a" }
-autoload -Uz add-zsh-hook
 add-zsh-hook precmd  __tab_title_precmd
 add-zsh-hook preexec __tab_title_preexec
 
@@ -286,7 +282,6 @@ GRC=$(command -v grc)
 if [ -n "$GRC" ]; then
     alias colourify="$GRC -es --colour=auto"
     alias as='colourify as'
-    #cvs
     alias configure='colourify ./configure'
     alias dig='colourify dig'
     alias g++='colourify g++'
@@ -294,19 +289,13 @@ if [ -n "$GRC" ]; then
     alias gcc='colourify gcc'
     alias head='colourify head'
     alias ifconfig='colourify ifconfig'
-    #irclog
     alias ld='colourify ld'
-    #ldap
-    #log
     alias make='colourify make'
     alias mount='colourify mount'
-    #mtr
     alias ping='colourify ping'
-    #proftpd
     alias ps='colourify ps'
     alias tail='colourify tail'
     alias traceroute='colourify traceroute'
-    #wdiff
 fi
 
 export LESS="-eRX"
@@ -319,7 +308,7 @@ export BAT_PAGER=cat
 # Utility functions
 ###############################################################################
 
-function cls {
+cls() {
     # Source: https://stackoverflow.com/a/2198403
     osascript -e 'tell application "System Events" to keystroke "k" using command down'
 }
@@ -336,7 +325,7 @@ find() {
 }
 
 # Extract most know archives with one command
-extract () {
+extract() {
     if [ -f "$1" ]; then
         case "$1" in
             *.dmg)   hdiutil mount "$1"                ;;
