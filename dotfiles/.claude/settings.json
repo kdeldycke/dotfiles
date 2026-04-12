@@ -119,6 +119,9 @@
       ],
       "denyRead": [
         "~/.ssh"
+      ],
+      "allowRead": [
+        "~/.ssh/id_ed25519.pub"
       ]
     },
     "enableWeakerNetworkIsolation": true
