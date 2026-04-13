@@ -112,17 +112,9 @@
       ]
     },
     "filesystem": {
-      "allowWrite": [
-        "/tmp",
-        "/private/tmp",
-        "~/.cache/uv"
-      ],
-      "denyRead": [
-        "~/.ssh"
-      ],
-      "allowRead": [
-        "~/.ssh/id_ed25519.pub"
-      ]
+      "allowWrite": ["/tmp", "/private/tmp", "~/.cache/uv"],
+      "denyRead": ["~/.ssh"],
+      "allowRead": ["~/.ssh/id_ed25519.pub"]
     },
     "enableWeakerNetworkIsolation": true
   },
