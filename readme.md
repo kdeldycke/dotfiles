@@ -157,7 +157,7 @@ Page-down button assignment → `Shift` + `Opt` + `Ctrl` + `J`:
 
 ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/logitech-mx-ergo-page-down.png)
 
-Wheel click button assignment → `Misson Control`:
+Wheel click button assignment → `Mission Control`:
 
 ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/logitech-mx-ergo-wheel-click.png)
 
@@ -175,7 +175,7 @@ Side button assignment → `Shift` + `Opt` + `Space`:
 
 ## Upgrade
 
-I'm trying to make the install procedure indempotent so you'll just have to
+I'm trying to make the install procedure idempotent so you'll just have to
 call the script again to upgrade your system:
 
 ```shell-session
