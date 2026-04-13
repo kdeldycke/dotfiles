@@ -14,9 +14,7 @@
   "editor.wrappingIndent": "deepIndent",
   "python.experiments.enabled": false,
   "python.testing.pytestEnabled": true,
-  "python.testing.pytestArgs": [
-    "--color=yes"
-  ],
+  "python.testing.pytestArgs": ["--color=yes"],
   "python.globalModuleInstallation": true,
   "html.format.indentInnerHtml": true,
   "html.format.templating": true,
@@ -75,15 +73,10 @@
   "diffEditor.ignoreTrimWhitespace": false,
   "markdown.experimental.updateLinksOnPaste": true,
   "djlint.showInstallError": false,
-  "ruff.path": [
-    "/opt/homebrew/bin/ruff"
-  ],
+  "ruff.path": ["/opt/homebrew/bin/ruff"],
   "ruff.format.preview": true,
   "ruff.lint.preview": true,
-  "ruff.lint.ignore": [
-    "D400",
-    "ERA001"
-  ],
+  "ruff.lint.ignore": ["D400", "ERA001"],
   "python.analysis.aiCodeActions": {
     "generateSymbol": true,
     "generateDocstring": true
@@ -101,7 +94,7 @@
     "uv run --frozen pytest ": true,
     "mypy": true,
     "uv run mypy": true,
-    "uv run --frozen mypy ": true,
+    "uv run --frozen mypy ": true
   },
   "claudeCode.preferredLocation": "sidebar",
   "telemetry.editStats.enabled": false,
@@ -111,5 +104,5 @@
   "github.copilot.selectedCompletionModel": "",
   "chat.viewSessions.orientation": "stacked",
   "claudeCode.selectedModel": "opus",
-  "chat.agent.sandbox.enabled": "on",
+  "chat.agent.sandbox.enabled": "on"
 }
