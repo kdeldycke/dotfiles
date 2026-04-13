@@ -37,6 +37,22 @@ Overuse of ornate or grandiose nouns where simpler words would do. "Tapestry" is
 - "Navigating the complex landscape of modern AI..."
 - "The ever-evolving landscape of technology..."
 
+### Latin Abbreviations
+
+Using "e.g.," or "i.e.," instead of plain English. "Like" reads faster and doesn't force the reader to mentally expand an abbreviation. Parenthetical "e.g.," lists also tend to feel stilted: "(e.g., X, Y)" reads like a footnote dropped mid-sentence, while "(like X or Y)" flows naturally. For "i.e.," just inline the clarification directly.
+
+**Avoid patterns like:**
+
+- "Links to external projects (e.g., CPython)"
+- "Use a linter (e.g., Ruff or Flake8) to catch issues early."
+- "Some formats (i.e., CSV) lack a schema."
+
+**Prefer:**
+
+- "Links to external projects (like CPython or Pytest)"
+- "Use a linter like Ruff or Flake8 to catch issues early."
+- "Some formats (CSV, TSV) lack a schema."
+
 ### The "Serves As" Dodge
 
 Replacing simple "is" or "are" with pompous alternatives like "serves as", "stands as", "marks", or "represents". AI avoids basic copulas because its repetition penalty pushes it toward fancier constructions (I've studied this!).
