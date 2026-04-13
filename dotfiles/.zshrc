@@ -110,6 +110,10 @@ unsetopt beep
 # See: https://github.com/Homebrew/brew/blob/master/share/doc/homebrew/Analytics.md#opting-out
 export HOMEBREW_NO_ANALYTICS=1
 
+# Route SSH agent through Secretive for Touch ID-gated signing.
+export SSH_AUTH_SOCK="$HOME/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh"
+launchctl setenv SSH_AUTH_SOCK "$SSH_AUTH_SOCK"
+
 # File where the list of path is cached.
 PATH_CACHE="${HOME}/.path-env-cache"
 

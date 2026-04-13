@@ -12,11 +12,12 @@
 [user]
     name = Kevin Deldycke
     email = kevin@deldycke.com
-    signingkey = ~/.ssh/id_ed25519.pub
+	signingkey = ~/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/PublicKeys/83787b92c75a9ecaaaf63d2a05a204c3.pub
 [gpg]
     format = ssh
 [gpg "ssh"]
     allowedSignersFile = ~/.ssh/allowed_signers
+	program = /Users/kde/.local/bin/ssh-keygen-secretive
 [delta]
     dark
     theme = 'Monokai Extended'
