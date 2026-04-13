@@ -6,6 +6,7 @@ exclude = [
     "workflows/debug.yaml",
     "workflows/release.yaml",
 ]
+include = ["skills"]
 gitignore_location = "./dotfiles/.gitignore_global"
 skills.location = "./dotfiles/.claude/skills/"
 gitignore_extra_categories = [
