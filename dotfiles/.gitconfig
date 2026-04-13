@@ -12,11 +12,17 @@
 [user]
     name = Kevin Deldycke
     email = kevin@deldycke.com
-    signingkey = ~/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/PublicKeys/83787b92c75a9ecaaaf63d2a05a204c3.pub
+    # Literal public key from Secretive's Secure Enclave, avoids a path into
+    # the macOS sandbox container.
+    # https://github.com/maxgoedjen/secretive/issues/262
+    # https://github.com/maxgoedjen/secretive/issues/403
+    signingkey = key::ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBMoHo4DGGFpz4PpFfs8fNGP7uotGIxykFU/6QWOLE17tIkJJ6VQkIU66yCYYtLcm7wIWpZwHYsKGnnCNoKQu9LU= GitHub-signin-key@secretive.kde-MBP.local
 [gpg]
     format = ssh
 [gpg "ssh"]
     allowedSignersFile = ~/.ssh/allowed_signers
+    # Wrapper sets SSH_AUTH_SOCK so GUI apps (Fork, etc.) can reach Secretive.
+    # https://github.com/maxgoedjen/secretive/issues/795
     program = ~/.ssh/ssh-keygen-secretive
 [delta]
     dark

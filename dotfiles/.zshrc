@@ -111,6 +111,11 @@ unsetopt beep
 export HOMEBREW_NO_ANALYTICS=1
 
 # Route SSH agent through Secretive for Touch ID-gated signing.
+# Required for git commit signing (gpg.ssh.defaultKeyCommand = ssh-add -L).
+# IdentityAgent in ~/.ssh/config handles SSH auth, but ssh-add and ssh-keygen
+# still need SSH_AUTH_SOCK to reach the agent.
+# https://github.com/maxgoedjen/secretive/issues/194
+# https://github.com/maxgoedjen/secretive/issues/402
 export SSH_AUTH_SOCK="$HOME/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh"
 launchctl setenv SSH_AUTH_SOCK "$SSH_AUTH_SOCK"
 
