@@ -55,3 +55,11 @@ commits = [
 files.extend-exclude = [
     "assets/Monokai Soda.terminal",
 ]
+
+[tool.typos.default.extend-identifiers]
+# Actual macOS preference key name (ends with "iMessage", not "Message").
+automaticEmojiSubstitutionEnablediMessage = "automaticEmojiSubstitutionEnablediMessage"
+
+[tool.typos.default.extend-words]
+# macOS 11 codename, not a typo of "Sure".
+Sur = "Sur"
