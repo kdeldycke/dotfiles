@@ -151,6 +151,10 @@ brew install meta-package-manager
 # Refresh all package managers.
 mpm --verbosity INFO sync
 
+# ntfs-3g-mac (brew formula) depends on macfuse (brew cask), but mpm installs
+# formulae before casks. Pre-install macfuse so the dependency is satisfied.
+brew install --cask macfuse || true
+
 # Install all my packages but skip [mas] section (there is a circular
 # dependency as mas needs to be install by brew first).
 # XXX This edge-case should be taken care of upstream by mpm.
