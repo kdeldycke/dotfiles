@@ -610,7 +610,7 @@ defaults write ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSav
 # only allows preferences to be accounted for if all keys of a widget conf are
 # present. See: https://github.com/JohnCoates/Aerial/issues/976
 
-# Only shows clock on main diplays, without seconds or am/pm
+# Only shows clock on main displays, without seconds or am/pm
 defaults write ~/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost/com.JohnCoates.Aerial.plist \
     LayerClock -string \
     '{
@@ -1038,7 +1038,7 @@ defaults write com.apple.Safari ShowFullURLInSmartSearchField -bool true
 defaults write com.apple.Safari AlwaysRestoreSessionAtLaunch -bool true
 defaults write com.apple.Safari OpenPrivateWindowWhenNotRestoringSessionAtLaunch -bool false
 
-# Setup new window and tab behvior
+# Setup new window and tab behavior
 # 0: Homepage
 # 1: Empty Page
 # 2: Same Page
@@ -1073,7 +1073,7 @@ defaults write com.apple.Safari Command1Through9SwitchesTabs -bool true
 # Set Safari’s home page to `about:blank` for faster loading
 defaults write com.apple.Safari HomePage -string ""
 
-# Save downloded files to
+# Save downloaded files to
 defaults write com.apple.Safari DownloadsPath -string '~/Library/Mobile Documents/com~apple~CloudDocs/Downloads'
 
 # Prevent Safari from opening ‘safe’ files automatically after downloading
