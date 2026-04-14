@@ -13,6 +13,15 @@ Apple Silicon hardware.
 - Produce colored output for most of shell commands.
 - All color schemes are based on
   [Monokai](https://web.archive.org/web/20161107090516/http://www.monokai.nl/blog/2006/07/).
+  The terminal uses the
+  [Monokai Soda](https://github.com/lysyi3m/macos-terminal-themes#monokai-soda-download)
+  variant instead of the
+  [official Monokai Pro terminal themes](https://monokai.pro/terminal): all Pro
+  variants
+  [map orange to the ANSI blue slot](https://github.com/monokai-pro/sublime-text/issues/45),
+  which breaks any tool relying on blue semantically (`ls` directory listings,
+  `git diff` headers, `man` highlights, `dircolors`). Monokai Soda keeps purple
+  in the blue slot and has higher contrast on dark backgrounds.
 - Terminal and coding font is
   [Source Code Pro](https://en.wikipedia.org/wiki/Source_Code_Pro).
 - Keeps macOS fast, lean and secure.
