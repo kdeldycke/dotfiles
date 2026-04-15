@@ -97,6 +97,8 @@ After running all checks, provide one of:
 - **REJECT**: Fails one or more hard criteria (duplicate, AI slop, not launched, paywalled, no value-add, section saturation, competitive context mismatch). Draft a rejection comment.
 - **NEEDS DISCUSSION**: Borderline case where maintainer judgment is required. Summarize the arguments for and against.
 
+After the verdict, propose 2-3 short, ready-to-post comments (one line each) that the maintainer can copy-paste to explain the decision to the author. Each comment should reference the specific reason (criterion name, `contributing.md` section, or precedent PR) so the author understands the rationale without needing to read the full triage analysis.
+
 ### Drafting comments
 
 When drafting a rejection or request-for-changes comment:

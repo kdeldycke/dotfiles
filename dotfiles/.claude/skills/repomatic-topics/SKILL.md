@@ -56,6 +56,10 @@ You help users optimize their GitHub repository topics (tags) for maximum discov
 
 GitHub allows up to 20 topics. Fill all 20 slots — unused slots are wasted discoverability.
 
+### Required topics for awesome lists
+
+If the repository name starts with `awesome-`, it must have both the `awesome` and `awesome-list` topics. This is enforced by [awesome-lint](https://github.com/sindresorhus/awesome-lint/blob/main/rules/github.js). Flag any missing required topic during audit, and add them during apply.
+
 ### After analysis
 
 - Confirm changes with the user before applying.
