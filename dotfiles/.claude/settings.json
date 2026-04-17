@@ -108,7 +108,8 @@
         "*.githubusercontent.com",
         "pypi.org",
         "*.pypi.org",
-        "files.pythonhosted.org"
+        "files.pythonhosted.org",
+        "*.blob.core.windows.net"
       ]
     },
     "filesystem": {
