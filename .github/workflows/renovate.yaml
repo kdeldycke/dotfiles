@@ -7,6 +7,9 @@ name: 🆕 Renovate
   push:
     branches:
       - main
+    paths:
+      - ".github/workflows/renovate.yaml"
+      - "renovate.json5"
 
 jobs:
 

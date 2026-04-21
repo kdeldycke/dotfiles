@@ -7,9 +7,8 @@ exclude = [
     "workflows/release.yaml",
 ]
 include = ["skills"]
-gitignore_location = "./dotfiles/.gitignore_global"
-skills.location = "./dotfiles/.claude/skills/"
-gitignore_extra_categories = [
+gitignore.location = "./dotfiles/.gitignore_global"
+gitignore.extra-categories = [
     "archive",
     "archives",
     "backup",
@@ -26,6 +25,7 @@ gitignore_extra_categories = [
     "libreoffice",
     "microsoftoffice",
 ]
+skills.location = "./dotfiles/.claude/skills/"
 
 [tool.ruff]
 # Broken symlink on CI: target only exists on the local macOS machine.

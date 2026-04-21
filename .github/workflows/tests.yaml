@@ -6,19 +6,17 @@ name: 🔬 Tests
     branches:
       - main
     paths:
-      - repomatic/**
-      - tests/**
-      - pyproject.toml
-      - uv.lock
+      - install.sh
+      - dotfiles/**
+      - packages.toml
+      - macos-config.sh
       - .github/workflows/tests.yaml
   pull_request:
-    branches-ignore:
-      - prepare-release
     paths:
-      - repomatic/**
-      - tests/**
-      - pyproject.toml
-      - uv.lock
+      - install.sh
+      - dotfiles/**
+      - packages.toml
+      - macos-config.sh
       - .github/workflows/tests.yaml
   schedule:
     # Run tests monthly to catch regressions from dependency or environment changes.
@@ -36,7 +34,7 @@ jobs:
     name: Run full installation
     runs-on: macos-26
     steps:
-      - uses: actions/checkout@v5.0.0
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Install Zsh
         run: |
           brew install zsh
