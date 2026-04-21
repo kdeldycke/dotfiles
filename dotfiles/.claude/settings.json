@@ -113,9 +113,9 @@
       ]
     },
     "filesystem": {
-      "allowWrite": ["/tmp", "/private/tmp", "~/.cache/uv"],
+      "allowWrite": ["/tmp", "/private/tmp", "~/.cache/uv", "~/Library/Application Support/uv"],
       "denyRead": ["~/.ssh"],
-      "allowRead": ["~/.ssh/id_ed25519.pub"]
+      "allowRead": ["~/.ssh/id_ed25519.pub", "~/.ssh/ssh-keygen-secretive", "~/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh"]
     },
     "enableWeakerNetworkIsolation": true
   },
