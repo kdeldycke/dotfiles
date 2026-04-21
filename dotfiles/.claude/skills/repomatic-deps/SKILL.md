@@ -65,7 +65,7 @@ This is purely analytical work with no mechanical equivalent in CI.
 
 ### Version specifier policy
 
-These conventions are derived from the `pyproject.toml` files across all `kdeldycke/*` repositories.
+These conventions are derived from the `pyproject.toml` files across all `kdeldycke/*` repositories. User-facing documentation of the same content is in [`docs/dependencies.md`](https://kdeldycke.github.io/repomatic/dependencies.html).
 
 #### Runtime dependencies (`[project].dependencies`)
 
@@ -129,14 +129,14 @@ Comments and changelogs can lie; the codebase is the source of truth. For each d
 
 1. **Grep for imports.** Search the source tree for all imports from the package. List the specific APIs used (functions, classes, constants).
 2. **Determine the oldest version providing those APIs.** Check when the API was introduced — changelogs, release notes, or `pip index versions <pkg>` to see what exists on PyPI.
-3. **Lower the floor** when it exceeds the oldest compatible version. Prefer conservative minimums (e.g., the major version that introduced the API) over aggressive ones. Update both the version specifier and the comment.
+3. **Lower the floor** when it exceeds the oldest compatible version. Prefer conservative minimums (the major version that introduced the API) over aggressive ones. Update both the version specifier and the comment.
 4. **Run `uv lock`** after any floor change to verify the lock still resolves.
 
 #### Special cases
 
-- **Backport packages** (e.g., `backports-strenum`, `tomli`, `exceptiongroup`) exist solely to provide a stdlib class to older Python versions. Their entire API is the backported class itself, available in all versions. The floor is typically `>=1` (or the first release) unless a specific bug fix is needed for the Python versions where the dep is actually installed.
+- **Backport packages** (like `backports-strenum`, `tomli`, `exceptiongroup`) exist solely to provide a stdlib class to older Python versions. Their entire API is the backported class itself, available in all versions. The floor is typically `>=1` (or the first release) unless a specific bug fix is needed for the Python versions where the dep is actually installed.
 - **Conditional deps with stale bug-fix floors.** A dep gated by `python_version<'3.11'` that has a floor set for a bug affecting Python \<3.8.6 — if the project's `requires-python` is `>=3.10`, that bug is irrelevant and the floor can be lowered.
-- **pytest plugins** with no special API beyond auto-registration (e.g., `pytest-randomly`, `pytest-github-actions-annotate-failures`) have low effective floors — their basic functionality has been stable across major versions. Set the floor at the major version introducing the current plugin interface, not at the latest release.
+- **pytest plugins** with no special API beyond auto-registration (like `pytest-randomly`, `pytest-github-actions-annotate-failures`) have low effective floors — their basic functionality has been stable across major versions. Set the floor at the major version introducing the current plugin interface, not at the latest release.
 
 #### Floor bumps to adopt new APIs
 
@@ -156,12 +156,12 @@ When `explore` mode identifies a candidate, the review output should include it 
 These comment patterns typically signal a floor set at adoption or auto-bump time, not at an API boundary:
 
 - "First version we used" / "first version when we last changed the requirement" — the floor is an artifact of when the dep was added or last bumped by Renovate/Dependabot, not a deliberate API minimum.
-- "First version to support Python 3.X" — unless it documents a `requires-python` drop alignment or a concrete build failure (e.g., missing wheels that cause install failures on that Python version), this is not a valid floor reason.
-- **The `~= → >=` conversion pipeline.** A common inflation path: (a) dep added as `~=X.Y` (latest at time), (b) Renovate bumps to `~=X.Z`, (c) a bulk "relax requirements" commit converts all `~=` to `>=`. Each step inflates the floor without API validation. Check `git log` for this pattern when a floor looks suspiciously high.
+- "First version to support Python 3.X" — unless it documents a `requires-python` drop alignment or a concrete build failure (missing wheels that cause install failures on that Python version), this is not a valid floor reason.
+- **The `~= -> >=` conversion pipeline.** A common inflation path: (a) dep added as `~=X.Y` (latest at time), (b) Renovate bumps to `~=X.Z`, (c) a bulk "relax requirements" commit converts all `~=` to `>=`. Each step inflates the floor without API validation. Check `git log` for this pattern when a floor looks suspiciously high.
 
 ### `exclude-newer-package` cooldown audit
 
-The `[tool.uv]` section may contain `exclude-newer-package` entries that exempt specific packages from the global `exclude-newer` cooldown window (e.g., `exclude-newer-package = { "repomatic" = "0 day" }`). These exceptions exist for a reason (typically: the package is developed in-repo or needs immediate updates), but they accumulate over time and may outlive their purpose.
+The `[tool.uv]` section may contain `exclude-newer-package` entries that exempt specific packages from the global `exclude-newer` cooldown window. These exceptions exist for a reason (typically: the package is developed in-repo or needs immediate updates), but they accumulate over time and may outlive their purpose.
 
 For each `exclude-newer-package` entry, check:
 

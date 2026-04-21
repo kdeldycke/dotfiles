@@ -23,9 +23,20 @@ Every project produces four SVG variants, each with light and dark PNG exports:
 
 Each SVG produces two PNGs: `{name}-light.png` and `{name}-dark.png`. The favicon is SVG-only (no PNG exports needed).
 
+## Incremental mode
+
+When base SVGs already exist (at least a square logo or banner), skip any interactive menu and proceed directly:
+
+1. Scan the assets directory for existing SVGs and PNGs.
+2. Compare against the four expected variants and their PNG exports.
+3. Fill every gap: create missing SVGs (favicon from the icon, social banner from the banner), generate missing PNGs, and rename misnamed files to match the naming conventions below.
+4. Wire any new assets into `docs/conf.py` if not already configured.
+
+Only ask the user a question when the gap analysis is genuinely ambiguous (multiple competing icon sources, unclear which element is the project icon).
+
 ## Design exploration
 
-When creating assets for a new project, start with a broad exploration phase to find a visual direction before refining.
+When creating assets for a new project with no existing SVGs, start with a broad exploration phase to find a visual direction before refining.
 
 ### Phase 1: Generate candidates
 

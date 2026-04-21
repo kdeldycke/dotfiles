@@ -119,6 +119,11 @@
     },
     "enableWeakerNetworkIsolation": true
   },
+  "statusLine": {
+    "type": "command",
+    "command": "starship statusline claude-code",
+    "padding": 0
+  },
   "alwaysThinkingEnabled": true,
   "effortLevel": "high",
   "skipDangerousModePermissionPrompt": true,

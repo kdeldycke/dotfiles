@@ -168,6 +168,8 @@ Read the exact error messages before forming a hypothesis. The most common diagn
 
 ## Common failure patterns
 
+<a id="mypy-ruff-fix-oscillation"></a>
+
 ### mypy/ruff fix oscillation
 
 mypy and ruff can enter a fix loop where each tool's fix breaks the other. Common triggers:

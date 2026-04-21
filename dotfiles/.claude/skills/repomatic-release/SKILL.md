@@ -48,7 +48,7 @@ A complete release consists of all of the following. If any are missing, the rel
 
 ### Release workflow design
 
-The release process uses defensive workflow design. See `CLAUDE.md` § Defensive workflow design for the general principle (belt-and-suspenders). The subsections below document release-specific implementation rationale.
+The release process uses defensive workflow design. See `CLAUDE.md` § Defensive workflow design for the general principle (belt-and-suspenders). The subsections below document release-specific implementation rationale. User-facing documentation of the same content is in [`docs/workflows.md` § Release engineering](https://kdeldycke.github.io/repomatic/workflows.html#release-engineering).
 
 #### `workflow_run` checkout pitfall
 
