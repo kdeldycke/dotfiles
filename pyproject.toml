@@ -28,6 +28,16 @@ gitignore.extra-categories = [
 ]
 skills.location = "./dotfiles/.claude/skills/"
 
+[tool.repomatic.workflow.paths]
+"tests.yaml" = [
+    ".github/workflows/tests.yaml",
+    "dotfiles/**",
+    "install.sh",
+    "macos-config.sh",
+    "packages.toml",
+    "pyproject.toml",
+]
+
 [tool.ruff]
 # Broken symlink on CI: target only exists on the local macOS machine.
 extend-exclude = [
