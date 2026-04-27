@@ -6,17 +6,19 @@ name: 🔬 Tests
     branches:
       - main
     paths:
-      - install.sh
-      - dotfiles/**
-      - packages.toml
-      - macos-config.sh
+      - repomatic/**
+      - tests/**
+      - pyproject.toml
+      - uv.lock
       - .github/workflows/tests.yaml
   pull_request:
+    branches-ignore:
+      - prepare-release
     paths:
-      - install.sh
-      - dotfiles/**
-      - packages.toml
-      - macos-config.sh
+      - repomatic/**
+      - tests/**
+      - pyproject.toml
+      - uv.lock
       - .github/workflows/tests.yaml
   schedule:
     # Run tests monthly to catch regressions from dependency or environment changes.

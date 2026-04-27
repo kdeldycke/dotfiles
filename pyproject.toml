@@ -6,7 +6,8 @@ exclude = [
     "workflows/debug.yaml",
     "workflows/release.yaml",
 ]
-include = ["skills"]
+include = ["agents", "skills"]
+agents.location = "./dotfiles/.claude/agents/"
 gitignore.location = "./dotfiles/.gitignore_global"
 gitignore.extra-categories = [
     "archive",

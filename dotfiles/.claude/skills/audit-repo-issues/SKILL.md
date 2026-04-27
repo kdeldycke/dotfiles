@@ -18,6 +18,8 @@ Produce a structured report covering:
 4. **Merged PRs worth noting** — features that were added and could inform what the current project should also support.
 5. **Maintenance and trust signals** — evidence of maintenance gaps (stale PRs, slow releases, unanswered issues) that position the current project as a healthier alternative.
 6. **Detection techniques or data sources** — novel approaches proposed in issues/PRs that the current project could adopt.
+7. **Commercial posture** — whether the target is fully open-source, open-core-light, open-core-heavy, or fully proprietary, and which essential features (if any) live behind a paid tier.
+8. **Retirement and acquisition signals** — explicit notices that the project has been formally retired, superseded, or acquired with the roadmap shifted to a successor commercial product.
 
 ## Workflow
 
@@ -55,6 +57,33 @@ gh pr list -R $ARGUMENTS --state closed --limit 100 --json number,title,mergedAt
    ```
 4. **Check for current-project mentions**: search for the current project's name in the target repo's issues to see if users have already referenced it as an alternative.
 
+### Phase 3b: Commercial posture and retirement check
+
+For repos that ship a product (tools, datasets, projects — not articles or curation lists), evaluate the commercial posture and retirement signals. These rarely surface in issues/PRs, so check the repo metadata, README, and external pages directly.
+
+```bash
+# Repo metadata: license, archive flag, latest push, latest release, homepage URL.
+gh repo view $ARGUMENTS --json name,description,homepageUrl,licenseInfo,isArchived,pushedAt,latestRelease
+
+# README contents (look for "premium features", "Enterprise", "Cloud", retirement notices).
+gh api repos/$ARGUMENTS/readme --jq '.content' | base64 -d
+
+# Top-level directory listing (look for ee/, enterprise/, pro/ folders that may carry a non-OSS license).
+gh api repos/$ARGUMENTS/contents
+```
+
+Then assess each axis below. The first three define the commercial posture; the last two cover retirement.
+
+| Axis | Signals to look for | Verdict |
+| --- | --- | --- |
+| **License envelope** | `licenseInfo` is permissive (MIT, Apache-2.0, BSD); no `ee/`/`enterprise/`/`pro/` folder under a different license | OSS-only |
+| **Feature gating** | README mentions "Enterprise tier", "Cloud only", "premium features", "protective barrier"; pricing page lists SSO/SAML/OIDC, SCIM, audit log retention, multi-tenancy, fine-grained permissions, admin UI as paid | Open-core (light or heavy depending on which features are gated) |
+| **Vendor extraction** | Homepage URL is a vendor domain selling a hosted/Cloud/Enterprise version; pricing page exists; per-MAU or per-seat pricing on what looks like core features | Commercial-backed |
+| **Formal retirement** | README banner pointing to a successor project; statement that "new projects should no longer rely on this"; archive flag set on the repo | Retired |
+| **Acquisition drift** | Recent commits are Dependabot/copyright-only; no feature commits in 12+ months; `pushedAt` recent but `latestRelease` stale; vendor's roadmap mentions a successor commercial product | Maintained-but-not-developed |
+
+Classify the project as one of: **fully OSS**, **open-core-light** (some advanced compliance/integrations gated, core works in OSS), **open-core-heavy** (essential features gated), **fully proprietary** (no usable OSS), **retired**, or **acquisition-drifted**. Spell out which essential features (per the current project's domain) are gated, if any.
+
 ### Phase 4: Produce the report
 
 Structure the output as follows:
@@ -80,6 +109,22 @@ Novel approaches or data sources proposed in issues/PRs.
 #### Maintenance signals
 
 Evidence table of maintenance health (stale PRs, release cadence, unanswered issues).
+
+#### Commercial posture
+
+State the verdict (fully OSS / open-core-light / open-core-heavy / fully proprietary / retired / acquisition-drifted). For open-core variants, list which essential features are gated and where (Enterprise tier, Cloud add-on, separate `ee/` folder, per-MAU pricing). Include the vendor's pricing-page URL when relevant.
+
+For curation tasks (e.g., feeding an awesome-list selection), use this verdict to decide:
+
+- **Fully OSS** → eligible, mark with the 🆓 marker if the awesome-list uses such markers.
+- **Open-core-light** → eligible when covering a distinct niche; mark with the 💸 marker.
+- **Open-core-heavy** → reject in overcrowded sections; the OSS shell is not genuinely usable in production.
+- **Fully proprietary** → reject when an OSS alternative exists; otherwise borderline.
+- **Retired or acquisition-drifted** → flag for removal even when the repo is not formally archived.
+
+#### Retirement and acquisition signals
+
+Quote any explicit retirement notice from the README, link the successor project if named, and call out acquisition-drift symptoms (Dependabot-only commits, stale `latestRelease` despite recent `pushedAt`, vendor roadmap shifted to a successor commercial product).
 
 #### Bottom line
 
