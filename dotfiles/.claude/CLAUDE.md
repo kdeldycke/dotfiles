@@ -51,6 +51,7 @@ Rules:
 1. **No `v` prefix on package versions.** Anywhere the version identifies the *package* (PyPI, changelog heading, CLI output, `pyproject.toml`), use the bare version: `1.2.3`.
 2. **`v` prefix on tag references.** Anywhere the version identifies a *git tag* (comparison URLs, action refs, commit messages, PR titles), use `v1.2.3`.
 3. **Always backtick-escape versions in prose.** Both `v1.2.3` (tag) and `1.2.3` (package) are identifiers, not natural language. Wrap them in single backticks: `` `v1.2.3` ``, `` `1.2.3` ``.
+4. **Development versions** follow PEP 440: `1.2.3.dev0` with optional `+{short_sha}` local identifier.
 
 ## File naming conventions
 
@@ -58,11 +59,32 @@ Use the longest, most explicit file extension available. For YAML, that means `.
 
 Use lowercase filenames everywhere.
 
+### GitHub exceptions
+
+GitHub silently ignores certain files unless they use the exact name it expects. These are the known hard constraints where the long-form / lowercase rule does **not** apply:
+
+| File                     | Required name                       |
+| ------------------------ | ----------------------------------- |
+| Issue form templates     | `.github/ISSUE_TEMPLATE/*.yml`      |
+| Issue template config    | `.github/ISSUE_TEMPLATE/config.yml` |
+| Funding config           | `.github/funding.yml`               |
+| Release notes config     | `.github/release.yml`               |
+| Issue template directory | `.github/ISSUE_TEMPLATE/`           |
+| Code owners              | `CODEOWNERS`                        |
+
+Workflows (`.github/workflows/*.yaml`) and action metadata (`action.yaml`) accept both `.yml` and `.yaml`: use `.yaml`.
+
 ## Markdown and documentation
 
 Markdown files have no line-length limit: do not hard-wrap prose in markdown. Each sentence or logical clause should flow as a single long line; let the renderer handle wrapping.
 
 Titles in markdown use sentence case.
+
+Use the natural auto-generated heading anchor for cross-references. Add an explicit anchor (`(my-anchor)=` in MyST, `<a id="…"></a>` in plain GFM) only when the natural one is unavailable: duplicate headings, non-heading targets.
+
+## YAML workflows
+
+For single-line commands, use plain inline `run:`. For multi-line, use the folded block scalar (`>`) which joins lines with spaces: no backslash continuations needed. Use the literal block scalar (`|`) only when preserved newlines are required (multi-statement scripts, heredocs).
 
 ## Modern `typing` practices
 
@@ -92,3 +114,7 @@ Always prefer long-form options over short-form for readability in workflow file
 - **CI debugging starts from the URL.** When a workflow fails, fetch the run logs first (`gh run view --log-failed`). Do not guess at the cause.
 - **Trace to root cause before coding a fix.** When a bug surfaces, audit its scope across the codebase before writing the patch. If the same pattern appears in multiple places, the fix belongs at the shared layer.
 - **Simplify before adding.** When asked to improve something, first ask whether existing code or tools already cover the case. Remove dead code and unused abstractions before introducing new ones.
+- **Documentation drift.** Version references, command output, and workflow descriptions in docs go stale after every release or refactor. Verify docs against actual behavior after changes, not against your assumption of what the code does.
+- **Type-checking divergence across Python versions.** Code that passes `mypy` locally on Python 3.14 may fail in CI under `--python-version 3.10`. Always check against the minimum supported version when modifying type-sensitive code.
+- **Angle-bracket placeholders in bash code blocks.** `mdformat-shfmt` runs `shfmt` on ```` ```bash ``` ```` fences. `shfmt` parses `<foo>` as input redirection and `>foo` as output redirection, then reorders the command. Use curly braces (`{foo}`) for placeholders in bash examples instead.
+- **Route through existing infrastructure, don't bypass it.** Before writing a new helper, check whether the codebase already has a mechanism for the same operation. A bug caused by data taking the wrong code path is better fixed by routing data to the right path than by duplicating logic at the wrong one.
