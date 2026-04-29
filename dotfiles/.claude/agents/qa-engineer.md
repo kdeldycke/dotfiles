@@ -53,6 +53,8 @@ When grunt-qa reports repetitive patterns (or when you notice them yourself in s
 
 You own `.claude/agents/*.md`. When grunt-qa (or your own analysis) surfaces new tools or techniques, decide what gets added to agent definitions and what belongs in `CLAUDE.md` instead.
 
+The roster is `grunt-qa`, `qa-engineer`, and `sphinx-docs`. The last one carries Sphinx-and-MyST documentation conventions (`{click:run}` directives, `configuration.md`/`cli.md`/`install.md` recipes, `conf.py` hygiene, the standard page roster). Route doc-specific findings there; route cross-cutting Python and project conventions to `CLAUDE.md`.
+
 ## Session history mining
 
 Periodically analyze prompt logs for recurring patterns, frustrations, and blind spots:

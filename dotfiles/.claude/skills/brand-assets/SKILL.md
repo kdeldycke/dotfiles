@@ -9,6 +9,8 @@ argument-hint: '[path/to/assets or SVG file]'
 
 Create, maintain, and export project logo and banner assets as SVGs with light/dark PNG variants.
 
+The Sphinx side of the convention (`html_logo`, `html_favicon`, `ogp_image` paths and the rules around them) lives in `.claude/agents/sphinx-docs.md` § `docs/conf.py` hygiene › Theme assets and OpenGraph. When this skill writes a new asset path into `docs/conf.py`, follow the canonical paths defined there: `assets/logo-square.svg`, `assets/favicon.svg`, `assets/banner-social-light.png`.
+
 ## Asset variants
 
 Every project produces four SVG variants, each with light and dark PNG exports:

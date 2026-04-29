@@ -69,7 +69,7 @@ These conventions are derived from the `pyproject.toml` files across all `kdeldy
 
 #### Runtime dependencies (`[project].dependencies`)
 
-1. **Use `>=` (not `~=` or `==`).** Relaxed lower bounds give packagers freedom to release security hotfixes without waiting for an upstream bump. Upper bounds are forbidden per <https://iscinumpy.dev/post/bound-version-constraints/>.
+1. **Use `>=` (not `~=` or `==`).** Relaxed lower bounds give packagers freedom to release security hotfixes without waiting for an upstream bump. Upper bounds are forbidden per [https://iscinumpy.dev/post/bound-version-constraints/](https://iscinumpy.dev/post/bound-version-constraints/).
 2. **Every version bound needs a comment tying the floor to a concrete code dependency.** The comment goes on the line above the dependency and states which feature, method, or API from that version the project actually uses. Prefer referencing the call site or module that depends on it:
    ```toml
    # wcmatch 10.0 changed globbing semantics; our sync_gitignore() relies on
