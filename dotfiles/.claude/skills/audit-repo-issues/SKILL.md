@@ -74,13 +74,13 @@ gh api repos/$ARGUMENTS/contents
 
 Then assess each axis below. The first three define the commercial posture; the last two cover retirement.
 
-| Axis | Signals to look for | Verdict |
-| --- | --- | --- |
-| **License envelope** | `licenseInfo` is permissive (MIT, Apache-2.0, BSD); no `ee/`/`enterprise/`/`pro/` folder under a different license | OSS-only |
-| **Feature gating** | README mentions "Enterprise tier", "Cloud only", "premium features", "protective barrier"; pricing page lists SSO/SAML/OIDC, SCIM, audit log retention, multi-tenancy, fine-grained permissions, admin UI as paid | Open-core (light or heavy depending on which features are gated) |
-| **Vendor extraction** | Homepage URL is a vendor domain selling a hosted/Cloud/Enterprise version; pricing page exists; per-MAU or per-seat pricing on what looks like core features | Commercial-backed |
-| **Formal retirement** | README banner pointing to a successor project; statement that "new projects should no longer rely on this"; archive flag set on the repo | Retired |
-| **Acquisition drift** | Recent commits are Dependabot/copyright-only; no feature commits in 12+ months; `pushedAt` recent but `latestRelease` stale; vendor's roadmap mentions a successor commercial product | Maintained-but-not-developed |
+| Axis                  | Signals to look for                                                                                                                                                                                               | Verdict                                                          |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| **License envelope**  | `licenseInfo` is permissive (MIT, Apache-2.0, BSD); no `ee/`/`enterprise/`/`pro/` folder under a different license                                                                                                | OSS-only                                                         |
+| **Feature gating**    | README mentions "Enterprise tier", "Cloud only", "premium features", "protective barrier"; pricing page lists SSO/SAML/OIDC, SCIM, audit log retention, multi-tenancy, fine-grained permissions, admin UI as paid | Open-core (light or heavy depending on which features are gated) |
+| **Vendor extraction** | Homepage URL is a vendor domain selling a hosted/Cloud/Enterprise version; pricing page exists; per-MAU or per-seat pricing on what looks like core features                                                      | Commercial-backed                                                |
+| **Formal retirement** | README banner pointing to a successor project; statement that "new projects should no longer rely on this"; archive flag set on the repo                                                                          | Retired                                                          |
+| **Acquisition drift** | Recent commits are Dependabot/copyright-only; no feature commits in 12+ months; `pushedAt` recent but `latestRelease` stale; vendor's roadmap mentions a successor commercial product                             | Maintained-but-not-developed                                     |
 
 Classify the project as one of: **fully OSS**, **open-core-light** (some advanced compliance/integrations gated, core works in OSS), **open-core-heavy** (essential features gated), **fully proprietary** (no usable OSS), **retired**, or **acquisition-drifted**. Spell out which essential features (per the current project's domain) are gated, if any.
 
