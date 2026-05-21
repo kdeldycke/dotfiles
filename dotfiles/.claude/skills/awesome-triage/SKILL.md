@@ -50,13 +50,15 @@ Evaluate the submission against each criterion below. For each, state PASS, FAIL
 
 #### 3. AI slop detection
 
-This is not covered by `contributing.md`. Look for these signals (any two together warrant the `AI slop` label):
+This is not covered by `contributing.md`. Look for these signals (any two together, or combined with §9 provenance signals, warrant the `AI slop` label):
 
 - The PR body or issue text reads as LLM output (generic phrasing, no specific knowledge of the list's content, template-like structure beyond the actual template).
-- The PR explicitly discloses AI generation (e.g., "Generated with Claude Code", "Created by Copilot").
+- The PR explicitly discloses AI generation (like "Generated with Claude Code", "Created by Copilot").
 - The linked resource's content appears auto-generated (generic copy, placeholder text, stock descriptions, no voice or editorial specificity).
 - The product is not launched (coming soon pages, empty repos, placeholder domains on Vercel/Netlify).
 - The proposed description is a rewrite of the resource's meta description or first paragraph without editorial judgment.
+
+See also §9 for contributor and repo provenance signals — these often reinforce the surface-level slop tells above.
 
 #### 4. Competitive context
 
@@ -87,6 +89,38 @@ Check the diff (for PRs) against `contributing.md` §§ Formatting and Editorial
 - **Launched and functional**: The product or article must exist and be accessible.
 - **Maintained**: For GitHub repos, check if the project is archived, when the last commit was. Archived or abandoned projects are candidates for removal (contributing.md FAQ "Why removes inactive GitHub projects?"). Check for forks or reboots before recommending deletion.
 - **Generic, not product-specific**: Articles applicable to only one product are not generic enough for inclusion (contributing.md "Why my link was rejected?" + awesome-falsehood PR #31).
+
+#### 9. Contributor and repo provenance
+
+This is not covered by `contributing.md`. Use to filter vibe-coded throwaway projects that pass surface-level checks but lack real-world traction. Signals here reinforce §3 (AI slop): two from §9, or one from §9 plus one from §3, warrant the `AI slop` label.
+
+**PR/issue author (the GitHub user)**:
+
+- Account age: `gh api users/<login> --jq '.created_at'`. Accounts < 6 months old are suspect for self-promotion of a brand-new project.
+- Profile completeness: a burst of recent repos with 0 followers, no bio, no company, no blog is the bulk-content-account pattern.
+- Co-submission cadence: the same author opening multiple borderline submissions within a short window (hours, same day) is a content-stuffing signal. Cross-check with `gh issue list --author <login>` and `gh pr list --author <login>`.
+
+**Proposed resource repo (when the URL is a GitHub project)**:
+
+- Stars, forks, watchers, contributor count: `gh api repos/<owner>/<name>`. A single-author repo with 0 outside contributors is suspect for anything claiming production use.
+- Created vs. pushed dates: same-day creation and push means no iteration history. Combined with the 50-star baseline failure, this is decisive.
+- Repo size and language composition: 100% HTML often means it's a marketing/lead-gen static site, not software. A 22 KB project claiming feature parity with mature tools is a tell.
+- License file actually present: do not trust README license claims. Check `gh api repos/<owner>/<name> --jq '.license'` and inspect for an actual `LICENSE` file. Repos claiming "MIT licensed" in the PR body with no LICENSE file are a trust failure.
+- Commit cadence and authorship: `gh api repos/<owner>/<name>/commits --jq '[.[] | {sha: .sha[:7], date: .commit.author.date, author: .commit.author.name, message: .commit.message | split("\n")[0]}]'`. Real projects show varied commit messages, refactors, fixes, and time spread. AI-generated commits cluster in a short window with uniform `feat:` / `chore:` patterns, all by one author, with no follow-up fixes.
+- Issues, PRs, and contributors from anyone other than the author: their absence in a project claiming to be useful is a signal.
+
+**Cross-checks**:
+
+- Demo URLs on disposable hosts (`*.surge.sh`, `*.vercel.app`, `*.netlify.app`, GitHub Pages) as **the product domain** itself, not just a docs deploy.
+- Future-dated "verified" / "as of" stamps in the resource content that don't match the git history.
+- Numerical claims in the PR body (counts of supported items, languages, integrations) that don't match the actual product page — inconsistencies are a generation-time tell, not a copywriting choice.
+
+**Strong-rejection patterns** (any one is sufficient on its own):
+
+- Resource repo < 30 days old + 0 stars + single-author commit burst on creation day.
+- LICENSE file missing despite a license claim in the PR body.
+- Author account < 6 months old + ≥ 10 repos + 0 followers + 0 bio/company/blog.
+- Author opens multiple submissions across awesome lists for newly-created same-day projects.
 
 ### Verdict
 
@@ -123,7 +157,7 @@ Suggest applying these labels based on findings:
 
 | Label         | When to apply                                                   |
 | ------------- | --------------------------------------------------------------- |
-| `AI slop`     | Two or more AI slop signals detected.                           |
+| `AI slop`     | Two or more §3 signals, or one §3 plus one §9 provenance signal. |
 | `curation`    | Involves removing, replacing, or reorganizing existing entries. |
 | `new link`    | Proposes adding a new resource to the list.                     |
 | `duplicate`   | The resource or a near-equivalent is already in the list.       |
