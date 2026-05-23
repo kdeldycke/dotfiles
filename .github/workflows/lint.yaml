@@ -5,15 +5,23 @@ name: 🧹 Lint
   push:
     branches:
       - main
+    paths-ignore:
+      - "**/*.gif"
+      - "**/*.jpeg"
+      - "**/*.jpg"
+      - "**/*.png"
+      - "**/*.svg"
+      - "**/*.webp"
   pull_request:
     branches-ignore:
+      - major-version-increment
+      - minor-version-increment
       - prepare-release
-      - "renovate/**"
 
 jobs:
 
   lint:
-    uses: kdeldycke/repomatic/.github/workflows/lint.yaml@3a17c23f13a90fb3a80dac2ea01b40665990939b # v6.18.3
+    uses: kdeldycke/repomatic/.github/workflows/lint.yaml@c6defb901773fe1f8f2f5d04d22facfb8f795c4d # v6.19.0
     secrets:
       REPOMATIC_PAT: ${{ secrets.REPOMATIC_PAT }}
       VIRUSTOTAL_API_KEY: ${{ secrets.VIRUSTOTAL_API_KEY }}

@@ -7,8 +7,9 @@ name: 🏷️ Labels
       - main
   pull_request:
     branches-ignore:
+      - major-version-increment
+      - minor-version-increment
       - prepare-release
-      - "renovate/**"
     types:
       - opened
   issues:
@@ -18,4 +19,4 @@ name: 🏷️ Labels
 jobs:
 
   labels:
-    uses: kdeldycke/repomatic/.github/workflows/labels.yaml@3a17c23f13a90fb3a80dac2ea01b40665990939b # v6.18.3
+    uses: kdeldycke/repomatic/.github/workflows/labels.yaml@c6defb901773fe1f8f2f5d04d22facfb8f795c4d # v6.19.0
