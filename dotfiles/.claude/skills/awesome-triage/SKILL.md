@@ -155,14 +155,14 @@ For issues reporting broken links (typically automated by the lychee link checke
 
 Suggest applying these labels based on findings:
 
-| Label         | When to apply                                                   |
-| ------------- | --------------------------------------------------------------- |
+| Label         | When to apply                                                    |
+| ------------- | ---------------------------------------------------------------- |
 | `AI slop`     | Two or more §3 signals, or one §3 plus one §9 provenance signal. |
-| `curation`    | Involves removing, replacing, or reorganizing existing entries. |
-| `new link`    | Proposes adding a new resource to the list.                     |
-| `duplicate`   | The resource or a near-equivalent is already in the list.       |
-| `fix link`    | Reports or fixes a broken URL.                                  |
-| `wont do/fix` | Maintainer decision to not act on the request.                  |
+| `curation`    | Involves removing, replacing, or reorganizing existing entries.  |
+| `new link`    | Proposes adding a new resource to the list.                      |
+| `duplicate`   | The resource or a near-equivalent is already in the list.        |
+| `fix link`    | Reports or fixes a broken URL.                                   |
+| `wont do/fix` | Maintainer decision to not act on the request.                   |
 
 ### Next steps
 
