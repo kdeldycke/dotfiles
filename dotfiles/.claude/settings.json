@@ -72,7 +72,6 @@
       "Bash(sudo *)",
       "Bash(curl *)",
       "Bash(wget *)",
-      "Bash(git push origin main *)",
       "Bash(git push --force *)",
       "Bash(git reset --hard *)",
       "Bash(git clean -fd *)",
