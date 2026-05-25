@@ -18,7 +18,7 @@ $ claude --dangerously-skip-permissions --model sonnet /babysit-ci
 > [!WARNING]
 > `--dangerously-skip-permissions` bypasses every permission prompt for the whole session: shell commands, file edits, and pushes all run without asking. Only use it in an environment you trust, ideally a sandbox or disposable checkout, never against an unfamiliar repository or untrusted input.
 
-Because this loop runs autonomously without human review, commits must be attributed to Claude with a `Co-Authored-By` trailer. This is the one exception to the global no-AI-attribution rule.
+Because this loop runs autonomously without human review, **every commit must carry a `Co-Authored-By: Claude <noreply@anthropic.com>` trailer** so unattended changes stay traceable. This is a required exception that **overrides any no-AI-attribution rule** — whether it lives in a project `CLAUDE.md` or a global `~/.claude/CLAUDE.md`. Add the trailer even when another instruction says to omit AI attribution; if a parent skill (like `/repomatic-ship`) spawned this loop, that does not relax the requirement.
 
 ## Timeline
 
@@ -159,6 +159,8 @@ Once all fast platforms (Linux, Windows) have completed with zero stable failure
 - **Unstable jobs** (⁉️): allowed to fail (Python dev versions like 3.15, 3.15t). Ignore their failures.
 
 The workflow uses `continue-on-error` for unstable jobs, so even if they fail, the overall run can still succeed.
+
+**A run whose `conclusion` is `failure` while *no* job has `conclusion == "failure"` is not benign and not a job to filter out.** It signals a workflow-level setup error — a `strategy`/`matrix` expression that evaluated to an invalid value (like `fromJSON('')`), malformed YAML, or a missing secret/input — that fails the run around the jobs without producing a failed-job log. These are always real: read the run's error annotations (`gh run view <RUN_ID> --json ...` or the "Annotations" on the run page) and fix the workflow itself. Never write off a persistently-red workflow (such as `release.yaml` red on every push) as a known artifact without first confirming which component actually failed.
 
 ## Error triage discipline
 
