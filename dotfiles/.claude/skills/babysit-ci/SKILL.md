@@ -1,11 +1,11 @@
 ---
-description: Monitor CI tests and lint workflows, diagnose failures, fix code, commit, and loop until all stable jobs pass. Ignores unstable failures.
+description: Monitor CI tests, lint, and Nuitka binary-build workflows, diagnose failures, fix code, commit, and loop until all stable jobs pass. Ignores unstable failures.
 user_invocable: true
 ---
 
-# Babysit CI: monitor and fix tests.yaml + lint.yaml
+# Babysit CI: monitor and fix tests.yaml + lint.yaml + release.yaml binaries
 
-Monitor the `tests.yaml` and `lint.yaml` workflows in a fix-verify loop until all stable matrix variations pass and type-checking is clean.
+Monitor the `tests.yaml`, `lint.yaml`, and `release.yaml` (Nuitka `compile-binaries`) workflows in a fix-verify loop until all stable matrix variations pass and type-checking is clean.
 
 ## Invocation
 
@@ -14,6 +14,9 @@ This skill involves repeated `gh`, `git`, `uv run pytest`, `git commit`, and `gi
 ```shell-session
 $ claude --dangerously-skip-permissions --model sonnet /babysit-ci
 ```
+
+> [!WARNING]
+> `--dangerously-skip-permissions` bypasses every permission prompt for the whole session: shell commands, file edits, and pushes all run without asking. Only use it in an environment you trust, ideally a sandbox or disposable checkout, never against an unfamiliar repository or untrusted input.
 
 Because this loop runs autonomously without human review, commits must be attributed to Claude with a `Co-Authored-By` trailer. This is the one exception to the global no-AI-attribution rule.
 
@@ -67,9 +70,10 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
    ```shell-session
    $ gh run list --workflow=tests.yaml --branch=<BRANCH> --limit=1
    $ gh run list --workflow=lint.yaml --branch=<BRANCH> --limit=1
+   $ gh run list --workflow=release.yaml --branch=<BRANCH> --limit=1
    ```
 
-   Track both run IDs. The `tests.yaml` run exercises the full test matrix; `lint.yaml` runs mypy on all Python files (source **and** tests) and lints YAML. Both must pass.
+   Track all three run IDs. The `tests.yaml` run exercises the full test matrix; `lint.yaml` runs mypy on all Python files (source **and** tests) and lints YAML; `release.yaml` runs the Nuitka `compile-binaries` matrix (dev binaries, rebuilt on every push to `main`). All three must pass — see § Nuitka binary build failures below for how to triage the slow binary jobs without stalling the loop.
 
 3. **Run local tests while waiting for CI.** Don't idle while polling. Start the full test suite and linters locally in the background immediately after identifying the run:
 
@@ -208,6 +212,16 @@ Not all CI failures are code bugs. Recognize these and handle them differently:
 - **Permission errors**: `Resource not accessible by integration`, 403 on API calls. Check token permissions, not code.
 
 If the failure is infrastructure, re-run the failed jobs (`gh run rerun <RUN_ID> --failed`) and continue polling. Do not modify code to work around transient infra issues.
+
+### Nuitka binary build failures (release.yaml)
+
+The `compile-binaries` job runs Nuitka across a 6-way OS/arch matrix on every push to `main`. Catching a break here — while the version is still `.dev0` — avoids shipping a release whose binaries are missing or broken, which the immutable-release wall makes unrecoverable. Triage by category:
+
+- **Infrastructure** (runner OOM, `The runner has received a shutdown signal`, a macOS runner crash, registry timeout): re-run the failed job (`gh run rerun <RELEASE_RUN_ID> --failed`). Do not change code — binary builds are resource-heavy and the macOS runners crash more than most.
+- **Nuitka configuration** (`Error, unsupported ...`, an unknown `--flag`, a missing data file): the fix is in `[tool.nuitka]` in `pyproject.toml`, not the Python source. Verify each key maps to a current Nuitka option.
+- **Real compile or runtime errors** (the binary builds but its smoke test fails, or a `ModuleNotFoundError` surfaces at runtime): fix the code or the `include-package` / `include-data-files` configuration, then push and re-monitor.
+
+Because the matrix is slow, let the fast `tests.yaml` and `lint.yaml` channels set the loop cadence; check `compile-binaries` once it finishes and fold any genuine failure into the same fix batch.
 
 ### End-of-loop retrospective
 

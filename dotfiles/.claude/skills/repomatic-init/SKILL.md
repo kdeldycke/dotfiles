@@ -37,5 +37,5 @@ You help users bootstrap a repository to use the reusable GitHub Actions workflo
 
 Suggest the user run:
 
-- `/repomatic-sync` to pull the latest upstream workflow changes.
-- `/repomatic-lint` to validate the generated files.
+- `/repomatic-audit` to check the generated files against upstream conventions.
+- After pushing, the `autofix.yaml` and `lint.yaml` workflows keep the workflow callers synced and validated automatically.

@@ -68,6 +68,4 @@ If the repository name starts with `awesome-`, it must have both the `awesome` a
 
 ### Next steps
 
-Suggest the user run:
-
-- `/repomatic-lint` to check for any issues introduced.
+Push the change: `lint.yaml` validates the updated `pyproject.toml`, and the new GitHub topics take effect immediately.

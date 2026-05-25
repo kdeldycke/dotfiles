@@ -1,10 +1,10 @@
 ---
 name: repomatic-deps
-description: Generate dependency graphs, audit pyproject.toml declarations against version policy, and explore unused dependency APIs that could simplify code.
+description: Generate dependency graphs, audit pyproject.toml declarations against version policy, explore unused dependency APIs that could simplify code, and modernize code against the changelogs of upgraded dependencies.
 model: opus
 disable-model-invocation: true
-allowed-tools: Bash, Read, Grep, Glob, Agent
-argument-hint: '[graph [--level N]|review [all|runtime|dev|policy]|explore [<package>]]'
+allowed-tools: Bash, Read, Grep, Glob, Agent, Edit, Write, WebFetch
+argument-hint: '[graph [--level N]|review [all|runtime|dev|policy]|explore [<package>]|modernize [<package>]]'
 ---
 
 ## Context
@@ -16,7 +16,7 @@ argument-hint: '[graph [--level N]|review [all|runtime|dev|policy]|explore [<pac
 
 ## Instructions
 
-You help users understand and maintain their project's dependencies. This skill has three modes: **graph** (visualize the resolved dependency tree), **review** (audit `pyproject.toml` declarations against version policy), and **explore** (find unused dependency APIs that could simplify existing code).
+You help users understand and maintain their project's dependencies. This skill has four modes: **graph** (visualize the resolved dependency tree), **review** (audit `pyproject.toml` declarations against version policy), **explore** (find unused dependency APIs that could simplify existing code), and **modernize** (refactor code to adopt features from recently-upgraded dependencies, applying the changes).
 
 ### Determine invocation method
 
@@ -29,6 +29,7 @@ You help users understand and maintain their project's dependencies. This skill 
 - `graph`: Generate and analyze the dependency graph only.
 - `review [all|runtime|dev|policy]`: Audit `pyproject.toml` declarations only.
 - `explore [<package>]`: Search for unused dependency APIs that could simplify existing code.
+- `modernize [<package>]`: Refactor code to adopt new features from upgraded dependencies, applying and test-gating each change.
 - If `$ARGUMENTS` starts with `--level` or a number, treat it as `graph` mode with those arguments.
 
 ---
@@ -259,10 +260,52 @@ Common false-positive patterns to reject early:
 
 ---
 
+## Modernize mode
+
+`explore` finds simplifications hiding in *any* installed dependency and only reports them. `modernize` is narrower and active: it works from the dependencies that **changed version** recently, reads what those versions added, and **applies** the resulting simplifications, gated by the test suite.
+
+> [!WARNING]
+> This is the one mode that edits code on its own, and it acts on third-party changelogs it can misread. Every change must be behavior-preserving and verified against the local test suite before it stays. Run it where you can review the diff, and treat a failing test as a veto, never something to "fix" by loosening the test.
+
+### Scope selection
+
+- No argument: every dependency upgraded since the last release tag.
+- `<package>`: a single dependency (e.g., `modernize click-extra`).
+
+### Procedure
+
+1. **Find the version deltas.** Determine which dependencies changed, and from and to which version, cheapest source first:
+
+   - The most recent `sync-uv-lock` PR — its body lists every bump with its old and new version and a changelog or compare link per package. Find it with `gh pr list --search 'head:sync-uv-lock' --state all --limit 1`, then `gh pr view <number> --json body`.
+   - Failing that, find the last release tag (`git tag --sort=-v:refname | head -1`) and diff the lockfile against it (`git diff <tag> -- uv.lock`), reading the version pairs.
+   - For a single named package, read its locked version and the `pyproject.toml` floor.
+
+2. **Read each changelog for the delta.** Fetch the release notes covering that version range from the link in the bump table (GitHub releases via `gh api repos/{owner}/{repo}/releases`, or `WebFetch` on the compare URL; the PyPI project page otherwise). Extract only what is **new or changed** in the range: added public APIs, fixed bugs our code works around, and deprecations of APIs we still call. **Degrade gracefully:** if `WebFetch` is unavailable and the package is not on GitHub, fall back to your own knowledge of the library's release history and lower your confidence accordingly.
+
+3. **Map deltas to our code.** For each new or changed item, grep the source tree (not tests) for code it touches, reusing the candidate patterns and false-positive filters from [Explore mode](#explore-mode):
+
+   - A new helper that replaces hand-rolled logic.
+   - A bug fix that lets us delete a workaround — search comments for the package name, `work around`, `TODO`, and version-guarded branches.
+   - A deprecation we still call, which must move to the replacement before the dependency removes it.
+
+4. **Apply one dependency at a time.** Make the edits for a single package, keeping each behavior-preserving. If adopting an API needs a higher floor, raise it and rewrite the comment per [Floor bumps to adopt new APIs](#floor-bumps-to-adopt-new-apis), then run `uv lock`.
+
+5. **Verify before moving on.** Run the project's tests, `mypy`, and `ruff` (the same fast local channel `/babysit-ci` and `/repomatic-ship` rely on). If anything fails, fix it within the same change or revert that package's edits. Only move to the next dependency once green. A change that cannot be made green is reverted, not forced.
+
+6. **Report.** Summarize per dependency: the version delta, what was adopted or dropped, the files touched, and anything skipped with the reason. A dependency whose changelog offers nothing actionable is a valid no-op.
+
+### What not to touch
+
+- **New capability.** Adopting a feature to *add* behavior is out of scope: this mode only removes or replaces existing code.
+- **Major-version migrations.** A breaking upgrade that needs broad rework is a deliberate human project. Report it and stop, do not attempt it autonomously.
+- **Speculative adoptions.** If no current code is simplified, do nothing.
+
+---
+
 ### Next steps
 
 Suggest the user run:
 
 - `/repomatic-deps review all` to audit version floors and specifier policy.
-- `/repomatic-lint` to check repository metadata for issues.
+- `/repomatic-deps modernize` after a `sync-uv-lock` PR lands, to fold the freshly-upgraded dependencies' new features into the code.
 - `/repomatic-audit` for a comprehensive alignment check beyond dependencies.
