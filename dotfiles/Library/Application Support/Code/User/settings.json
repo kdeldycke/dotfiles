@@ -104,5 +104,6 @@
   "github.copilot.selectedCompletionModel": "",
   "chat.viewSessions.orientation": "stacked",
   "claudeCode.selectedModel": "opus",
-  "chat.agent.sandbox.enabled": "on"
+  "chat.agent.sandbox.enabled": "on",
+  "git.addAICoAuthor": "off"
 }
