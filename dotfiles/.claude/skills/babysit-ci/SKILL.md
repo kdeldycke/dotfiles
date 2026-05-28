@@ -1,11 +1,11 @@
 ---
-description: Monitor CI tests, lint, and Nuitka binary-build workflows, diagnose failures, fix code, commit, and loop until all stable jobs pass. Ignores unstable failures.
+description: Monitor CI tests, lint, autofix, and Nuitka binary-build workflows, diagnose failures, fix code, commit, and loop until all stable jobs pass. Ignores unstable failures.
 user_invocable: true
 ---
 
-# Babysit CI: monitor and fix tests.yaml + lint.yaml + release.yaml binaries
+# Babysit CI: monitor and fix tests.yaml + lint.yaml + autofix.yaml + release.yaml binaries
 
-Monitor the `tests.yaml`, `lint.yaml`, and `release.yaml` (Nuitka `compile-binaries`) workflows in a fix-verify loop until all stable matrix variations pass and type-checking is clean.
+Monitor the `tests.yaml`, `lint.yaml`, `autofix.yaml`, and `release.yaml` (Nuitka `compile-binaries`) workflows in a fix-verify loop until all stable matrix variations pass and type-checking is clean.
 
 ## Invocation
 
@@ -70,10 +70,11 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
    ```shell-session
    $ gh run list --workflow=tests.yaml --branch=<BRANCH> --limit=1
    $ gh run list --workflow=lint.yaml --branch=<BRANCH> --limit=1
+   $ gh run list --workflow=autofix.yaml --branch=<BRANCH> --limit=1
    $ gh run list --workflow=release.yaml --branch=<BRANCH> --limit=1
    ```
 
-   Track all three run IDs. The `tests.yaml` run exercises the full test matrix; `lint.yaml` runs mypy on all Python files (source **and** tests) and lints YAML; `release.yaml` runs the Nuitka `compile-binaries` matrix (dev binaries, rebuilt on every push to `main`). All three must pass — see § Nuitka binary build failures below for how to triage the slow binary jobs without stalling the loop.
+   Track all four run IDs. The `tests.yaml` run exercises the full test matrix; `lint.yaml` runs mypy on all Python files (source **and** tests) and lints YAML; `autofix.yaml` runs the mechanical fix jobs (`format-*`, `sync-*`, `fix-typos`, `fix-vulnerable-deps`) and turns red when one *crashes* instead of committing a fix; `release.yaml` runs the Nuitka `compile-binaries` matrix (dev binaries, rebuilt on every push to `main`). All must pass — see § Autofix job failures and § Nuitka binary build failures below for how to triage them without stalling the loop.
 
 3. **Run local tests while waiting for CI.** Don't idle while polling. Start the full test suite and linters locally in the background immediately after identifying the run:
 
@@ -224,6 +225,14 @@ The `compile-binaries` job runs Nuitka across a 6-way OS/arch matrix on every pu
 - **Real compile or runtime errors** (the binary builds but its smoke test fails, or a `ModuleNotFoundError` surfaces at runtime): fix the code or the `include-package` / `include-data-files` configuration, then push and re-monitor.
 
 Because the matrix is slow, let the fast `tests.yaml` and `lint.yaml` channels set the loop cadence; check `compile-binaries` once it finishes and fold any genuine failure into the same fix batch.
+
+### Autofix job failures (autofix.yaml)
+
+`autofix.yaml` runs the mechanical fix jobs (`format-*`, `sync-*`, `fix-typos`, `fix-vulnerable-deps`) on every push to `main`. They normally just commit their fixes, but a job that *crashes* (raises an exception) turns the workflow red without producing one. Fetch the failed job's log (`gh run view <AUTOFIX_RUN_ID> --log-failed`) and triage by category:
+
+- **Tool-runner checksum mismatch** (`ValueError: SHA-256 mismatch for https://.../tool-vX.Y.Z...`): the pinned binary's stored hash no longer matches the published artifact, usually because the upstream re-published the release. Regenerate with `repomatic update-checksums --registry`, then confirm with `repomatic run <tool>`.
+- **External-tool output parse error** (a `RuntimeError`/`KeyError` in a parser, like `fix-vulnerable-deps` reading `uv audit --output-format json`): the tool's output schema drifted under the parser. Fix the parser to match the tool's current output and update the test fixture that encoded the old shape.
+- **Genuine content the job fixes** (real typos, an actual vulnerability): the job commits the fix and the run goes green on its own; nothing to do.
 
 ### End-of-loop retrospective
 
