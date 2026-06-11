@@ -137,6 +137,11 @@ brew upgrade
 # Add taps.
 brew tap gromgit/homebrew-fuse
 brew tap sbarex/SourceCodeSyntaxHighlight https://github.com/sbarex/SourceCodeSyntaxHighlight
+brew tap smudge/smudge
+
+# Trust the specific third-party formulae I install from untrusted taps.
+brew trust --formula gromgit/fuse/ntfs-3g-mac
+brew trust --formula smudge/smudge/nightlight
 
 
 ######### Meta Package Manager #########
