@@ -101,6 +101,8 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
 
    **Gate 3 (tests.yaml, ~5-8 min):** Once the first stable job fails, or all fast platforms (Linux, Windows) pass, proceed.
 
+   **Poll in-process; never detach a monitor.** Wait by blocking on `gh run watch <RUN_ID>` or by looping the `gh run view` polls above within your own turn. Do **not** spawn a detached background monitor — a standalone process, or a `Monitor`-tool stream that emits a completion notification and then returns control. When this skill is resumed by a parent (such as `/repomatic-ship`), that pattern re-enters on every monitor tick and spawns *another* monitor instead of driving the run to a terminal state, looping without progress. Hold the turn until the run actually completes.
+
 4. **On any CI failure**, cancel remaining `tests.yaml` runs to free runners:
 
    ```shell-session
@@ -147,6 +149,8 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
    If a `format-python` autofix PR exists, review its diff: it contains ruff's own autofixes for the same commit. If it resolves issues you're seeing, merge it first (`gh pr merge --squash`), pull, and rebase your fix before pushing.
 
 7. **Commit the fix** with a clear message describing what changed and why, then `git push`.
+
+   **If commit signing fails, do not loop on it.** Signed commits have two failure modes the harness can't tell apart. The sandbox can block the SSH socket or key under `~/.ssh/*` and the commit fails with `Operation not permitted` — the fix is `dangerouslyDisableSandbox: true` for the `git commit` and `git push` calls only; that surface area is exactly two commands. A hardware-backed key (Secretive, YubiKey, TPM) then prompts the maintainer for Touch ID or a button press on each signature and surfaces a refused or missed prompt as `agent refused operation?`, which is indistinguishable from a real signing failure. Retry once at most after disabling the sandbox; if the second attempt still refuses, hand off cleanly instead of burning prompts the maintainer may not be watching: stage the specific files you fixed (never `git add -A`), return the exact commit message and the `git push` command verbatim, exit the loop, and let the parent skill (or the maintainer directly) re-issue. The fix itself is already done — only the signature is missing.
 
 8. **Repeat from step 2** until both workflows are green: `tests.yaml` with all stable (✅) jobs passing, and `lint.yaml` with no mypy failures (including test files). **Stop after 5 iterations.** If the loop has not converged by then, report what was fixed, what remains broken, and ask for guidance rather than continuing to churn.
 

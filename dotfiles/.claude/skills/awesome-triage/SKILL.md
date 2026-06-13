@@ -108,6 +108,8 @@ This is not covered by `contributing.md`. Use to filter vibe-coded throwaway pro
 - License file actually present: do not trust README license claims. Check `gh api repos/<owner>/<name> --jq '.license'` and inspect for an actual `LICENSE` file. Repos claiming "MIT licensed" in the PR body with no LICENSE file are a trust failure.
 - Commit cadence and authorship: `gh api repos/<owner>/<name>/commits --jq '[.[] | {sha: .sha[:7], date: .commit.author.date, author: .commit.author.name, message: .commit.message | split("\n")[0]}]'`. Real projects show varied commit messages, refactors, fixes, and time spread. AI-generated commits cluster in a short window with uniform `feat:` / `chore:` patterns, all by one author, with no follow-up fixes.
 - Issues, PRs, and contributors from anyone other than the author: their absence in a project claiming to be useful is a signal.
+- Bot-coauthor pattern: AI coding agents in the contributors list (`claude[bot]`, `copilot[bot]`, `devin[bot]`, etc.) alongside a single human and no other human contributors mean the project is one person plus tooling, not collaborative work. Distinct from human-with-AI-assist development, where the human commits under their own name. Infrastructure bots (`dependabot[bot]`, `renovate[bot]`, `github-actions[bot]`) don't count: those are normal hygiene. Check via `gh api repos/<owner>/<name>/contributors --jq '[.[] | {login, type, contributions}]'`.
+- Solo contributor humanness: when the repo has exactly one human contributor, vet that account against the same PR/issue author checks above (account age, profile completeness, follower/following counts, repo portfolio depth, contribution graph activity). A < 6-month-old account with 0 followers, no bio, a thin or burst-pattern repo portfolio, and a sparse contribution graph signals a throwaway identity. Particularly weighty when the solo contributor is *not* the PR submitter: PR opened by account B promoting account A's one-person repo is the alt-account self-promotion pattern. Check via `gh api users/<login>` for profile fields and `gh api users/<login>/repos --jq '[.[] | {name, stars: .stargazers_count, pushed: .pushed_at, fork: .fork}] | sort_by(.pushed) | reverse'` for portfolio shape.
 
 **Cross-checks**:
 
@@ -121,6 +123,7 @@ This is not covered by `contributing.md`. Use to filter vibe-coded throwaway pro
 - LICENSE file missing despite a license claim in the PR body.
 - Author account < 6 months old + ≥ 10 repos + 0 followers + 0 bio/company/blog.
 - Author opens multiple submissions across awesome lists for newly-created same-day projects.
+- Resource repo contributors are 1 human + AI coding agent bot accounts only (no other human collaborators), and repo is under 6 months old.
 
 ### Verdict
 
