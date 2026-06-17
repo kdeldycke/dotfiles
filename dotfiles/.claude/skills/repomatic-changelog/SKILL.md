@@ -14,7 +14,7 @@ argument-hint: '[add|check|fix|consolidate [VERSION]|VERSION]'
 
 ## Instructions
 
-You help users manage their `changelog.md` file. Follow `CLAUDE.md` § Changelog and readme updates for style rules.
+You help users manage their `changelog.md` file. Follow `CLAUDE.md` § Changelog and docs updates for style rules.
 
 ### Mechanical layer
 
@@ -28,7 +28,7 @@ The `lint.yaml` workflow runs `lint-changelog` in CI. The `check` and `fix` subc
 ### Argument handling
 
 - (default when `$ARGUMENTS` is empty): Run `add` then `consolidate` on the unreleased section, sequentially.
-- `add`: Review recent git commits and draft changelog entries. Place entries under the current unreleased section. Describe **what** changed, not **why**. Keep entries concise and actionable.
+- `add`: Review recent git commits and draft changelog entries. Place entries under the current unreleased section. Describe **what** changed, not **how** or **why**: one sentence per user-facing change (~10-25 words), per `CLAUDE.md` § Changelog entry length. Mechanism, internal names, and rationale go in the commit and PR, not the entry.
 - `check`: Run `<cmd> lint-changelog` and report results. Explain each issue found.
 - `fix`: Run `<cmd> lint-changelog --fix` and show what was changed.
 - `consolidate [VERSION]`: Consolidate redundant entries in a changelog section. This is analytical work with no CLI equivalent — read the entries, compare against `git log` for the relevant range, and rewrite. See § Consolidation rules below. If `VERSION` is omitted, target the unreleased section. If `VERSION` is given (e.g., `consolidate 6.8.0`), target that released section instead — locate it in `changelog.md` by matching the heading, and use the git range between its tag and the previous tag (e.g., `v6.7.0..v6.8.0`).
@@ -43,14 +43,16 @@ Entries accumulate during development as features are built incrementally. Befor
 3. **Merge entries that describe the same feature at different stages.** Multiple bullets about adding tools to a registry, then migrating workflows for those tools, then updating Renovate managers for those tools — that is one feature ("add unified tool runner with 13 managed tools"), not twelve.
 4. **Merge entries that describe infrastructure and its usage together.** "Add binary download infrastructure" + "add 5 binary tools" + "migrate 5 workflow steps" = one bullet covering the feature end-to-end.
 5. **Keep distinct user-facing changes as separate entries.** A breaking config key change and a new CLI command are separate features even if they landed in the same development cycle.
-6. **Preserve specifics that help users upgrade.** Tool names, config key names, and breaking changes should remain explicit — consolidation reduces bullet count, not information density.
+6. **Keep the names users need, shed the rest.** Tool names, config keys, CLI options, and breaking-change notes stay explicit. But consolidation cuts per-entry *length*, not just bullet count: a merged entry is one short sentence naming the feature, not a paragraph stacking every mechanism and rationale from the bullets it replaced. Target ~10-25 words (`CLAUDE.md` § Changelog entry length); push implementation detail and "why" to the commit, PR, code comment, or `docs/`.
 7. **Remove implementation details** that don't affect users: internal refactors, helper functions, test additions.
-8. **Order entries by category:** new features first, then broad/global changes, then bug fixes, then documentation and testing.
+   Also strip upstream issue commentary: trailing prose that links to upstream tickets and narrates their status ("Click does not ship an equivalent: the upstream conversation is in `pallets/click#NNNN` (open)…", "mirrors the upstream fix in PR `…#NNNN`"). The status rots within days and the prose duplicates what the linked thread already says. A bare upstream link is acceptable on a direct backport entry; longer rationale belongs in a code comment, docstring, or PR body.
+8. **Order entries by category, breaking changes first:** lead with `**Breaking:**` entries, then new features, then broad/global changes, then bug fixes, then documentation and testing. Breaking changes are what a reader scans for before upgrading, so they go at the top of the block.
 9. **Apply directly.** Write the consolidated section to `changelog.md` without asking for approval. Summarize what was merged, dropped, or reordered after writing.
+10. **Validate after writing.** A bulk rewrite can introduce malformed markup or silently drop structure. Before reporting, confirm: no doubled list markers (a stray `- -`), `mdformat` leaves the file unchanged (run it, expect a no-op), and the `## [...]` heading count and availability-admonition count match what they were before the edit. Breaking entries lead each section (rule 8).
 
 ### Style rules
 
-Follow `CLAUDE.md` § Changelog and readme updates (what-not-why, concise entries) and § Version formatting (bare versions in changelog headings, no `v` prefix).
+Follow `CLAUDE.md` § Changelog and docs updates and § Changelog entry length (one short sentence per change, what-not-how-or-why) and § Version formatting (bare versions in changelog headings, no `v` prefix).
 
 ### Next steps
 
