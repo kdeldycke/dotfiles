@@ -29,6 +29,11 @@ gitignore.extra-categories = [
 skills.location = "./dotfiles/.claude/skills/"
 
 [tool.repomatic.workflow.paths]
+"docs.yaml" = [
+    ".github/workflows/docs.yaml",
+    "pyproject.toml",
+    "**/*.md",
+]
 "tests.yaml" = [
     ".github/workflows/tests.yaml",
     "dotfiles/**",
