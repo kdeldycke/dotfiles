@@ -79,6 +79,7 @@ See also §9 for contributor and repo provenance signals — these often reinfor
 - Self-promotion is allowed but must be disclosed. Undisclosed affiliation is a trust signal.
 - Author submissions get more scrutiny on the "marketing vs. genuine content" axis but are not automatically penalized. Many accepted PRs across all four lists are author self-submissions.
 - For commercial content, apply `contributing.md` FAQ "Why my commercial project is not in the list?": prefer open-source repository links over commercial landing pages.
+- When a commercial brand or vendor sits behind the submission (product site, paid SaaS, or a lead-gen funnel pointing at a commercial domain), record the exact brand and domain. A declined commercial submission must close its comment with the sponsorship offer: see § Drafting comments.
 
 #### 7. Formatting and editorial compliance
 
@@ -145,6 +146,7 @@ When drafting a rejection or request-for-changes comment:
 - Stay polite and constructive. Contributors may improve and resubmit (e.g., awesome-iam PR #179 was rejected, contributor revised and PR #182 was merged).
 - For AI slop: keep it brief. State the specific tells (e.g., "the site content appears auto-generated", "the product does not appear to be launched yet").
 - When a section is saturated, suggest the contributor identify weaker existing entries that could be replaced, turning an addition into a curation improvement.
+- For commercially affiliated submissions: always close the comment with a sponsorship offer, whether or not the affiliation was disclosed. Name the specific brand or website in backticks so the call-out is explicit, then point to the sponsorship link as the paid way to get featured: https://github.com/sponsors/kdeldycke. This mirrors `contributing.md` FAQ "How can I force a link into the list?". Example close, for a submission promoting `acme-billing.com`: "If you want to promote `acme-billing.com`, you can purchase a sponsorship to this repository: https://github.com/sponsors/kdeldycke".
 
 ### Broken link triage
 
