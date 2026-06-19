@@ -127,7 +127,7 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
 
 5. **Fix the root cause** using the combined picture from CI logs and local results (step 3). Fix the codebase, not the tests, unless the tests are genuinely wrong. If both mypy and ruff have failures, address them together. Fixing them independently risks an oscillation loop (see [§ mypy/ruff fix oscillation](#mypy-ruff-fix-oscillation)).
 
-   If the root cause is in a third-party dependency (not this project's code), use `/file-bug-report` to prepare an upstream bug report instead of working around the issue locally.
+   If the root cause is in a third-party dependency (not this project's code), check whether a change *this cycle* exposed it before treating it as purely upstream. Run `git log <last-release-tag>..HEAD` for a runner/image swap, a dependency bump, or a config change that put the dependency in a context it cannot satisfy: a Rust-built package forced to compile from an sdist on an architecture with no published wheel, say. When a cycle change is the trigger, the fix is to revert or adjust *that* change, not to file a bug and wait on upstream. Only when the failure is independent of everything this cycle touched should you use `/file-bug-report` to prepare an upstream report instead of working around it locally.
 
    After applying fixes, re-run the full local validation:
 
@@ -149,6 +149,8 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
    If a `format-python` autofix PR exists, review its diff: it contains ruff's own autofixes for the same commit. If it resolves issues you're seeing, merge it first (`gh pr merge --squash`), pull, and rebase your fix before pushing.
 
 7. **Commit the fix** with a clear message describing what changed and why, then `git push`.
+
+   When the fix corrects a *user-facing* bug, add a `changelog.md` entry for it, but only when the bug reached a released version. Blame the line you changed against the last release tag (`git blame`, or `git log -S '<the fixed code>' -- <file>`): a bug introduced *and* fixed within the current unreleased cycle never shipped, so it gets no entry (a no-op for users); a bug that predates the last tag is a real regression users have hit, and it does. Making this call here, rather than a blanket "always add an entry," is what keeps a parent `/repomatic-ship` run from having to add a missing entry or drop a spurious one afterward.
 
    **If commit signing fails, do not loop on it.** Signed commits have two failure modes the harness can't tell apart. The sandbox can block the SSH socket or key under `~/.ssh/*` and the commit fails with `Operation not permitted` — the fix is `dangerouslyDisableSandbox: true` for the `git commit` and `git push` calls only; that surface area is exactly two commands. A hardware-backed key (Secretive, YubiKey, TPM) then prompts the maintainer for Touch ID or a button press on each signature and surfaces a refused or missed prompt as `agent refused operation?`, which is indistinguishable from a real signing failure. Retry once at most after disabling the sandbox; if the second attempt still refuses, hand off cleanly instead of burning prompts the maintainer may not be watching: stage the specific files you fixed (never `git add -A`), return the exact commit message and the `git push` command verbatim, exit the loop, and let the parent skill (or the maintainer directly) re-issue. The fix itself is already done — only the signature is missing.
 
@@ -236,6 +238,7 @@ Because the matrix is slow, let the fast `tests.yaml` and `lint.yaml` channels s
 
 - **Tool-runner checksum mismatch** (`ValueError: SHA-256 mismatch for https://.../tool-vX.Y.Z...`): the pinned binary's stored hash no longer matches the published artifact, usually because the upstream re-published the release. Regenerate with `repomatic update-checksums --registry`, then confirm with `repomatic run <tool>`.
 - **External-tool output parse error** (a `RuntimeError`/`KeyError` in a parser, like `fix-vulnerable-deps` reading `uv audit --output-format json`): the tool's output schema drifted under the parser. Fix the parser to match the tool's current output and update the test fixture that encoded the old shape.
+- **Dependency fails to build on the runner** (`Failed to build <pkg>`, a `maturin`/`cargo`/native-compiler error during `uv`/`pip` install): the runner cannot get a usable artifact for that dependency. This is usually self-inflicted, not upstream: a `runs-on` change *this cycle* moved the job to an architecture with no published wheel, forcing a doomed source build. Follow step 5, `git log <last-tag>..HEAD` for the workflow's `runs-on`, and revert the runner swap rather than filing an upstream bug for an sdist you were never meant to build. A genuinely broken upstream artifact (a malformed sdist failing on *every* platform) is the rarer case.
 - **Genuine content the job fixes** (real typos, an actual vulnerability): the job commits the fix and the run goes green on its own; nothing to do.
 
 ### End-of-loop retrospective
