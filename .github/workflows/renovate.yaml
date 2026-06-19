@@ -14,6 +14,6 @@ name: 🆕 Renovate
 jobs:
 
   renovate:
-    uses: kdeldycke/repomatic/.github/workflows/renovate.yaml@90400f1be5e7a4df843b83a02dd1672cfbaccfb6 # v6.27.0
+    uses: kdeldycke/repomatic/.github/workflows/renovate.yaml@a6458162963b57814a69421fed1f969cbbe1d2b6 # v6.28.0
     secrets:
       REPOMATIC_PAT: ${{ secrets.REPOMATIC_PAT }}
