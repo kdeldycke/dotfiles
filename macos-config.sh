@@ -419,6 +419,40 @@ sudo sed -i "s/#auth/auth/" /etc/pam.d/sudo_local
 
 
 ###############################################################################
+# Privacy: metadata cache cleanup                                             #
+###############################################################################
+# Wipe the local caches macOS keeps about what I type, preview and download.
+# Adapted from the drduh guide and alichtman/stronghold, made idempotent and
+# safe under `set -e`. Caches only: nothing is frozen, so macOS stays free to
+# rebuild them as normal.
+
+# Clear the keyboard / spelling / suggestion language models. macOS will
+# repopulate them from future typing.
+for dir (
+    "${HOME}/Library/LanguageModeling"
+    "${HOME}/Library/Spelling"
+    "${HOME}/Library/Suggestions"
+); do
+    [[ -d "${dir}" ]] || continue
+    sudo find "${dir}" -mindepth 1 -delete || true
+done
+
+# Flush the QuickLook thumbnail cache, which retains previews (and their
+# metadata) of files even from removed or encrypted volumes.
+qlmanage -r cache &> /dev/null || true
+ql_dir="${HOME}/Library/Application Support/Quick Look"
+[[ -d "${ql_dir}" ]] && sudo find "${ql_dir}" -mindepth 1 -delete || true
+
+# Clear Siri's local analytics database.
+rm -fv "${HOME}/Library/Assistant/SiriAnalytics.db" || true
+
+# Wipe the LaunchServices quarantine log (per-download source URLs and
+# timestamps). LaunchServices repopulates it on the next download.
+quarantine_db="${HOME}/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV2"
+[[ -f "${quarantine_db}" ]] && : > "${quarantine_db}" || true
+
+
+###############################################################################
 # Trackpad, mouse, keyboard, Bluetooth accessories and input                  #
 ###############################################################################
 
