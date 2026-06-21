@@ -815,8 +815,10 @@ defaults write com.apple.finder CopyProgressWindowLocation -string "{2160, 23}"
 # Sets applications as default handlers for Apple's Uniform Type Identifiers  #
 ###############################################################################
 # Source: https://github.com/ptb/mac-setup/blob/develop/mac-setup.command#L2182-L2442
-
-# To hunt IDs, see: http://stackoverflow.com/a/25622557
+#
+# Each line below is a "bundle_id  uti-or-url-scheme" pair. To find the values:
+#   * App bundle ID:  osascript -e 'id of app "IINA"'
+#   * A file's UTI:   mdls -name kMDItemContentType {file}
 
 _duti='com.apple.DiskImageMounter com.apple.disk-image
 com.apple.DiskImageMounter public.disk-image
@@ -847,21 +849,15 @@ com.colliderli.iina public.mpeg-2-video
 com.colliderli.iina public.mpeg-4
 com.colliderli.iina public.mpeg-4-audio'
 
+# On recent macOS (26.4+) LaunchServices may prompt to confirm each change;
+# the default browser (the "http" line) prompts on all versions. A missing app
+# or a declined prompt must not abort the script, hence the "|| true".
 if command -v duti &> /dev/null; then
-    test -f "${HOME}/Library/Preferences/org.duti.plist" && \
-        rm "${HOME}/Library/Preferences/org.duti.plist"
-
-    printf "%s\n" "${_duti}" | \
-    while IFS="$(printf ' ')" read id uti; do
-        defaults write org.duti DUTISettings -array-add \
-            "{
-                DUTIBundleIdentifier = '$id';
-                DUTIUniformTypeIdentifier = '$uti';
-                DUTIRole = 'all';
-            }"
+    printf "%s\n" "${_duti}" | while read -r id uti; do
+        if [ -n "${id}" ]; then
+            duti -s "${id}" "${uti}" all || true
+        fi
     done
-
-    duti "${HOME}/Library/Preferences/org.duti.plist"
 fi
 
 
