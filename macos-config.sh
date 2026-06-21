@@ -263,7 +263,6 @@ defaults write com.apple.systemuiserver menuExtras -array \
 # Security                                                                   #
 ##############################################################################
 # Also see: https://github.com/drduh/macOS-Security-and-Privacy-Guide
-# https://benchmarks.cisecurity.org/tools2/osx/CIS_Apple_OSX_10.12_Benchmark_v1.0.0.pdf
 
 # Enable Firewall. Possible values: 0 = off, 1 = on for specific services, 2 =
 # on for essential services.
@@ -306,10 +305,33 @@ sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.captive.c
 # Disable remote apple events
 sudo systemsetup -setremoteappleevents off
 
-# Disable remote login
-# TODO: is waiting for user input. Make it unattended.
-# Remote login is already Off by default. We can ignore it for now.
-#sudo systemsetup -setremotelogin off
+# Disable remote login (SSH). The "off" toggle asks for confirmation on the
+# command line, so feed it a "yes" to keep this unattended (CIS 2.4.5).
+echo yes | sudo systemsetup -setremotelogin off
+
+# Explicitly disable the remaining sharing services. Most are already off by
+# default, but pinning them keeps a known-good state across macOS upgrades.
+# Screen sharing (CIS 2.4.3)
+sudo launchctl disable system/com.apple.screensharing
+# Remote management / Apple Remote Desktop (CIS 2.4.9)
+sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -deactivate -stop
+# File sharing over SMB (CIS 2.4.8)
+sudo launchctl disable system/com.apple.smbd
+# Printer sharing (CIS 2.4.4)
+sudo cupsctl --no-share-printers
+# DVD or CD sharing (CIS 2.4.6)
+sudo launchctl disable system/com.apple.ODSAgent
+# NFS server (CIS 4.5)
+sudo launchctl disable system/com.apple.nfsd
+# Apache HTTP server (CIS 4.4)
+sudo launchctl disable system/org.apache.httpd
+
+# Disable the root account by pointing its shell at /usr/bin/false (CIS 5.6).
+sudo dscl . -create /Users/root UserShell /usr/bin/false
+
+# Disable Power Nap, so the machine stays asleep instead of waking to sync
+# mail and updates (CIS 2.9).
+sudo pmset -a powernap 0
 
 # Disable wake-on modem
 # XXX setwakeonmodem returns "Wake On Modem: Not supported on this machine." for now.
