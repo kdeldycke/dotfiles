@@ -834,52 +834,17 @@ defaults write com.apple.finder CopyProgressWindowLocation -string "{2160, 23}"
 
 
 ###############################################################################
-# Sets applications as default handlers for Apple's Uniform Type Identifiers  #
+# Sets applications as default handlers for file types and URL schemes        #
 ###############################################################################
-# Source: https://github.com/ptb/mac-setup/blob/develop/mac-setup.command#L2182-L2442
+# Associations live in ~/.config/infat/config.toml (symlinked from this repo by
+# install.sh) and are applied here through LaunchServices by infat:
+#   https://github.com/philocalyst/infat
 #
-# Each line below is a "bundle_id  uti-or-url-scheme" pair. To find the values:
-#   * App bundle ID:  osascript -e 'id of app "IINA"'
-#   * A file's UTI:   mdls -name kMDItemContentType {file}
-
-_duti='com.apple.DiskImageMounter com.apple.disk-image
-com.apple.DiskImageMounter public.disk-image
-com.apple.DiskImageMounter public.iso-image
-com.apple.Terminal com.apple.terminal.shell-script
-com.apple.installer com.apple.installer-package-archive
-com.apple.Safari http
-com.colliderli.iina com.apple.coreaudio-format
-com.colliderli.iina com.apple.m4a-audio
-com.colliderli.iina com.apple.m4v-video
-com.colliderli.iina com.apple.mpeg-4-ringtone
-com.colliderli.iina com.apple.protected-mpeg-4-audio
-com.colliderli.iina com.apple.protected-mpeg-4-video
-com.colliderli.iina com.apple.quicktime-movie
-com.colliderli.iina com.audible.aa-audio
-com.colliderli.iina com.microsoft.waveform-audio
-com.colliderli.iina com.microsoft.windows-media-wmv
-com.colliderli.iina public.ac3-audio
-com.colliderli.iina public.aifc-audio
-com.colliderli.iina public.aiff-audio
-com.colliderli.iina public.audio
-com.colliderli.iina public.audiovisual-content
-com.colliderli.iina public.avi
-com.colliderli.iina public.movie
-com.colliderli.iina public.mp3
-com.colliderli.iina public.mpeg
-com.colliderli.iina public.mpeg-2-video
-com.colliderli.iina public.mpeg-4
-com.colliderli.iina public.mpeg-4-audio'
-
-# On recent macOS (26.4+) LaunchServices may prompt to confirm each change;
-# the default browser (the "http" line) prompts on all versions. A missing app
-# or a declined prompt must not abort the script, hence the "|| true".
-if command -v duti &> /dev/null; then
-    printf "%s\n" "${_duti}" | while read -r id uti; do
-        if [ -n "${id}" ]; then
-            duti -s "${id}" "${uti}" all || true
-        fi
-    done
+# On recent macOS (26.4+) LaunchServices may prompt to confirm each change, and
+# the default browser prompts on every version. A missing app or a declined
+# prompt must not abort the script, hence the "|| true".
+if command -v infat &> /dev/null; then
+    infat --config "${HOME}/.config/infat/config.toml" || true
 fi
 
 

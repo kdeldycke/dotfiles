@@ -1,0 +1,26 @@
+# Default applications for file types and URL schemes, applied by infat:
+#   https://github.com/philocalyst/infat
+#
+# infat reads this file from $XDG_CONFIG_HOME/infat/config.toml (so
+# ~/.config/infat/config.toml) and macos-config.sh applies it via LaunchServices.
+#
+# Two infat quirks to keep in mind when editing:
+#   * Apps are named ("IINA", "Safari"), not referenced by bundle ID.
+#   * [types] keys are infat's supertype aliases, not raw UTIs. A supertype
+#     covers its conforming subtypes, so "movie" also catches avi, wmv, mpeg.
+#
+# On macOS 26.4+ LaunchServices prompts to confirm each change, and the browser
+# ("web") prompts on every version.
+
+# Make Safari the default web browser (http and https).
+[schemes]
+web = "Safari"
+
+# Open every audio and video format with IINA.
+[types]
+audio = "IINA"
+movie = "IINA"
+mp4-audio = "IINA"
+mp4-movie = "IINA"
+quicktime = "IINA"
+video = "IINA"
