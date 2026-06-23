@@ -277,6 +277,14 @@ nvim -c "try | call dein#update() | finally | qall! | endtry"
 mpm --verbosity INFO cleanup
 brew services cleanup
 
+# Empty the Trash on the startup disk and all mounted volumes.
+trash=(~/.Trash/*(N) /Volumes/*/.Trashes/*(N))
+(( ${#trash} )) && rm -rf "${trash[@]}" || true
+
+# Flush the DNS resolver cache.
+sudo dscacheutil -flushcache
+sudo killall -HUP mDNSResponder
+
 
 ######### Update package versions #########
 
