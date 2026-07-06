@@ -244,6 +244,8 @@ Deliberate exemptions, to exclude when tailoring the baseline:
 - `pwpolicy_*`: no password lockout, history or rotation policy on a personal machine.
 - `system_settings_firewall_enable` and `system_settings_firewall_stealth_mode_enable`: enforced with `socketfilterfw` instead of a configuration profile, so the check (which reads the managed preference) can report a false failure while the firewall is actually on.
 
+Rules that stay check-only without an MDM, to carry into the generated configuration profile instead of `macos-config.sh`: `os_mail_summary_disable`, `os_notes_transcription_disable`, `os_notes_transcription_summary_disable`, `os_on_device_dictation_enforce`, `os_software_update_deferral`, `os_writing_tools_disable`, `system_settings_external_intelligence_disable` and `system_settings_external_intelligence_sign_in_disable`. A few others (Siri, AirPlay receiver, Internet Sharing) are set by `macos-config.sh` through their real preference keys, but only the corresponding profile payload prevents re-enablement. `system_settings_time_machine_encrypted_configure` stays manual: encryption is picked when selecting the backup disk.
+
 ## Versions
 
 Only the current default `main` branch is supported and actively maintained.

@@ -327,6 +327,23 @@ sudo launchctl disable system/com.apple.nfsd
 # Apache HTTP server (CIS 4.4)
 sudo launchctl disable system/org.apache.httpd
 
+# Disable Internet Sharing. Off by default, this pins it; only a
+# configuration profile can prevent re-enablement
+# (mSCP: system_settings_internet_sharing_disable).
+sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.nat NAT -dict Enabled -int 0
+
+# Disable Bluetooth sharing (mSCP: system_settings_bluetooth_sharing_disable).
+defaults -currentHost write com.apple.Bluetooth PrefKeyServicesEnabled -bool false
+
+# Disable AirPlay receiver. Apple fixed the misspelled key at some point and
+# both spellings coexist, so pin the two
+# (mSCP: system_settings_airplay_receiver_disable).
+defaults -currentHost write com.apple.controlcenter AirplayReceiverEnabled -bool false
+defaults -currentHost write com.apple.controlcenter AirplayRecieverEnabled -bool false
+
+# Disable SMB guest access (mSCP: system_settings_guest_access_smb_disable).
+sudo sysadminctl -smbGuestAccess off
+
 # Disable the root account by pointing its shell at /usr/bin/false (CIS 5.6).
 sudo dscl . -create /Users/root UserShell /usr/bin/false
 
@@ -349,11 +366,55 @@ sudo defaults write /Library/Preferences/com.apple.loginwindow SHOWFULLNAME -boo
 # Do not show password hints
 sudo defaults write /Library/Preferences/com.apple.loginwindow RetriesUntilHint -int 0
 
+# Remove password hints already stored on user records
+# (mSCP: os_password_hint_remove).
+for u ($(dscl . -list /Users UniqueID | awk '$2 > 500 {print $1}')); do
+    sudo dscl . -delete "/Users/${u}" hint &> /dev/null || true
+done
+
 # Disable guest account login
 sudo defaults write /Library/Preferences/com.apple.loginwindow GuestEnabled -bool false
 
+# Remove the Guest home folder (mSCP: os_guest_folder_removed).
+sudo rm -rf /Users/Guest
+
 # Disable automatic login
 sudo defaults delete /Library/Preferences/com.apple.loginwindow autoLoginUser || true
+
+# Unlocking a locked session requires the password of the signed-in user,
+# not that of any admin (mSCP: os_unlock_active_user_session_disable). The
+# Platform SSO variant of the rule does not apply to a personal machine.
+sudo security -q authorizationdb write system.login.screensaver "authenticate-session-owner"
+
+# Require an administrator password for the system-wide preference panes,
+# and do not share their unlocked state between panes
+# (mSCP: system_settings_system_wide_preferences_configure).
+for section (
+    system.preferences
+    system.preferences.energysaver
+    system.preferences.network
+    system.preferences.printing
+    system.preferences.sharing
+    system.preferences.softwareupdate
+    system.preferences.startupdisk
+    system.preferences.timemachine
+); do
+    authdb_plist="/tmp/${section}.plist"
+    sudo security -q authorizationdb read "${section}" > "${authdb_plist}"
+    for key_type_value (
+        "class string user"
+        "shared bool false"
+        "authenticate-user bool true"
+        "session-owner bool false"
+        "group string admin"
+    ); do
+        parts=(${=key_type_value})
+        /usr/libexec/PlistBuddy -c "Set :${parts[1]} ${parts[3]}" "${authdb_plist}" 2> /dev/null \
+            || /usr/libexec/PlistBuddy -c "Add :${parts[1]} ${parts[2]} ${parts[3]}" "${authdb_plist}"
+    done
+    sudo security -q authorizationdb write "${section}" < "${authdb_plist}"
+    rm -f "${authdb_plist}"
+done
 
 # A lost machine might be lucky and stumble upon a Good Samaritan.
 sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText \
@@ -392,8 +453,18 @@ wget -O "${HOME}/NextDNS.cer" https://nextdns.io/ca
 sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain "${HOME}/NextDNS.cer"
 rm -rfv "${HOME}/NextDNS.cer"
 
-# Secure Home Folders for all users:
-# sudo chmod -R og-rwx /Users/<username>
+# Secure home folders from other local users, non-recursively as mSCP does
+# (mSCP: os_home_folders_secure).
+for home_dir (/Users/*(N/)); do
+    [[ "${home_dir:t}" == "Shared" ]] && continue
+    sudo chmod og-rwx "${home_dir}"
+done
+
+# Strip world-write from system support folders and system-wide apps
+# (mSCP: os_world_writable_system_folder_configure /
+# os_system_wide_applications_configure).
+sudo command find /System/Volumes/Data/System -type d -perm -2 ! -path '*downloadDir*' ! -path '*locks*' -exec chmod o-w '{}' + 2> /dev/null || true
+sudo command find /Applications -iname '*.app' -type d -perm -2 -exec chmod -R o-w '{}' + 2> /dev/null || true
 
 # Keep system.log for 90 days. The application firewall now logs to the
 # unified log: there is no appfirewall.log rotation to configure anymore.
@@ -424,11 +495,68 @@ sudo perl -p -i -e 's|^expire-after:.*|expire-after:30d|' /etc/security/audit_co
 sudo launchctl enable system/com.apple.auditd
 sudo launchctl bootstrap system /System/Library/LaunchDaemons/com.apple.auditd.plist || true
 sudo audit -i || true
+# Tighten audit config and trail ownership, modes and ACLs
+# (mSCP: audit_control_* / audit_files_* / audit_folder*_configure /
+# audit_acls_*).
+sudo chown root:wheel /etc/security/audit_control
+sudo chmod 440 /etc/security/audit_control
+sudo chmod -N /etc/security/audit_control
+if [[ -d /var/audit ]]; then
+    sudo chown root:wheel /var/audit
+    sudo chmod 700 /var/audit
+    sudo zsh -c 'chmod -RN /var/audit && chown root:wheel /var/audit/* && chmod 440 /var/audit/*' 2> /dev/null || true
+fi
+
+# Cap sudo credential caching at 5 minutes (the macOS default, pinned: CIS
+# prefers 0 but that would prompt on every sudo line of this very script),
+# keep per-tty timestamps and log allowed commands
+# (mSCP: os_sudo_timeout_configure / os_sudoers_timestamp_type_configure /
+# os_sudo_log_enforce).
+sudo command find /etc/sudoers* -type f -exec /usr/bin/sed -i '' '/timestamp_timeout/d; /timestamp_type/d; /!tty_tickets/d; /!log_allowed/d' '{}' \;
+sudo tee /etc/sudoers.d/mscp.tmp > /dev/null <<EOF
+Defaults timestamp_timeout=5
+Defaults log_allowed
+EOF
+sudo chmod 440 /etc/sudoers.d/mscp.tmp
+# Validate before install: a broken sudoers.d file locks sudo out. The .tmp
+# name is skipped by sudo (names with a dot are ignored) until the rename.
+sudo visudo -c -f /etc/sudoers.d/mscp.tmp
+sudo mv /etc/sudoers.d/mscp.tmp /etc/sudoers.d/mscp
 
 # Activates Touch ID for sudo and make it persistent.
 # See: https://sixcolors.com/post/2023/08/in-macos-sonoma-touch-id-for-sudo-can-survive-updates/
 sudo cp /etc/pam.d/sudo_local.template /etc/pam.d/sudo_local
 sudo sed -i "s/#auth/auth/" /etc/pam.d/sudo_local
+
+
+###############################################################################
+# Privacy: telemetry and data sharing                                         #
+###############################################################################
+
+# Do not auto-submit diagnostics and usage data to Apple, nor share crash
+# data with app developers. This is the plist behind System Settings →
+# Privacy & Security → Analytics & Improvements
+# (mSCP: system_settings_diagnostics_reports_disable).
+sudo defaults write "/Library/Application Support/CrashReporter/DiagnosticMessagesHistory.plist" AutoSubmit -bool false
+sudo defaults write "/Library/Application Support/CrashReporter/DiagnosticMessagesHistory.plist" ThirdPartyDataSubmit -bool false
+
+# Opt out of sharing Siri and dictation recordings with Apple, and of search
+# queries data sharing (mSCP: system_settings_improve_siri_dictation_disable
+# / system_settings_improve_search_disable).
+defaults write com.apple.assistant.support 'Siri Data Sharing Opt-In Status' -int 2
+defaults write com.apple.assistant.support 'Search Queries Data Sharing Status' -int 2
+
+# Do not donate audio recordings to improve accessibility voice features
+# (mSCP: system_settings_improve_assistive_voice_disable).
+defaults write com.apple.Accessibility AXSAudioDonationSiriImprovementEnabled -bool false
+
+# Disable Siri. Only the allowAssistant configuration profile key can
+# prevent re-enablement (mSCP: system_settings_siri_disable).
+defaults write com.apple.assistant.support 'Assistant Enabled' -bool false
+
+# Opt out of Apple personalized advertising
+# (mSCP: system_settings_personalized_advertising_disable).
+defaults write com.apple.AdLib allowApplePersonalizedAdvertising -bool false
 
 
 ###############################################################################
@@ -1219,6 +1347,14 @@ defaults write com.apple.Safari InstallExtensionUpdatesAutomatically -bool true
 defaults write com.apple.Safari BlockStoragePolicy -int 2
 defaults write com.apple.Safari WebKitStorageBlockingPolicy -int 1
 defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2StorageBlockingPolicy -int 1
+
+# Prevent cross-site tracking, completing the legacy pair above with the
+# modern WebKit key (mSCP: os_safari_prevent_cross-site_tracking_enable).
+defaults write com.apple.Safari WebKitPreferences.storageBlockingPolicy -int 1
+
+# Use privacy-preserving click measurement instead of ad tracking
+# (mSCP: os_safari_advertising_privacy_protection_enable).
+defaults write com.apple.Safari WebKitPreferences.privateClickMeasurementEnabled -bool true
 
 # Deny location services access from websites
 # 0: Deny without Prompting
