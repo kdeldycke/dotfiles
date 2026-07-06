@@ -206,6 +206,44 @@ It mainly consist in refreshing some assets at every macOS major release:
 
 - Update screenshots. 😖
 
+- Run the [security audit](#security-audit) below.
+
+### Security audit
+
+At every macOS major release, I audit `macos-config.sh` against the [NIST macOS Security Compliance Project](https://github.com/usnistgov/macos_security) (mSCP) to catch security settings that the new release moved, renamed or retired. Security-related lines in the script are tagged with their stable mSCP rule id (like `system_settings_firewall_enable`) so a failing rule maps straight back to the line to update.
+
+1. Clone the mSCP branch named after the macOS release (`tahoe` for macOS 26, `sequoia` for macOS 15, and so on):
+
+   ```shell-session
+   $ git clone --branch tahoe --depth 1 https://github.com/usnistgov/macos_security.git
+   $ cd macos_security
+   ```
+
+2. Build a tailored CIS level 1 baseline. The interactive prompts let me exclude the deliberate exemptions listed below and set my own organization-defined values (like the 600 seconds screen saver timeout, the 30 days audit retention, or `time.euro.apple.com` as time server):
+
+   ```shell-session
+   $ uv run --with-requirements requirements.txt scripts/generate_baseline.py --keyword cis_lvl1 --tailor
+   ```
+
+3. Generate the compliance script from the tailored baseline and run it in check-only mode:
+
+   ```shell-session
+   $ uv run --with-requirements requirements.txt scripts/generate_guidance.py --script build/baselines/cis_lvl1.yaml
+   $ sudo zsh build/cis_lvl1/cis_lvl1_compliance.sh --check
+   $ sudo zsh build/cis_lvl1/cis_lvl1_compliance.sh --stats
+   ```
+
+4. Reconcile every failing rule: port the rule's `fix` command into `macos-config.sh` (tagged with its mSCP rule id), or add the rule to the exemption list below. Then re-run `macos-config.sh` and check again: macOS upgrades silently reset some settings (launchd service overrides and `pmset` values in particular), and re-running the script is the intended remedy. Rules marked "implemented by a Configuration Profile" have no CLI equivalent: generate the profiles with `--profiles` (or `--consolidated-profile`) and import them via `System Settings.app` → `Privacy & Security` → `Profiles`.
+
+Deliberate exemptions, to exclude when tailoring the baseline:
+
+- `os_airdrop_disable`: AirDrop stays enabled, on all interfaces.
+- `os_gatekeeper_enable`: Gatekeeper assessments stay on, but I disable the `LSQuarantine` prompt, and the `SIP_DISABLED` branch of the script adds a Developer Tools bypass for Terminal.
+- `os_handoff_disable`: Handoff between my devices stays enabled.
+- `os_loginwindow_adminhostinfo_disabled`: I show the hostname at the login window on purpose.
+- `pwpolicy_*`: no password lockout, history or rotation policy on a personal machine.
+- `system_settings_firewall_enable` and `system_settings_firewall_stealth_mode_enable`: enforced with `socketfilterfw` instead of a configuration profile, so the check (which reads the managed preference) can report a false failure while the firewall is actually on.
+
 ## Versions
 
 Only the current default `main` branch is supported and actively maintained.

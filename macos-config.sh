@@ -202,9 +202,6 @@ defaults write com.apple.helpviewer DevMode -bool true
 # in the login window
 sudo defaults write /Library/Preferences/com.apple.loginwindow AdminHostInfo -string "HostName"
 
-# Restart automatically if the computer freezes
-sudo systemsetup -setrestartfreeze on
-
 # Disable automatic capitalization as it’s annoying when typing code
 defaults write NSGlobalDomain NSAutomaticCapitalizationEnabled -bool false
 
@@ -264,19 +261,20 @@ defaults write com.apple.systemuiserver menuExtras -array \
 ##############################################################################
 # Also see: https://github.com/drduh/macOS-Security-and-Privacy-Guide
 
-# Enable Firewall. Possible values: 0 = off, 1 = on for specific services, 2 =
-# on for essential services.
-sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 1
+# The application firewall configuration moved out of
+# /Library/Preferences/com.apple.alf in macOS 15: defaults writes there are
+# silently ignored. socketfilterfw is the supported CLI. Firewall events now
+# land in the unified log, and the old logging toggle is gone.
+# Enable firewall (mSCP: system_settings_firewall_enable).
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on
 
-# Enable stealth mode
-# https://support.apple.com/kb/PH18642
-sudo defaults write /Library/Preferences/com.apple.alf stealthenabled -bool true
+# Enable stealth mode (mSCP: system_settings_firewall_stealth_mode_enable).
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on
 
-# Enable firewall logging
-sudo defaults write /Library/Preferences/com.apple.alf loggingenabled -bool true
-
-# Do not automatically allow signed software to receive incoming connections
-sudo defaults write /Library/Preferences/com.apple.alf allowsignedenabled -bool false
+# Do not automatically allow built-in and downloaded signed software to
+# receive incoming connections.
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setallowsigned off
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setallowsignedapp off
 
 # Apply configuration on all network interfaces.
 #   $ networksetup -listallnetworkservices
@@ -302,12 +300,15 @@ done
 # Disable wifi captive portal
 sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.captive.control Active -bool false
 
-# Disable remote apple events
+# Disable remote apple events (mSCP: system_settings_rae_disable).
 sudo systemsetup -setremoteappleevents off
+sudo launchctl disable system/com.apple.AEServer
 
-# Disable remote login (SSH). The "off" toggle asks for confirmation on the
-# command line, so feed it a "yes" to keep this unattended (CIS 2.4.5).
-echo yes | sudo systemsetup -setremotelogin off
+# Disable remote login (SSH) and pin the service off across upgrades
+# (mSCP: system_settings_ssh_disable). systemsetup requires Full Disk Access
+# on the parent process, and -f skips the confirmation prompt.
+sudo systemsetup -f -setremotelogin off
+sudo launchctl disable system/com.openssh.sshd
 
 # Explicitly disable the remaining sharing services. Most are already off by
 # default, but pinning them keeps a known-good state across macOS upgrades.
@@ -380,10 +381,7 @@ fi
 # Disable automatic login when FileVault is enabled
 #sudo defaults write /Library/Preferences/com.apple.loginwindow DisableFDEAutoLogin -bool true
 
-# Enable secure virtual memory
-sudo defaults write /Library/Preferences/com.apple.virtualMemory UseEncryptedSwap -bool true
-
-# Disable Bonjour multicast advertisements
+# Disable Bonjour multicast advertisements (mSCP: os_bonjour_disable)
 sudo defaults write /Library/Preferences/com.apple.mDNSResponder.plist NoMulticastAdvertisements -bool true
 
 # Show location icon in menu bar when System Services request your location.
@@ -394,23 +392,38 @@ wget -O "${HOME}/NextDNS.cer" https://nextdns.io/ca
 sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain "${HOME}/NextDNS.cer"
 rm -rfv "${HOME}/NextDNS.cer"
 
-# Log firewall events for 90 days.
+# Secure Home Folders for all users:
+# sudo chmod -R og-rwx /Users/<username>
+
+# Keep system.log for 90 days. The application firewall now logs to the
+# unified log: there is no appfirewall.log rotation to configure anymore.
 sudo perl -p -i -e 's/rotate=seq compress file_max=5M all_max=50M/rotate=utc compress file_max=5M ttl=90/g' "/etc/asl.conf"
-sudo perl -p -i -e 's/appfirewall.log file_max=5M all_max=50M/appfirewall.log rotate=utc compress file_max=5M ttl=90/g' "/etc/asl.conf"
 
 # Log authentication events for 90 days.
 sudo perl -p -i -e 's/rotate=seq file_max=5M all_max=20M/rotate=utc file_max=5M ttl=90/g' "/etc/asl/com.apple.authd"
 
-# Log installation events for a year.
-sudo perl -p -i -e 's/format=bsd/format=bsd mode=0640 rotate=utc compress file_max=5M ttl=365/g' "/etc/asl/com.apple.install"
+# Log installation events for a year (mSCP: os_install_log_retention_configure).
+# The old format=bsd anchor is gone from the macOS 26 config, so replace the
+# whole install.log line, mSCP-style, which also drops the all_max cap. Pin
+# the BSD sed: Homebrew's GNU sed shadows it in PATH and parses -i differently.
+sudo /usr/bin/sed -i '' "s/\* file \/var\/log\/install.log.*/\* file \/var\/log\/install.log format='\$\(\(Time\)\(JZ\)\) \$Host \$\(Sender\)\[\$\(PID\\)\]: \$Message' rotate=utc compress file_max=50M size_only ttl=365/g" /etc/asl/com.apple.install
 
-# Increase the retention time for system.log and secure.log (CIS Requirement 1.7.1I)
-sudo perl -p -i -e 's/\/var\/log\/wtmp.*$/\/var\/log\/wtmp   \t\t\t640\ \ 31\    *\t\@hh24\ \J/g' "/etc/newsyslog.conf"
-
-# CIS 3.3 audit_control flags setting.
-sudo perl -p -i -e 's|flags:lo,aa|flags:lo,aa,ad,fd,fm,-all,^-fa,^-fc,^-cl|g' /private/etc/security/audit_control
-sudo perl -p -i -e 's|filesz:2M|filesz:10M|g' /private/etc/security/audit_control
-sudo perl -p -i -e 's|expire-after:10M|expire-after: 30d |g' /private/etc/security/audit_control
+# auditd is deprecated by Apple and ships disabled since macOS 14, without
+# even a stub config: seed /etc/security/audit_control from the example and
+# turn the service back on (mSCP: audit_auditd_enabled).
+if [[ ! -e /etc/security/audit_control && -e /etc/security/audit_control.example ]]; then
+    sudo cp /etc/security/audit_control.example /etc/security/audit_control
+fi
+# Audit authentication, administrative, file deletion and permission change
+# events on top of the login/logout defaults (mSCP: audit_flags_*).
+sudo perl -p -i -e 's|^flags:.*|flags:lo,aa,ad,fd,fm,-all,^-fa,^-fc,^-cl|' /etc/security/audit_control
+# Rotate audit trails at 10M and keep 30 days of them
+# (mSCP: audit_retention_configure).
+sudo perl -p -i -e 's|^filesz:.*|filesz:10M|' /etc/security/audit_control
+sudo perl -p -i -e 's|^expire-after:.*|expire-after:30d|' /etc/security/audit_control
+sudo launchctl enable system/com.apple.auditd
+sudo launchctl bootstrap system /System/Library/LaunchDaemons/com.apple.auditd.plist || true
+sudo audit -i || true
 
 # Activates Touch ID for sudo and make it persistent.
 # See: https://sixcolors.com/post/2023/08/in-macos-sonoma-touch-id-for-sudo-can-survive-updates/
@@ -604,11 +617,14 @@ defaults write me.guillaumeb.MonitorControl allScreens -bool false
 ###############################################################################
 
 # Start screen saver after 10 minutes
+# (mSCP: system_settings_screensaver_timeout_enforce)
 defaults -currentHost write com.apple.screensaver idleTime -int 600
 
-# Require password immediately after sleep or screen saver begins
-defaults write com.apple.screensaver askForPassword -bool true
-defaults write com.apple.screensaver askForPasswordDelay -int 0
+# Require password immediately after sleep or screen saver begins. The old
+# com.apple.screensaver askForPassword keys are ignored since Big Sur:
+# sysadminctl is the supported CLI, and prompts for the user's password
+# (mSCP: system_settings_screensaver_password_enforce).
+sysadminctl -screenLock immediate -password -
 
 # Screen Saver: Aerial
 defaults -currentHost write com.apple.screensaver moduleDict -dict moduleName -string "Aerial" path -string "${HOME}/Library/Screen Savers/Aerial.saver" type -int 0
@@ -1673,26 +1689,27 @@ defaults write com.apple.appstore ShowDebugMenu -bool true
 # Turn on automatic checking for updates
 sudo softwareupdate --schedule on
 
+# softwareupdated reads its settings from the system domain: user-domain
+# writes to com.apple.SoftwareUpdate are ignored.
 # Enable the automatic update check
-defaults write com.apple.SoftwareUpdate AutomaticCheckEnabled -bool true
-
-# Check for software updates daily, not just once per week
-defaults write com.apple.SoftwareUpdate ScheduleFrequency -int 1
+sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled -bool true
 
 # Download newly available updates in background
-defaults write com.apple.SoftwareUpdate AutomaticDownload -int 1
+# (mSCP: system_settings_software_update_download_enforce)
+sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticDownload -bool true
 
-# Install System data files & security updates
-defaults write com.apple.SoftwareUpdate CriticalUpdateInstall -int 1
+# Install security responses and system data files (mSCP:
+# system_settings_critical_update_install_enforce / os_config_data_install_enforce)
+sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate CriticalUpdateInstall -bool true
+sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate ConfigDataInstall -bool true
 
-# Automatically download apps purchased on other Macs
-defaults write com.apple.SoftwareUpdate ConfigDataInstall -int 1
+# Install macOS updates automatically
+# (mSCP: system_settings_install_macos_updates_enforce)
+sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallMacOSUpdates -bool true
 
-# Turn on app auto-update
-defaults write com.apple.commerce AutoUpdate -bool true
-
-# Allow the App Store to reboot machine on macOS updates
-defaults write com.apple.commerce AutoUpdateRestartRequired -bool true
+# Turn on App Store app auto-update (mSCP: os_software_update_app_update_enforce)
+sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallAppUpdates -bool true
+sudo defaults write /Library/Preferences/com.apple.commerce AutoUpdate -bool true
 
 # Turn off video autoplay.
 defaults write com.apple.AppStore AutoPlayVideoSetting -string "off"
