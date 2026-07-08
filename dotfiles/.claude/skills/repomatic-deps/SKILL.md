@@ -156,9 +156,9 @@ When `explore` mode identifies a candidate, the review output should include it 
 
 These comment patterns typically signal a floor set at adoption or auto-bump time, not at an API boundary:
 
-- "First version we used" / "first version when we last changed the requirement" — the floor is an artifact of when the dep was added or last bumped by Renovate/Dependabot, not a deliberate API minimum.
+- "First version we used" / "first version when we last changed the requirement" — the floor is an artifact of when the dep was added or last bumped by a dependency bot, not a deliberate API minimum.
 - "First version to support Python 3.X" — unless it documents a `requires-python` drop alignment or a concrete build failure (missing wheels that cause install failures on that Python version), this is not a valid floor reason.
-- **The `~= -> >=` conversion pipeline.** A common inflation path: (a) dep added as `~=X.Y` (latest at time), (b) Renovate bumps to `~=X.Z`, (c) a bulk "relax requirements" commit converts all `~=` to `>=`. Each step inflates the floor without API validation. Check `git log` for this pattern when a floor looks suspiciously high.
+- **The `~= -> >=` conversion pipeline.** A common inflation path: (a) dep added as `~=X.Y` (latest at time), (b) a dependency bot bumps to `~=X.Z`, (c) a bulk "relax requirements" commit converts all `~=` to `>=`. Each step inflates the floor without API validation. Check `git log` for this pattern when a floor looks suspiciously high.
 
 ### `exclude-newer-package` cooldown audit
 

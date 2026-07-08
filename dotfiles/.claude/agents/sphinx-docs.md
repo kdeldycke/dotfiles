@@ -431,59 +431,55 @@ For `pyproject.toml` schemas, CLI command lists, and tool registries, generate t
 - `<!-- managers-sankey-start -->` / `<!-- managers-sankey-end -->` (a Mermaid sankey of supported managers).
 - `<!-- operation-matrix-start -->` / `<!-- operation-matrix-end -->` (a feature-coverage table).
 - `<!-- pytest-decorators-autodata-start -->` / `<!-- pytest-decorators-autodata-end -->` (autodata blocks for pytest fixtures).
-- `<!-- cli-reference-start -->` / `<!-- cli-reference-end -->` (the auto-generated CLI command tree in `cli.md`).
+- `<!-- python-compat-matrix-start -->` / `<!-- python-compat-matrix-end -->` (a compatibility table refreshed by a regenerator).
 
 Pick the `{feature}` slug from the canonical name of the source-of-truth (registry name, dataclass name, command path); pick the `{kind}` slug from the output shape (`table`, `sankey`, `mindmap`, `autodata`, `automodule`, `autodoc`, `reference`).
 
 When a page has only one auto-region, still name it: cheap insurance against a future second region, and consistency across the doc tree.
 
-When extracting attribute docstrings via AST, use `inspect.cleandoc`, not `textwrap.dedent`. `cleandoc` follows PEP 257: it ignores the first line's indent (zero, because docstrings open with `"""Text...`) and dedents subsequent lines based on their common indent. `textwrap.dedent` returns the input unchanged when the first line has no leading whitespace, leaving stray 4-space indents on every continuation line.
+To extract attribute docstrings from a dataclass, use click-extra's public `field_docstrings()` (full text, keyed by field name) or `schema_field_infos()` (per-option records with dotted keys, types, defaults, and summaries); don't hand-roll the AST walking they encapsulate. Both need the class importable from a real source file: classes born in an `exec` (like a `{click:source}` block) document without descriptions.
 
 Document **dataclass fields with attribute docstrings** (PEP 257 string literal immediately after the annotated assignment), not `:param:` entries in the class docstring. The class docstring stays focused on the class purpose; the attribute docstrings feed the configuration reference (see § Recipes › `configuration.md`).
 
 ## Recipes for common doc artifacts
 
-The patterns below are how this repo generates `docs/configuration.md`, `docs/cli.md`, and `docs/install.md`. Downstream CLI projects can replicate them verbatim by pointing at their own dataclass schema and Click root command. The canonical implementation lives in `docs/docs_update.py` and `repomatic/config.py` of `kdeldycke/repomatic`.
+The patterns below are how this repo renders `docs/configuration.md`, `docs/cli.md`, and `docs/install.md`. Downstream CLI projects can replicate them verbatim by pointing at their own dataclass schema and Click root command. Every reference page renders live (click-extra directives for the CLI and config references, `{python:render}` blocks over `repomatic.tool_runner_page` for the tool registry); the repo has no `docs_update.py` regenerator, and only `install.md`'s matrix stays checked in as a marker region for GitHub rendering. Free-form per-tool prose lives in the registry itself (`ToolSpec.docs_notes`), not in the page, so it survives without marker islands.
 
 ### `configuration.md`: option reference from a dataclass
 
-Source of truth: a single `Config` dataclass (with nested sub-dataclasses for grouped options) where every field carries a default and an attribute docstring (PEP 257 string literal immediately after the annotated assignment).
+Source of truth: a single `Config` dataclass (with nested sub-dataclasses for grouped options) where every field carries a default and an attribute docstring (PEP 257 string literal immediately after the annotated assignment), wired to the CLI with `@group(config_schema=Config)`.
 
-Two extraction passes:
+The whole reference is one directive, rendered at build time:
 
-- **Short summary** (first paragraph, collapsed onto one line) for the summary table and any CLI table output (e.g., `show-config`). Function returns 4-tuples: `(option, type, default, short_desc)`.
-- **Full docstring** (all paragraphs, dedented with `inspect.cleandoc`) for the per-option prose. Function returns `dict[option_key, full_text]`.
+````markdown
+```{click:config} <cli>
+from <package>.cli import <cli>
+```
+````
 
-Summary table columns: `Option | Description | Default`. The Option cell is `[`{option}`](#{slug})` so deep links land on the per-option section. Skip `Type` here — it's noise.
-
-Per-option section shape:
-
-1. One-line summary (first paragraph of the docstring, collapsed).
-2. `**Type:** `…` | **Default:** …` line.
-3. Rest of the docstring (paragraphs after the first).
-4. `**Example:**` block — a TOML/YAML/JSON snippet with the field set to its default. Build the example from the raw default value, not the formatted string. Skip the example when the default is `None` or otherwise unrepresentable.
+It expands into a summary table (`Option | Description | Default`, each option deep-linking to its section) and one section per option: summary line, `**Type:** … | **Default:** …`, the rest of the docstring, and a TOML example pinned to the default (`:section:` defaults to `tool.{cli-name}`). The same `schema_field_infos()` records back any CLI table output (like `show-config`), so docs and CLI cannot drift apart.
 
 Mechanical safeguards:
 
-- A test that runs `<cli> show-config` and asserts every option name appears as `` `option-name` `` somewhere in `configuration.md`. Cheap to maintain, catches options added without a doc entry.
-- A test that asserts `cli_reference()` and `config_full_descriptions()` produce the option keys the CLI exposes (no orphans, no missing keys).
+- A canary test asserting the `{click:config}` block is present in the page. Option coverage is by construction; only the directive's removal needs guarding.
+- Sphinx fails the build if the CLI module won't import or no `config_schema` is wired.
 
 ### `cli.md`: CLI reference rendered live
 
-Walk the Click command tree (`<cli>.commands` and any `Group.commands`), collect `(path, command)` entries, sort top-level groups alphabetically.
+The whole reference is one directive walking the live command tree at build time:
 
-Emit, in order:
+````markdown
+```{click:tree} <cli>
+from <package>.cli import <cli>
+```
+````
 
-1. A summary table `Command | Description` linking each `[`<cli> <path>`](#<cli>-<path>)`. Description is `cmd.get_short_help_str()` with trailing periods stripped.
-2. A leading `{click:source}` `:hide-source:` block carrying `from <package>.cli import <cli>` so the symbol persists into every later `{click:run}`. (See § Live-rendering over captured output for why the import cannot live inside the first `{click:run}`: per-block `local_vars` discard top-level assignments.)
-3. A `## Help screen` section with one `{click:run}` block invoking `[--help]`.
-4. One section per command, heading depth = path length, body = a `{click:run}` block invoking `[*path, "--help"]`.
+It expands into a summary table linking each `[`<cli> <path>`](#<cli>-<path>)` anchor, a `Help screen` root section, and one `{click:run} --help` capture per command, heading depth following path depth. Options like `:max-depth:`, `:root-label:`, `:no-table:` cover layout variations.
 
 Mechanical safeguards:
 
-- Wrap the generated body between `<!-- cli-reference-start -->`/`<!-- cli-reference-end -->` markers so a regenerator overwrites only the auto-region.
-- A presence test: assert each expected `invoke(<cli>, args=[…, "--help"])` literal appears in the file. The directive renders live at build time, so there's nothing else to verify here — Sphinx fails the build if the CLI module won't import or a path doesn't exist.
-- Don't add `assert` statements inside the auto-generated blocks. Reserve assertions for hand-written examples in other doc pages.
+- A canary test asserting the `{click:tree}` block is present in the page. Per-command coverage is by construction; Sphinx fails the build if the CLI won't import.
+- Don't add `assert` statements inside directive bodies. Reserve assertions for hand-written examples in other doc pages.
 
 ### `install.md`: installation page that stays accurate
 
@@ -507,7 +503,7 @@ Hand-written, but with a strict structure that downstream projects should mirror
 
    When the package is not on Repology at all, list only the directly-controlled installers (uv, pip, pipx for PyPI projects) and skip the `Install methods` tab-set entirely if even those don't apply.
 
-5. **Python compatibility matrix** — auto-generated by `update_install()` in `docs/docs_update.py` (registered alongside `update_configuration()` / `update_cli_parameters()` / `update_tool_runner()` in `__main__`, so `repomatic update-docs` refreshes it on every release without manual intervention). The source set for each cell is the `Programming Language :: Python :: X.Y` classifier list at each `vX.Y.Z` tag, not `requires-python` alone — `requires-python` gives only a lower bound; the classifier list is the explicit grid. Walk every release tag, read `pyproject.toml`, parse classifiers, collapse consecutive tags whose classifier set is identical into one row labelled with a Unicode arrow between bounds (e.g., `` `4.25.x` → `6.15.x` ``). Cells use `✅` / `❌` glyphs, not text — the green/red emoji rendering is what makes the diagonal supported-versions streak readable at a glance. Newest ranges sit on top so the streak progresses toward the upper-left over time. Pre-`v4.0.0` tags are out of scope because they predate `requires-python`; note the cutoff in a sentence beneath the table rather than padding with blank rows.
+5. **Python compatibility matrix** — a `<!-- matrix python -->` / `<!-- matrix-end -->` comment-marker region whose embedded table is regenerated by `click-extra refresh-directives` (the fourth `repomatic update-docs` phase runs it automatically), so it refreshes on every release without manual intervention. click-extra's matrix machinery owns the generation logic: per-tag Python support from classifiers with `requires-python`/Poetry/`setup.py` fallbacks, release-date capping, and range grouping. Keep the marker form (not the live `{matrix}` fence) so the table also renders when browsing the file on GitHub. Rendering conventions the reader relies on: `✅` / `❌` glyph cells, consecutive same-support tags grouped into one row labelled `` `4.25.x` → `6.15.x` ``, newest ranges on top. Tags with no Python declaration at all are out of scope; note the cutoff in a sentence beneath the table rather than padding with blank rows.
 
 6. **Executables** table linking to GitHub Release binaries for each platform/architecture. Always points at `releases/latest/download/...` — never bake in version numbers that need bumping every release.
 
@@ -562,6 +558,7 @@ Page-shape rules that apply across the roster:
   | `agents.md`              | `dependabot`         |
   | `architectures.md`       | `cpu`                |
   | `benchmark.md`           | `trophy`             |
+  | `binaries.md`            | `desktop-download`   |
   | `changelog.md`           | `diff`               |
   | `cli.md`                 | `command-palette`    |
   | `code-of-conduct.md`     | `code-of-conduct`    |

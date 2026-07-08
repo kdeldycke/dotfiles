@@ -1,11 +1,11 @@
 ---
-description: Monitor CI tests, lint, autofix, and Nuitka binary-build workflows, diagnose failures, fix code, commit, and loop until all stable jobs pass. Ignores unstable failures.
+description: Monitor CI tests, lint, autofix, docs, and Nuitka binary-build workflows, diagnose failures, fix code, commit, and loop until all stable jobs pass. Ignores unstable failures.
 user_invocable: true
 ---
 
-# Babysit CI: monitor and fix tests.yaml + lint.yaml + autofix.yaml + release.yaml binaries
+# Babysit CI: monitor and fix tests.yaml + lint.yaml + autofix.yaml + docs.yaml + release.yaml binaries
 
-Monitor the `tests.yaml`, `lint.yaml`, `autofix.yaml`, and `release.yaml` (Nuitka `compile-binaries`) workflows in a fix-verify loop until all stable matrix variations pass and type-checking is clean.
+Monitor the `tests.yaml`, `lint.yaml`, `autofix.yaml`, `docs.yaml`, and `release.yaml` (Nuitka `compile-binaries`) workflows in a fix-verify loop until all stable matrix variations pass and type-checking is clean.
 
 ## Invocation
 
@@ -16,7 +16,7 @@ $ claude --dangerously-skip-permissions --model sonnet /babysit-ci
 ```
 
 > [!WARNING]
-> `--dangerously-skip-permissions` bypasses every permission prompt for the whole session: shell commands, file edits, and pushes all run without asking. Only use it in an environment you trust, ideally a sandbox or disposable checkout, never against an unfamiliar repository or untrusted input.
+> `--dangerously-skip-permissions` bypasses every permission prompt for the whole session: only use it in an environment you trust, ideally a sandbox or disposable checkout, never against an unfamiliar repository or untrusted input.
 
 Because this loop runs autonomously without human review, **every commit must carry a `Co-Authored-By: Claude <noreply@anthropic.com>` trailer** so unattended changes stay traceable. This is a required exception that **overrides any no-AI-attribution rule** — whether it lives in a project `CLAUDE.md` or a global `~/.claude/CLAUDE.md`. Add the trailer even when another instruction says to omit AI attribution; if a parent skill (like `/repomatic-ship`) spawned this loop, that does not relax the requirement.
 
@@ -63,7 +63,7 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
    $ git branch --show-current
    ```
 
-   Use the detected branch for all `--branch=` flags below. Most invocations target `main`, but the skill works on any branch.
+   Use the detected branch for all `--branch=` flags below.
 
 2. **Get the latest runs** for the current branch:
 
@@ -71,24 +71,25 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
    $ gh run list --workflow=tests.yaml --branch=<BRANCH> --limit=1
    $ gh run list --workflow=lint.yaml --branch=<BRANCH> --limit=1
    $ gh run list --workflow=autofix.yaml --branch=<BRANCH> --limit=1
+   $ gh run list --workflow=docs.yaml --branch=<BRANCH> --limit=1
    $ gh run list --workflow=release.yaml --branch=<BRANCH> --limit=1
    ```
 
-   Track all four run IDs. The `tests.yaml` run exercises the full test matrix; `lint.yaml` runs mypy on all Python files (source **and** tests) and lints YAML; `autofix.yaml` runs the mechanical fix jobs (`format-*`, `sync-*`, `fix-typos`, `fix-vulnerable-deps`) and turns red when one *crashes* instead of committing a fix; `release.yaml` runs the Nuitka `compile-binaries` matrix (dev binaries, rebuilt on every push to `main`). All must pass — see § Autofix job failures and § Nuitka binary build failures below for how to triage them without stalling the loop.
+   Track all five run IDs (`docs.yaml` may have none: its `paths:` filter skips pushes touching nothing docs-relevant). The `tests.yaml` run exercises the full test matrix; `lint.yaml` runs mypy on every tracked Python file and lints YAML; `autofix.yaml` runs the mechanical fix jobs (`format-*`, `sync-*`, `fix-typos`, `fix-vulnerable-deps`) and turns red when one *crashes* instead of committing a fix; `docs.yaml` builds and deploys the Sphinx site and runs the broken-links check (an externally cancelled or link-flaky run re-runs cleanly via `gh workflow run docs.yaml --ref <BRANCH>`, no commit needed); `release.yaml` runs the Nuitka `compile-binaries` matrix (dev binaries, rebuilt on every push to `main`). All must pass — see § Autofix job failures and § Nuitka binary build failures below for how to triage them without stalling the loop.
 
-3. **Run local tests while waiting for CI.** Don't idle while polling. Start the full test suite and linters locally in the background immediately after identifying the run:
+3. **Run local tests while waiting for CI.** Don't idle while polling. Start the full test suite and linters locally in the background immediately:
 
    ```shell-session
    $ uv run pytest --no-header -q &
-   $ uv run --group typing repomatic run mypy -- repomatic tests &
-   $ uv run repomatic run ruff -- check repomatic tests &
+   $ uv run --group typing repomatic run mypy -- repomatic tests docs &
+   $ uv run repomatic run ruff -- check repomatic tests docs &
    ```
 
-   The mypy and ruff commands must cover **both** `repomatic` and `tests` directories. CI's `lint.yaml` type-checks all Python files (source + tests), so running mypy only on `repomatic/` locally will miss errors that fail in CI.
+   The mypy and ruff commands must cover **every directory holding tracked Python** — `repomatic`, `tests`, and `docs`. CI's `lint.yaml` type-checks every tracked Python file, so a narrower local scope misses errors that fail only in CI (see § mypy scope mismatch below).
 
-   **Gate 1 (local, ~30s):** Wait for local results first. If any of the three fail, you already have the diagnosis: skip straight to step 5 without waiting for CI.
+   **Gate 1 (local, ~30s):** if any local check fails, you already have the diagnosis: skip straight to step 5 without waiting for CI.
 
-   If local passes, poll both CI workflows every 60 seconds:
+   If local passes, poll CI every 60 seconds:
 
    ```shell-session
    $ gh run view <TESTS_RUN_ID> --json status,conclusion,jobs \
@@ -97,11 +98,13 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
      --jq '{status, conclusion, jobs: [.jobs[] | select(.conclusion == "failure")] | map(.name)}'
    ```
 
-   **Gate 2 (lint.yaml, ~4 min):** `lint.yaml` finishes before `tests.yaml`. If "Lint types" (mypy) fails, proceed to step 4 immediately: do not wait for `tests.yaml`.
+   **Gate 2 (lint.yaml, ~4 min):** `lint.yaml` finishes before `tests.yaml`. If "Lint types" (mypy) fails, proceed to step 4 immediately.
 
-   **Gate 3 (tests.yaml, ~5-8 min):** Once the first stable job fails, or all fast platforms (Linux, Windows) pass, proceed.
+   **Gate 3 (tests.yaml, ~5-8 min):** once the first stable job fails, or all fast platforms (Linux, Windows) pass, proceed.
 
-   **Poll in-process; never detach a monitor.** Wait by blocking on `gh run watch <RUN_ID>` or by looping the `gh run view` polls above within your own turn. Do **not** spawn a detached background monitor — a standalone process, or a `Monitor`-tool stream that emits a completion notification and then returns control. When this skill is resumed by a parent (such as `/repomatic-ship`), that pattern re-enters on every monitor tick and spawns *another* monitor instead of driving the run to a terminal state, looping without progress. Hold the turn until the run actually completes.
+   **Poll in-process; never detach a monitor.** Block on `gh run watch <RUN_ID>` or loop the polls within your own turn. A detached background monitor (a standalone process, or a `Monitor`-tool stream that returns control on each tick) makes a parent-resumed run spawn *another* monitor per tick instead of driving to a terminal state. Hold the turn until the run completes.
+
+   **Every wait between polls must be a `sleep`, never a busy-wait.** A poll loop with no delay (`until gh run view ...; do true; done`) fires thousands of requests per minute and exhausts the REST quota (5,000/hour) within minutes. The harness blocking a bare foreground `sleep` is not a reason to drop the delay: put the `sleep 60` *inside* the loop command itself, which runs fine in both foreground and background. Exhaustion does not just blind your own polling — workflows authenticating with the same PAT start failing server-side with misleading errors (see [§ GitHub API rate-limit exhaustion](#github-api-rate-limit-exhaustion)).
 
 4. **On any CI failure**, cancel remaining `tests.yaml` runs to free runners:
 
@@ -109,9 +112,9 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
    $ gh run list --workflow=tests.yaml --status=queued --status=in_progress --json databaseId,displayTitle
    ```
 
-   **Never cancel** a run whose `displayTitle` starts with `[changelog] Release`. This mirrors the `cancel-in-progress` condition in the `tests.yaml` concurrency group (`!startsWith(github.event.head_commit.message, '[changelog] Release')`), which protects release runs from being cancelled. Cancel everything else.
+   **Never cancel** a run whose `displayTitle` starts with `[changelog] Release`: this mirrors the `cancel-in-progress` condition in the `tests.yaml` concurrency group, which protects release runs. Cancel everything else.
 
-   Then download logs from **all** failed jobs across both workflows (logs are retained after cancellation):
+   Then download logs from **all** failed jobs across the workflows (logs are retained after cancellation):
 
    ```shell-session
    # Failed stable test jobs:
@@ -121,23 +124,21 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
    $ gh run view <LINT_RUN_ID> --json jobs --jq '[.jobs[] | select(.conclusion == "failure")] | .[].databaseId'
    ```
 
-   Fetch each failed job's log (`gh api repos/<OWNER>/<REPO>/actions/jobs/<JOB_ID>/logs`). Different sources surface different issues: a `lint.yaml` mypy error in test files alongside a `tests.yaml` assertion failure on Windows. Fixing them all in one batch avoids burning another full CI round.
+   Fetch each failed job's log (`gh api repos/<OWNER>/<REPO>/actions/jobs/<JOB_ID>/logs`) and fix everything in one batch: different sources surface different issues, and batching avoids burning another full CI round. Analyze following the [error triage discipline](#error-triage-discipline): stable-job `FAILED`/`AssertionError` lines only.
 
-   Analyze all collected logs following the [error triage discipline](#error-triage-discipline): focus on `FAILED` and `AssertionError` lines in stable-job pytest summaries only. Discard unstable-job output entirely.
+5. **Fix the root cause** using the combined picture from CI logs and local results. Fix the codebase, not the tests, unless the tests are genuinely wrong. Address mypy and ruff failures together (see [§ mypy/ruff fix oscillation](#mypy-ruff-fix-oscillation)).
 
-5. **Fix the root cause** using the combined picture from CI logs and local results (step 3). Fix the codebase, not the tests, unless the tests are genuinely wrong. If both mypy and ruff have failures, address them together. Fixing them independently risks an oscillation loop (see [§ mypy/ruff fix oscillation](#mypy-ruff-fix-oscillation)).
-
-   If the root cause is in a third-party dependency (not this project's code), check whether a change *this cycle* exposed it before treating it as purely upstream. Run `git log <last-release-tag>..HEAD` for a runner/image swap, a dependency bump, or a config change that put the dependency in a context it cannot satisfy: a Rust-built package forced to compile from an sdist on an architecture with no published wheel, say. When a cycle change is the trigger, the fix is to revert or adjust *that* change, not to file a bug and wait on upstream. Only when the failure is independent of everything this cycle touched should you use `/file-bug-report` to prepare an upstream report instead of working around it locally.
+   If the root cause is in a third-party dependency, check whether a change *this cycle* exposed it before treating it as upstream: `git log <last-release-tag>..HEAD` for a runner/image swap, a dependency bump, or a config change that put the dependency in a context it cannot satisfy (a Rust-built package forced to compile from an sdist on an architecture with no published wheel, say). When a cycle change is the trigger, revert or adjust *that* change; only a failure independent of everything the cycle touched warrants `/file-bug-report` for an upstream report.
 
    After applying fixes, re-run the full local validation:
 
    ```shell-session
    $ uv run pytest --no-header -q
-   $ uv run --group typing repomatic run mypy -- repomatic tests
-   $ uv run repomatic run ruff -- check repomatic tests
+   $ uv run --group typing repomatic run mypy -- repomatic tests docs
+   $ uv run repomatic run ruff -- check repomatic tests docs
    ```
 
-   **Hard gate:** all three must pass before proceeding to step 6. If a fix introduces new failures that were not in the original set, the fix is wrong: revert it and try a different approach rather than layering another fix on top.
+   **Hard gate:** all three must pass before step 6. If a fix introduces new failures not in the original set, the fix is wrong: revert it and try a different approach rather than layering another fix on top.
 
 6. **Check autofix status before pushing:**
 
@@ -150,34 +151,34 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
 
 7. **Commit the fix** with a clear message describing what changed and why, then `git push`.
 
-   When the fix corrects a *user-facing* bug, add a `changelog.md` entry for it, but only when the bug reached a released version. Blame the line you changed against the last release tag (`git blame`, or `git log -S '<the fixed code>' -- <file>`): a bug introduced *and* fixed within the current unreleased cycle never shipped, so it gets no entry (a no-op for users); a bug that predates the last tag is a real regression users have hit, and it does. Making this call here, rather than a blanket "always add an entry," is what keeps a parent `/repomatic-ship` run from having to add a missing entry or drop a spurious one afterward.
+   When the fix corrects a *user-facing* bug, add a `changelog.md` entry **only when the bug reached a released version**. Blame the changed line against the last release tag (`git blame`, or `git log -S`): a bug introduced *and* fixed within the current unreleased cycle never shipped, so it gets no entry; a bug that predates the last tag is a real regression and does. Making this call here keeps a parent `/repomatic-ship` run from having to add or drop entries afterward.
 
-   **If commit signing fails, do not loop on it.** Signed commits have two failure modes the harness can't tell apart. The sandbox can block the SSH socket or key under `~/.ssh/*` and the commit fails with `Operation not permitted` — the fix is `dangerouslyDisableSandbox: true` for the `git commit` and `git push` calls only; that surface area is exactly two commands. A hardware-backed key (Secretive, YubiKey, TPM) then prompts the maintainer for Touch ID or a button press on each signature and surfaces a refused or missed prompt as `agent refused operation?`, which is indistinguishable from a real signing failure. Retry once at most after disabling the sandbox; if the second attempt still refuses, hand off cleanly instead of burning prompts the maintainer may not be watching: stage the specific files you fixed (never `git add -A`), return the exact commit message and the `git push` command verbatim, exit the loop, and let the parent skill (or the maintainer directly) re-issue. The fix itself is already done — only the signature is missing.
+   **If commit signing fails, do not loop on it.** The sandbox can block the SSH key or socket under `~/.ssh/*` (`Operation not permitted`): fix with `dangerouslyDisableSandbox: true` for the `git commit` and `git push` calls only. A hardware-backed key (Secretive, YubiKey, TPM) then prompts the maintainer per signature, and a refused or missed prompt surfaces as `agent refused operation?`, indistinguishable from a real failure. Retry once at most after disabling the sandbox; if it still refuses, hand off cleanly: stage the specific files you fixed (never `git add -A`), return the exact commit message and `git push` command verbatim, and exit the loop. The fix is done — only the signature is missing.
 
-8. **Repeat from step 2** until both workflows are green: `tests.yaml` with all stable (✅) jobs passing, and `lint.yaml` with no mypy failures (including test files). **Stop after 5 iterations.** If the loop has not converged by then, report what was fixed, what remains broken, and ask for guidance rather than continuing to churn.
+8. **Repeat from step 2** until the monitored workflows are green: `tests.yaml` with all stable (✅) jobs passing, `lint.yaml` with no mypy failures (test and docs files included). **Stop after 5 iterations**: if the loop has not converged, report what was fixed and what remains, and ask for guidance rather than churning.
 
 ### Early exit
 
-Once all fast platforms (Linux, Windows) have completed with zero stable failures and only slow runners (macOS) remain queued or in progress, declare success and stop the loop. macOS runners are resource-constrained and can take a long time to start. If the fixes are platform-independent, waiting for macOS adds no diagnostic value.
+Once all fast platforms (Linux, Windows) have completed with zero stable failures and only slow runners (macOS) remain queued or in progress, declare success and stop the loop: macOS runners are resource-constrained, and platform-independent fixes gain no diagnostic value from waiting.
 
 ## Stable vs. unstable
 
 - **Stable jobs** (✅): must pass. Their names start with `✅`.
 - **Unstable jobs** (⁉️): allowed to fail (Python dev versions like 3.15, 3.15t). Ignore their failures.
 
-The workflow uses `continue-on-error` for unstable jobs, so even if they fail, the overall run can still succeed.
+The workflow uses `continue-on-error` for unstable jobs, so the run can succeed even when they fail.
 
-**A run whose `conclusion` is `failure` while *no* job has `conclusion == "failure"` is not benign and not a job to filter out.** It signals a workflow-level setup error — a `strategy`/`matrix` expression that evaluated to an invalid value (like `fromJSON('')`), malformed YAML, or a missing secret/input — that fails the run around the jobs without producing a failed-job log. These are always real: read the run's error annotations (`gh run view <RUN_ID> --json ...` or the "Annotations" on the run page) and fix the workflow itself. Never write off a persistently-red workflow (such as `release.yaml` red on every push) as a known artifact without first confirming which component actually failed.
+**A run whose `conclusion` is `failure` while *no* job has `conclusion == "failure"` is not benign.** It signals a workflow-level setup error — a `strategy`/`matrix` expression evaluating to an invalid value (like `fromJSON('')`), malformed YAML, a missing secret — that fails the run around the jobs without a failed-job log. Read the run's error annotations and fix the workflow itself. Never write off a persistently-red workflow as a known artifact without confirming which component actually failed.
 
 ## Error triage discipline
 
 Read the exact error messages before forming a hypothesis. The most common diagnostic mistake is latching onto a warning or unstable-job failure instead of the actual stable-job error.
 
-1. **Filter first.** Only look at stable (✅) job output. Discard unstable (⁉️) job logs entirely: do not read them, do not mention them, do not fix issues they surface.
+1. **Filter first.** Only look at stable (✅) job output. Discard unstable (⁉️) logs entirely: do not read, mention, or fix what they surface.
 2. **Quote the error.** Before proposing a fix, quote the exact failing line(s) from the log. If you cannot quote a specific error, you have not diagnosed the problem.
-3. **One cause at a time.** Multiple failing jobs often share a root cause. Identify the common thread before treating each job as independent.
-4. **Distinguish test failures from lint failures.** A pytest `AssertionError` and a mypy `error:` have different fixes. Do not conflate them. But always analyze mypy and ruff failures together before fixing either one (see [§ mypy/ruff fix oscillation](#mypy-ruff-fix-oscillation)).
-5. **Do not fix warnings.** Deprecation warnings, `PendingDeprecationWarning`, and informational messages from unstable Python versions are not failures. Ignore them unless they cause a stable job to fail.
+3. **One cause at a time.** Multiple failing jobs often share a root cause: identify the common thread before treating each job as independent.
+4. **Distinguish test failures from lint failures.** A pytest `AssertionError` and a mypy `error:` have different fixes, but always analyze mypy and ruff failures together before fixing either (see [§ mypy/ruff fix oscillation](#mypy-ruff-fix-oscillation)).
+5. **Do not fix warnings.** Deprecation and informational messages are not failures; ignore them unless they cause a stable job to fail.
 
 ## Common failure patterns
 
@@ -187,60 +188,71 @@ Read the exact error messages before forming a hypothesis. The most common diagn
 
 mypy and ruff can enter a fix loop where each tool's fix breaks the other. Common triggers:
 
-- **Unused import**: ruff removes an import (`F401`), mypy then complains about a missing name. Adding the import back triggers ruff again.
+- **Unused import**: ruff removes an import (`F401`), mypy then complains about a missing name; re-adding triggers ruff again.
 - **Type annotation style**: mypy requires an explicit annotation, ruff considers it redundant or wants a different form.
-- **`noqa` vs `type: ignore`**: adding `# noqa` silences ruff but mypy still fails; adding `# type: ignore` silences mypy but ruff flags the unused directive.
+- **`noqa` vs `type: ignore`**: `# noqa` silences ruff but not mypy; `# type: ignore` silences mypy but ruff flags the unused directive.
 
-When you detect this pattern (the same lines toggling between fixes across iterations), stop and apply a combined resolution: typically a `# type: ignore[code]` with a matching `# noqa: XXXX` on the same line, or a restructuring that satisfies both tools at once. Do not keep iterating.
+When the same lines toggle between fixes across iterations, stop and apply a combined resolution: a `# type: ignore[code]` with a matching `# noqa: XXXX` on the same line, or a restructuring that satisfies both at once.
 
 ### mypy scope mismatch (local vs CI)
 
-The most common false-green scenario: mypy passes locally because you only checked `repomatic/`, but CI's `lint.yaml` runs mypy on all Python files including `tests/`. Always run `repomatic run mypy -- repomatic tests` locally. If you see mypy errors only in test files, they still block CI.
+The most common false-green scenario: mypy passes locally because you checked a subset of directories, while CI's `lint.yaml` runs mypy on **every tracked Python file** (`tests/` and `docs/` included). Always run `repomatic run mypy -- repomatic tests docs` locally: an error only in a test or docs file still blocks CI.
 
 ### Platform-specific test skips
 
-Some tests are skipped on certain platforms (e.g., `windows-11-arm` has no Python 3.10 ARM64 build). Before investigating missing results, check both the matrix `exclude` section in `tests.yaml` and `skip_platforms` entries in the test plan YAML (`tests/cli-test-plan.yaml`). Individual test entries can declare `skip_platforms` to opt out of specific platforms without affecting the CI matrix.
+Some tests are skipped on certain platforms (`windows-11-arm` has no Python 3.10 ARM64 build). Before investigating missing results, check the matrix `exclude` section in `tests.yaml` and the `skip_platforms` entries in the binary self-test plan (`tests/cli-test-suite.toml`): individual cases can opt out of platforms without affecting the CI matrix.
 
 ### Cross-platform divergence
 
-When a test passes locally but fails in CI, check for platform-specific differences before changing logic:
+When a test passes locally but fails in CI, check platform differences before changing logic:
 
-- **Path lengths**: `~/.config/...` is shorter on Linux than macOS/Windows equivalents, which can affect text wrapping in CLI output tests.
-- **Terminal width**: CI runners may have different default terminal widths than local dev machines.
-- **Encoding**: Windows uses different default encodings (`cp1252` vs `utf-8`).
-- **Line endings**: `\r\n` vs `\n` can break exact-match assertions.
-- **Untracked files**: Tests that enumerate files (e.g., `python_files`, `doc_files` metadata) scan the working directory. Untracked local files appear in your output but not in CI's clean checkout. When updating expected file lists, only include tracked files. Run `git status` to identify untracked files that could cause local/CI divergence.
+- **Path lengths**: `~/.config/...` is shorter on Linux than macOS/Windows equivalents, affecting text-wrapping assertions.
+- **Terminal width**: CI runners may default differently than local dev machines.
+- **Encoding**: Windows defaults to `cp1252`, not `utf-8`.
+- **Line endings**: `\r\n` vs `\n` breaks exact-match assertions.
+- **Untracked files**: tests that enumerate files (`python_files`, `doc_files` metadata) see untracked local files that CI's clean checkout lacks. When updating expected file lists, include only tracked files; run `git status` to spot the divergence.
 
 ### Workflow and infrastructure failures
 
-Not all CI failures are code bugs. Recognize these and handle them differently:
+Not all CI failures are code bugs:
 
-- **Runner timeouts or OOM kills**: the job log ends abruptly or shows `The runner has received a shutdown signal`. Re-run the job; do not change code.
-- **Action version mismatches**: errors like `Unable to resolve action` or `Node.js 16 actions are deprecated`. Fix the workflow YAML, not the Python code.
-- **Network/registry flakiness**: `pip install` or `uv` timeouts, PyPI 503 errors, `ConnectionResetError`. Re-run the job.
-- **Permission errors**: `Resource not accessible by integration`, 403 on API calls. Check token permissions, not code.
+- **Runner timeouts or OOM kills**: the log ends abruptly or shows `The runner has received a shutdown signal`. Re-run; do not change code.
+- **Action version mismatches**: `Unable to resolve action`, deprecated-runtime errors. Fix the workflow YAML, not the Python.
+- **Network/registry flakiness**: `uv`/`pip` timeouts, PyPI 503s, `ConnectionResetError`. Re-run.
+- **Permission errors**: `Resource not accessible by integration`, 403s. Check `gh api rate_limit` first ([§ GitHub API rate-limit exhaustion](#github-api-rate-limit-exhaustion)), then token permissions; never code.
 
-If the failure is infrastructure, re-run the failed jobs (`gh run rerun <RUN_ID> --failed`) and continue polling. Do not modify code to work around transient infra issues.
+For infrastructure, re-run the failed jobs (`gh run rerun <RUN_ID> --failed`) and continue polling; never modify code to work around transient infra.
+
+<a id="github-api-rate-limit-exhaustion"></a>
+
+### GitHub API rate-limit exhaustion
+
+Heavy polling from this loop spends the same REST quota (5,000 requests/hour) as every workflow authenticating as the same user (`REPOMATIC_PAT`). Exhaustion produces two failure shapes that look unrelated to quotas:
+
+- Local `gh` calls fail with `HTTP 403: API rate limit exceeded`.
+- Workflows fail with *permission-shaped* errors: `lint-repo` reports the PAT lacks `Contents`/`Dependabot`/`Workflows` scopes, or a `create-pull-request` step hangs at `Attempting creation of pull request` until its timeout or the concurrency group kills the run.
+
+Diagnose with `gh api rate_limit` **before** touching token settings: `remaining: 0` on the `core` bucket confirms it. Recovery: wait for the printed `reset` epoch, then re-run the failed workflows unchanged (`gh run rerun <RUN_ID> --failed`); they go green with no commit. While waiting, degrade to the channels that stay live: the GraphQL bucket is metered separately (`gh api graphql` for a commit's check suites, refs, and releases; `gh pr list` / `gh pr view`), and `git fetch` over SSH covers branch and commit verification.
 
 ### Nuitka binary build failures (release.yaml)
 
-The `compile-binaries` job runs Nuitka across a 6-way OS/arch matrix on every push to `main`. Catching a break here — while the version is still `.dev0` — avoids shipping a release whose binaries are missing or broken, which the immutable-release wall makes unrecoverable. Triage by category:
+The `compile-binaries` job runs Nuitka across a 6-way OS/arch matrix on every push to `main`; catching a break while the version is still `.dev0` avoids shipping a release with missing or broken binaries, which the immutable-release wall makes unrecoverable. Triage by category:
 
-- **Infrastructure** (runner OOM, `The runner has received a shutdown signal`, a macOS runner crash, registry timeout): re-run the failed job (`gh run rerun <RELEASE_RUN_ID> --failed`). Do not change code — binary builds are resource-heavy and the macOS runners crash more than most.
-- **Nuitka configuration** (`Error, unsupported ...`, an unknown `--flag`, a missing data file): the fix is in `[tool.nuitka]` in `pyproject.toml`, not the Python source. Verify each key maps to a current Nuitka option.
-- **Real compile or runtime errors** (the binary builds but its smoke test fails, or a `ModuleNotFoundError` surfaces at runtime): fix the code or the `include-package` / `include-data-files` configuration, then push and re-monitor.
+- **Infrastructure** (runner OOM, shutdown signal, macOS runner crash, registry timeout): re-run the failed job (`gh run rerun <RELEASE_RUN_ID> --failed`); binary builds are resource-heavy and macOS runners crash more than most.
+- **Nuitka configuration** (`Error, unsupported ...`, an unknown `--flag`, a missing data file): fix `[tool.nuitka]` in `pyproject.toml`, not the Python source; verify each key maps to a current Nuitka option.
+- **Real compile or runtime errors** (the binary builds but its smoke test fails, a `ModuleNotFoundError` at runtime): fix the code or the `include-package`/`include-data-files` configuration, then push and re-monitor.
 
-Because the matrix is slow, let the fast `tests.yaml` and `lint.yaml` channels set the loop cadence; check `compile-binaries` once it finishes and fold any genuine failure into the same fix batch.
+The matrix is slow: let `tests.yaml` and `lint.yaml` set the loop cadence, then check `compile-binaries` once it finishes and fold any genuine failure into the same fix batch.
 
 ### Autofix job failures (autofix.yaml)
 
-`autofix.yaml` runs the mechanical fix jobs (`format-*`, `sync-*`, `fix-typos`, `fix-vulnerable-deps`) on every push to `main`. They normally just commit their fixes, but a job that *crashes* (raises an exception) turns the workflow red without producing one. Fetch the failed job's log (`gh run view <AUTOFIX_RUN_ID> --log-failed`) and triage by category:
+`autofix.yaml`'s jobs normally commit their fixes; a job that *crashes* turns the workflow red without producing one. Fetch the failed log (`gh run view <AUTOFIX_RUN_ID> --log-failed`) and triage:
 
-- **Tool-runner checksum mismatch** (`ValueError: SHA-256 mismatch for https://.../tool-vX.Y.Z...`): the pinned binary's stored hash no longer matches the published artifact, usually because the upstream re-published the release. Regenerate with `repomatic update-checksums --registry`, then confirm with `repomatic run <tool>`.
-- **External-tool output parse error** (a `RuntimeError`/`KeyError` in a parser, like `fix-vulnerable-deps` reading `uv audit --output-format json`): the tool's output schema drifted under the parser. Fix the parser to match the tool's current output and update the test fixture that encoded the old shape.
-- **Dependency fails to build on the runner** (`Failed to build <pkg>`, a `maturin`/`cargo`/native-compiler error during `uv`/`pip` install): the runner cannot get a usable artifact for that dependency. This is usually self-inflicted, not upstream: a `runs-on` change *this cycle* moved the job to an architecture with no published wheel, forcing a doomed source build. Follow step 5, `git log <last-tag>..HEAD` for the workflow's `runs-on`, and revert the runner swap rather than filing an upstream bug for an sdist you were never meant to build. A genuinely broken upstream artifact (a malformed sdist failing on *every* platform) is the rarer case.
-- **Genuine content the job fixes** (real typos, an actual vulnerability): the job commits the fix and the run goes green on its own; nothing to do.
+- **Tool-runner checksum mismatch** (`ValueError: SHA-256 mismatch for https://...`): the pinned binary's hash no longer matches the published artifact, usually an upstream re-publish. Regenerate with `repomatic update-checksums`, then confirm with `repomatic run <tool>`.
+- **External-tool output parse error** (a `RuntimeError`/`KeyError` in a parser, like `fix-vulnerable-deps` reading `uv audit` JSON): the tool's output schema drifted. Fix the parser and update the test fixture encoding the old shape.
+- **Dependency fails to build on the runner** (`Failed to build <pkg>`, a `maturin`/`cargo`/native-compiler error during install): usually self-inflicted, not upstream: a `runs-on` change *this cycle* moved the job to an architecture with no published wheel, forcing a doomed source build. Check `git log <last-tag>..HEAD` for the runner swap and revert it; a genuinely broken upstream artifact (failing on *every* platform) is the rarer case.
+- **Genuine content the job fixes** (real typos, an actual vulnerability): the job commits the fix and goes green on its own; nothing to do.
 
 ### End-of-loop retrospective
 
-After the loop converges (or hits the iteration limit), review what was fixed and whether any findings are worth feeding back into this skill. If a failure pattern recurred across multiple iterations, or if the diagnosis required non-obvious knowledge that would save time in future runs, propose adding it to the [§ Common failure patterns](#common-failure-patterns) section.
+After the loop converges (or hits the iteration cap), review whether any finding is worth feeding back: a failure pattern that recurred across iterations, or a diagnosis needing non-obvious knowledge, belongs in [§ Common failure patterns](#common-failure-patterns). Propose the addition; do not push it unreviewed.
