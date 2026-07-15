@@ -222,20 +222,6 @@ claude() {
     command claude --name "$(date +%m-%d@%H:%M) ${PWD/#$HOME/~}" "$@"
 }
 
-# Auto-launch Claude Code when entering a directory with .claude/.
-# Registered after zsh-autoswitch-virtualenv so the venv activates first.
-__auto_claude_chpwd() {
-    if [[ -d .claude ]] && [[ "$PWD" != "$HOME" ]] && [[ "$PWD" != "$__CLAUDE_LAST_AUTOLAUNCH" ]]; then
-        __CLAUDE_LAST_AUTOLAUNCH="$PWD"
-        # Report CWD to Terminal.app before Claude takes over the terminal,
-        # otherwise Cmd+T inherits the previous directory.
-        (( ${+functions[update_terminal_cwd]} )) && update_terminal_cwd
-        claude
-    fi
-}
-autoload -Uz add-zsh-hook
-add-zsh-hook chpwd __auto_claude_chpwd
-
 
 ###############################################################################
 # Prompt
@@ -246,6 +232,7 @@ eval "$(starship init zsh)"
 # Tab title: <process> — <path>
 __tab_title_precmd() { print -Pn '\e]1;zsh — %~\a' }
 __tab_title_preexec() { print -n "\e]1;${1%% *} — ${(%):-'%~'}\a" }
+autoload -Uz add-zsh-hook
 add-zsh-hook precmd  __tab_title_precmd
 add-zsh-hook preexec __tab_title_preexec
 
