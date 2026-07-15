@@ -1,7 +1,5 @@
 @~/.claude/tropes.md
 
-Also avoid patterns described at https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing
-
 ## Voice and punctuation
 
 Use first-person singular ("I", "my") in all prose written on behalf of the user: issue descriptions, PR bodies, feature requests, comments, documentation. Never use first-person plural ("we", "our") unless the text genuinely refers to a group.

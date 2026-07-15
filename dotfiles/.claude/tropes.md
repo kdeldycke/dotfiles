@@ -1,7 +1,6 @@
 # AI Writing Tropes to Avoid
 
-Add this file to your AI assistant's system prompt or context to help it avoid
-common AI writing patterns. Source: [tropes.fyi](https://tropes.fyi) by [ossama.is](https://ossama.is)
+Add this file to your AI assistant's system prompt or context to help it avoid common AI writing patterns. Sources: [AI writing tropes](https://gist.github.com/ossa-ma/f3baa9d25154c33095e22272c631f5a1) and Wikipedia's [Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing).
 
 ---
 
@@ -17,9 +16,19 @@ Overuse of "quietly" and similar adverbs to convey subtle importance or understa
 - "the one that quietly suffocates everything else"
 - "a quiet intelligence behind it"
 
+### "Honestly" and "Genuinely"
+
+Sincerity markers that imply everything else was less than honest: "honestly", "genuinely", "to be fair", "frankly", "let's be real". The words perform earnestness instead of earning it; strip them out and the sentence loses nothing but the AI cadence.
+
+**Avoid patterns like:**
+
+- "Honestly, this is one of the cleanest solutions I've seen."
+- "This is a genuinely hard problem."
+- "Frankly, the original design was never going to scale."
+
 ### "Delve" and Friends
 
-Used to be the most infamous AI tell. "Delve" went from an uncommon English word to appearing in a staggering percentage of AI-generated text. Part of a family of overused AI vocabulary including "certainly", "utilize", "leverage" (as a verb), "robust", "streamline", and "harness".
+Used to be the most infamous AI tell. "Delve" went from an uncommon English word to appearing in a staggering percentage of AI-generated text. Part of a family of overused AI vocabulary including "certainly", "utilize", "leverage" (as a verb), "robust", "streamline", "harness", "pivotal", "crucial", "intricate", "underscore", "garner", "showcase", "meticulous", "foster", and "synthesize".
 
 **Avoid patterns like:**
 
@@ -36,6 +45,16 @@ Overuse of ornate or grandiose nouns where simpler words would do. "Tapestry" is
 - "The rich tapestry of human experience..."
 - "Navigating the complex landscape of modern AI..."
 - "The ever-evolving landscape of technology..."
+
+### Brochure Puffery
+
+Travel-guide and press-release vocabulary applied to anything at all. Every town is "vibrant", every building is "nestled in the heart of" somewhere, every project is "groundbreaking", every maintainer "renowned". LLMs drift into promotional tone even when explicitly asked for neutral prose. Also includes: "boasts a", "rich cultural heritage", "stunning natural beauty", "must-visit", "diverse array", "commitment to".
+
+**Avoid patterns like:**
+
+- "The village boasts a rich cultural heritage and stunning natural beauty."
+- "Nestled in the heart of the innovation district, the startup is renowned for its groundbreaking approach."
+- "A vibrant community offering a diverse array of tools."
 
 ### Latin Abbreviations
 
@@ -63,13 +82,34 @@ Replacing simple "is" or "are" with pompous alternatives like "serves as", "stan
 - "Gallery 825 serves as LAAA's exhibition space for contemporary art."
 - "The station marks a pivotal moment in the evolution of regional transit."
 
+### Elegant Variation
+
+Cycling through synonyms to avoid repeating a word: the festival becomes "the event", then "the celebration", then "the gathering", all in one paragraph. The repetition penalty makes the model allergic to using the same noun twice, so the reader keeps re-deriving that "the initiative" and "the program" are the same thing. Humans just repeat the word.
+
+**Avoid patterns like:**
+
+- "The library opened in 1904. The institution expanded in the 1950s. Today the facility serves..."
+- "The bug was reported Monday. The issue was triaged Tuesday. The defect was fixed Wednesday."
+- "Python... the language... the technology... the ecosystem..."
+
+### "Load-Bearing" and Other Engineering Metaphors
+
+Mechanical and structural metaphors that dress prose up as rigorous systems analysis. Anything important is "load-bearing", every trade-off is a "tension", decisions get "gated", risks get "guarded against", and disagreement is announced as "pushing back" (usually "gently"). These words let the model sound like a measured senior engineer without doing the analysis that register implies. Literal technical uses are fine (a guard clause, a feature gate, tension in a cable); the tell is the metaphorical spread into ordinary prose.
+
+**Avoid patterns like:**
+
+- "That comment is load-bearing: the whole abstraction leans on it."
+- "There's a real tension between developer velocity and code quality."
+- "I want to gently push back on that framing."
+- "Gate the rollout on usage data to guard against regressions."
+
 ---
 
 ## Sentence Structure
 
 ### Negative Parallelism
 
-The "It's not X -- it's Y" pattern, often with an em dash. The single most commonly identified AI writing tell. Man I f\*cking hate it. AI uses this to create false profundity by framing everything as a surprising reframe. One in a piece can be effective; ten in a blog post is a genuine insult to the reader. Before LLMs, people simply did not write like this at scale. Includes the causal variant "not because X, but because Y" where every explanation is framed as a surprise reveal.
+The "It's not X -- it's Y" pattern, often with an em dash. The single most commonly identified AI writing tell. Man I f\*cking hate it. AI uses this to create false profundity by framing everything as a surprising reframe. One in a piece can be effective; ten in a blog post is a genuine insult to the reader. Before LLMs, people simply did not write like this at scale. Includes the causal variant "not because X, but because Y" where every explanation is framed as a surprise reveal, the em-dash dismissal "X -- not Y", and the cross-sentence reframe where the same noun is negated then repositioned: "The question isn't X. The question is Y." Siblings: the additive "not only X, but also Y" and the emphasis flip "X rather than Y".
 
 **Avoid patterns like:**
 
@@ -186,7 +226,7 @@ Numbered or labeled points dressed up as continuous prose. The model writes what
 
 ### "Here's the Kicker"
 
-False suspense transitions that promise a revelation but deliver a point that did NOT need the buildup. The model uses these phrases to manufacture drama before an otherwise unremarkable observation LOL. Also includes: "Here's the thing", "Here's where it gets interesting", "Here's what most people miss".
+False suspense transitions that promise a revelation but deliver a point that did NOT need the buildup. The model uses these phrases to manufacture drama before an otherwise unremarkable observation LOL. Also includes: "Here's the thing", "Here's where it gets interesting", "Here's what most people miss", "Here's the starting point", "Here's the deal".
 
 **Avoid patterns like:**
 
@@ -215,7 +255,7 @@ The classic AI invitation to futurism. To sell the argument usually begins with 
 
 ### False Vulnerability
 
-Simulated self-awareness or honesty that reads as performative. The model pretends to break the fourth wall or admit a bias, creating a false sense of authenticity. Real vulnerability is specific and uncomfortable; AI vulnerability is polished and risk-free!!!!
+Simulated self-awareness or honesty that reads as performative. The model pretends to break the fourth wall or admit a bias, creating a false sense of authenticity. Real vulnerability is specific and uncomfortable; AI vulnerability is polished and risk-free!!!! Includes claiming firsthand experience the writer cannot have: "I've seen this pattern take down production systems many times."
 
 **Avoid patterns like:**
 
@@ -225,13 +265,23 @@ Simulated self-awareness or honesty that reads as performative. The model preten
 
 ### "The Truth Is Simple"
 
-Asserting that something is obvious, clear or simple instead of actually proving it. If you have to tell the reader your point is clear, it very likely isn't.
+Asserting that something is obvious, clear or simple instead of actually proving it. If you have to tell the reader your point is clear, it very likely isn't. Also includes the dramatic reveal variant: "but none of them is the real story. The real story is..." -- claiming privileged insight while waving away everything before it.
 
 **Avoid patterns like:**
 
 - "The reality is simpler and less flattering"
 - "History is unambiguous on this point"
 - "History is clear, the metrics are clear, the examples are clear"
+
+### False Precision
+
+Diagnostic confidence without the diagnosis. Guesses arrive labeled "the root cause", hunches become "the key insight", approximations come wrapped in "exactly" and "precisely". The vocabulary of rigor gets applied before any rigor has happened, which reads as authoritative right up until it's wrong.
+
+**Avoid patterns like:**
+
+- "The root cause is a race condition in the scheduler."
+- "The key insight is that caching solves this."
+- "This is precisely why the pattern fails at scale."
 
 ### Grandiose Stakes Inflation
 
@@ -242,6 +292,16 @@ Everything is the most important thing ever. AI inflates the stakes of every arg
 - "This will fundamentally reshape how we think about everything."
 - "will define the next era of computing"
 - "something entirely new"
+
+### "A Testament To..."
+
+Unearned significance vocabulary that awards every subject a legacy: "stands as a testament", "cemented its legacy", "a pivotal moment", "left an indelible mark", "deeply rooted", "setting the stage for", "continues to captivate", "garnered significant attention". Mundane facts get dressed up as historical verdicts. The subject-level cousin of Grandiose Stakes Inflation: there the argument is world-historical, here the topic itself is.
+
+**Avoid patterns like:**
+
+- "The bridge stands as a testament to Victorian engineering."
+- "The release marked a pivotal moment that cemented the project's legacy."
+- "Deeply rooted in Unix tradition, the tool continues to captivate developers."
 
 ### "Let's Break This Down"
 
@@ -279,7 +339,7 @@ AI clusters invented compound labels that sound analytical without being grounde
 
 ### Em-Dash Addiction
 
-Compulsive overuse of em dashes for dramatic pauses, parenthetical asides and pivot points. A human writer might use 2-3 per piece (and naturally); AI will use 20+.
+Compulsive overuse of em dashes for dramatic pauses, parenthetical asides and pivot points. A human writer might use 2-3 per piece (and naturally); AI will use 20+. When the dashes run out, the same compulsion continues as stacked parenthetical asides (nested (sometimes twice)).
 
 **Avoid patterns like:**
 
@@ -289,7 +349,7 @@ Compulsive overuse of em dashes for dramatic pauses, parenthetical asides and pi
 
 ### Bold-First Bullets
 
-Every bullet point or list item starts with a bolded phrase or sentence. Extremely common in Claude and ChatGPT markdown output. Almost nobody formats lists this way when writing by hand. It's a telltale sign of AI-generated documentation and blog posts AND README files (especially with emojis).
+Every bullet point or list item starts with a bolded phrase or sentence. Extremely common in Claude and ChatGPT markdown output. Almost nobody formats lists this way when writing by hand. It's a telltale sign of AI-generated documentation and blog posts AND README files (especially with emojis). The same tic bolds random key phrases mid-paragraph, textbook-style.
 
 **Avoid patterns like:**
 
@@ -306,6 +366,16 @@ Use of unicode arrows (->), smart/curly quotes, and other special characters tha
 - "Input → Processing → Output"
 - "This leads to better outcomes → which means higher engagement"
 - "“Smart quotes” instead of straight "quotes" that you’d actually type"
+
+### Structural Tics
+
+Document-shape giveaways: Title Case On Every Heading, a horizontal rule before each section, emoji as bullet markers or heading decorations, heading levels that jump from H2 to H4, and a gratuitous comparison table where a sentence would do. Each is defensible alone; together they make a page look like a filled-in template.
+
+**Avoid patterns like:**
+
+- "## Key Benefits And Strategic Considerations"
+- "🚀 Features / ⚡ Performance / 🔒 Security"
+- "A `---` rule above every single heading"
 
 ---
 
@@ -371,13 +441,37 @@ Explicitly announcing the conclusion with "In conclusion", "To sum up", or "In s
 
 ### "Despite Its Challenges..."
 
-The rigid formula where AI acknowledges problems only to immediately dismiss them. Always follows the same beat: "Despite its [positive words], [subject] faces challenges..." then ends with "Despite these challenges, [optimistic conclusion].".
+The rigid formula where AI acknowledges problems only to immediately dismiss them. Always follows the same beat: "Despite its [positive words], [subject] faces challenges..." then ends with "Despite these challenges, [optimistic conclusion].". Shows up structurally as boilerplate closing sections titled "Challenges and Future Prospects" or "Future Outlook".
 
 **Avoid patterns like:**
 
 - "Despite these challenges, the initiative continues to thrive."
 - "Despite its industrial and residential prosperity, Korattur faces challenges typical of urban areas."
 - "Despite their promising applications, pyroelectric materials face several challenges that must be addressed for broader adoption."
+
+---
+
+## Artifacts
+
+### Chat Residue
+
+Chatbot correspondence leaking into the deliverable: openers, closers, and offers addressed to a user who isn't there. "I hope this helps!", "Certainly!", "Of course!", "You're absolutely right!", "Would you like me to...", "Let me know if...". Same family: knowledge-cutoff disclaimers ("as of my last knowledge update", "not widely documented in available sources"), unfilled placeholders ("[Your Name]", "INSERT_SOURCE_URL", "2025-XX-XX"), and machine markup droppings like "oaicite", "turn0search0", and "contentReference".
+
+**Avoid patterns like:**
+
+- "I hope this helps! Let me know if you'd like a more detailed breakdown."
+- "As of my last knowledge update in January 2022, no information is widely available."
+- "Contact [Your Name] for more details."
+
+### Fabricated Citations
+
+References that look right and aren't: URLs that 404, DOIs and ISBNs that don't resolve or land on unrelated papers, book citations with no page numbers, sources that don't contain the claim they're attached to. A "utm_source=chatgpt.com" query parameter in a link is a confession. Only cite what you actually opened.
+
+**Avoid patterns like:**
+
+- "A plausible paper title with a DOI that resolves to a different article"
+- "A book cited with no page number and no matching library record"
+- "https://example.com/report?utm_source=chatgpt.com"
 
 ---
 
