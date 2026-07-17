@@ -75,7 +75,7 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
    $ gh run list --workflow=release.yaml --branch=<BRANCH> --limit=1
    ```
 
-   Track all five run IDs (`docs.yaml` may have none: its `paths:` filter skips pushes touching nothing docs-relevant). The `tests.yaml` run exercises the full test matrix; `lint.yaml` runs mypy on every tracked Python file and lints YAML; `autofix.yaml` runs the mechanical fix jobs (`format-*`, `sync-*`, `fix-typos`, `fix-vulnerable-deps`) and turns red when one *crashes* instead of committing a fix; `docs.yaml` builds and deploys the Sphinx site and runs the broken-links check (an externally cancelled or link-flaky run re-runs cleanly via `gh workflow run docs.yaml --ref <BRANCH>`, no commit needed); `release.yaml` runs the Nuitka `compile-binaries` matrix (dev binaries, rebuilt on every push to `main`). All must pass — see § Autofix job failures and § Nuitka binary build failures below for how to triage them without stalling the loop.
+   Track all five run IDs (`docs.yaml` may have none: its `paths:` filter skips pushes touching nothing docs-relevant). An empty run list for the *other* workflows is not paths-filtering: GitHub can sit on a push event for hours before materializing any run (a 4-hour lag has been observed), so when a freshly pushed SHA shows no runs, keep re-polling instead of concluding the push was filtered, and measure the wait from run creation, not from the push. The `tests.yaml` run exercises the full test matrix; `lint.yaml` runs mypy on every tracked Python file and lints YAML; `autofix.yaml` runs the mechanical fix jobs (`format-*`, `sync-*`, `fix-typos`, `fix-vulnerable-deps`) and turns red when one *crashes* instead of committing a fix; `docs.yaml` builds and deploys the Sphinx site and runs the broken-links check (an externally cancelled or link-flaky run re-runs cleanly via `gh workflow run docs.yaml --ref <BRANCH>`, no commit needed); `release.yaml` runs the Nuitka `compile-binaries` matrix (dev binaries, rebuilt on every push to `main`). All must pass — see § Autofix job failures and § Nuitka binary build failures below for how to triage them without stalling the loop.
 
 3. **Run local tests while waiting for CI.** Don't idle while polling. Start the full test suite and linters locally in the background immediately:
 
@@ -102,7 +102,7 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
 
    **Gate 3 (tests.yaml, ~5-8 min):** once the first stable job fails, or all fast platforms (Linux, Windows) pass, proceed.
 
-   **Poll in-process; never detach a monitor.** Block on `gh run watch <RUN_ID>` or loop the polls within your own turn. A detached background monitor (a standalone process, or a `Monitor`-tool stream that returns control on each tick) makes a parent-resumed run spawn *another* monitor per tick instead of driving to a terminal state. Hold the turn until the run completes.
+   **Poll in-process; never detach a monitor.** Block on `gh run watch <RUN_ID>` or loop the polls within your own turn. A detached background monitor (a standalone process, a `run_in_background: true` Bash poller that re-invokes you when it exits, or a `Monitor`-tool stream that returns control on each tick) makes a parent-resumed run spawn *another* monitor per tick instead of driving to a terminal state; worse, a spawned sub-agent that detaches this way orphans the poll from its caller the moment it returns. Hold the turn until the run completes: starting a poller and handing back "to be notified" is the early return this loop must never make.
 
    **Every wait between polls must be a `sleep`, never a busy-wait.** A poll loop with no delay (`until gh run view ...; do true; done`) fires thousands of requests per minute and exhausts the REST quota (5,000/hour) within minutes. The harness blocking a bare foreground `sleep` is not a reason to drop the delay: put the `sleep 60` *inside* the loop command itself, which runs fine in both foreground and background. Exhaustion does not just blind your own polling — workflows authenticating with the same PAT start failing server-side with misleading errors (see [§ GitHub API rate-limit exhaustion](#github-api-rate-limit-exhaustion)).
 
@@ -136,9 +136,12 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
    $ uv run pytest --no-header -q
    $ uv run --group typing repomatic run mypy -- repomatic tests docs
    $ uv run repomatic run ruff -- check repomatic tests docs
+   $ uv run repomatic run ruff -- format repomatic tests docs
    ```
 
-   **Hard gate:** all three must pass before step 6. If a fix introduces new failures not in the original set, the fix is wrong: revert it and try a different approach rather than layering another fix on top.
+   **Hard gate:** all four must come back clean before step 6. If a fix introduces new failures not in the original set, the fix is wrong: revert it and try a different approach rather than layering another fix on top.
+
+   Both ruff commands write in place: read `git diff` after they run and fold any reformat into the fix. Skipping the `format` pass does not fail CI — instead the `format-python` autofix job pushes the reformat as its own commit, a new HEAD that cancels every in-flight run through the shared concurrency group and restarts the whole CI cycle (a wasted Tests + Nuitka round). A parent `/repomatic-ship` run's format gate only covered the pre-fix tree: this loop's commits are exactly the ones that would skip it.
 
 6. **Check autofix status before pushing:**
 

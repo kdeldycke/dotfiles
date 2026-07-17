@@ -514,7 +514,7 @@ Sync rules:
 - Re-check the Repology page on every release. New distros get a new tab; dropped distros get the tab removed.
 - The Python compatibility matrix is auto-generated; never hand-edit it.
 - Version-number references in download URLs must use `releases/latest/download/...`, not pinned tags. Hand-pinned versions in install.md were a long-running source of doc drift.
-- The Try it tab-set's `Specific version` tab does carry a pinned version as an example — that's intentional (it teaches the syntax). Bump it on each release as part of `release-prep`.
+- The Try it tab-set's `Specific version` tab does carry a pinned version as an example — that's intentional (it teaches the syntax). Bump it on each release as part of `prepare-release`.
 
 ## Standard page roster
 
