@@ -351,6 +351,22 @@ extract() {
     fi
 }
 
+# Download YouTube playlists as Apple-friendly m4a tracks in iCloud Drive, one
+# subfolder per playlist. Tagging, thumbnails and SponsorBlock cuts come from
+# ~/.config/yt-dlp.conf. The archive file makes re-runs only fetch new tracks.
+yt-music() {
+    local music_dir="$HOME/Library/Mobile Documents/com~apple~CloudDocs/Music"
+    yt-dlp \
+        --extract-audio \
+        --audio-format m4a \
+        --format 'bestaudio[ext=m4a]/bestaudio/best' \
+        --no-embed-subs \
+        --paths "$music_dir" \
+        --output '%(playlist_title)s/%(title)s [%(id)s].%(ext)s' \
+        --download-archive "$music_dir/.yt-dlp-archive.txt" \
+        "$@"
+}
+
 
 ###############################################################################
 # macOS
