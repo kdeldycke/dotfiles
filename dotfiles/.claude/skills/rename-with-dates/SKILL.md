@@ -38,8 +38,11 @@ Period documents that cover a date range (statement exports, period reports) may
 ## Workflow
 
 1. **List files** in the target directory (default: current working directory, or `$ARGUMENTS` if provided)
+
 2. **Skip** files that already follow the `YYYY-MM-DD - Title.ext` pattern (but offer to clean up their titles if needed). A bare date with no title (like `2023-08-17.pdf`) is not compliant — read the file and add the missing title (often just `Invoice` or `Receipt` inside a provider folder, where the folder name already gives context)
+
 3. **Read each file** to find the effective date and understand the content:
+
    - **For PDFs**:
      - Look for explicit "Effective from..." or "Effective date" statements — prefer these
      - Look for version dates in footers (e.g., "08/2025", "v. August 14, 2023")
@@ -54,7 +57,9 @@ Period documents that cover a date range (statement exports, period reports) may
      - If the image contains visible dates in its content, prefer those
      - If no date can be found, ask the user
    - Match the date precision to what the document provides: use `YYYY-MM-DD` for exact dates, `YYYY-MM` for month-only, `YYYY` for year-only
+
 4. **Choose a clear title**:
+
    - Use sentence case: capitalize only the first word and proper nouns
    - Be descriptive but concise (e.g., "Credit card fees and charges", not "popularbankname_credit_card_fees_charges")
    - For screenshots: summarize what the image shows (e.g., "Rewards program earning structure", "Account balance overview")
@@ -62,16 +67,23 @@ Period documents that cover a date range (statement exports, period reports) may
    - Remove redundant institution names if the folder context already makes it clear
    - When two documents of the same type share the same effective date but cover different product segments, disambiguate in the title (like `KFS - Credit cards (Skywards, Cash+ and Live+)` vs `KFS - Credit cards (Private Bank, Premier and Advance)`)
    - Manuals and spec sheets: title as `Brand Model - Doc type` (like `Gorenje WHT923E5XUK - Cooker hood manual`); vendor doc codes often embed the publication date (Grohe `…/02.19` = February 2019)
+
 5. **Present a summary table** showing current name, detected date, and proposed new name
+
 6. **Rename all files** after presenting the plan. On case-insensitive filesystems (macOS APFS), a case-only rename fails with "are the same file" — do it in two steps through a temporary name
+
 7. **Post-rename analysis** — after renaming, scan the folder for cleanup opportunities and present a report with three sections:
+
    - **Duplicates**: Compare files with similar titles using MD5 checksums (`md5 -r`). Files with identical hashes are exact duplicates. Propose keeping one and trashing the others. If an undated file is an exact duplicate of an already-compliant one, do **not** rename it into a name collision — leave its name untouched and propose trashing it. Also compare content when hashes differ but titles match: re-downloads of the same document often differ only in PDF metadata. Printed document numbers (invoice number, receipt number, DocuSign envelope ID) are reliable fingerprints for catching these content-duplicates.
+
    - **Superseded documents**: Identify files that are older versions of the same document type (e.g., "Personal banking general T&C" from 2023 vs 2025). The newer version supersedes the older. Propose trashing the older version.
+
    - **Expired documents**: For time-bound documents (campaigns, offers, promotions) that specify a validity period (e.g., "1 November 2025 – 31 December 2025"), check if the end date has passed relative to today. Propose trashing expired ones. Do **not** flag standing T&Cs, KFS documents, or privacy policies — only documents with explicit campaign/offer end dates.
 
    - **Not applicable**: documents covering products or services the user does not hold (other product tiers' T&C, KFS for products never subscribed, forms for other customer segments). Ask the user to confirm their actual holdings, then propose trashing the rest — documents for held products stay, as they are the contractual record of the terms in force.
 
    When the user approves trashing, move the files into a dated subfolder like `~/.Trash/{folder} cleanup YYYY-MM-DD/` so the whole batch stays grouped and recoverable. Writing into `~/.Trash` is typically blocked by the command sandbox — run that step outside the sandbox.
+
 8. **Verify** by listing the final result with plain binaries — `ls` may be aliased (eza, lsd) and print nothing when piped — and run a compliance sweep: `/usr/bin/find . -type f | sed 's|.*/||' | grep -Ev '^[0-9]{4}(-[0-9]{2})?(-[0-9]{2})?(--[0-9]{4}-[0-9]{2}-[0-9]{2})? - '` should return only intentionally held files
 
 ## Multi-language PDF stripping
@@ -109,12 +121,12 @@ Many legal/banking documents repeat the same content translated across several l
 
 This skill depends on third-party CLI tools. At the start of execution, check if each is available and propose to install any that are missing via `brew install`.
 
-| Tool        | Brew package | Used for                                                                             |
-| ----------- | ------------ | ------------------------------------------------------------------------------------ |
+| Tool        | Brew package | Used for                                                                                   |
+| ----------- | ------------ | ------------------------------------------------------------------------------------------ |
 | `qpdf`      | `qpdf`       | Extracting page ranges from PDFs (multi-language stripping), page counts (`--show-npages`) |
-| `pdftoppm`  | `poppler`    | Rendering PDF pages — the Read tool depends on it to view PDFs at all                |
-| `pdftotext` | `poppler`    | Extracting text per page for language detection in large PDFs                        |
-| `exiftool`  | `exiftool`   | Reading PDF metadata (CreationDate, ModDate) as date fallback                        |
+| `pdftoppm`  | `poppler`    | Rendering PDF pages — the Read tool depends on it to view PDFs at all                      |
+| `pdftotext` | `poppler`    | Extracting text per page for language detection in large PDFs                              |
+| `exiftool`  | `exiftool`   | Reading PDF metadata (CreationDate, ModDate) as date fallback                              |
 
 `mdls` (macOS built-in) can also be used for metadata and does not need installation.
 
