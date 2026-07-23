@@ -28,7 +28,7 @@ Period documents that cover a date range (statement exports, period reports) may
 
 ## Supported file types
 
-- **PDFs**: Read the first few pages (and last page if needed) to find dates and understand content
+- **PDFs**: Read the first few pages (and last page if needed) to find dates and understand content. The Read tool rejects PDFs over 20MB: render their pages to images with `pdftoppm -png -r 30` and view those instead
 - **Images / Screenshots** (PNG, JPG, etc.): View the image to understand its content, then summarize it into a clear descriptive title. For screenshots, the date is often embedded in the filename (e.g., `Screenshot 2026-01-12 at 11.07.33.png` → date is 2026-01-12)
 - **Office documents**: for `.xlsx`, read `docProps/core.xml` inside the zip (`unzip -p file.xlsx docProps/core.xml`) for `dcterms:created`; for Apple `.numbers`, the package often embeds a readable `preview.jpg` or `preview.pdf`. A stray `.~lock.*#` file next to a document is a LibreOffice lock: the document may be open somewhere (possibly on another synced machine); stale locks are trash candidates
 - **Emails exported/printed to PDF**: use the email's sent date from its header, never the print/export date; derive the title from the subject and outcome of the thread
@@ -132,4 +132,5 @@ If the target folder contains any PDFs, install `poppler` first thing: without `
 - If no date can be found at all, flag it to the user and ask what to do
 - Use `mv` for renaming — never copy-and-delete
 - Folders can change while you work (the user may be acting in parallel, or cloud sync may intervene): re-check that files still exist before acting on them, and if files vanish mid-run, surface it to the user — never restore things from the Trash on your own initiative. Folders may also be renamed mid-run: if a move fails, re-resolve the path before assuming the file is gone
+- Reading several look-alike files in one parallel batch (same provider, same visit date, same document family) risks cross-attributing the returned pages to the wrong filename — one run swapped a prescription and a tomography report scanned the same day, and only the user caught it. Read ambiguous siblings one at a time, and after renaming a batch of same-day scans, re-render a page of each renamed file to confirm its content matches the new title
 - For large trees, fan out read-only subagents to extract dates and propose titles per folder, but review their proposals and execute all renames yourself so titles stay consistent across folders
