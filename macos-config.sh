@@ -339,7 +339,7 @@ defaults -currentHost write com.apple.Bluetooth PrefKeyServicesEnabled -bool fal
 # both spellings coexist, so pin the two
 # (mSCP: system_settings_airplay_receiver_disable).
 defaults -currentHost write com.apple.controlcenter AirplayReceiverEnabled -bool false
-defaults -currentHost write com.apple.controlcenter AirplayRecieverEnabled -bool false
+defaults -currentHost write com.apple.controlcenter AirplayReceiverEnabled -bool false
 
 # Disable SMB guest access (mSCP: system_settings_guest_access_smb_disable).
 sudo sysadminctl -smbGuestAccess off
