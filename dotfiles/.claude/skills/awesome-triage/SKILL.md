@@ -53,7 +53,7 @@ Evaluate the submission against each criterion below. For each, state PASS, FAIL
 This is not covered by `contributing.md`. Look for these signals (any two together, or combined with §9 provenance signals, warrant the `AI slop` label):
 
 - The PR body or issue text reads as LLM output (generic phrasing, no specific knowledge of the list's content, template-like structure beyond the actual template).
-- The PR explicitly discloses AI generation (like "Generated with Claude Code", "Created by Copilot").
+- The PR explicitly discloses AI generation (e.g., "Generated with Claude Code", "Created by Copilot").
 - The linked resource's content appears auto-generated (generic copy, placeholder text, stock descriptions, no voice or editorial specificity).
 - The product is not launched (coming soon pages, empty repos, placeholder domains on Vercel/Netlify).
 - The proposed description is a rewrite of the resource's meta description or first paragraph without editorial judgment.
