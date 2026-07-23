@@ -843,8 +843,9 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/certificates,emacs,git,gpg,linux,macos,node,nohup,python,rust,ssh,vim,virtualenv,visualstudiocode,windows,archive,archives,backup,bittorrent,compressed,compressedarchive,compression,database,datarecovery,executable,games,jupyternotebooks,less,libreoffice,microsoftoffice
 
-junit.xml
-
 # Claude Code local files.
 .claude/scheduled_tasks.lock
 .claude/settings.local.json
+
+# Sphinx linkcheck output.
+docs/_linkcheck/
