@@ -169,7 +169,7 @@ Anti-pattern: any `render`-family block that takes more than a second or two to 
 :show-source:
 :emphasize-lines: 7
 :emphasize-result-lines: 2
-result = invoke(cli, args=["--show-params"])
+result = invoke(cli, args=["--params"])
 ```
 ````
 
@@ -210,14 +210,14 @@ When migrating an existing `docs_update.py` to `{python:render}`:
 Conversion lifecycle:
 
 - Authors write **MyST** in `*.py` docstrings (`` {role}`target` ``, `[text](url)`, single-backtick inline code, ```` ```{directive} ```` admonitions).
-- The `repomatic.myst_docstrings` Sphinx extension hooks `autodoc-process-docstring` at priority 400 and converts MyST to reST at build time, before `sphinx_autodoc_typehints` runs. So the rendered HTML is the same as if the docstrings were always reST, while the source files stay editable in MyST.
-- Run `uv run repomatic convert-to-myst` (or `repomatic convert-to-myst path/to/pkg/`) to migrate an existing reST codebase. The converter is idempotent — already-MyST docstrings are a no-op.
+- The `click_extra.sphinx.myst_docstrings` Sphinx extension hooks `autodoc-process-docstring` at priority 400 and converts MyST to reST at build time, before `sphinx_autodoc_typehints` runs. So the rendered HTML is the same as if the docstrings were always reST, while the source files stay editable in MyST.
+- Run `uvx click-extra convert-to-myst` (or `click-extra convert-to-myst path/to/pkg/`) to migrate an existing reST codebase. The converter is idempotent — already-MyST docstrings are a no-op.
 
 Extension load order (the rule, with the rationale):
 
-- `repomatic.myst_docstrings` must be listed in `extensions = [...]` *before* `sphinx_autodoc_typehints`. Both hook `autodoc-process-docstring`; conversion has to run first or the typehints extension sees half-converted text. The concrete failure mode if the order is wrong: the inline-code converter doubles the backticks inside domain-qualified roles (like `` :py:obj:`None` ``) that `sphinx_autodoc_typehints` injects, producing visible double-backtick wrappers in the rendered HTML.
+- `click_extra.sphinx.myst_docstrings` must be listed in `extensions = [...]` *before* `sphinx_autodoc_typehints`. Both hook `autodoc-process-docstring`; conversion has to run first or the typehints extension sees half-converted text. The concrete failure mode if the order is wrong: the inline-code converter doubles the backticks inside domain-qualified roles (like `` :py:obj:`None` ``) that `sphinx_autodoc_typehints` injects, producing visible double-backtick wrappers in the rendered HTML.
 - The extension enforces this at load time and raises `ExtensionError` if the order is wrong, so downstream repos that misorder get a clear failure on first build instead of a silent rendering bug.
-- Downstream repos that adopt `repomatic.myst_docstrings` must also add `repomatic` to their `[dependency-groups] docs` in `pyproject.toml` (the package must be importable at build time). Pin to a recent minor (e.g., `repomatic>=6.14`) so older bug fixes don't propagate.
+- Downstream repos that adopt `click_extra.sphinx.myst_docstrings` must also add `click-extra[sphinx]` to their `[dependency-groups] docs` in `pyproject.toml` (the package must be importable at build time). Projects using `click_extra.sphinx` directives already carry it.
 
 Admonition fence style:
 
@@ -296,7 +296,7 @@ extensions = [
     # `autodoc-process-docstring` at priority 400; must precede
     # `sphinx_autodoc_typehints` (default 500) to avoid double-backticking
     # the `:py:obj:` roles the typehints extension injects.
-    "repomatic.myst_docstrings",
+    "click_extra.sphinx.myst_docstrings",
     "sphinx_autodoc_typehints",
     "click_extra.sphinx",
     "sphinxcontrib.mermaid",
@@ -317,7 +317,7 @@ click_extra_enable_exec_directives = True
 
 Choices that are project-specific:
 
-- **`repomatic.myst_docstrings`** — only when the project authors docstrings in MyST. Skip on projects still on reST (some sibling repos run `click_extra.sphinx` without the MyST docstring extension).
+- **`click_extra.sphinx.myst_docstrings`** — only when the project authors docstrings in MyST. Skip on projects still on reST (some sibling repos run `click_extra.sphinx` without the MyST docstring extension).
 - **`sphinx_click` vs `click_extra.sphinx`** — `click_extra.sphinx` provides the `{click:run}`/`{click:source}` directives this lineage uses for live CLI rendering. `sphinx_click` provides the `.. click::` autodoc-style directive for sub-command tree generation. They serve different output shapes and can coexist (e.g., `meta-package-manager` uses both: `sphinx_click` for the auto-generated tree, `click_extra.sphinx` for invocation rendering). Default to `click_extra.sphinx` only; add `sphinx_click` when the project needs an auto-generated command tree.
 - **`sphinxcontrib.mermaid`** — pair with `myst_fence_as_directive = ["mermaid"]` so authors write ```` ```mermaid ```` (without curly braces) and the directive still fires. Reference comment for `conf.py`: `# Allow plain mermaid fences (without curly braces), see <https://github.com/mgaitan/sphinxcontrib-mermaid/issues/99#issuecomment-2339587001>`. Keep `mermaid_d3_zoom = True` so dependency-graph diagrams remain navigable.
 - **`sphinx_issues`** — **don't adopt**. The extension's `:issue:`/`:pr:`/`:user:`/`:commit:` roles only render inside Sphinx, so the same source files (changelogs, docstrings, comments) display as raw `` :issue:`1234` `` text everywhere else: GitHub's markdown viewer in the repo browser, IDE previews, `pip show`, the PyPI long-description page, downstream tooling reading the changelog. Replace these roles with explicit GitHub URLs that work in every renderer and keep the changelog identically readable on GitHub and on the docs site. See § Migrating off `sphinx_issues`.
@@ -420,7 +420,7 @@ for path in Path(".").rglob("*"):
     path.write_text(text, encoding="utf-8")
 ```
 
-For Python source files (where the role appeared inside docstrings or comments), the replacement keeps the same `[#N](url)` form since `repomatic.myst_docstrings` recognizes Markdown links inside docstrings; `:issue:` in a `# comment` was never rendered anyway and becomes a plain link.
+For Python source files (where the role appeared inside docstrings or comments), the replacement keeps the same `[#N](url)` form since `click_extra.sphinx.myst_docstrings` recognizes Markdown links inside docstrings; `:issue:` in a `# comment` was never rendered anyway and becomes a plain link.
 
 ## Auto-generated reference tables
 
@@ -524,16 +524,15 @@ A Sphinx site for a CLI/library project should converge on a predictable page se
 
 Primary toctree (user-facing), in this order:
 
-01. `install` — § Recipes › `install.md`. Always first.
-02. `cli` — § Recipes › `cli.md`. CLIs only.
-03. `configuration` — § Recipes › `configuration.md`. Projects with `[tool.X]` schema.
-04. `dependencies` — Mermaid dependency graph generated by `repomatic update-deps-graph` from `uv.lock`. Auto-regenerated; never hand-edit.
-05. `tool-runner` — Only when the project ships a `repomatic run`-style tool runner.
-06. `workflows` — Only when the project publishes reusable workflows.
-07. `security` — Threat model, supported versions, reporting channel. Should also live as `.github/SECURITY.md` for GitHub's security tab.
-08. `skills`, `agents` — Only when the project ships Claude Code skills or agents (see § Recipes › skills/agents pages below).
-09. `myst-docstrings` — Authoring guide for MyST in docstrings. Include verbatim from upstream when the project uses `repomatic.myst_docstrings`.
-10. `benchmark` — Optional comparison page; only useful for projects positioning against alternatives.
+1. `install` — § Recipes › `install.md`. Always first.
+2. `cli` — § Recipes › `cli.md`. CLIs only.
+3. `configuration` — § Recipes › `configuration.md`. Projects with `[tool.X]` schema.
+4. `dependencies` — Mermaid dependency graph generated by `repomatic update-deps-graph` from `uv.lock`. Auto-regenerated; never hand-edit.
+5. `tool-runner` — Only when the project ships a `repomatic run`-style tool runner.
+6. `workflows` — Only when the project publishes reusable workflows.
+7. `security` — Threat model, supported versions, reporting channel. Should also live as `.github/SECURITY.md` for GitHub's security tab.
+8. `skills`, `agents` — Only when the project ships Claude Code skills or agents (see § Recipes › skills/agents pages below).
+9. `benchmark` — Optional comparison page; only useful for projects positioning against alternatives. MyST docstring authoring needs no local page: it is canonically documented on the [click-extra MyST docstrings page](https://kdeldycke.github.io/click-extra/myst-docstrings.html), which also covers the `click-extra convert-to-myst` migration command.
 
 Development toctree, in this order:
 
@@ -569,7 +568,6 @@ Page-shape rules that apply across the roster:
   | `history.md`             | `log`                |
   | `install.md`             | `download`           |
   | `license.md`             | `law`                |
-  | `myst-docstrings.md`     | `pencil`             |
   | `operation-contracts.md` | `checklist`          |
   | `platforms.md`           | `codespaces`         |
   | `releasing.md`           | `rocket`             |
@@ -614,7 +612,7 @@ Default-pruning rule:
 
 Extensions list:
 
-- Keep alphabetized within logical groups; the only ordering exception is when extensions hook the same event and the priority isn't explicit (`repomatic.myst_docstrings` must precede `sphinx_autodoc_typehints` because the former hooks `autodoc-process-docstring` at priority 400 vs the default 500). When you make such an exception, add a comment naming the hook and priorities so a later reader doesn't sort it back into alphabetical order.
+- Keep alphabetized within logical groups; the only ordering exception is when extensions hook the same event and the priority isn't explicit (`click_extra.sphinx.myst_docstrings` must precede `sphinx_autodoc_typehints` because the former hooks `autodoc-process-docstring` at priority 400 vs the default 500). When you make such an exception, add a comment naming the hook and priorities so a later reader doesn't sort it back into alphabetical order.
 - No `try/except ImportError` around extension imports. The build either has the extension or it doesn't; lazy fallbacks hide breakage.
 - Don't list extensions you no longer use. An unused extension still loads (slowing every build) and still introduces stale settings down the file.
 
@@ -721,7 +719,7 @@ Watch for these every pass:
 - A `## Development` section in `readme.md` that should have been removed when the project added a `claude.md`. Once `claude.md` exists, the developer-facing setup goes there; keeping a duplicated section in the readme creates two places to update.
 - A `dependencies.md` page whose embedded Mermaid graph hasn't been regenerated since the last `uv lock` change. The graph stays in sync only if `repomatic update-deps-graph` is wired into the autofix workflow; manual regeneration drifts.
 - `pyproject.toml` declaring a docs dependency that's no longer imported by `conf.py` (or vice-versa: importing one not declared). The mismatch passes Sphinx but trips a fresh `uv sync --group docs` run on a CI runner.
-- `repomatic.myst_docstrings` listed in `extensions` without `repomatic` declared in `[dependency-groups] docs`. Builds work on the maintainer's machine if `repomatic` is installed globally, then break in CI.
+- `click_extra.sphinx.myst_docstrings` listed in `extensions` without `click-extra[sphinx]` declared in `[dependency-groups] docs`. Builds work on the maintainer's machine if the package is installed globally, then break in CI.
 - `click_extra.sphinx` listed in `extensions` without `click_extra_enable_exec_directives = True` in `conf.py`. Since click-extra `v7.15.0` the directives are off by default; without the flag, every `{click:run}` / `{click:source}` / `{python:*}` reference logs an "Unknown directive" warning and the page renders without the live block.
 - `suppress_warnings` entries that no longer fire because the upstream extension was fixed. Sweep on every upgrade — entries should grow stale and be removed, not accumulate.
 - Auto-region markers using bare `<!-- start -->` / `<!-- end -->` instead of named `<!-- {feature}-{kind}-start -->`. Migrate on first touch; the regenerator must be updated in the same commit.

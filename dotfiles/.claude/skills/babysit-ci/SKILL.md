@@ -5,7 +5,7 @@ user_invocable: true
 
 # Babysit CI: monitor and fix tests.yaml + lint.yaml + autofix.yaml + docs.yaml + release.yaml binaries
 
-Monitor the `tests.yaml`, `lint.yaml`, `autofix.yaml`, `docs.yaml`, and `release.yaml` (Nuitka `compile-binaries`) workflows in a fix-verify loop until all stable matrix variations pass and type-checking is clean.
+Monitor the `tests.yaml`, `lint.yaml`, `autofix.yaml`, `docs.yaml`, and `release.yaml` (Nuitka binary matrix, on projects that enable it) workflows in a fix-verify loop until all stable matrix variations pass and type-checking is clean.
 
 ## Invocation
 
@@ -75,7 +75,7 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
    $ gh run list --workflow=release.yaml --branch=<BRANCH> --limit=1
    ```
 
-   Track all five run IDs (`docs.yaml` may have none: its `paths:` filter skips pushes touching nothing docs-relevant). An empty run list for the *other* workflows is not paths-filtering: GitHub can sit on a push event for hours before materializing any run (a 4-hour lag has been observed), so when a freshly pushed SHA shows no runs, keep re-polling instead of concluding the push was filtered, and measure the wait from run creation, not from the push. The `tests.yaml` run exercises the full test matrix; `lint.yaml` runs mypy on every tracked Python file and lints YAML; `autofix.yaml` runs the mechanical fix jobs (`format-*`, `sync-*`, `fix-typos`, `fix-vulnerable-deps`) and turns red when one *crashes* instead of committing a fix; `docs.yaml` builds and deploys the Sphinx site and runs the broken-links check (an externally cancelled or link-flaky run re-runs cleanly via `gh workflow run docs.yaml --ref <BRANCH>`, no commit needed); `release.yaml` runs the Nuitka `compile-binaries` matrix (dev binaries, rebuilt on every push to `main`). All must pass — see § Autofix job failures and § Nuitka binary build failures below for how to triage them without stalling the loop.
+   Track all five run IDs (`docs.yaml` may have none: its `paths:` filter skips pushes touching nothing docs-relevant). An empty run list for the *other* workflows is not paths-filtering: GitHub can sit on a push event for hours before materializing any run (a 4-hour lag has been observed), so when a freshly pushed SHA shows no runs, keep re-polling instead of concluding the push was filtered, and measure the wait from run creation, not from the push. The `tests.yaml` run exercises the full test matrix; `lint.yaml` runs mypy on every tracked Python file and lints YAML; `autofix.yaml` runs the mechanical fix jobs (`format-*`, `sync-*`, `fix-typos`, `fix-vulnerable-deps`) and turns red when one *crashes* instead of committing a fix; `docs.yaml` builds and deploys the Sphinx site and runs the broken-links check (an externally cancelled or link-flaky run re-runs cleanly via `gh workflow run docs.yaml --ref <BRANCH>`, no commit needed); `release.yaml` runs the Nuitka binary matrix (dev binaries, rebuilt on every push to `main`) — but only on projects with `[tool.repomatic] nuitka.enabled` and a CLI entry point; with Nuitka disabled the per-platform jobs skip on every push, release commits included, and a green `release.yaml` means package build plus dev pre-release sync only. All must pass — see § Autofix job failures and § Nuitka binary build failures below for how to triage them without stalling the loop.
 
 3. **Run local tests while waiting for CI.** Don't idle while polling. Start the full test suite and linters locally in the background immediately:
 
@@ -239,13 +239,13 @@ Diagnose with `gh api rate_limit` **before** touching token settings: `remaining
 
 ### Nuitka binary build failures (release.yaml)
 
-The `compile-binaries` job runs Nuitka across a 6-way OS/arch matrix on every push to `main`; catching a break while the version is still `.dev0` avoids shipping a release with missing or broken binaries, which the immutable-release wall makes unrecoverable. Triage by category:
+This section only applies to projects that build binaries (`[tool.repomatic] nuitka.enabled` with a CLI entry point); on a Nuitka-disabled project the per-platform jobs skip on every push and there is no matrix to fail. When enabled, the engine runs Nuitka across a 6-way OS/arch matrix on every push to `main` (job names are templated per platform, like `✅ {os}, {sha} build`); catching a break while the version is still `.dev0` avoids shipping a release with missing or broken binaries, which the immutable-release wall makes unrecoverable. Triage by category:
 
 - **Infrastructure** (runner OOM, shutdown signal, macOS runner crash, registry timeout): re-run the failed job (`gh run rerun <RELEASE_RUN_ID> --failed`); binary builds are resource-heavy and macOS runners crash more than most.
 - **Nuitka configuration** (`Error, unsupported ...`, an unknown `--flag`, a missing data file): fix `[tool.nuitka]` in `pyproject.toml`, not the Python source; verify each key maps to a current Nuitka option.
 - **Real compile or runtime errors** (the binary builds but its smoke test fails, a `ModuleNotFoundError` at runtime): fix the code or the `include-package`/`include-data-files` configuration, then push and re-monitor.
 
-The matrix is slow: let `tests.yaml` and `lint.yaml` set the loop cadence, then check `compile-binaries` once it finishes and fold any genuine failure into the same fix batch.
+The matrix is slow: let `tests.yaml` and `lint.yaml` set the loop cadence, then check the binary matrix once it finishes and fold any genuine failure into the same fix batch.
 
 ### Autofix job failures (autofix.yaml)
 
