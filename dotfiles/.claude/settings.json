@@ -2,6 +2,7 @@
   "cleanupPeriodDays": 30,
   "env": {
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "DISABLE_AUTOUPDATER": "1",
     "LLM": "1",
     "NO_COLOR": "1"
   },
@@ -99,6 +100,11 @@
       }
     ]
   },
+  "statusLine": {
+    "type": "command",
+    "command": "starship statusline claude-code",
+    "padding": 0
+  },
   "enabledPlugins": {
     "pyright-lsp@claude-plugins-official": true
   },
@@ -120,9 +126,12 @@
         "/tmp",
         "/private/tmp",
         "~/.cache/uv",
-        "~/Library/Application Support/uv"
+        "~/Library/Application Support/uv",
+        "~/code/cpython/Objects"
       ],
-      "denyRead": ["~/.ssh"],
+      "denyRead": [
+        "~/.ssh"
+      ],
       "allowRead": [
         "~/.ssh/id_ed25519.pub",
         "~/.ssh/ssh-keygen-secretive",
@@ -131,13 +140,10 @@
     },
     "enableWeakerNetworkIsolation": true
   },
-  "statusLine": {
-    "type": "command",
-    "command": "starship statusline claude-code",
-    "padding": 0
-  },
   "alwaysThinkingEnabled": true,
   "effortLevel": "high",
+  "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
+  "skipWorkflowUsageWarning": true,
   "skipAutoPermissionPrompt": true
 }
