@@ -222,6 +222,39 @@ claude() {
     command claude --name "$(date +%m-%d@%H:%M) ${PWD/#$HOME/~}" "$@"
 }
 
+# Date-prefix and retitle documents (PDFs, images, screenshots) in the directory
+# this is called from, via the rename-with-dates skill. Claude runs from the
+# dotfiles repo so it inherits that skill, CLAUDE.md and the permission rules;
+# --add-dir grants write access back to the target. Claude Code auto-submits an
+# initial natural-language prompt but NOT a bare "/rename-with-dates" passed as
+# the first argument, so the prompt below names the skill and folder to trigger
+# it on startup. The "--" stops the variadic --add-dir from swallowing that
+# prompt. Pass a directory to target it instead of the current one; the model
+# (opus) lives in the skill's own frontmatter.
+#
+# CLAUDE_CODE_DISABLE_FILE_CHECKPOINTING turns off Claude's /rewind edit
+# snapshots. That feature tracks only Claude's own file-edit tools, never a bash
+# "mv" (which is how the skill renames), so it is dead weight here and is the
+# likely source of the per-workspace .claude/.cc-writes scratch dir that was
+# cluttering (and ProtonDrive-syncing) the target.
+#
+# Safety: a .claude present BEFORE launch is recorded and never touched (it may
+# be a real project's config). Only when the folder had none do we remove the
+# scaffolding afterwards, and even then rmdir deletes only empty dirs, so a
+# settings.local.json saved mid-session survives.
+rename-with-dates() {
+    local target="${1:-$PWD}"
+    target="${target:a}"
+    local had_claude=
+    [[ -e "$target/.claude" || -L "$target/.claude" ]] && had_claude=1
+    (cd ~/code/dotfiles && export CLAUDE_CODE_DISABLE_FILE_CHECKPOINTING=1 && \
+        claude --add-dir "$target" -- \
+        "Use the rename-with-dates skill to date-prefix and retitle the documents in \"$target\"")
+    local status=$?
+    [[ -z "$had_claude" ]] && rmdir "$target/.claude/.cc-writes" "$target/.claude" 2>/dev/null
+    return $status
+}
+
 
 ###############################################################################
 # Prompt

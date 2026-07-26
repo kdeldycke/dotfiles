@@ -1,6 +1,7 @@
 ---
 name: rename-with-dates
 description: Rename documents and files (PDFs, images, screenshots, etc.) by reading their content to extract the effective/publication date, then renaming them with a "YYYY-MM-DD - Clear descriptive title.ext" format. Use when the user wants to organize files with date prefixes based on document content.
+model: opus
 argument-hint: '[directory or files]'
 ---
 
