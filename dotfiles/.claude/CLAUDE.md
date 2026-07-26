@@ -24,6 +24,13 @@ Never write `#N` (a literal `#` followed by a number) in commit messages, PR tit
 
 Never use `$()` command substitutions inside `gh` (or any other) Bash calls. The sandbox flags `$()` as a separate security check that fires regardless of permission allow rules — it can't statically verify what executes inside a substitution. Instead, run compound commands as separate sequential Bash calls: capture the inner result first, then use it in the next call. Both commands then match the allow rules individually and auto-approve.
 
+## Local environment
+
+Non-obvious facts about this machine that have caused hard-to-diagnose failures:
+
+- **Dotfiles are hardlinked into `$HOME`, not symlinked or copied.** `~/code/dotfiles/dotfiles/{path}` and `~/{path}` are the same inode. Edit in place (`open(path, "w")`, a shell `>` redirect, an in-place patch) so both paths update together. A replace-then-rename write (what most editors and BSD/macOS `sed -i` do) breaks the link and silently forks the two copies. Confirm the inode still matches both paths after editing. (Some dotfiles are instead symlinked, like `~/.claude/CLAUDE.md`: resolve the link and edit the real target under `~/code/dotfiles/`.)
+- **Pushing to `gitlab.alpinelinux.org` uses `~/.ssh/id_ed25519`, not the Secretive key.** The Secure Enclave key (Secretive) is registered there as a *Signing* key, which cannot authenticate a push: it connects as "Anonymous" and the push is rejected. The *Authentication* key is `~/.ssh/id_ed25519`. A `Host gitlab.alpinelinux.org` block in `~/.ssh/config` (before `Host *`) pins `IdentityAgent none` + `IdentityFile ~/.ssh/id_ed25519` + `IdentitiesOnly yes` to force it: leave that block in place. More generally, when a GitLab push fails as "Anonymous", check the key's usage type on the server, the `IdentityAgent` override, and `ControlMaster` multiplexing (a cached bad session masks key changes).
+
 ## Code generation preferences
 
 For any non-trivial workflow, data processing, or multi-step logic: write Python, not Bash. The user is an advanced Python developer and can quickly read, inspect, and validate Python code. Short one-liners and simple Bash scripts are fine for convenience and performance, but anything with branching logic, string manipulation, data transformation, or error handling should be Python.
