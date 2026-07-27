@@ -98,6 +98,26 @@
           }
         ]
       }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/kde/code/dotfiles/dotfiles/.claude/hooks/session-title.py sessionstart"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/kde/code/dotfiles/dotfiles/.claude/hooks/session-title.py hook"
+          }
+        ]
+      }
     ]
   },
   "statusLine": {
