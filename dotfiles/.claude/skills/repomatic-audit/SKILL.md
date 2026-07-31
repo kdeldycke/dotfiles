@@ -159,6 +159,6 @@ Suggest the user run:
 
 - Apply mechanical fixes by pushing to `main`: the `sync-repomatic` autofix job reconciles thin-caller workflow drift, and `lint.yaml` flags remaining metadata issues.
 - Make manual edits for header-only workflow drift and config changes that sync cannot fix.
-- `/sphinx-docs-sync` to audit `docs/` against sibling projects when this repo has a Sphinx documentation tree. The `sphinx-docs` agent (`.claude/agents/sphinx-docs.md`, opt-in via `repomatic init agents/sphinx-docs`) holds the canonical conventions for `configuration.md`, `cli.md`, `install.md`, `conf.py`, and the standard page roster — recommend opting in when the repo has Sphinx docs that drift from upstream patterns.
+- `/sphinx-docs-sync` to audit `docs/` against the upstream `kdeldycke/repomatic` reference when this repo has a Sphinx documentation tree. The `sphinx-docs` agent (`.claude/agents/sphinx-docs.md`, opt-in via `repomatic init agents/sphinx-docs`) holds the canonical conventions for `configuration.md`, `cli.md`, `install.md`, `conf.py`, and the standard page roster — recommend opting in when the repo has Sphinx docs that drift from upstream patterns.
 
 If the audit surfaces a generator behavior that produces unwanted output (e.g., a thin-caller trigger the user wants gone, a header `paths:` filter that doesn't fit), fix it in the upstream tool (`repomatic/github/workflow_sync.py`, `repomatic/config.py`) rather than asking the user to hand-patch the generated file every time `repomatic init` runs.

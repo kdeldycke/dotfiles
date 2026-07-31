@@ -49,7 +49,7 @@ Three feedback channels run in parallel after every push, each at a different la
                                                                  │
  5:00                     GATE 3: tests.yaml fast jobs done ◄────┘
                           stable fail? ── yes ──► step 4-5
-                                           no ──► early exit if only macOS left
+                                           no ──► early exit if only macOS left (human runs; orchestrator waits)
 
  8:00                     tests.yaml macOS done (often skippable)
 
@@ -166,9 +166,11 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
 
 8. **Repeat from step 2** until the monitored workflows are green: `tests.yaml` with all stable (✅) jobs passing, `lint.yaml` with no mypy failures (test and docs files included). **Stop after 5 iterations**: if the loop has not converged, report what was fixed and what remains, and ask for guidance rather than churning.
 
-### Early exit
+### Early exit (human-invoked runs only)
 
-Once all fast platforms (Linux, Windows) have completed with zero stable failures and only slow runners (macOS) remain queued or in progress, declare success and stop the loop: macOS runners are resource-constrained, and platform-independent fixes gain no diagnostic value from waiting.
+**This shortcut applies only when a human invoked the loop directly.** Once all fast platforms (Linux, Windows) have completed with zero stable failures and only slow runners (macOS) remain queued or in progress, declare success and stop — macOS runners are resource-constrained, and platform-independent fixes gain no diagnostic value from waiting. **Announce this exit; never end on a silent idle.** Report that the fast channels are green and name what stays unverified (the `release.yaml` binary-matrix run ID, any still-queued macOS or congestion-delayed cells) so the human takes over that check instead of assuming the whole matrix passed.
+
+**When an orchestrator spawned this loop (like `/repomatic-ship`), do not early-exit — drive every monitored workflow to terminal green before returning.** The orchestrator spawned you precisely to own the slow tail it would otherwise poll itself; returning at "fast platforms green" just hands the macOS cells and the `release.yaml` binary matrix back to a caller that must then detect your stall and re-drive them, and an idle sub-agent is indistinguishable from a dead one. Keep polling — with the step-3 `sleep` cadence, never a busy-wait — until macOS and the full `release.yaml` matrix have finished and every stable (✅) job is green, fixing and re-pushing on any stable failure (steps 4-7). Then send the orchestrator a final `SendMessage` naming each monitored workflow's conclusion. A harness idle/available signal is not that report: end the turn only with that explicit message, or on a blocker you cannot resolve (say which).
 
 ## Stable vs. unstable
 

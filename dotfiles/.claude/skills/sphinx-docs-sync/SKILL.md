@@ -1,6 +1,6 @@
 ---
 name: sphinx-docs-sync
-description: Two-way comparison and synchronization of Sphinx documentation across sibling projects. Discovers discrepancies in conf.py, install.md, index.md toctree, pyproject.toml docs dependencies, extra-deps sections, readme badges, and static assets. Use when you want to align documentation structure, catch stale dependencies, or push improvements across your Sphinx-enabled repositories.
+description: Two-way comparison and synchronization of Sphinx documentation against the upstream `kdeldycke/repomatic` reference (the default in downstream repos) or across sibling projects. Discovers discrepancies in conf.py, install.md, index.md toctree, pyproject.toml docs dependencies, extra-deps sections, readme badges, and static assets. Use when you want to align documentation structure, catch stale dependencies, or push improvements across your Sphinx-enabled repositories.
 model: sonnet
 disable-model-invocation: true
 allowed-tools: Bash, Read, Grep, Glob, Agent
@@ -9,23 +9,29 @@ argument-hint: '[path-or-github-url ...]'
 
 ## Context
 
+!`[ -f repomatic/__init__.py ] && echo "CANONICAL_REPO" || echo "DOWNSTREAM"`
 !`[ -d docs ] && echo "docs/ exists" || echo "No docs/ directory"`
 !`[ -f docs/conf.py ] && head -5 docs/conf.py || echo "No docs/conf.py"`
 !`ls ../*/docs/conf.py 2>/dev/null | head -20 || echo "No sibling projects with docs/conf.py"`
 
 ## Instructions
 
-You audit Sphinx documentation consistency across sibling projects. Find discrepancies in both directions: improvements this project can borrow from siblings, and improvements this project can push to siblings.
+You audit Sphinx documentation consistency against a reference: the upstream `kdeldycke/repomatic` canonical docs when run in a downstream repo, or sibling projects when run inside the canonical repo (see § Discover projects for how the reference is chosen). Find discrepancies in both directions: improvements this project can borrow from the reference, and improvements it can push back.
 
 **This skill is the procedure layer; the rule layer is `.claude/agents/sphinx-docs.md`.** It carries the canonical conventions: `{click:run}` directives, recipes for `configuration.md`/`cli.md`/`install.md`, the standard page roster, `conf.py` hygiene, MyST/admonition rules, high-frequency lapses. When a discrepancy maps to a rule, cite the agent section so the user reads the rationale alongside the proposed change. When you find a pattern not yet codified, propose adding it to the agent rather than fixing it in each repo independently.
 
 ### Discover projects
 
-If `$ARGUMENTS` are provided, each argument is a local directory path or a GitHub repository URL (`https://github.com/owner/repo` or `owner/repo`). For GitHub URLs, clone into a tmpdir with `gh repo clone`. Otherwise, scan the parent directory of the cwd for projects with a `docs/conf.py`.
+If `$ARGUMENTS` are provided, each argument is a local directory path or a GitHub repository URL (`https://github.com/owner/repo` or `owner/repo`). For GitHub URLs, clone into a tmpdir with `gh repo clone`.
 
-Filter out forks: check `git remote get-url origin` and skip projects whose upstream repo name doesn't match the directory name (a local `click/` pointing to a fork of `pallets/click`). Focus on the user's own projects.
+When no `$ARGUMENTS` are given, the default reference depends on which repo you are in (the `## Context` block reports `CANONICAL_REPO` or `DOWNSTREAM`):
 
-List the discovered projects and confirm with the user before proceeding.
+- **`DOWNSTREAM`**: compare this project's `docs/` against the canonical `kdeldycke/repomatic` reference, cloned into a tmpdir with `gh repo clone kdeldycke/repomatic`. This is the "align me with the source of truth" default, mirroring how `/repomatic-audit` treats workflows and configs.
+- **`CANONICAL_REPO`** (you are inside `kdeldycke/repomatic`): comparing against `kdeldycke/repomatic` would diff the repo against itself, so scan the parent directory of the cwd for sibling projects with a `docs/conf.py` and push conventions outward to them instead.
+
+When scanning siblings, filter out forks: check `git remote get-url origin` and skip projects whose upstream repo name doesn't match the directory name (a local `click/` pointing to a fork of `pallets/click`). Focus on the user's own projects.
+
+List the discovered projects (or the chosen reference) and confirm with the user before proceeding.
 
 ### Collect documentation inventory
 
@@ -36,7 +42,7 @@ For each project, collect (parallelize with sub-Agents when possible). For each 
 - **`docs/index.md`** (agent § Standard page roster). Diff toctree shape, page ordering, octicon icons (cross-check against the canonical octicon registry), and presence/absence of standard pages.
 - **`docs/install.md`** (agent § Recipes › `install.md`). Diff section roster, install-method tab order, executables table format, Repology badge, Python compatibility matrix structure, gh attestation verify section.
 - **`docs/cli.md` and `docs/configuration.md`** (agent § Recipes). Diff the auto-region between markers and confirm the regenerator script (`docs/docs_update.py`) follows the same shape across projects.
-- **Auto-region marker naming** (agent § Auto-generated reference tables, marker naming convention). Grep all `docs/*.md` for `<!-- start -->`/`<!-- end -->` pairs; flag any bare markers, recommend renaming to `<!-- {feature}-{kind}-start -->`. Confirm that named markers across siblings use consistent `{kind}` slugs (`table`, `sankey`, `mindmap`, `autodata`, `automodule`, `autodoc`, `reference`).
+- **Auto-region marker naming** (agent § Auto-generated reference tables, marker naming convention). Grep all `docs/*.md` for `<!-- start -->`/`<!-- end -->` pairs; flag any bare markers, recommend renaming to `<!-- {feature}-{kind}-start -->`. Confirm that named markers across siblings use consistent `{kind}` slugs (`table`, `sankey`, `mindmap`, `chart`, `autodata`, `automodule`, `autodoc`, `reference`).
 - **Theme assets** (agent § `conf.py` hygiene › Theme assets and OpenGraph). Confirm `html_logo = "assets/logo-square.svg"`, `html_favicon = "assets/favicon.svg"`, and `ogp_image = "assets/banner-social-light.png"` when banner assets exist. Flag projects with `sphinxext.opengraph` enabled but no `ogp_image` set. Suggest the user run `/brand-assets` on flagged projects to regenerate or backfill the asset set in one pass.
 - **`sphinx_issues` migration** (agent § Migrating off `sphinx_issues`). Grep each project for `{issue}` `/`{pr}` ` / `{user}` `/`{commit}` ` (MyST) and `:issue:` `/`:pr:` ` / `:user:` `/`:commit:` ` (reST) across `*.md`, `*.rst`, `*.py`. Flag every occurrence and offer to apply the migration recipe in one pass per repo. After replacement, drop `"sphinx_issues"` from `extensions` in `conf.py`, `"sphinx-issues>=…"` from `[dependency-groups] docs`, and any `issues_github_path` setting unused by other extensions.
 - **`pyproject.toml` docs dependency group**. Compare against what `conf.py` actually imports — flag undeclared imports and declared-but-unimported deps. Don't change version pins unless provably stale (a conditional dep on a Python version below the project's floor; a transitively-constrained loose pin held by a meta-extra like `click-extra[sphinx]`).
@@ -76,6 +82,9 @@ These are about *how* you run the audit, not what counts as a violation:
 - When a dependency appears in multiple groups (main, extras, docs), the version may be intentionally loose in one group because it's transitively constrained. Verify before flagging.
 - Respect project-specific opt-outs: `[tool.repomatic] exclude` and `include` lists are authoritative. A page or component listed in `exclude` is intentionally absent.
 - Never silently bump a version pin. Loose pins are sometimes intentional; tight pins always have a reason. Flag, don't fix.
+- Before flagging download-URL or asset-name findings, list the real release assets (`gh release view {tag} --json assets`). Releases in this lineage attach unversioned alias binaries alongside the version-stamped ones, so `releases/latest/download/` links that look impossible against stamped filenames are in fact valid.
+- A marker or format deviating from the current convention may already be self-healing: check the generator for a legacy-marker migration shim before reporting drift (repomatic's binaries page auto-migrates legacy `binaries-start` and `binaries-chart-start` opens to the bare `binaries-chart` on next touch).
+- Sandboxed sessions usually cannot re-test `linkcheck_ignore` hosts: network allowlists make denials indistinguishable from real 403s. Hand the probe list to the user or defer to a local `sphinx-build -b linkcheck` run instead of silently skipping the re-test.
 
 ### Next steps
 

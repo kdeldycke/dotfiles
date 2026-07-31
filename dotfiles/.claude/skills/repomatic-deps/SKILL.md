@@ -38,12 +38,12 @@ You help users understand and maintain their project's dependencies. This skill 
 
 ### Mechanical layer
 
-The `autofix.yaml` workflow's `update-deps-graph` job already regenerates the dependency graph on every push to `main`. This mode is useful for **interactive analysis** — understanding the graph, spotting concerns, or generating it before pushing.
+The `autofix.yaml` workflow's `update-dep-graph` job already regenerates the dependency graph on every push to `main`. This mode is useful for **interactive analysis** — understanding the graph, spotting concerns, or generating it before pushing.
 
 ### Argument handling
 
-- Pass remaining arguments through to `<cmd> update-deps-graph`.
-- If no extra arguments, run `<cmd> update-deps-graph` with no arguments.
+- Pass remaining arguments through to `<cmd> update-dep-graph`.
+- If no extra arguments, run `<cmd> update-dep-graph` with no arguments.
 
 ### After running
 
