@@ -153,6 +153,10 @@ filter lists:
 
 `enableWeakerNetworkIsolation: true` is set in the sandbox config to work around a macOS sandbox limitation: the sandbox blocks `Security.framework` IPC to `trustd`, breaking TLS certificate verification for all CGO-compiled Go binaries (`gh`, `terraform`, `tofu`, etc.) and Keychain access. `SSL_CERT_FILE` does not help because these binaries use `Security.framework` directly and ignore file-based certs ([anthropics/claude-code#34876](https://github.com/anthropics/claude-code/issues/34876)).
 
+### Pi
+
+`~/.pi/agent/settings.json` is symlinked to this repo and committed. Session logs, auth tokens and model caches stay local to the machine.
+
 ### Logi Options
 
 For productivity, setup custom trackball shortcuts with macOS desktop

@@ -110,6 +110,10 @@ unsetopt beep
 # See: https://github.com/Homebrew/brew/blob/master/share/doc/homebrew/Analytics.md#opting-out
 export HOMEBREW_NO_ANALYTICS=1
 
+# Disable Pi startup network activity, including telemetry and update checks.
+export PI_TELEMETRY=0
+export PI_OFFLINE=1
+
 # Route SSH agent through Secretive for Touch ID-gated signing.
 # Required for git commit signing (gpg.ssh.defaultKeyCommand = ssh-add -L).
 # IdentityAgent in ~/.ssh/config handles SSH auth, but ssh-add and ssh-keygen

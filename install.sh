@@ -51,8 +51,8 @@ xcode-select --install || true
 # Use system, BSD find command.
 FIND_CLI="/usr/bin/find"
 
-# Collect all entries within the "dotfiles" sub-folder, but the "Library" and ".config".
-DOT_FILES=$($FIND_CLI dotfiles -depth 1 -not -name '\.DS_Store' -not -name 'Library' -not -name '.config')
+# Collect all entries within the "dotfiles" sub-folder, but the "Library", ".config" and ".pi".
+DOT_FILES=$($FIND_CLI dotfiles -depth 1 -not -name '\.DS_Store' -not -name 'Library' -not -name '.config' -not -name '.pi')
 # Collect all ".config" content .
 DOT_FILES+="
 $($FIND_CLI dotfiles/.config -depth 1 -not -name '\.DS_Store')"
@@ -65,9 +65,10 @@ $($FIND_CLI dotfiles/Library/Preferences -depth 1 -not -name '\.DS_Store')"
 # Collect all "Application Support" subfolders but "Code" folder.
 DOT_FILES+="
 $($FIND_CLI 'dotfiles/Library/Application Support' -depth 1 -not -name '\.DS_Store' -not -name 'Code')"
-# Manually add Code settings file.
+# Manually add Code and Pi settings files.
 DOT_FILES+="
-dotfiles/Library/Application Support/Code/User/settings.json"
+dotfiles/Library/Application Support/Code/User/settings.json
+dotfiles/.pi/agent/settings.json"
 
 echo "Collected dotfiles:"
 echo "${DOT_FILES}" | sort
