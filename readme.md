@@ -80,6 +80,29 @@ $ cd ~/dotfiles
 $ /bin/zsh ./install.sh 2>&1 | tee ./install.log
 ```
 
+### Stages
+
+The install procedure is decomposed into stages, executed in this order on a full run:
+
+| Stage | What it does |
+| :--- | :--- |
+| `links` | Symlink the dotfiles into the home folder. |
+| `packages` | macOS updates, Homebrew bootstrap, and full package restore from `packages.toml` via `mpm`. |
+| `shell` | Zsh plugins (zinit) and shell completions. |
+| `apps` | Mac App Store packages and per-application setup (QuickLook, SwiftBar, Tor Browser, IINA, Neovim). |
+| `cleanup` | Package caches and orphans, Trash, DNS cache. |
+| `snapshot` | Record the versions of installed packages into `packages.toml`. |
+| `config` | Apply the whole `macos-config.sh`. Kills `Terminal.app` at the end. |
+
+Each stage can be run on its own, or combined with others in the order given:
+
+```shell-session
+$ ./install.sh links
+$ ./install.sh cleanup snapshot
+```
+
+`./install.sh --list` prints the available stage names.
+
 ## Post-installation
 
 Manual setup required to finish up the perfect configuration.
@@ -195,6 +218,8 @@ call the script again to upgrade your system:
 $ ./install.sh 2>&1 | tee ./install.log
 ```
 
+To refresh only a part of the system, call the corresponding [stage](#stages), like `./install.sh packages` to upgrade packages without touching the rest.
+
 ## Maintenance
 
 It mainly consist in refreshing some assets at every macOS major release:
@@ -205,7 +230,7 @@ It mainly consist in refreshing some assets at every macOS major release:
 - Keep list of packages up-to-date:
 
   ```shell-session
-  $ mpm snapshot --update-version ./packages.toml
+  $ ./install.sh snapshot
   ```
 
 - Update screenshots. 😖

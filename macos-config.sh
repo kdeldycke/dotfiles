@@ -27,10 +27,6 @@ set -Eeuxo pipefail
 # settings we’re about to change
 osascript -e 'tell application "System Settings" to quit'
 
-# Extract hardware UUID to reconstruct host-dependent plists.
-HOST_UUID=$(ioreg -d2 -c IOPlatformExpertDevice | awk -F\" '/IOPlatformUUID/{print $(NF-1)}')
-
-
 ###############################################################################
 # Permissions and Access                                                      #
 ###############################################################################
@@ -41,7 +37,12 @@ HOST_UUID=$(ioreg -d2 -c IOPlatformExpertDevice | awk -F\" '/IOPlatformUUID/{pri
 #   ❯ strings /System/Library/PrivateFrameworks/TCC.framework/Versions/Current/Resources/tccd | grep "^kTCCService[A-Z a-z]" | sort | uniq
 
 # Ask for the administrator password upfront
-sudo -v
+sudo --validate
+
+# Update existing `sudo` time stamp until script has finished, so a standalone
+# run does not re-prompt every 5 minutes (the timeout pinned further below).
+# Harmless duplicate of install.sh's keep-alive when sourced from there.
+while true; do sleep 60; sudo --non-interactive true; kill -0 "$$" || exit; done 2> /dev/null &
 
 # tccutil commands below only works if SIP is disabled.
 if (( ${SIP_DISABLED:-0} )); then
@@ -102,7 +103,7 @@ fi
 ###############################################################################
 
 # Transform '  |   "model" = <"MacBookAir8,1">' to 'MBA'
-COMPUTER_MODEL_SHORTHAND=$(ioreg -c IOPlatformExpertDevice -d 2 -r | grep '"model" =' | python -c "print(''.join([c for c in input() if c.isupper()]))")
+COMPUTER_MODEL_SHORTHAND=$(ioreg -c IOPlatformExpertDevice -d 2 -r | grep '"model" =' | python3 -c "print(''.join([c for c in input() if c.isupper()]))")
 COMPUTER_NAME="$(whoami)-${COMPUTER_MODEL_SHORTHAND}"
 # Set computer name (as done via System Settings → General → About)
 sudo scutil --set ComputerName "${COMPUTER_NAME}"
@@ -526,7 +527,9 @@ sudo mv /etc/sudoers.d/mscp.tmp /etc/sudoers.d/mscp
 # Activates Touch ID for sudo and make it persistent.
 # See: https://sixcolors.com/post/2023/08/in-macos-sonoma-touch-id-for-sudo-can-survive-updates/
 sudo cp /etc/pam.d/sudo_local.template /etc/pam.d/sudo_local
-sudo sed -i "s/#auth/auth/" /etc/pam.d/sudo_local
+# Pin the BSD sed, like the asl edits above: with bare sed and no gnubin on
+# PATH yet (fresh machine), BSD sed would eat the script as its -i suffix.
+sudo /usr/bin/sed -i '' "s/#auth/auth/" /etc/pam.d/sudo_local
 
 
 ###############################################################################
