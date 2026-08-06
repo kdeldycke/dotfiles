@@ -1,3 +1,10 @@
 [mpm]
+# Mitigate supply chain attacks by requiring packages to have been
+# published for at least 7 days before they can be installed or upgraded.
+# Only npm, pip, pipx, pnpm, uv, uvx and yay can enforce this natively; the
+# others are skipped by the default fail-closed policy. Set
+# `require_cooldown_support = false` to run them anyway, unguarded.
+cooldown = "7 days"
+
 # Perl's CPAN is registered under the `cpan` manager ID.
 cpan = false
