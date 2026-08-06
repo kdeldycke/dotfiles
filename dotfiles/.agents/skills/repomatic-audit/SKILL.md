@@ -27,7 +27,7 @@ Before flagging an issue, verify that the gap isn't **deliberate** or covered by
 - **`[tool.repomatic] exclude` is authoritative.** Files listed there (like `workflows/changelog.yaml` or `labels`) are intentionally absent on disk. Do **not** report them as MISSING.
 - **Bundled defaults applied at runtime.** Some config is materialized from the bundled template at runtime when the file is absent: `[tool.ruff]`/`[tool.typos]` defaults from the tool registry are applied without requiring an on-disk copy. **Absence of these files is not a problem** — it is the intended state when the user is happy with the bundled policy. Only flag DRIFT if the user wants to deviate from the bundled policy.
 - **Generator artifacts vs user error.** When local thin-callers diverge from upstream (e.g., extra `workflow_dispatch:`, missing `paths:`), the cause may be the **upstream generator**, not downstream tampering. Inspect `repomatic/github/workflow_sync.py` (`generate_thin_caller`, `_adapt_trigger_paths`, `generate_workflow_header`) before recommending the user re-run `repomatic init` to "fix" something `init` itself produced.
-- **Project-level `claude.md` may live under a sub-directory.** `[tool.repomatic] agents.location` and `skills.location` indicate a project where `.claude/` is not at the root (e.g., dotfiles repos with `dotfiles/.claude/CLAUDE.md`). Search the configured location, not just `./CLAUDE.md`.
+- **Project-level `claude.md` may live under a sub-directory, and may be named `AGENTS.md`.** `[tool.repomatic] agents.location` and `skills.location` indicate a project where `.claude/` is not at the root. `skills.location` in particular may point outside `.claude/` entirely (e.g., a shared `.agents/skills/` directory per the Agent Skills / AGENTS.md standard), in which case the instructions file sits at `{skills_location_parent}/AGENTS.md`, not `.claude/CLAUDE.md`. Search the configured location under both names, not just `./CLAUDE.md`.
 
 When in doubt, search the upstream codebase to confirm whether a behavior is intentional. Read `[tool.repomatic]` in the local `pyproject.toml` carefully before declaring anything missing.
 
@@ -99,8 +99,8 @@ Compare these files against the upstream reference. **Before flagging absence as
 
 **Locate the local file first.** It may not be at the repo root:
 
-- Check `[tool.repomatic] agents.location` and `skills.location` for a sub-directory (e.g., `dotfiles/.claude/`); if those are set, look for `{location_parent}/CLAUDE.md`.
-- Try common alternates: `claude.md`, `CLAUDE.md`, `.claude/CLAUDE.md`, `dotfiles/.claude/CLAUDE.md`.
+- Check `[tool.repomatic] agents.location` and `skills.location` for a sub-directory; if those are set, look for `{location_parent}/CLAUDE.md` **and** `{location_parent}/AGENTS.md`. The two locations can differ (e.g., `agents.location` under `.claude/agents/` for Claude Code sub-agents, while `skills.location` points to a shared `.agents/skills/`), so check each location independently.
+- Try common alternates: `claude.md`, `CLAUDE.md`, `AGENTS.md`, `.claude/CLAUDE.md`, `.agents/AGENTS.md`, `dotfiles/.claude/CLAUDE.md`, `dotfiles/.agents/AGENTS.md`.
 
 Fetch the upstream `claude.md` and identify universally applicable sections that the local file is missing. Focus on:
 

@@ -26,7 +26,7 @@ gitignore.extra-categories = [
     "libreoffice",
     "microsoftoffice",
 ]
-skills.location = "./dotfiles/.claude/skills/"
+skills.location = "./dotfiles/.agents/skills/"
 
 [tool.repomatic.workflow.paths]
 "docs.yaml" = [

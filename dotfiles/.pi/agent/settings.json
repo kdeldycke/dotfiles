@@ -2,7 +2,7 @@
   "lastChangelogVersion": "0.83.0",
   "theme": "dark",
   "defaultProvider": "github-copilot",
-  "defaultModel": "gpt-5.4",
+  "defaultModel": "claude-sonnet-5",
   "defaultThinkingLevel": "medium",
   "enableInstallTelemetry": false,
   "enableAnalytics": false
