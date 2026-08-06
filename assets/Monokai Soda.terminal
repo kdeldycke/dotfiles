@@ -166,7 +166,7 @@
 	<key>BlinkText</key>
 	<false/>
 	<key>BookmarkRestorations</key>
-	<false/>
+	<true/>
 	<key>CommandString</key>
 	<string></string>
 	<key>ConvertNewlinesOnPaste</key>
@@ -198,7 +198,7 @@
 	<key>FontAntialias</key>
 	<true/>
 	<key>ProfileCurrentVersion</key>
-	<real>2.0699999999999998</real>
+	<real>2.0899999999999999</real>
 	<key>RunCommandAsShell</key>
 	<true/>
 	<key>ScrollbackLines</key>
@@ -213,9 +213,11 @@
 	ABkAAAAAAAAAAAAAAAAAAADY
 	</data>
 	<key>ShouldLimitScrollback</key>
-	<integer>1</integer>
+	<integer>0</integer>
+	<key>ShowActiveProcessArgumentsInTabTitle</key>
+	<false/>
 	<key>ShowActiveProcessArgumentsInTitle</key>
-	<true/>
+	<false/>
 	<key>ShowActiveProcessInTabTitle</key>
 	<true/>
 	<key>ShowActiveProcessInTitle</key>
@@ -272,6 +274,8 @@
 	<integer>1</integer>
 	<key>type</key>
 	<string>Window Settings</string>
+	<key>useOptionAsMetaKey</key>
+	<true/>
 	<key>warnOnShellCloseAction</key>
 	<integer>0</integer>
 </dict>

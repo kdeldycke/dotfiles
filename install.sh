@@ -68,7 +68,8 @@ $($FIND_CLI 'dotfiles/Library/Application Support' -depth 1 -not -name '\.DS_Sto
 # Manually add Code and Pi settings files.
 DOT_FILES+="
 dotfiles/Library/Application Support/Code/User/settings.json
-dotfiles/.pi/agent/settings.json"
+dotfiles/.pi/agent/settings.json
+dotfiles/.pi/agent/extensions"
 
 echo "Collected dotfiles:"
 echo "${DOT_FILES}" | sort
