@@ -181,11 +181,19 @@ def collect_binaries() -> list[Path]:
 
 
 def keys_in_binary(path: Path, keys: set[str]) -> set[str]:
-    """Return the keys stored as a standalone string inside `path`."""
+    """Return the keys stored as a standalone string inside `path`.
+
+    `-arch all` is not cosmetic. System binaries are universal, and cctools
+    `strings` otherwise reads only the slice matching the host architecture of
+    its parent process. Run from an x86_64 Python under Rosetta it would read
+    the x86_64 slice, which holds a fraction of the strings: SystemUIServer
+    yields 21 kB that way against 39 kB for arm64e, and `dontAutoLoad` is only
+    in the latter. That silently turns live keys into dead ones.
+    """
     found: set[str] = set()
     try:
         process = subprocess.Popen(
-            ["strings", "-a", str(path)],
+            ["/usr/bin/strings", "-a", "-arch", "all", str(path)],
             stdout=subprocess.PIPE,
             stderr=subprocess.DEVNULL,
             text=True,
