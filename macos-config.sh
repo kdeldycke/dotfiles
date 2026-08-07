@@ -168,11 +168,9 @@ EOF
 
 # Expand save panel by default
 defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
-defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode2 -bool true
 
 # Expand print panel by default
 defaults write NSGlobalDomain PMPrintingExpandedStateForPrint -bool true
-defaults write NSGlobalDomain PMPrintingExpandedStateForPrint2 -bool true
 
 # Automatically quit printer app once the print jobs complete
 defaults write com.apple.print.PrintingPrefs "Quit When Finished" -bool true
@@ -240,10 +238,9 @@ defaults write -globalDomain "com.apple.sound.beep.feedback" -int 0
 
 # Enable input menu in menu bar.
 defaults write com.apple.TextInputMenu visible -bool true
-defaults write com.apple.TextInputMenuAgent "NSStatusItem Visible Item-0" -bool true
 
 # Menu bar: hide the User and Battery icons
-defaults -currentHost write dontAutoLoad -array \
+defaults -currentHost write com.apple.systemuiserver dontAutoLoad -array \
         "/System/Library/CoreServices/Menu Extras/User.menu"
 defaults write com.apple.systemuiserver menuExtras -array \
         "/System/Library/CoreServices/Menu Extras/TimeMachine.menu" \
@@ -336,11 +333,10 @@ sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.nat NAT -
 # Disable Bluetooth sharing (mSCP: system_settings_bluetooth_sharing_disable).
 defaults -currentHost write com.apple.Bluetooth PrefKeyServicesEnabled -bool false
 
-# Disable AirPlay receiver. Apple fixed the misspelled key at some point and
-# both spellings coexist, so pin the two
+# Disable AirPlay receiver. Apple shipped a misspelled key for a while and both
+# spellings had to be pinned: only the correct one is left in ControlCenter now
 # (mSCP: system_settings_airplay_receiver_disable).
 defaults -currentHost write com.apple.controlcenter AirplayReceiverEnabled -bool false
-defaults -currentHost write com.apple.controlcenter AirplayRecieverEnabled -bool false
 
 # Disable SMB guest access (mSCP: system_settings_guest_access_smb_disable).
 sudo sysadminctl -smbGuestAccess off
@@ -928,7 +924,6 @@ defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
 # Automatically open a new Finder window when a volume is mounted
 defaults write com.apple.frameworks.diskimages auto-open-ro-root -bool false
 defaults write com.apple.frameworks.diskimages auto-open-rw-root -bool false
-defaults write com.apple.finder OpenWindowForNewRemovableDisk -bool false
 
 # Set icon view settings on desktop and in icon views
 for view ('Desktop' 'FK_Standard' 'Standard'); do
@@ -1090,15 +1085,9 @@ defaults write com.apple.dock show-recents -bool true
 # Don’t animate opening applications from the Dock
 defaults write com.apple.dock launchanim -bool true
 
-# Speed up Mission Control animations
-defaults write com.apple.dock expose-animation-duration -float 0.1
-
 # Don’t group windows by application in Mission Control
 # (i.e. use the old Exposé behavior instead)
 #defaults write com.apple.dock expose-group-by-app -bool false
-
-# Don’t automatically rearrange Spaces based on most recent use
-defaults write com.apple.dock mru-spaces -bool false
 
 # Remove the auto-hiding Dock delay
 defaults write com.apple.dock autohide-delay -int 0
@@ -1107,9 +1096,6 @@ defaults write com.apple.dock autohide-time-modifier -int 0
 
 # Automatically hide and show the Dock
 defaults write com.apple.dock autohide -bool true
-
-# Make Dock icons of hidden applications translucent
-defaults write com.apple.dock showhidden -bool true
 
 # Disable the Launchpad gesture (pinch with thumb and three fingers)
 #defaults write com.apple.dock showLaunchpadGestureEnabled -int 0
@@ -1210,12 +1196,6 @@ defaults write com.apple.Safari OpenPrivateWindowWhenNotRestoringSessionAtLaunch
 defaults write com.apple.Safari NewTabBehavior -int 4
 defaults write com.apple.Safari NewWindowBehavior -int 4
 
-# Number of top sites to show:
-# 6 top sites: 0
-# 12 top sites: 1
-# 24 top sites: 2
-defaults write com.apple.Safari TopSitesGridArrangement -int 0
-
 # Open pages in tabs instead of windows:
 # 0: Never
 # 1: Automatically
@@ -1279,9 +1259,6 @@ defaults write com.apple.Safari PreloadTopHit -bool false
 # Make Safari’s search banners default to Contains instead of Starts With
 defaults write com.apple.Safari FindOnPageMatchesWordStartsOnly -bool false
 
-# Remove useless icons from Safari’s bookmarks bar
-defaults write com.apple.Safari ProxiesInBookmarksBar "()"
-
 # Don't show frequently visited sites in Top bar
 defaults write com.apple.SafariTechnologyPreview ShowFrequentlyVisitedSites -bool false
 
@@ -1339,9 +1316,6 @@ defaults write com.apple.SafariTechnologyPreview com.apple.Safari.ContentPageGro
 # Enable extensions
 defaults write com.apple.Safari ExtensionsEnabled -bool true
 
-# Update extensions automatically
-defaults write com.apple.Safari InstallExtensionUpdatesAutomatically -bool true
-
 # Cookies and website data:
 # 0,2,2: Always block
 # 3,1,1: Allow from current website only
@@ -1358,12 +1332,6 @@ defaults write com.apple.Safari WebKitPreferences.storageBlockingPolicy -int 1
 # Use privacy-preserving click measurement instead of ad tracking
 # (mSCP: os_safari_advertising_privacy_protection_enable).
 defaults write com.apple.Safari WebKitPreferences.privateClickMeasurementEnabled -bool true
-
-# Deny location services access from websites
-# 0: Deny without Prompting
-# 1: Prompt for each website once each day
-# 2: Prompt for each website one time only
-defaults write com.apple.Safari SafariGeolocationPermissionPolicy -int 0
 
 # Allow websites to ask for permission to send push notifications
 defaults write com.apple.Safari CanPromptForPushNotifications -bool false
@@ -1404,13 +1372,6 @@ defaults write com.apple.Safari "com.apple.Safari.ContentPageGroupIdentifier.Web
 ###############################################################################
 # Mail                                                                        #
 ###############################################################################
-
-# Disable send and reply animations in Mail.app
-defaults write com.apple.mail DisableReplyAnimations -bool true
-defaults write com.apple.mail DisableSendAnimations -bool true
-
-# Copy email addresses as `foo@example.com` instead of `Foo Bar <foo@example.com>` in Mail.app
-defaults write com.apple.mail AddressesIncludeNameOnPasteboard -bool false
 
 # Add the keyboard shortcut ⌘ + Enter to send an email in Mail.app
 defaults write com.apple.mail NSUserKeyEquivalents -dict-add "Send" "@\U21a9"
@@ -1634,14 +1595,6 @@ defaults write com.apple.ActivityMonitor ShowCategory -int 100
 defaults write com.apple.ActivityMonitor SortColumn -string "CPUUsage"
 defaults write com.apple.ActivityMonitor SortDirection -int 0
 
-# Set columns for each tab
-defaults write com.apple.ActivityMonitor "UserColumnsPerTab v5.0" -dict \
-    '0' '( Command, CPUUsage, CPUTime, Threads, IdleWakeUps, PID, UID )' \
-    '1' '( Command, anonymousMemory, compressedMemory, ResidentSize, PurgeableMem, Threads, Ports, PID, UID)' \
-    '2' '( Command, PowerScore, 12HRPower, AppSleep, graphicCard, UID )' \
-    '3' '( Command, bytesWritten, bytesRead, Architecture, PID, UID )' \
-    '4' '( Command, txBytes, rxBytes, txPackets, rxPackets, PID, UID )'
-
 # Sort columns in each tab
 defaults write com.apple.ActivityMonitor UserColumnSortPerTab -dict \
     '0' '{ direction = 0; sort = CPUUsage; }' \
@@ -1791,10 +1744,6 @@ defaults write com.apple.TextEdit RichText -int 0
 defaults write com.apple.TextEdit PlainTextEncoding -int 4
 defaults write com.apple.TextEdit PlainTextEncodingForWrite -int 4
 
-# Enable the debug menu in Disk Utility
-defaults write com.apple.DiskUtility DUDebugMenuEnabled -bool true
-defaults write com.apple.DiskUtility advanced-image-options -bool true
-
 # Show All Devices
 defaults write com.apple.DiskUtility SidebarShowAllDevices -bool true
 
@@ -1803,16 +1752,10 @@ defaults write com.apple.DiskUtility SidebarShowAllDevices -bool true
 # QuickTime
 ###############################################################################
 
-# Auto-play videos when opened with QuickTime Player
-defaults write com.apple.QuickTimePlayerX MGPlayMovieOnOpen -bool true
-
 # Set recording quality
 # High:    MGCompressionPresetHighQuality
 # Maximum: MGCompressionPresetMaximumQuality
 defaults write com.apple.QuickTimePlayerX MGRecordingCompressionPresetIdentifier -string 'MGCompressionPresetMaximumQuality'
-
-# Show mouse clicks in screen recordings
-defaults write com.apple.QuickTimePlayerX MGScreenRecordingDocumentShowMouseClicksUserDefaultsKey -bool true
 
 
 ###############################################################################
