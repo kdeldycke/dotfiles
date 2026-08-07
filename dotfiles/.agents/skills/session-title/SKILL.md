@@ -11,6 +11,7 @@ When the user asks to refresh or rename the current session's title:
    Use sentence case. Capitalize the first word and proper nouns only.
 
 2. **Determine the session_id and transcript path.**
+
    - `session_id` is in the env var `CLAUDE_SESSION_ID` if set, otherwise: take the basename (without `.jsonl`) of the most recently modified `*.jsonl` file directly under `~/.claude/projects/<sanitized-cwd>/` where `<sanitized-cwd>` is the current working directory with `/` replaced by `-`.
    - The transcript path is `~/.claude/projects/<sanitized-cwd>/<session_id>.jsonl`.
 

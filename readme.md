@@ -84,15 +84,15 @@ $ /bin/zsh ./install.sh 2>&1 | tee ./install.log
 
 The install procedure is decomposed into stages, executed in this order on a full run:
 
-| Stage | What it does |
-| :--- | :--- |
-| `links` | Symlink the dotfiles into the home folder. |
-| `packages` | macOS updates, Homebrew bootstrap, and full package restore from `packages.toml` via `mpm`. |
-| `shell` | Zsh plugins (zinit) and shell completions. |
-| `apps` | Mac App Store packages and per-application setup (QuickLook, SwiftBar, Tor Browser, IINA, Neovim). |
-| `cleanup` | Package caches and orphans, Trash, DNS cache. |
-| `snapshot` | Record the versions of installed packages into `packages.toml`. |
-| `config` | Apply the whole `macos-config.sh`. Kills `Terminal.app` at the end. |
+| Stage      | What it does                                                                                       |
+| :--------- | :------------------------------------------------------------------------------------------------- |
+| `links`    | Symlink the dotfiles into the home folder.                                                         |
+| `packages` | macOS updates, Homebrew bootstrap, and full package restore from `packages.toml` via `mpm`.        |
+| `shell`    | Zsh plugins (zinit) and shell completions.                                                         |
+| `apps`     | Mac App Store packages and per-application setup (QuickLook, SwiftBar, Tor Browser, IINA, Neovim). |
+| `cleanup`  | Package caches and orphans, Trash, DNS cache.                                                      |
+| `snapshot` | Record the versions of installed packages into `packages.toml`.                                    |
+| `config`   | Apply the whole `macos-config.sh`. Kills `Terminal.app` at the end.                                |
 
 Each stage can be run on its own, or combined with others in the order given:
 
