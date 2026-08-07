@@ -1,3 +1,8 @@
 # Mitigate supply chain attacks by requiring packages to have been
 # published for at least 7 days before they can be installed.
 exclude-newer = "7 days"
+# Own packages, published by me: the cooldown protects against a compromised
+# upstream, which does not apply here, and it otherwise blocks `uvx repomatic`
+# for a week after each release. Expressed as a zero duration rather than a
+# fixed date, so a new release is picked up without editing this file.
+exclude-newer-package = { repomatic = "0 days" }

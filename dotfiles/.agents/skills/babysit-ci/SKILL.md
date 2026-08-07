@@ -1,6 +1,7 @@
 ---
+name: babysit-ci
 description: Monitor CI tests, lint, autofix, docs, and Nuitka binary-build workflows, diagnose failures, fix code, commit, and loop until all stable jobs pass. Ignores unstable failures.
-user_invocable: true
+compatibility: 'Designed for Claude Code. Recommended model: Sonnet.'
 ---
 
 # Babysit CI: monitor and fix tests.yaml + lint.yaml + autofix.yaml + docs.yaml + release.yaml binaries
@@ -79,7 +80,7 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
    $ gh run list --workflow=release.yaml --branch=<BRANCH> --limit=1
    ```
 
-   Track all five run IDs (`docs.yaml` may have none: its `paths:` filter skips pushes touching nothing docs-relevant). An empty run list for the *other* workflows is not paths-filtering: GitHub can sit on a push event for hours before materializing any run (a 4-hour lag has been observed), so when a freshly pushed SHA shows no runs, keep re-polling instead of concluding the push was filtered, and measure the wait from run creation, not from the push. The `tests.yaml` run exercises the full test matrix; `lint.yaml` runs mypy on every tracked Python file and lints YAML; `autofix.yaml` runs the mechanical fix jobs (`format-*`, `sync-*`, `fix-typos`, `fix-vulnerable-deps`) and turns red when one *crashes* instead of committing a fix; `docs.yaml` builds and deploys the Sphinx site and runs the broken-links check (an externally cancelled or link-flaky run re-runs cleanly via `gh workflow run docs.yaml --ref <BRANCH>`, no commit needed); `release.yaml` runs the Nuitka binary matrix (dev binaries, rebuilt on every push to `main`) — but only on projects with `[tool.repomatic] nuitka.enabled` and a CLI entry point; with Nuitka disabled the per-platform jobs skip on every push, release commits included, and a green `release.yaml` means package build plus dev pre-release sync only. All must pass — see § Autofix job failures and § Nuitka binary build failures below for how to triage them without stalling the loop.
+   Track all five run IDs (`docs.yaml` may have none: its `paths:` filter skips pushes touching nothing docs-relevant). An empty run list for the *other* workflows is not paths-filtering: GitHub can sit on a push event for hours before materializing any run (a 4-hour lag has been observed), so when a freshly pushed SHA shows no runs, keep re-polling instead of concluding the push was filtered, and measure the wait from run creation, not from the push. The `tests.yaml` run exercises the full test matrix; `lint.yaml` runs mypy on every tracked Python file and lints YAML; `autofix.yaml` runs the mechanical fix jobs (`format-*`, `sync-*`, `fix-typos`, `fix-vulnerable-deps`) and turns red when one *crashes* instead of committing a fix; `docs.yaml` builds and deploys the Sphinx site and runs the broken-links check (an externally cancelled or link-flaky run re-runs cleanly via `gh workflow run docs.yaml --ref <BRANCH>`, no commit needed); `release.yaml` runs the Nuitka binary matrix (dev binaries, rebuilt on every push to `main`) — but only on projects with `[tool.repomatic] nuitka.enabled` and a CLI entry point; with Nuitka disabled the per-platform jobs skip on every push, release commits included, and a green `release.yaml` means package build plus dev pre-release sync only. Even with Nuitka enabled, a single push can still skip the matrix: `Metadata.skip_binary_build` (`repomatic/metadata.py`) is the authoritative signal, true when the head commit is on a non-code branch, is a user-initiated version-bump commit, or (the common case) its changed files fall entirely outside `Metadata.binary_affecting_paths` — a docs-only or workflow-only commit, say. Don't infer the reason from the commit message or assume an unrendered/skipped matrix job name means `nuitka_matrix` itself was empty: the matrix data can be fully populated for that exact commit (verify via the `release / 🧬 Project metadata` job's logged `metadata=` JSON output) while the workflow still elects not to build it. Check `skip_binary_build`'s three conditions before asserting why a matrix skipped. All must pass — see § Autofix job failures and § Nuitka binary build failures below for how to triage them without stalling the loop.
 
 3. **Run local tests while waiting for CI.** Don't idle while polling. Start the full test suite and linters locally in the background immediately:
 
@@ -128,7 +129,7 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
    $ gh run view <LINT_RUN_ID> --json jobs --jq '[.jobs[] | select(.conclusion == "failure")] | .[].databaseId'
    ```
 
-   Fetch each failed job's log (`gh api repos/<OWNER>/<REPO>/actions/jobs/<JOB_ID>/logs`) and fix everything in one batch: different sources surface different issues, and batching avoids burning another full CI round. Analyze following the [error triage discipline](#error-triage-discipline): stable-job `FAILED`/`AssertionError` lines only.
+   Fetch each failed job's log (`gh api repos/<OWNER>/<REPO>/actions/jobs/<JOB_ID>/logs`) and fix them as one batch: different sources surface different issues, and logs survive cancellation. Batch only what has *already failed*, never what might still fail. Once every harvested failure is root-caused and fixed, push immediately rather than waiting for undrained cells to surface more: the fresh run supersedes the stale one, and serially waiting out each full matrix is the slow path. Analyze following the [error triage discipline](#error-triage-discipline): stable-job `FAILED`/`AssertionError` lines only.
 
    `gh run view --log-failed` writes its log cache under `~/.cache/gh`, which the harness sandbox denies: the resulting `failed to get run log: creating cache entry ... operation not permitted` masquerades as a `gh` bug. Disable the sandbox for that read, exactly like the signing calls in step 7.
 
@@ -153,18 +154,20 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
 
    ```shell-session
    $ gh run list --workflow=autofix.yaml --branch=<BRANCH> --limit=1
-   $ gh pr list --head=format-python --state=open --json number,title,url
+   $ gh pr list --state=open --json number,title,headRefName,url
    ```
 
-   If a `format-python` autofix PR exists, review its diff: it contains ruff's own autofixes for the same commit. If it resolves issues you're seeing, merge it first (`gh pr merge --squash`), pull, and rebase your fix before pushing.
+   If any open autofix PR already contains your fix — a `format-python` branch (ruff's own autofixes), a `sync-repomatic`/`sync-workflow-pins` branch (a bumped workflow pin), or another `sync-*`/`fix-*` branch — prefer merging it over authoring your own commit: GitHub signs the merge commit server-side, so this sidesteps a local hardware-key signing prompt entirely. If it resolves the failure, merge it (`gh pr merge <n> --squash --delete-branch`), pull, and rebase your fix before pushing — or skip your own commit if the merge is the whole fix. If `gh pr merge` is denied outright (a standing `permissions.deny` on the verb, not a retryable prompt), see [§ PR-merge permission wall](#pr-merge-permission-wall).
 
 7. **Commit the fix** with a clear message describing what changed and why, then `git push`.
 
    When the fix corrects a *user-facing* bug, add a `changelog.md` entry **only when the bug reached a released version**. Blame the changed line against the last release tag (`git blame`, or `git log -S`): a bug introduced *and* fixed within the current unreleased cycle never shipped, so it gets no entry; a bug that predates the last tag is a real regression and does. Making this call here keeps a parent `/repomatic-ship` run from having to add or drop entries afterward.
 
-   **If commit signing fails, do not loop on it.** The sandbox can block the SSH key or socket under `~/.ssh/*` (`Operation not permitted`): fix with `dangerouslyDisableSandbox: true` for the `git commit` and `git push` calls only. A hardware-backed key (Secretive, YubiKey, TPM) then prompts the maintainer per signature, and a refused or missed prompt surfaces as `agent refused operation?`, indistinguishable from a real failure. Retry once at most after disabling the sandbox; if it still refuses, hand off cleanly: stage the specific files you fixed (never `git add -A`), return the exact commit message and `git push` command verbatim, and exit the loop. The fix is done — only the signature is missing.
+   **Time each push by what its diff rebuilds.** A source-affecting fix (`repomatic/**`, `tests/**`, `pyproject.toml`, `uv.lock`: whatever the repo's test and binary `paths:` filters name) pushes the moment it clears step 5: the runs it supersedes were verifying an obsolete tree, and its own run rebuilds everything it cancels. A commit those filters skip (changelog-only, docs-only, cosmetic prose) is the opposite case on a binaries-enabled project: `release.yaml` runs on *every* push in a per-branch cancel-in-progress group, so pushed mid-drain such a commit cancels the in-flight binary matrix while its own run skips the rebuild (`Metadata.skip_binary_build`), and the lost verification costs a full re-dispatch. Hold it until the heavy matrices on the current HEAD are terminal, or bundle it into the next source-affecting push; with binaries disabled, or nothing heavy in flight, push freely.
 
-8. **Repeat from step 2** until the monitored workflows are green: `tests.yaml` with all stable (✅) jobs passing, `lint.yaml` with no mypy failures (test and docs files included). **Stop after 5 iterations**: if the loop has not converged, report what was fixed and what remains, and ask for guidance rather than churning.
+   **If commit signing fails, do not loop on it.** The sandbox can block the SSH key or socket under `~/.ssh/*` (`Operation not permitted`): fix with `dangerouslyDisableSandbox: true` for the `git commit` and `git push` calls only. A hardware-backed key (Secretive, YubiKey, TPM) then prompts the maintainer per signature, and a refused or missed prompt surfaces as `agent refused operation?`, indistinguishable from a real failure. Retry once at most after disabling the sandbox; if it still refuses, hand off cleanly: stage the specific files you fixed (never `git add -A`), return the exact commit message and `git push` command verbatim, and exit the loop. The fix is done — only the signature is missing. If the block is instead a structural permission deny on `gh pr merge` (not a signing refusal), the escalation differs — a maintainer's in-chat approval cannot clear a deny rule: see [§ PR-merge permission wall](#pr-merge-permission-wall).
+
+8. **Repeat from step 2** until the monitored workflows are green: `tests.yaml` with all stable (✅) jobs passing, `lint.yaml` with no mypy failures (test and docs files included). **Stop after 5 iterations without progress** (the set of distinct failing stable jobs did not shrink): report what was fixed and what remains, and ask for guidance rather than churning. Productive iterations never trip the cap: a release paying down a long test-debt tail legitimately takes more than five pushes.
 
 ### Early exit (human-invoked runs only)
 
@@ -175,9 +178,11 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
 ## Stable vs. unstable
 
 - **Stable jobs** (✅): must pass. Their names start with `✅`.
-- **Unstable jobs** (⁉️): allowed to fail (Python dev versions like 3.15, 3.15t). Ignore their failures.
+- **Unstable jobs** (⁉️): allowed to fail (Python dev versions like 3.15, 3.15t). Their failures never gate the loop; a release context still fixes the repo-fixable ones (see [error triage discipline](#error-triage-discipline), rule 1).
 
 The workflow uses `continue-on-error` for unstable jobs, so the run can succeed even when they fail.
+
+**Classify by the leading glyph, never by splitting the name.** Match `.name | startswith("✅")` (or `"⁉️"`) directly, as the `jq` filters above do. Job-name shapes differ across workflows — `tests.yaml` names carry no workflow prefix (`✅ ubuntu-24.04 / py3.10`) while `release.yaml`'s are templated (`workflow / ✅ {os} build`) — so any poll or summary logic that splits on `" / "` and reads a fixed position strips the glyph off one of them and misfiles a stable red as an unstable probe, masking a real failure as green. If you reformat job names for display, keep the raw glyph test on the original string.
 
 **A run whose `conclusion` is `failure` while *no* job has `conclusion == "failure"` is not benign.** It signals a workflow-level setup error — a `strategy`/`matrix` expression evaluating to an invalid value (like `fromJSON('')`), malformed YAML, a missing secret — that fails the run around the jobs without a failed-job log. Read the run's error annotations and fix the workflow itself. Never write off a persistently-red workflow as a known artifact without confirming which component actually failed.
 
@@ -185,7 +190,7 @@ The workflow uses `continue-on-error` for unstable jobs, so the run can succeed 
 
 Read the exact error messages before forming a hypothesis. The most common diagnostic mistake is latching onto a warning or unstable-job failure instead of the actual stable-job error.
 
-1. **Filter first.** Only look at stable (✅) job output. Discard unstable (⁉️) logs entirely: do not read, mention, or fix what they surface.
+1. **Filter first.** Gating and loop cadence read stable (✅) jobs only: an unstable (⁉️) failure never blocks the loop, never sets its tempo, and never queue-jumps a stable red. When an orchestrator like `/repomatic-ship` spawned this loop for a release, ⁉️ reds are still work owed under its genuinely-green goal: once no stable red is outstanding, read their logs and fix what is repo-fixable (a crash converted to a clean availability-gated skip, a flaky live install folded into a tolerated-exit set), leaving only genuine dev-interpreter breakage unfixed and named in the final report. Human-invoked runs keep the strict filter: discard ⁉️ logs entirely unless asked.
 2. **Quote the error.** Before proposing a fix, quote the exact failing line(s) from the log. If you cannot quote a specific error, you have not diagnosed the problem.
 3. **One cause at a time.** Multiple failing jobs often share a root cause: identify the common thread before treating each job as independent.
 4. **Distinguish test failures from lint failures.** A pytest `AssertionError` and a mypy `error:` have different fixes, but always analyze mypy and ruff failures together before fixing either (see [§ mypy/ruff fix oscillation](#mypy-ruff-fix-oscillation)).
@@ -245,6 +250,12 @@ Heavy polling from this loop spends the same REST quota (5,000 requests/hour) as
 
 Diagnose with `gh api rate_limit` **before** touching token settings: `remaining: 0` on the `core` bucket confirms it. Recovery: wait for the printed `reset` epoch, then re-run the failed workflows unchanged (`gh run rerun <RUN_ID> --failed`); they go green with no commit. While waiting, degrade to the channels that stay live: the GraphQL bucket is metered separately (`gh api graphql` for a commit's check suites, refs, and releases; `gh pr list` / `gh pr view`), and `git fetch` over SSH covers branch and commit verification.
 
+<a id="pr-merge-permission-wall"></a>
+
+### PR-merge permission wall
+
+`gh pr merge` — and other write-heavy verbs (force-push, `reset --hard`, repo or release delete) — is commonly hard-denied in the operator's own Claude Code `settings.json` as a standing guard against irreversible actions, independent of any conversation. This deny is structural, not a per-call prompt: it fires identically whether or not a maintainer just authorized the exact command in chat, because it blocks the tool call itself rather than asking. Signs you have hit it, not a normal prompt: the denial is immediate with nothing to answer, and it recurs identically after a fresh, explicit, real-time go-ahead. Do not retry it, and do not read a maintainer's chat-level "yes, merge it" as actionable — a deny rule cannot be cleared from inside the session. Report the wall once and ask the maintainer to run the merge themselves, fully outside this session (their terminal, or the GitHub web UI): that is the only path this deny shape leaves open. The same holds when a hardware-key signing refusal blocks a direct commit (step 7): with both remedies walled, the release advances only by a human acting outside the tool.
+
 ### Nuitka binary build failures (release.yaml)
 
 This section only applies to projects that build binaries (`[tool.repomatic] nuitka.enabled` with a CLI entry point); on a Nuitka-disabled project the per-platform jobs skip on every push and there is no matrix to fail. When enabled, the engine runs Nuitka across a 6-way OS/arch matrix on every push to `main` (job names are templated per platform, like `✅ {os}, {sha} build`); catching a break while the version is still `.dev0` avoids shipping a release with missing or broken binaries, which the immutable-release wall makes unrecoverable. Triage by category:
@@ -253,7 +264,7 @@ This section only applies to projects that build binaries (`[tool.repomatic] nui
 - **Nuitka configuration** (`Error, unsupported ...`, an unknown `--flag`, a missing data file): fix `[tool.nuitka]` in `pyproject.toml`, not the Python source; verify each key maps to a current Nuitka option.
 - **Real compile or runtime errors** (the binary builds but its smoke test fails, a `ModuleNotFoundError` at runtime): fix the code or the `include-package`/`include-data-files` configuration, then push and re-monitor.
 
-The matrix is slow: let `tests.yaml` and `lint.yaml` set the loop cadence, then check the binary matrix once it finishes and fold any genuine failure into the same fix batch.
+The matrix is slow: let `tests.yaml` and `lint.yaml` set the loop cadence, but act on a red build cell the moment it lands, like any stable failure (every faster channel has already reported by then): fix, push, supersede. Never idle out the rest of a matrix you already know is doomed.
 
 ### Autofix job failures (autofix.yaml)
 

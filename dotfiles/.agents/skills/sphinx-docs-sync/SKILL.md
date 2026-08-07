@@ -1,9 +1,8 @@
 ---
 name: sphinx-docs-sync
 description: Two-way comparison and synchronization of Sphinx documentation against the upstream `kdeldycke/repomatic` reference (the default in downstream repos) or across sibling projects. Discovers discrepancies in conf.py, install.md, index.md toctree, pyproject.toml docs dependencies, extra-deps sections, readme badges, and static assets. Use when you want to align documentation structure, catch stale dependencies, or push improvements across your Sphinx-enabled repositories.
-model: sonnet
-disable-model-invocation: true
-allowed-tools: Bash, Read, Grep, Glob, Agent
+compatibility: 'Designed for Claude Code. Recommended model: Sonnet.'
+allowed-tools: Bash Read Grep Glob Agent
 argument-hint: '[path-or-github-url ...]'
 ---
 

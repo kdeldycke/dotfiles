@@ -1,9 +1,8 @@
 ---
 name: av-false-positive
 description: Scan a release on VirusTotal and generate false positive submission instructions for flagged AV vendors.
-model: opus
-disable-model-invocation: true
-allowed-tools: Bash, Read, Write, Grep, Glob, Agent
+compatibility: 'Designed for Claude Code. Recommended model: Opus.'
+allowed-tools: Bash Read Write Grep Glob Agent
 argument-hint: '[version]'
 ---
 

@@ -1,8 +1,8 @@
 ---
 name: repomatic-changelog
 description: Draft, validate, consolidate, and fix changelog entries.
-model: sonnet
-allowed-tools: Bash, Read, Grep, Glob, Edit, Write
+compatibility: 'Designed for Claude Code. Recommended model: Sonnet.'
+allowed-tools: Bash Read Grep Glob Edit Write
 argument-hint: '[add|check|fix|consolidate [VERSION]|VERSION]'
 ---
 
@@ -24,6 +24,7 @@ The `lint.yaml` workflow runs `lint-changelog` in CI. The `check` and `fix` subc
 
 - If the context above shows `CANONICAL_REPO`, use `uv run repomatic`.
 - Otherwise, use `uvx -- repomatic`.
+- Gate the `uvx` form with the supply-chain cooldown: `uvx --exclude-newer '1 week' --exclude-newer-package repomatic=P0D -- repomatic`. The window matches `[tool.repomatic] minimum-release-age`; repomatic itself is exempt because a fresh release must stay installable, while its dependency tree stays gated. See `claude.md` § Cooldown on every install.
 
 ### Argument handling
 
@@ -46,9 +47,10 @@ Entries accumulate during development as features are built incrementally. Befor
 06. **Keep the names users need, shed the rest.** Tool names, config keys, CLI options, and breaking-change notes stay explicit. But consolidation cuts per-entry *length*, not just bullet count: a merged entry is one short sentence naming the feature, not a paragraph stacking every mechanism and rationale from the bullets it replaced. Target ~10-25 words (https://github.com/kdeldycke/repomatic/blob/main/claude.md#changelog-entry-length); push implementation detail and "why" to the commit, PR, code comment, or `docs/`.
 07. **Remove implementation details** that don't affect users: internal refactors, helper functions, test additions.
     Also strip upstream issue commentary: trailing prose that links to upstream tickets and narrates their status ("Click does not ship an equivalent: the upstream conversation is in `pallets/click#NNNN` (open)…", "mirrors the upstream fix in PR `…#NNNN`"). The status rots within days and the prose duplicates what the linked thread already says. A bare upstream link is acceptable on a direct backport entry; longer rationale belongs in a code comment, docstring, or PR body.
-08. **Order entries by category, breaking changes first:** lead with `**Breaking:**` entries, then `**Deprecated:**` entries, then new features, then broad/global changes, then bug fixes, then documentation and testing. Breaking changes are what a reader scans for before upgrading, so they go at the top of the block. `**Deprecated:**` marks a surface that still resolves but warns and is slated for removal in a named future release.
-09. **Apply directly.** Write the consolidated section to `changelog.md` without asking for approval. Summarize what was merged, dropped, or reordered after writing.
-10. **Validate after writing.** A bulk rewrite can introduce malformed markup, silently drop structure, or leave entries over-long. Before reporting, confirm: no doubled list markers (a stray `- -`); every rewritten bullet is within `changelog.bullet-word-threshold` (a delegated agent may under-compress, so gate on the measured count, not the agent's self-report); the pinned `<cmd> run mdformat -- <file>` leaves the file unchanged (run it, expect a no-op; a bare `mdformat`/`mdformat --with mdformat-myst` diverges on MyST directive colon-options like a `{list-table}`'s `:header-rows:`, so gate on the pinned runner); and the `## [...]` heading count and availability-admonition count match what they were before the edit. Breaking entries lead each section (rule 8).
+08. **Never leave the section empty** (`claude.md` § Changelog and docs updates: never ship an empty release section). When rules 02-07 collapse the unreleased section to zero bullets and the net cycle is genuinely mechanical, backfill one generic bullet naming what moved — e.g. "Sync CI tooling, workflow pins and dependency floors with the latest repomatic release." This is a fallback for an empty net cycle, not a substitute for drafting: it fires only after `add` has had its own chance to draft real entries from `git log`. As the section's sole bullet it needs no category ordering.
+09. **Order entries by category, breaking changes first:** lead with `**Breaking:**` entries, then `**Deprecated:**` entries, then new features, then broad/global changes, then bug fixes, then documentation and testing. Breaking changes are what a reader scans for before upgrading, so they go at the top of the block. `**Deprecated:**` marks a surface that still resolves but warns and is slated for removal in a named future release.
+10. **Apply directly.** Write the consolidated section to `changelog.md` without asking for approval. Summarize what was merged, dropped, or reordered after writing.
+11. **Validate after writing.** A bulk rewrite can introduce malformed markup, silently drop structure, or leave entries over-long. Before reporting, confirm: the section is non-empty (rule 08); no doubled list markers (a stray `- -`); every rewritten bullet is within `changelog.bullet-word-threshold` (a delegated agent may under-compress, so gate on the measured count, not the agent's self-report); the pinned `<cmd> run mdformat -- <file>` leaves the file unchanged (run it, expect a no-op; a bare `mdformat`/`mdformat --with mdformat-myst` diverges on MyST directive colon-options like a `{list-table}`'s `:header-rows:`, so gate on the pinned runner); and the `## [...]` heading count and availability-admonition count match what they were before the edit. Breaking entries lead each section (rule 9).
 
 ### Style rules
 

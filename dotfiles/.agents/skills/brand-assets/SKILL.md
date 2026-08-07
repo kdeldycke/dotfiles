@@ -1,7 +1,7 @@
 ---
 name: brand-assets
 description: Create and export project logo/banner SVG assets to light/dark PNG variants. Covers the full lifecycle from initial design exploration through SVG creation to themed PNG export. Use when creating logos, banners, or regenerating PNG exports from SVG source files.
-model: opus
+compatibility: 'Designed for Claude Code. Recommended model: Opus.'
 argument-hint: '[path/to/assets or SVG file]'
 ---
 

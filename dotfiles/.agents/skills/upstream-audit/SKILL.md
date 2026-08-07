@@ -1,9 +1,8 @@
 ---
 name: upstream-audit
 description: Create or update an upstream contributions page (docs/upstream.md) tracking the project's relationship with its dependencies. Discovers merged PRs, reported issues, workarounds, and declined features.
-model: opus
-disable-model-invocation: true
-allowed-tools: Bash, Read, Grep, Glob, Agent
+compatibility: 'Designed for Claude Code. Recommended model: Opus.'
+allowed-tools: Bash Read Grep Glob Agent
 argument-hint: '[audit|init|refresh|sync-git]'
 ---
 

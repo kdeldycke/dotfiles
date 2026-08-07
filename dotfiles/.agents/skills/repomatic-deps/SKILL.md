@@ -1,9 +1,8 @@
 ---
 name: repomatic-deps
 description: Generate dependency graphs, audit pyproject.toml declarations against version policy, explore unused dependency APIs that could simplify code, and modernize code against the changelogs of upgraded dependencies.
-model: opus
-disable-model-invocation: true
-allowed-tools: Bash, Read, Grep, Glob, Agent, Edit, Write, WebFetch
+compatibility: 'Designed for Claude Code. Recommended model: Opus.'
+allowed-tools: Bash Read Grep Glob Agent Edit Write WebFetch
 argument-hint: '[graph [--level N]|review [all|runtime|dev|policy]|explore [<package>]|modernize [<package>]]'
 ---
 
@@ -22,6 +21,7 @@ You help users understand and maintain their project's dependencies. This skill 
 
 - If the context above shows `CANONICAL_REPO`, use `uv run repomatic`.
 - Otherwise, use `uvx -- repomatic`.
+- Gate the `uvx` form with the supply-chain cooldown: `uvx --exclude-newer '1 week' --exclude-newer-package repomatic=P0D -- repomatic`. The window matches `[tool.repomatic] minimum-release-age`; repomatic itself is exempt because a fresh release must stay installable, while its dependency tree stays gated. See `claude.md` § Cooldown on every install.
 
 ### Mode selection
 
