@@ -10,6 +10,9 @@ jobs:
   audit-defaults:
     name: Scan system binaries for defaults-key consumers
     runs-on: macos-26
+    # The scan runs in about a minute. Anything beyond this is a runaway, and
+    # the default 6-hour cap would burn a full runner-hour budget before dying.
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Audit macos-config.sh keys
