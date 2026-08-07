@@ -109,7 +109,12 @@ def sanitize(title: str) -> str:
     title = title.replace("\r", "").replace("\n", " ").strip()
     if not title:
         return ""
-    if title.startswith("/") or "/var/folders/" in title or "/tmp/" in title or "/private/" in title:
+    if (
+        title.startswith("/")
+        or "/var/folders/" in title
+        or "/tmp/" in title
+        or "/private/" in title
+    ):
         return ""
     if len(title) > MAX_TITLE_LEN:
         title = title[:MAX_TITLE_LEN]
@@ -214,15 +219,22 @@ def call_haiku(transcript: str) -> str | None:
     try:
         proc = subprocess.run(
             [
-                "claude", "--print",
-                "--model", "claude-haiku-4-5",
-                "--output-format", "json",
-                "--json-schema", schema,
-                "--system-prompt", SYSTEM_PROMPT,
-                "--tools", "",
+                "claude",
+                "--print",
+                "--model",
+                "claude-haiku-4-5",
+                "--output-format",
+                "json",
+                "--json-schema",
+                schema,
+                "--system-prompt",
+                SYSTEM_PROMPT,
+                "--tools",
+                "",
                 "--disable-slash-commands",
                 "--no-session-persistence",
-                "--", transcript,
+                "--",
+                transcript,
             ],
             capture_output=True,
             text=True,
@@ -264,7 +276,11 @@ def cmd_hook() -> int:
     if not session_id:
         return 0
     transcript = payload.get("transcript_path")
-    jsonl = Path(transcript) if transcript else transcript_path_for(session_id, payload.get("cwd") or os.getcwd())
+    jsonl = (
+        Path(transcript)
+        if transcript
+        else transcript_path_for(session_id, payload.get("cwd") or os.getcwd())
+    )
     if not jsonl.exists():
         return 0
     user_turns, first_title, _last_title, _prompts = parse_transcript(jsonl)
@@ -354,12 +370,16 @@ def cmd_sessionstart() -> int:
     current = payload.get("session_title")
     if isinstance(current, str) and current and not TIMESTAMP_RE.match(current):
         return 0
-    print(json.dumps({
-        "hookSpecificOutput": {
-            "hookEventName": "SessionStart",
-            "sessionTitle": title,
-        }
-    }))
+    print(
+        json.dumps(
+            {
+                "hookSpecificOutput": {
+                    "hookEventName": "SessionStart",
+                    "sessionTitle": title,
+                }
+            }
+        )
+    )
     return 0
 
 

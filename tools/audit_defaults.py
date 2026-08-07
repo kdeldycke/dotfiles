@@ -157,13 +157,15 @@ def parse_defaults_calls(script: Path) -> list[dict]:
                 key = tokens.pop(0)
         elif verb == "write":
             malformed = True
-        calls.append({
-            "line": lineno,
-            "verb": verb,
-            "domain": domain,
-            "key": key,
-            "malformed": malformed,
-        })
+        calls.append(
+            {
+                "line": lineno,
+                "verb": verb,
+                "domain": domain,
+                "key": key,
+                "malformed": malformed,
+            }
+        )
     return calls
 
 
