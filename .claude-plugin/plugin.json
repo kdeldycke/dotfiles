@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "author": {
+    "email": "kevin@deldycke.com",
+    "name": "Kevin Deldycke",
+    "url": "https://github.com/kdeldycke"
+  },
+  "description": "Personal skills for document wrangling, web form filling, and multi-repo triage",
+  "displayName": "Kevin's dotfiles skills",
+  "homepage": "https://github.com/kdeldycke/dotfiles",
+  "keywords": [
+    "documents",
+    "file-renaming",
+    "github",
+    "pull-requests",
+    "web-automation"
+  ],
+  "license": "BSD-2-Clause",
+  "name": "dotfiles",
+  "repository": "https://github.com/kdeldycke/dotfiles",
+  "skills": [
+    "./dotfiles/.agents/skills/audit-repo-issues",
+    "./dotfiles/.agents/skills/fill-web-form",
+    "./dotfiles/.agents/skills/pr-triage",
+    "./dotfiles/.agents/skills/rename-with-dates"
+  ]
+}

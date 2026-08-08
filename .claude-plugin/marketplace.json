@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "description": "Claude Code plugins maintained by Kevin Deldycke, sourced from his dotfiles",
+  "name": "kdeldycke-dotfiles",
+  "owner": {
+    "email": "kevin@deldycke.com",
+    "name": "Kevin Deldycke",
+    "url": "https://github.com/kdeldycke"
+  },
+  "plugins": [
+    {
+      "category": "productivity",
+      "description": "Personal skills for document wrangling, web form filling, and multi-repo triage",
+      "name": "dotfiles",
+      "source": "./",
+      "tags": [
+        "documents",
+        "file-renaming",
+        "github",
+        "pull-requests",
+        "web-automation"
+      ]
+    }
+  ]
+}
