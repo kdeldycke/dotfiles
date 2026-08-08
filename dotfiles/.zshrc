@@ -249,6 +249,22 @@ rename-with-dates() {
                    "/skill:rename-with-dates $target")
 }
 
+# Sweep away stray .claude/.cc-writes/ atomic-write staging dirs, which Claude
+# Code drops in every directory it is launched from or cd's into and never
+# cleans up again. rmdir refuses a non-empty directory, so a .claude/ holding
+# settings.local.json or skills/ is left alone: the second pass only collects
+# the ones the first pass just emptied. Defaults to $HOME; pass a directory to
+# scope it, worth doing since a full sweep walks ProtonDrive. Silent by design,
+# as rmdir complains about every directory it correctly refuses to remove.
+# --unrestricted is required, not inherited from FD_DEFAULTS: these dirs are
+# both hidden and gitignored, so a plain fd finds nothing at all.
+claude-sweep() {
+    local root="${1:-$HOME}"
+    command fd --unrestricted --follow --type directory '^\.cc-writes$' "$root" --exec-batch rmdir 2>/dev/null
+    command fd --unrestricted --follow --type directory '^\.claude$' "$root" --exec-batch rmdir 2>/dev/null
+    return 0
+}
+
 
 ###############################################################################
 # Prompt
