@@ -163,12 +163,9 @@ stage_packages() {
     brew upgrade
 
     # Add taps.
-    brew tap gromgit/homebrew-fuse
-    brew tap sbarex/SourceCodeSyntaxHighlight https://github.com/sbarex/SourceCodeSyntaxHighlight
     brew tap smudge/smudge
 
     # Trust the specific third-party formulae I install from untrusted taps.
-    brew trust --formula gromgit/fuse/ntfs-3g-mac
     brew trust --formula smudge/smudge/nightlight
 
     brew install "python@3.14"
@@ -179,14 +176,10 @@ stage_packages() {
     # Refresh all package managers.
     mpm --verbosity INFO sync
 
-    # ntfs-3g-mac (brew formula) depends on macfuse (brew cask), but mpm installs
-    # formulae before casks. Pre-install macfuse so the dependency is satisfied.
-    brew install --cask macfuse || true
-
     # Install all my packages but skip [mas] section (there is a circular
     # dependency as mas needs to be install by brew first).
     # XXX This edge-case should be taken care of upstream by mpm.
-    mpm --verbosity INFO --exclude mas restore ./packages.toml
+    mpm --verbosity INFO --no-mas restore ./packages.toml
 }
 
 
