@@ -212,8 +212,12 @@ stage_apps() {
     sudo chown root:wheel "$(brew --prefix)/bin/htop"
     sudo chmod u+s "$(brew --prefix)/bin/htop"
 
-    # Upgrade all desktop apps.
-    mpm --mas --verbosity INFO restore ./packages.toml
+    # Upgrade all desktop apps. Skipped on GitHub runners: mas needs an Apple ID
+    # interactively signed into the App Store app, which hosted runners don't
+    # have, so every install hangs until mpm's per-package timeout and fails.
+    if (( ! ${+GITHUB_WORKFLOW} )); then
+        mpm --mas --verbosity INFO restore ./packages.toml
+    fi
 
     # Remove unused apps.
     mas uninstall 682658836 || true  # GarageBand
