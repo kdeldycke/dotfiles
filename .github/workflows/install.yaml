@@ -88,5 +88,13 @@ jobs:
           sudo chsh -s "$(brew --prefix zsh)/bin/zsh" root
           sudo chsh -s "$(brew --prefix zsh)/bin/zsh" "$USER"
       - name: Run install
+        # Survey mode: report every command that would abort the install, not
+        # just the first. A runner costs 30 to 50 minutes, and this repository
+        # has spent several of them discovering one macOS deprecation at a
+        # time. The job still fails when anything is recorded, it just names
+        # all of them at once. See the rationale at the top of install.sh.
+        env:
+          SURVEY: 1
+          SURVEY_LOG: ${{ runner.temp }}/dotfiles-survey.log
         run: |
           zsh ./install.sh

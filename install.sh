@@ -2,6 +2,57 @@
 set -Eeuxo pipefail
 
 
+######### Survey mode #########
+
+# `set -e` stops at the first failing command, so a CI run reports exactly one
+# problem however many it holds. That is affordable for a short script and not
+# for this one: macos-config.sh alone is over 2200 lines, had never executed
+# past its first few hundred on a runner, and every macOS deprecation hiding in
+# the rest costs a full 30-to-50-minute workflow to reach. `lsregister -kill`
+# and `systemsetup -setremoteappleevents` each burned one that way.
+#
+# With SURVEY=1 the run keeps going and records every command that would have
+# aborted it, so one pass enumerates the lot. Nothing is forgiven: the report
+# at the end returns non-zero while any failure was recorded, and the run stays
+# red. Off by default, since a real install must still stop at the first sign
+# of trouble rather than plough on through a broken state.
+if (( ${SURVEY:-0} )); then
+    set +e
+    : ${SURVEY_LOG:="${TMPDIR:-/tmp}/dotfiles-survey.log"}
+    export SURVEY_LOG
+    : > "${SURVEY_LOG}"
+    # A file, not an array: the trap fires inside loops and command
+    # substitutions, and a subshell's array append dies with the subshell.
+    # `%x` names the file being read, so a failure in the sourced
+    # macos-config.sh is attributed there instead of to this script.
+    trap 'print -r -- "${(%):-%x}:${LINENO}" >> "${SURVEY_LOG}"' ERR
+fi
+
+# Print every command the survey caught, then fail if there was any.
+survey_report() {
+    (( ${SURVEY:-0} )) || return 0
+    # Stop recording first. This function ends on a deliberate non-zero return,
+    # which the trap would otherwise append to the very log it just printed.
+    trap - ERR
+    if [[ ! -s "${SURVEY_LOG}" ]]; then
+        echo "=== Survey: no command failed ==="
+        return 0
+    fi
+    echo "=== Survey: commands that would have aborted the run ==="
+    local count entry file line
+    # Collapsed by line: a failure inside a loop fires once per iteration, and
+    # the same line listed forty times is still one thing to fix.
+    sort "${SURVEY_LOG}" | uniq -c | sort -k2,2 | while read -r count entry; do
+        file="${entry%:*}"
+        line="${entry##*:}"
+        printf '%s:%s (x%s)\n    %s\n' \
+            "${file:t}" "${line}" "${count}" "$(sed -n "${line}p" "${file}")"
+    done
+    echo "=== $(sort -u "${SURVEY_LOG}" | wc -l | tr -d ' ') distinct failures ==="
+    return 1
+}
+
+
 ######### Stage selection #########
 
 # The install procedure is decomposed into stages, each runnable on its own:
@@ -90,6 +141,7 @@ $($FIND_CLI 'dotfiles/Library/Application Support' -depth 1 -not -name '\.DS_Sto
     # Manually add Code and Pi settings files.
     DOT_FILES+="
 dotfiles/Library/Application Support/Code/User/settings.json
+dotfiles/.pi/agent/models.json
 dotfiles/.pi/agent/settings.json
 dotfiles/.pi/agent/extensions"
 
@@ -366,3 +418,7 @@ for stage ("${run_stages[@]}"); do
     echo "=== Stage: ${stage} ==="
     "stage_${stage}"
 done
+
+# Last command on purpose: its status becomes the script's, so a survey run
+# that recorded anything exits non-zero. A no-op outside survey mode.
+survey_report
