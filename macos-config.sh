@@ -367,14 +367,23 @@ done
 # Disable wifi captive portal
 sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.captive.control Active -bool false
 
+# Both remote-access toggles below go through `systemsetup`, which needs Full
+# Disk Access on its parent process and exits non-zero without it. Unguarded
+# they abort the whole script under `set -e`, taking every hardening step that
+# follows down with them: that is why only `com.apple.smbd`, disabled back when
+# this block was still reachable, is pinned off on this machine. mSCP hits the
+# same wall ("Requires supervision") and checks nothing but the `launchctl
+# disable` state, so the guard belongs on the `systemsetup` call, which is a
+# convenience for a host that has granted the access, and never on the
+# `launchctl` line that carries the compliance and must still fail loudly.
+
 # Disable remote apple events (mSCP: system_settings_rae_disable).
-sudo systemsetup -setremoteappleevents off
+sudo systemsetup -setremoteappleevents off || true
 sudo launchctl disable system/com.apple.AEServer
 
 # Disable remote login (SSH) and pin the service off across upgrades
-# (mSCP: system_settings_ssh_disable). systemsetup requires Full Disk Access
-# on the parent process, and -f skips the confirmation prompt.
-sudo systemsetup -f -setremotelogin off
+# (mSCP: system_settings_ssh_disable). `-f` skips the confirmation prompt.
+sudo systemsetup -f -setremotelogin off || true
 sudo launchctl disable system/com.openssh.sshd
 
 # Explicitly disable the remaining sharing services. Most are already off by
