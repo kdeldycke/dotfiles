@@ -1,12 +1,23 @@
 ---
-name: 🔬 Tests
+# Derived from repomatic's own test machinery:
+# https://github.com/kdeldycke/repomatic/blob/main/.github/workflows/tests.yaml
+# The trigger set, supply-chain cooldown `env:`, concurrency group and step
+# layout all come from there, and that file stays the reference to copy from.
+#
+# It is not synced automatically. `workflows/tests.yaml` is listed in
+# `[tool.repomatic] exclude`, and this workflow carries a different filename
+# precisely so repomatic neither regenerates nor deletes it, which also means
+# no sync pull request will ever carry an upstream fix into this file. Diff it
+# against the reference above when repomatic changes how its test job is wired,
+# and port anything relevant by hand.
+name: 🔬 Install
 "on":
   workflow_dispatch:
   push:
     branches:
       - main
     paths:
-      - .github/workflows/tests.yaml
+      - .github/workflows/install.yaml
       - dotfiles/**
       - install.sh
       - macos-config.sh

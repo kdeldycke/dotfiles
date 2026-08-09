@@ -5,9 +5,12 @@ exclude = [
     "workflows/changelog.yaml",
     "workflows/debug.yaml",
     "workflows/release.yaml",
-    # This repository's tests job is a full macOS install on a hosted runner,
-    # not the upstream Python test matrix, so its triggers and timeout are
-    # tuned here and must not be synced back to the template.
+    # There is no Python test matrix to run here, so this repository genuinely
+    # has no upstream tests.yaml. Its own check is a full macOS install, which
+    # lives unmanaged in workflows/install.yaml under a name repomatic does not
+    # own. Excluding a workflow deletes it (`repomatic init --delete-excluded`
+    # in the sync job), so this entry only stays safe as long as the install
+    # job keeps its separate filename.
     "workflows/tests.yaml",
 ]
 include = ["agents", "skills"]
@@ -39,12 +42,6 @@ gitignore.extra-content = '''
 .claude/scheduled_tasks.lock
 .claude/settings.local.json
 **/.claude/.cc-writes/
-
-# Sphinx linkcheck output.
-docs/_linkcheck/
-
-# Pytest JUnit report.
-junit.xml
 '''
 skills.location = "./dotfiles/.agents/skills/"
 
@@ -53,14 +50,6 @@ skills.location = "./dotfiles/.agents/skills/"
     ".github/workflows/docs.yaml",
     "pyproject.toml",
     "**/*.md",
-]
-"tests.yaml" = [
-    ".github/workflows/tests.yaml",
-    "dotfiles/**",
-    "install.sh",
-    "macos-config.sh",
-    "packages.toml",
-    "pyproject.toml",
 ]
 
 [tool.ruff]
