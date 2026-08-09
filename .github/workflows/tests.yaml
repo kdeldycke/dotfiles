@@ -12,12 +12,23 @@ name: 🔬 Tests
       - macos-config.sh
       - packages.toml
       - pyproject.toml
-  # No `pull_request:` trigger on purpose. A full install burns a macOS runner
-  # for 30 to 50 minutes, and every automation PR (Renovate, `Format JSON`,
-  # `Sync .gitignore`) used to fire one on top of the `main` push, tripling the
-  # macOS concurrency this repository holds and starving every other project.
-  # The install is validated on `main` after merge and monthly by the schedule
-  # below; use `workflow_dispatch` to test a branch on demand.
+  pull_request:
+    branches-ignore:
+      # This filter matches the PR's *base* branch (always `main`), not its
+      # head, so it does not actually exclude these PRs — see
+      # https://github.com/actions/runner/issues/1591. The real skip is the
+      # `github.head_ref` check in the `metadata` job's `if:` below. Kept
+      # here as documentation of intent.
+      - major-version-increment
+      - minor-version-increment
+      - prepare-release
+    paths:
+      - .github/workflows/tests.yaml
+      - dotfiles/**
+      - install.sh
+      - macos-config.sh
+      - packages.toml
+      - pyproject.toml
   schedule:
     # Run tests monthly to catch regressions from dependency or environment changes.
     - cron: "17 9 1 * *"
