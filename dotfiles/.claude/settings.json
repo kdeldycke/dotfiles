@@ -83,7 +83,8 @@
       "Bash(gh issue close *)",
       "Bash(gh issue delete *)",
       "Bash(gh repo delete *)",
-      "Bash(gh release delete *)"
+      "Bash(gh release delete *)",
+      "Bash(cd *)"
     ],
     "defaultMode": "auto"
   },
@@ -128,6 +129,14 @@
   "enabledPlugins": {
     "pyright-lsp@claude-plugins-official": true
   },
+  "extraKnownMarketplaces": {
+    "kdeldycke-dotfiles": {
+      "source": {
+        "source": "github",
+        "repo": "kdeldycke/dotfiles"
+      }
+    }
+  },
   "sandbox": {
     "enabled": true,
     "network": {
@@ -145,8 +154,15 @@
       "allowWrite": [
         "/tmp",
         "/private/tmp",
+        "~/.cache/gh",
+        "~/.cache/nvim",
         "~/.cache/uv",
+        "~/.local/share/nvim",
+        "~/.local/state/nvim",
         "~/Library/Application Support/uv",
+        "~/Library/Caches/mdedup",
+        "~/Library/Caches/repomatic",
+        "~/Library/Logs/pipx",
         "~/code/cpython/Objects"
       ],
       "denyRead": ["~/.ssh"],
