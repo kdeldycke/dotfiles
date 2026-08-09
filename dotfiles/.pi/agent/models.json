@@ -1,0 +1,63 @@
+{
+  "providers" : {
+    "nativ" : {
+      "api" : "openai-completions",
+      "apiKey" : "nativ",
+      "baseUrl" : "http://127.0.0.1:8080/v1",
+      "compat" : {
+        "supportsDeveloperRole" : false,
+        "supportsFinishReason" : false,
+        "supportsReasoningEffort" : false,
+        "supportsUsageInStreaming" : true
+      },
+      "models" : [
+        {
+          "contextWindow" : 262144,
+          "cost" : {
+            "cacheRead" : 0,
+            "cacheWrite" : 0,
+            "input" : 0,
+            "output" : 0
+          },
+          "id" : "mlx-community/Qwen3-30B-A3B-Instruct-2507-4bit",
+          "input" : [
+            "text"
+          ],
+          "name" : "Qwen3-30B-A3B-Instruct-2507-4bit",
+          "reasoning" : true
+        },
+        {
+          "contextWindow" : 262144,
+          "cost" : {
+            "cacheRead" : 0,
+            "cacheWrite" : 0,
+            "input" : 0,
+            "output" : 0
+          },
+          "id" : "Qwen/Qwen3.5-9B",
+          "input" : [
+            "text",
+            "image"
+          ],
+          "name" : "Qwen3.5-9B",
+          "reasoning" : true
+        },
+        {
+          "contextWindow" : 1048576,
+          "cost" : {
+            "cacheRead" : 0,
+            "cacheWrite" : 0,
+            "input" : 0,
+            "output" : 0
+          },
+          "id" : "RadixArk/Kimi-K3-DSpark",
+          "input" : [
+            "text"
+          ],
+          "name" : "Kimi-K3-DSpark",
+          "reasoning" : false
+        }
+      ]
+    }
+  }
+}

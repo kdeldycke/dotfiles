@@ -225,12 +225,37 @@ claude() {
     command claude --name "$(date +%m-%d@%H:%M) ${PWD/#$HOME/~}" "$@"
 }
 
+# Attach Pi to the local Nativ server, replicating what Nativ's "open in Pi"
+# GUI integration shells out to (see its open-pi.command). Nativ registers
+# itself as an OpenAI-compatible provider on http://127.0.0.1:8080/v1 in
+# ~/.pi/agent/models.json, so --provider is required: the model IDs there are
+# not unique enough to resolve on their own.
+#
+# Like the GUI, this always runs from the dotfiles repo, so the agent's working
+# tree is the machine's config itself and it can read and edit anything
+# permanent in place. That is about file access, not context loading: the
+# global ~/.pi/agent/AGENTS.md is already a symlink into this repo and loads
+# from any directory.
+#
+# A function rather than an alias: the cd needs a subshell to keep it out of
+# the calling shell, and alias text is substituted ahead of the arguments, so
+# "pi-nativ --foo" would strand --foo after the subshell's closing paren.
+pi-nativ() {
+    (cd ~/code/dotfiles && \
+        command pi --provider nativ --model Qwen/Qwen3.5-9B "$@")
+}
+
 # Date-prefix and retitle documents (PDFs, images, screenshots) in the directory
-# this is called from, via the rename-with-dates skill. Pi runs from the
-# dotfiles repo so it inherits CLAUDE.md and can load the existing Claude skill
-# explicitly via --skill. Start Pi with an initial /skill:rename-with-dates
-# command so the workflow begins immediately. Pass a directory to target it
-# instead of the current one.
+# this is called from, via the rename-with-dates skill. The existing Claude
+# skill is loaded explicitly via --skill, by absolute path, so it resolves from
+# anywhere. Start Pi with an initial /skill:rename-with-dates command so the
+# workflow begins immediately. Pass a directory to target it instead of the
+# current one.
+#
+# Pi runs from the dotfiles repo, which buys no extra context: the repo root
+# holds no AGENTS.md, and the global ~/.pi/agent/AGENTS.md is a symlink into
+# this repo that loads from any directory. What the cd does change is the
+# terminal title, hence the explicit --name below.
 #
 # --name is set explicitly to the actual target (not the launching shell's
 # cwd) because the subshell cd's into the dotfiles repo before launching Pi:
