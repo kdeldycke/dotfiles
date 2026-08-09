@@ -5,6 +5,10 @@ exclude = [
     "workflows/changelog.yaml",
     "workflows/debug.yaml",
     "workflows/release.yaml",
+    # This repository's tests job is a full macOS install on a hosted runner,
+    # not the upstream Python test matrix, so its triggers and timeout are
+    # tuned here and must not be synced back to the template.
+    "workflows/tests.yaml",
 ]
 include = ["agents", "skills"]
 agents.location = "./dotfiles/.claude/agents/"
