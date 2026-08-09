@@ -138,7 +138,6 @@ PATH_CACHE="${HOME}/.path-env-cache"
             $(brew --prefix uutils-coreutils)/libexec/uubin
             $(brew --prefix grep)/libexec/gnubin
             $(brew --prefix uutils-findutils)/libexec/uubin
-            $(brew --prefix findutils)/bin
             $(brew --prefix gnu-sed)/libexec/gnubin
             $(brew --prefix gnu-tar)/libexec/gnubin
             $(brew --prefix openssh)/bin
@@ -347,9 +346,6 @@ fi
 
 export LESS="-eRX"
 
-# Deactivate git-delta diff pager.
-export BAT_PAGER=cat
-
 
 ###############################################################################
 # Utility functions
@@ -363,12 +359,24 @@ alias c='cls'
 
 # Remove spurious find error messages on access restrictions. Keeps find's
 # output clean, tidy and easier to read.
+#
+# `command find` is uutils-findutils' GNU-compatible find, first in the PATH
+# set above. This used to call gfind, from GNU findutils, which stopped being
+# installed at some point: every interactive search silently returned nothing.
+# uutils words its failures as "Error: {path}: Permission denied (os error 13)",
+# so the two patterns below still match as substrings.
+#
+# Errors are filtered through a process substitution instead of the usual bash
+# idiom that swaps stdout and stderr around a pipe. Under zsh that idiom prints
+# every result twice, because MULTIOS tees an fd redirected a second time
+# rather than overriding it. This form also leaves find's exit status alone.
 # Source: https://apple.stackexchange.com/a/353650
 find() {
-  { LC_ALL=C command gfind "$@" 3>&2 2>&1 1>&3 | \
-    grep -v -e 'Permission denied' -e 'Operation not permitted' >&3; \
-    [ $? = 1 ]; \
-  } 3>&2 2>&1
+    LC_ALL=C command find "$@" 2> >(
+        command grep --invert-match \
+            --regexp='Permission denied' \
+            --regexp='Operation not permitted' >&2
+    )
 }
 
 # Extract most know archives with one command

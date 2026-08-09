@@ -1328,9 +1328,6 @@ defaults write com.apple.Safari PreloadTopHit -bool false
 # Make Safari’s search banners default to Contains instead of Starts With
 defaults write com.apple.Safari FindOnPageMatchesWordStartsOnly -bool false
 
-# Don't show frequently visited sites in Top bar
-defaults write com.apple.SafariTechnologyPreview ShowFrequentlyVisitedSites -bool false
-
 # Save article for offline reading automatically.
 defaults write com.apple.Safari ReadingListSaveArticlesOfflineAutomatically -bool true
 
@@ -1375,9 +1372,7 @@ defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebK
 
 # Disable auto-playing video
 defaults write com.apple.Safari WebKitMediaPlaybackAllowsInline -bool false
-defaults write com.apple.SafariTechnologyPreview WebKitMediaPlaybackAllowsInline -bool false
 defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2AllowsInlineMediaPlayback -bool false
-defaults write com.apple.SafariTechnologyPreview com.apple.Safari.ContentPageGroupIdentifier.WebKit2AllowsInlineMediaPlayback -bool false
 
 # Allow WebGL
 # defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2WebGLEnabled -bool true
@@ -1464,23 +1459,25 @@ defaults write com.apple.mail EnableToCcInMessageList -bool true
 # iWork                                                                       #
 ###############################################################################
 
+# Keynote and Numbers read com.apple.Keynote and com.apple.Numbers, which is
+# what their bundle identifiers are. The com.apple.iWork.* domains targeted
+# before are leftovers from the iWork '09 era: they still hold old app state,
+# but nothing has written to them since early 2023.
+#
+# Pages has no section: it is not installed, and the apps stage of install.sh
+# uninstalls it on every run.
+
 ## Keynote
 
-#defaults write com.apple.iWork.Keynote 'ShowStartingPointsForNewDocument' -bool false
-defaults write com.apple.iWork.Keynote 'dontShowWhatsNew' -bool true
-defaults write com.apple.iWork.Keynote 'FirstRunFlag' -bool true
+#defaults write com.apple.Keynote 'ShowStartingPointsForNewDocument' -bool false
+defaults write com.apple.Keynote 'dontShowWhatsNew' -bool true
+defaults write com.apple.Keynote 'FirstRunFlag' -bool true
 
 ## Numbers
 
-#defaults write com.apple.iWork.Numbers 'ShowStartingPointsForNewDocument' -bool false
-defaults write com.apple.iWork.Numbers 'dontShowWhatsNew' -bool true
-defaults write com.apple.iWork.Numbers 'FirstRunFlag' -bool true
-
-## Pages
-
-#defaults write com.apple.iWork.Pages 'ShowStartingPointsForNewDocument' -bool false
-defaults write com.apple.iWork.Pages 'dontShowWhatsNew' -bool true
-defaults write com.apple.iWork.Pages 'FirstRunFlag' -bool true
+#defaults write com.apple.Numbers 'ShowStartingPointsForNewDocument' -bool false
+defaults write com.apple.Numbers 'dontShowWhatsNew' -bool true
+defaults write com.apple.Numbers 'FirstRunFlag' -bool true
 
 
 ###############################################################################
@@ -1491,9 +1488,15 @@ defaults write com.apple.iWork.Pages 'FirstRunFlag' -bool true
 sudo chmod 600 /System/Library/CoreServices/Search.bundle/Contents/MacOS/Search || true
 
 # Disable Spotlight indexing for any volume that gets mounted and has not yet
-# been indexed before.
+# been indexed before. The Exclusions entry below is what achieves this.
+#
+# There used to be a `mdutil -i off "/Volumes"` here as well, which did real
+# damage: mdutil resolves its argument to the volume *containing* that path,
+# and /Volumes is an ordinary directory living on the data volume. So the call
+# turned indexing off for /System/Volumes/Data, taking every user file and
+# every app in /Applications with it. That is what left `mas` unable to resolve
+# a single installed App Store app: it looks them up through Spotlight.
 # Source: https://mattprice.me/2020/programmatically-modify-spotlight-ignore/
-sudo mdutil -i off "/Volumes"
 sudo /usr/libexec/PlistBuddy -c "Add :Exclusions: string /Volumes" \
     /System/Volumes/Data/.Spotlight-V100/VolumeConfiguration.plist
 
@@ -1530,10 +1533,14 @@ defaults write com.apple.spotlight orderedItems -array \
     '{"enabled" = 0;"name" = "MENU_SPOTLIGHT_SUGGESTIONS";}'
 # Load new settings before rebuilding the index
 killall mds &> /dev/null || true
-# Make sure indexing is enabled for the main volume
+# Make sure indexing is enabled on the read-only system volume and on the data
+# volume both. `/` alone only covers the former, which holds next to nothing:
+# /Applications and every user file sit on /System/Volumes/Data.
 sudo mdutil -i on / > /dev/null
+sudo mdutil -i on /System/Volumes/Data > /dev/null
 # Rebuild the index from scratch
 sudo mdutil -E / > /dev/null
+sudo mdutil -E /System/Volumes/Data > /dev/null
 
 
 
@@ -1595,11 +1602,9 @@ end tell
 EOF
 ) || true
 
-# Enable “focus follows mouse” for Terminal.app and all X11 apps
+# Enable “focus follows mouse” for Terminal.app
 # i.e. hover over a window and start typing in it without clicking first
 defaults write com.apple.terminal FocusFollowsMouse -bool true
-defaults write org.x.X11 wm_ffm -bool true
-defaults write org.x.X11 wm_click_through -bool true
 
 # Enable Secure Keyboard Entry in Terminal.app
 # See: https://security.stackexchange.com/a/47786/8918
@@ -1691,21 +1696,6 @@ defaults write com.apple.ActivityMonitor NetworkGraphType -int 1
 # 5: CPU Usage
 # 6: CPU History
 defaults write com.apple.ActivityMonitor IconType -int 5
-
-
-###############################################################################
-# Quartz Debug                                                                #
-###############################################################################
-
-# Lets the window list work.
-defaults write com.apple.QuartzDebug QuartzDebugPrivateInterface -bool YES
-
-# Show useful things in the dock icon.
-defaults write com.apple.QuartzDebug QDDockShowFramemeterHistory -bool YES
-defaults write com.apple.QuartzDebug QDDockShowNumericalFps -bool YES
-
-# Identify which app a window belongs to (press ⌃⌥ while hovering over it).
-defaults write com.apple.QuartzDebug QDShowWindowInfoOnMouseOver -bool YES
 
 
 ###############################################################################

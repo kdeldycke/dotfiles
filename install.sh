@@ -228,9 +228,16 @@ stage_apps() {
         mpm --mas --verbosity INFO restore ./packages.toml
     fi
 
-    # Remove unused apps.
-    mas uninstall 682658836 || true  # GarageBand
-    mas uninstall 409201541 || true  # Pages
+    # Remove unused apps. Two things make this fail quietly, and the `|| true`
+    # that covers an already-removed app swallows both:
+    #   - `mas uninstall` needs root to delete a bundle out of /Applications.
+    #     The sudo keep-alive above keeps this non-interactive.
+    #   - mas resolves installed apps through Spotlight, so a bundle that is
+    #     present but unindexed fails as "No installed apps with ADAM ID". That
+    #     is how GarageBand survived every pass. mas indexes what it finds as it
+    #     runs, but the index lands too late for that same invocation.
+    sudo mas uninstall 682658836 || true  # GarageBand
+    sudo mas uninstall 409201541 || true  # Pages
 
     # Open apps so I'll not forget to login. Skipped on GitHub runners: there is
     # nobody there to log in, and an app that stops on a first-launch system

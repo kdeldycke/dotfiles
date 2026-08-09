@@ -95,8 +95,6 @@
     g  = grep -I
     lg = log --patch
     pp = !"echo 'Pull'; git pull; echo 'Push'; git push"
-    rb = rbranch
-    rv = review
     st = status
     # View abbreviated SHA, description, and history graph of the latest 20 commits
     l = log --pretty=oneline --max-count=20 --graph --abbrev-commit --decorate
@@ -137,15 +135,9 @@
 
 [url "git@github.com:"]
     insteadOf = "gh:"
-    pushInsteadOf = "github:"
-    pushInsteadOf = "https://github.com/"
-    pushInsteadOf = "git://github.com/"
-[url "git://github.com/"]
     insteadOf = "github:"
+    pushInsteadOf = "https://github.com/"
 
 [url "git@gist.github.com:"]
     insteadOf = "gst:"
-    pushInsteadOf = "gist:"
-    pushInsteadOf = "git://gist.github.com/"
-[url "git://gist.github.com/"]
-    pushInsteadOf = "gist:"
+    insteadOf = "gist:"
