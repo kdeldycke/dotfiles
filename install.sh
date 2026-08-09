@@ -223,16 +223,22 @@ stage_apps() {
     mas uninstall 682658836 || true  # GarageBand
     mas uninstall 409201541 || true  # Pages
 
-    # Open apps so I'll not forget to login.
-    APP_NAMES="
+    # Open apps so I'll not forget to login. Skipped on GitHub runners: there is
+    # nobody there to log in, and an app that stops on a first-launch system
+    # prompt (ProtonVPN asks to approve its VPN configuration) never finishes
+    # launching, so `open -a` blocks until the job hits its timeout. The
+    # trailing `|| true` only covers a missing app, not a hang.
+    if (( ! ${+GITHUB_WORKFLOW} )); then
+        APP_NAMES="
 adguard
 ProtonVPN
 "
-    for APP_NAME (${(f)APP_NAMES})
-    do
-        # Do not fail on missing app
-        open -a "${APP_NAME}" || true
-    done
+        for APP_NAME (${(f)APP_NAMES})
+        do
+            # Do not fail on missing app
+            open -a "${APP_NAME}" || true
+        done
+    fi
 
     # Fix "QL*.qlgenerator cannot be opened because the developer cannot be verified."
     xattr -cr ~/Library/QuickLook/QLColorCode.qlgenerator

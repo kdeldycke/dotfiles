@@ -55,6 +55,11 @@ jobs:
   tests:
     name: Run full installation
     runs-on: macos-26
+    # A full install runs 30 to 50 minutes, the spread coming from how much
+    # `brew upgrade` and `softwareupdate` the runner image needs. Anything past
+    # this is a hang, and the default 6-hour cap lets one stuck GUI app hold a
+    # macOS runner for the whole window, starving every other repository.
+    timeout-minutes: 75
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Install Zsh
