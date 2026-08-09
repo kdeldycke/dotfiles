@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.kdeldycke.clamdscan</string>
+
+    <!-- Refresh the signatures, then scan the home folder through the resident
+         clamd. `clamdscan` hands the work to a multithreaded daemon that
+         already holds the database in memory, where `clamscan` is
+         single-threaded and reloads the whole database on every run.
+
+         `--fdpass` passes an open descriptor per file instead of a path, so
+         the root daemon reads what this user can read rather than needing its
+         own access to the home folder. `--infected` keeps the log to
+         detections plus the closing summary.
+
+         Reporting is the point of everything below the scan. A nightly job
+         nobody watches is worth nothing if a detection only ever reaches a log
+         file, so a match (exit 1) raises a Notification Center alert with a
+         sound, and the log keeps the detail. Errors (exit 2) are reported too
+         but quietly, since an unreadable file is not an infection.
+
+         The log path is built here rather than in StandardOutPath/
+         StandardErrorPath: launchd does not expand variables in those keys, so
+         using them would mean hardcoding /Users/<name> into a tracked file. -->
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/zsh</string>
+        <string>-c</string>
+        <string>
+LOG="${HOME}/Library/Logs/clamdscan.log"
+mkdir -p "${LOG:h}"
+exec &gt;&gt; "${LOG}" 2&gt;&amp;1
+echo "=== $(date '+%Y-%m-%d %H:%M:%S') starting ==="
+/opt/homebrew/bin/freshclam --quiet
+/opt/homebrew/bin/clamdscan --fdpass --multiscan --infected "${HOME}"
+# Not `status`: zsh reserves that name as a read-only alias for $?, and
+# assigning to it kills the script before it can report anything.
+scan_status=$?
+if (( scan_status == 1 )); then
+    /usr/bin/osascript -e 'display notification "Infected files found. See ~/Library/Logs/clamdscan.log" with title "ClamAV" subtitle "Nightly scan" sound name "Basso"'
+elif (( scan_status == 2 )); then
+    /usr/bin/osascript -e 'display notification "Scan finished with errors. See ~/Library/Logs/clamdscan.log" with title "ClamAV" subtitle "Nightly scan"'
+fi
+echo "=== $(date '+%Y-%m-%d %H:%M:%S') finished, status ${scan_status} ==="
+exit ${scan_status}
+        </string>
+    </array>
+
+    <!-- Nightly at 03:00, when a full scan competes with nothing. The machine
+         is awake to take it whenever it is plugged in: macos-config.sh sets
+         `pmset -c sleep 0`, so system sleep is disabled on AC. On battery
+         `pmset -b sleep 5` applies and Power Nap is off, so the machine is
+         asleep at 03:00 and launchd runs the missed occurrence once it next
+         wakes, which is the intended fallback rather than a skipped scan. -->
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>3</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+
+    <!-- Never at login: the daemon needs its database loaded first, and a scan
+         competing with login is exactly the wrong moment. -->
+    <key>RunAtLoad</key>
+    <false/>
+
+    <!-- Yield to everything else. A background scan should be invisible. -->
+    <key>ProcessType</key>
+    <string>Background</string>
+    <key>LowPriorityIO</key>
+    <true/>
+    <key>Nice</key>
+    <integer>10</integer>
+
+    <!-- No StandardOutPath/StandardErrorPath: the job redirects its own output
+         to ~/Library/Logs/clamdscan.log, where Console.app picks it up. A
+         failure to even start zsh still lands in the unified log, under the
+         com.apple.xpc.launchd subsystem. -->
+</dict>
+</plist>

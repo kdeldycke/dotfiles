@@ -2214,6 +2214,45 @@ defaults write com.ranchero.NetNewsWire-Evergreen windowState -dict-add readArti
 
 
 ###############################################################################
+# ClamAV                                                                      #
+###############################################################################
+
+# Both tools ship their configuration as a sample whose first directive is a
+# bare "Example" line, present precisely to make them refuse to start until
+# someone has read the file. Seed each once, with that line commented out.
+# `DatabaseMirror` needs no appending: the sample already sets it.
+CLAMAV_ETC="$(brew --prefix)/etc/clamav"
+for conf ('freshclam' 'clamd'); do
+    if [[ ! -e "${CLAMAV_ETC}/${conf}.conf" ]]; then
+        sed "s/^Example/#Example/" "${CLAMAV_ETC}/${conf}.conf.sample" \
+            > "${CLAMAV_ETC}/${conf}.conf"
+    fi
+done
+
+# clamd accepts no connection until it has a socket to listen on, and the
+# sample leaves every socket directive commented out. Without this `clamdscan`
+# has nothing to talk to.
+CLAMAV_SOCKET="$(brew --prefix)/var/run/clamav/clamd.sock"
+mkdir -p "${CLAMAV_SOCKET:h}"
+grep --quiet "^LocalSocket" "${CLAMAV_ETC}/clamd.conf" \
+    || echo "LocalSocket ${CLAMAV_SOCKET}" >> "${CLAMAV_ETC}/clamd.conf"
+
+# Fetch the signatures, then leave the daemon running. Skipped on GitHub
+# runners: the image is discarded at the end of the job, so neither a ~250 MB
+# database download nor a resident daemon says anything about this machine.
+# They share one guard because clamd will not start without a database.
+#
+# No scan here any more. Scanning is recurring work, not configuration, and it
+# now runs from the com.kdeldycke.clamdscan LaunchAgent: daily, niced, against
+# ${HOME}. That also swaps `clamscan`, which is single-threaded and reloads the
+# whole database per run, for `clamdscan` against this resident daemon.
+if (( ! ${+GITHUB_WORKFLOW} )); then
+    freshclam
+    sudo brew services start clamav
+fi
+
+
+###############################################################################
 # Kill affected applications                                                  #
 ###############################################################################
 

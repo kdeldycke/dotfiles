@@ -129,18 +129,25 @@ stage_links() {
     # Collect all ".config" content .
     DOT_FILES+="
 $($FIND_CLI dotfiles/.config -depth 1 -not -name '\.DS_Store')"
-    # Collect all "Library" subfolders but "Application Support" and "Preferences" folders.
+    # Collect all "Library" subfolders but "Application Support", "Preferences"
+    # and "LaunchAgents" folders. LaunchAgents is excluded for the same reason
+    # as the others: ~/Library/LaunchAgents is a real directory holding agents
+    # this repository does not own (Google Updater, Samsung Magician, anything
+    # `brew services` installs). Linking the folder would move all of them
+    # aside into a backup and silently stop them, so its contents are linked
+    # file by file below.
     DOT_FILES+="
-$($FIND_CLI dotfiles/Library -depth 1 -not -name '\.DS_Store' -not -name 'Application Support' -not -name 'Preferences')"
+$($FIND_CLI dotfiles/Library -depth 1 -not -name '\.DS_Store' -not -name 'Application Support' -not -name 'Preferences' -not -name 'LaunchAgents')"
     # Collect all "Preferences" subfolders.
     DOT_FILES+="
 $($FIND_CLI dotfiles/Library/Preferences -depth 1 -not -name '\.DS_Store')"
     # Collect all "Application Support" subfolders but "Code" folder.
     DOT_FILES+="
 $($FIND_CLI 'dotfiles/Library/Application Support' -depth 1 -not -name '\.DS_Store' -not -name 'Code')"
-    # Manually add Code and Pi settings files.
+    # Manually add Code, Pi and LaunchAgents files.
     DOT_FILES+="
 dotfiles/Library/Application Support/Code/User/settings.json
+dotfiles/Library/LaunchAgents/com.kdeldycke.clamdscan.plist
 dotfiles/.pi/agent/models.json
 dotfiles/.pi/agent/settings.json
 dotfiles/.pi/agent/extensions"
