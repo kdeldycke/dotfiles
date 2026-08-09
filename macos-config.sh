@@ -178,8 +178,14 @@ defaults write com.apple.print.PrintingPrefs "Quit When Finished" -bool true
 # Disable the “Are you sure you want to open this application?” dialog
 defaults write com.apple.LaunchServices LSQuarantine -bool false
 
-# Remove duplicates in the “Open With” menu (also see `lscleanup` alias)
-/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user
+# Remove duplicates in the “Open With” menu.
+# The old `-kill -r -domain local -domain system -domain user` incantation no
+# longer works: `lsregister` answers "-kill option has been removed because it
+# was dangerous and no longer useful" and exits non-zero, which aborts this
+# script. `-domain` is gone from the usage too, replaced by `-all` taking a
+# comma-separated domain list. `-gc` now covers what `-kill` was wanted for:
+# it garbage-collects the stale entries that produce the duplicates.
+/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -gc -r -all local,system,user
 
 # Display ASCII control characters using caret notation in standard text views
 # Try e.g. `cd /tmp; unidecode "\x{0000}" > cc.txt; open -e cc.txt`
