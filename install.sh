@@ -249,9 +249,6 @@ ProtonVPN
         done
     fi
 
-    # Fix "QL*.qlgenerator cannot be opened because the developer cannot be verified."
-    xattr -cr ~/Library/QuickLook/QLColorCode.qlgenerator
-    xattr -cr ~/Library/QuickLook/QLStephen.qlgenerator
     # Clear plugin cache
     qlmanage -r
     qlmanage -r cache
@@ -261,47 +258,59 @@ ProtonVPN
     mkdir -p "${BAR_PLUGINS_FOLDER}"
     ln -sf "$(mpm --bar-plugin-path)" "${BAR_PLUGINS_FOLDER}/meta_package_manager.7h.py"
     chmod +x "${BAR_PLUGINS_FOLDER}/"*.(sh|py|rb)
-    open -a SwiftBar
+    # The rest of this stage seeds an app's profile by launching it, so it needs
+    # a real login session and is skipped on GitHub runners. Without a session
+    # the apps never come up and every step below takes the script down with it
+    # under `set -e`: `killall` exits non-zero when its target never started,
+    # and the `find` for the Tor profile exits non-zero when the directory that
+    # launch was supposed to create is missing, which also leaves TB_CONFIG_DIR
+    # empty and points the writes below at the filesystem root.
+    if (( ! ${+GITHUB_WORKFLOW} )); then
+        open -a SwiftBar
 
-    # Open Tor Browser at least once in the background to create a default profile.
-    # Then close it after a while to not block script execution.
-    open --wait-apps -g -a "Tor Browser" & sleep 20s; killall "firefox"
-    # Show TorBrowser bookmark toolbar.
-    TB_CONFIG_DIR=$($FIND_CLI "${HOME}/Library/Application Support/TorBrowser-Data/Browser" -maxdepth 1 -iname "*.default")
-    tee -a "$TB_CONFIG_DIR/xulstore.json" <<-EOF
+        # Open Tor Browser at least once in the background to create a default profile.
+        # Then close it after a while to not block script execution.
+        open --wait-apps -g -a "Tor Browser" & sleep 20s; killall "firefox"
+        # Show TorBrowser bookmark toolbar.
+        TB_CONFIG_DIR=$($FIND_CLI "${HOME}/Library/Application Support/TorBrowser-Data/Browser" -maxdepth 1 -iname "*.default")
+        # Heredoc body and its EOF stay unindented: `<<-` strips leading tabs
+        # only, so an indented terminator would never close the document.
+        tee -a "$TB_CONFIG_DIR/xulstore.json" <<-EOF
 {"chrome://browser/content/browser.xhtml": {
     "PersonalToolbar": {"collapsed": "false"}
 }}
 EOF
-    # Set TorBrowser bookmarks in toolbar.
-    # Source: https://yro.slashdot.org/story/16/06/08/151245/kickasstorrents-enters-the-dark-web-adds-official-tor-address
-    BOOKMARKS="
+        # Set TorBrowser bookmarks in toolbar.
+        # Source: https://yro.slashdot.org/story/16/06/08/151245/kickasstorrents-enters-the-dark-web-adds-official-tor-address
+        # Entries stay unindented: leading blanks would end up in the values.
+        BOOKMARKS="
 https://protonmailrmez3lotccipshtkleegetolb73fuirgj7r4o4vfu7ozyd.onion,ProtonMail,ehmwyurmkort,eqeiuuEyivna
 http://piratebayo3klnzokct3wt5yyxb2vpebbuyjl7m623iaxmqhsd52coid.onion,PirateBay,nnypemktnpya,dvzeeooowsgx
 "
-    TB_BOOKMARK_DB="$TB_CONFIG_DIR/places.sqlite"
-    # Remove all bookmarks from the toolbar.
-    sqlite3 -echo -header -column "$TB_BOOKMARK_DB" "DELETE FROM moz_bookmarks WHERE parent=(SELECT id FROM moz_bookmarks WHERE guid='toolbar_____'); SELECT * FROM moz_bookmarks;"
-    # Add bookmarks one by one.
-    for BM_INFO (${(f)BOOKMARKS})
-    do
-        BM_URL=$(echo $BM_INFO | cut -d',' -f1)
-        BM_TITLE=$(echo $BM_INFO | cut -d',' -f2)
-        BM_GUID1=$(echo $BM_INFO | cut -d',' -f3)
-        BM_GUID2=$(echo $BM_INFO | cut -d',' -f4)
-        sqlite3 -echo -header -column "$TB_BOOKMARK_DB" "INSERT OR REPLACE INTO moz_places(url, hidden, guid, foreign_count) VALUES('$BM_URL', 0, '$BM_GUID1', 1); INSERT OR REPLACE INTO moz_bookmarks(type, fk, parent, title, guid) VALUES(1, (SELECT id FROM moz_places WHERE guid='$BM_GUID1'), (SELECT id FROM moz_bookmarks WHERE guid='toolbar_____'), '$BM_TITLE', '$BM_GUID2');"
-    done
-    sqlite3 -echo -header -column "$TB_BOOKMARK_DB" "SELECT * FROM moz_bookmarks; SELECT * FROM moz_places;"
+        TB_BOOKMARK_DB="$TB_CONFIG_DIR/places.sqlite"
+        # Remove all bookmarks from the toolbar.
+        sqlite3 -echo -header -column "$TB_BOOKMARK_DB" "DELETE FROM moz_bookmarks WHERE parent=(SELECT id FROM moz_bookmarks WHERE guid='toolbar_____'); SELECT * FROM moz_bookmarks;"
+        # Add bookmarks one by one.
+        for BM_INFO (${(f)BOOKMARKS})
+        do
+            BM_URL=$(echo $BM_INFO | cut -d',' -f1)
+            BM_TITLE=$(echo $BM_INFO | cut -d',' -f2)
+            BM_GUID1=$(echo $BM_INFO | cut -d',' -f3)
+            BM_GUID2=$(echo $BM_INFO | cut -d',' -f4)
+            sqlite3 -echo -header -column "$TB_BOOKMARK_DB" "INSERT OR REPLACE INTO moz_places(url, hidden, guid, foreign_count) VALUES('$BM_URL', 0, '$BM_GUID1', 1); INSERT OR REPLACE INTO moz_bookmarks(type, fk, parent, title, guid) VALUES(1, (SELECT id FROM moz_places WHERE guid='$BM_GUID1'), (SELECT id FROM moz_bookmarks WHERE guid='toolbar_____'), '$BM_TITLE', '$BM_GUID2');"
+        done
+        sqlite3 -echo -header -column "$TB_BOOKMARK_DB" "SELECT * FROM moz_bookmarks; SELECT * FROM moz_places;"
 
-    # Force installation of Firefox plugins.
-    # For privacy extensions, see: https://github.com/arkenfox/user.js/wiki/4.1-Extensions
-    wget https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/addon-607454-latest.xpi -O "$TB_CONFIG_DIR/extensions/uBlock0@raymondhill.net.xpi"
+        # Force installation of Firefox plugins.
+        # For privacy extensions, see: https://github.com/arkenfox/user.js/wiki/4.1-Extensions
+        wget https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/addon-607454-latest.xpi -O "$TB_CONFIG_DIR/extensions/uBlock0@raymondhill.net.xpi"
 
-    # Open IINA at least once in the background to let it register its Safari extension.
-    # Then close it after a while to not block script execution.
-    # This also pop-up a persistent, but non-blocking dialog:
-    # "XXX.app is an app downloaded from the Internet. Are you sure you want to open it?"
-    open --wait-apps -g -a "IINA" & sleep 20s; killall "IINA"
+        # Open IINA at least once in the background to let it register its Safari extension.
+        # Then close it after a while to not block script execution.
+        # This also pop-up a persistent, but non-blocking dialog:
+        # "XXX.app is an app downloaded from the Internet. Are you sure you want to open it?"
+        open --wait-apps -g -a "IINA" & sleep 20s; killall "IINA"
+    fi
 
     # Force Neovim plugin upgrades. vim.pack.update() opens a confirmation
     # buffer for review, so force=true is required to apply them unattended.
