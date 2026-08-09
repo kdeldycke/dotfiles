@@ -1,6 +1,14 @@
 #!/usr/bin/env zsh
 set -Eeuxo pipefail
 
+# This file is sourced by install.sh, and the line above re-enables errexit in
+# the caller's shell. That silently defeated survey mode: the ERR trap recorded
+# a failure and the run aborted on it anyway, one line at a time, which is the
+# behaviour the survey exists to avoid. See the rationale in install.sh.
+if (( ${SURVEY:-0} )); then
+    set +e
+fi
+
 ###############################################################################
 # Plist and preferences                                                       #
 ###############################################################################
