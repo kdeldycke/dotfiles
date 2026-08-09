@@ -49,7 +49,7 @@ Evaluate the submission against each criterion below. For each, state PASS, FAIL
 
 #### 3. AI slop detection
 
-This is not covered by `contributing.md`. Look for these signals (any two together, or combined with §9 provenance signals, warrant the `AI slop` label):
+This is not covered by `contributing.md`. Look for these signals. **Any two, drawn from this section and §9 in any combination, warrant the `AI slop` label**; one alone never does, because the label is reputational:
 
 - The PR body or issue text reads as LLM output (generic phrasing, no specific knowledge of the list's content, template-like structure beyond the actual template).
 - The PR explicitly discloses AI generation (e.g., "Generated with Claude Code", "Created by Copilot").
@@ -92,7 +92,7 @@ Check the diff (for PRs) against `contributing.md` §§ Formatting and Editorial
 
 #### 9. Contributor and repo provenance
 
-This is not covered by `contributing.md`. Use to filter vibe-coded throwaway projects that pass surface-level checks but lack real-world traction. Signals here reinforce §3 (AI slop): two from §9, or one from §9 plus one from §3, warrant the `AI slop` label.
+This is not covered by `contributing.md`. Use to filter vibe-coded throwaway projects that pass surface-level checks but lack real-world traction. Signals here reinforce §3 (AI slop): they count toward the same two-signal bar, in any combination with §3's.
 
 **PR/issue author (the GitHub user)**:
 
@@ -159,14 +159,14 @@ For issues reporting broken links (typically automated by the lychee link checke
 
 Suggest applying these labels based on findings:
 
-| Label         | When to apply                                                    |
-| ------------- | ---------------------------------------------------------------- |
-| `AI slop`     | Two or more §3 signals, or one §3 plus one §9 provenance signal. |
-| `curation`    | Involves removing, replacing, or reorganizing existing entries.  |
-| `new link`    | Proposes adding a new resource to the list.                      |
-| `duplicate`   | The resource or a near-equivalent is already in the list.        |
-| `fix link`    | Reports or fixes a broken URL.                                   |
-| `wont do/fix` | Maintainer decision to not act on the request.                   |
+| Label         | When to apply                                                   |
+| ------------- | --------------------------------------------------------------- |
+| `AI slop`     | Any two signals from §3 and §9 combined.                        |
+| `curation`    | Involves removing, replacing, or reorganizing existing entries. |
+| `new link`    | Proposes adding a new resource to the list.                     |
+| `duplicate`   | The resource or a near-equivalent is already in the list.       |
+| `fix link`    | Reports or fixes a broken URL.                                  |
+| `wont do/fix` | Maintainer decision to not act on the request.                  |
 
 ### Next steps
 
