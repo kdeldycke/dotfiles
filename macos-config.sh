@@ -735,8 +735,9 @@ sudo systemsetup -setusingnetworktime on
 # Do not set timezone automatticaly depending on location.
 sudo defaults write /Library/Preferences/com.apple.timezone.auto.plist Active -bool false
 
-# Enable 24 hour time.
-defaults write com.apple.menuextra.clock DateFormat -string "EEE d MMM HH:mm"
+# The menu bar clock is configured in the Menubar section above. `DateFormat`
+# used to be set here: macOS dropped it for a set of per-component keys, and a
+# format string written to it is now ignored.
 
 
 ###############################################################################
