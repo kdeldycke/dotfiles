@@ -439,8 +439,10 @@ sudo pmset -a powernap 0
 #sudo systemsetup -setwakeonmodem off
 sudo pmset -a ring 0
 
-# Disable wake-on LAN
-sudo systemsetup -setwakeonnetworkaccess off
+# Disable wake-on LAN. Not every machine has the hardware: a VM answers "Wake
+# On Network Access: Not supported on this machine" and exits non-zero, which
+# is a statement about the hardware rather than a failure to act on.
+sudo systemsetup -setwakeonnetworkaccess off || true
 sudo pmset -a womp 0
 
 # Display login window as name and password
@@ -517,8 +519,10 @@ sudo pmset destroyfvkeyonstandby 1
 
 # Enable FileVault (if not already enabled)
 # This requires a user password, and outputs a recovery key that should be
-# copied to a secure location
-if [[ $(sudo fdesetup status | head -1) == "FileVault is Off." ]]; then
+# copied to a secure location. Both want someone at the keyboard, so the
+# attempt is skipped without a terminal on stdin: unattended it can only fail,
+# and it would take the rest of this script down with it.
+if [[ -t 0 ]] && [[ $(sudo fdesetup status | head -1) == "FileVault is Off." ]]; then
   sudo fdesetup enable -user $(whoami)
 fi
 
@@ -810,8 +814,10 @@ defaults write com.apple.screencapture disable-shadow -bool true
 # Nightlight                                                                  #
 ###############################################################################
 
-# Start night shift from sunset to sunrise
-nightlight schedule start
+# Start night shift from sunset to sunrise. Night Shift needs a display and a
+# location to derive sunset from, so `nightlight` exits non-zero on a headless
+# machine.
+nightlight schedule start || true
 
 
 ###############################################################################
@@ -1019,13 +1025,17 @@ for view ('Desktop' 'FK_Standard' 'Standard'); do
     # Enable snap-to-grid for icons on the desktop and in other icon views
     # Increase grid spacing for icons on the desktop and in other icon views
     # Increase the size of icons on the desktop and in other icon views
+    # `Set` only assigns to a key that is already there, and Finder writes
+    # these the first time someone changes a view option. On a machine where
+    # that has never happened the whole invocation fails on the first missing
+    # key, so the settings are best-effort rather than an abort.
     /usr/libexec/PlistBuddy \
         -c "Set :${view}ViewSettings:IconViewSettings:showItemInfo  true"  \
         -c "Set :${view}ViewSettings:IconViewSettings:labelOnBottom false" \
         -c "Set :${view}ViewSettings:IconViewSettings:arrangeBy     grid"  \
         -c "Set :${view}ViewSettings:IconViewSettings:gridSpacing   100"   \
         -c "Set :${view}ViewSettings:IconViewSettings:iconSize      32"    \
-        ~/Library/Preferences/com.apple.finder.plist
+        ~/Library/Preferences/com.apple.finder.plist || true
 done
 
 # Use list view in all Finder windows by default
@@ -1190,8 +1200,12 @@ defaults write com.apple.dock autohide -bool true
 # Make the cmd-tab app switcher show up on all monitors.
 #defaults write com.apple.Dock appswitcher-all-displays -bool true
 
-# Reset Launchpad, but keep the desktop wallpaper intact
-command find "${HOME}/Library/Application Support/Dock" -maxdepth 1 -name "*-*.db" -delete
+# Reset Launchpad, but keep the desktop wallpaper intact. The folder only
+# exists once Dock has written to it, so `find` errors out on a machine where
+# it never has.
+if [[ -d "${HOME}/Library/Application Support/Dock" ]]; then
+    command find "${HOME}/Library/Application Support/Dock" -maxdepth 1 -name "*-*.db" -delete
+fi
 
 # Add iOS & Watch Simulator to Launchpad
 #sudo ln -sf "/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app" "/Applications/Simulator.app"
@@ -1229,7 +1243,10 @@ for shortcut_label (
     "Reminders"
     "TV"
 ); do
-    dockutil --remove "${shortcut_label}" --allhomes --no-restart
+    # An app that is not in the dock cannot be removed from it, and `dockutil`
+    # says so with a non-zero exit. That is the expected outcome on any machine
+    # whose dock does not carry Apple's full default set.
+    dockutil --remove "${shortcut_label}" --allhomes --no-restart || true
 done
 
 # Add new app shortcuts to the dock.
