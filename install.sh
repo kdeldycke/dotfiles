@@ -303,8 +303,9 @@ http://piratebayo3klnzokct3wt5yyxb2vpebbuyjl7m623iaxmqhsd52coid.onion,PirateBay,
     # "XXX.app is an app downloaded from the Internet. Are you sure you want to open it?"
     open --wait-apps -g -a "IINA" & sleep 20s; killall "IINA"
 
-    # Force Neovim plugin upgrades
-    nvim -c "try | call dein#update() | finally | qall! | endtry"
+    # Force Neovim plugin upgrades. vim.pack.update() opens a confirmation
+    # buffer for review, so force=true is required to apply them unattended.
+    nvim --headless -c "lua vim.pack.update(nil, { force = true })" -c "qall!"
 }
 
 
