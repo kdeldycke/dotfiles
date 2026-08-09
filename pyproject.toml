@@ -91,6 +91,9 @@ files.extend-exclude = [
 [tool.typos.default.extend-identifiers]
 # Actual macOS preference key name (ends with "iMessage", not "Message").
 automaticEmojiSubstitutionEnablediMessage = "automaticEmojiSubstitutionEnablediMessage"
+# Apple's own misspelling, shipped for several releases next to the corrected
+# AirplayReceiverEnabled. The key has to be named as-is to be deleted.
+AirplayRecieverEnabled = "AirplayRecieverEnabled"
 
 [tool.typos.default.extend-words]
 # macOS 11 codename, not a typo of "Sure".
