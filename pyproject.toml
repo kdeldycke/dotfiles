@@ -15,7 +15,13 @@ exclude = [
 ]
 include = ["agents", "skills"]
 agents.location = "./dotfiles/.claude/agents/"
-gitignore.location = "./dotfiles/.gitignore_global"
+# gitignore.location is left at its default, the repository root, and the file
+# there has to be a real one: git opens in-tree .gitignore, .gitattributes and
+# .mailmap with O_NOFOLLOW, so a symlink is skipped with a "Too many levels of
+# symbolic links" warning and its rules never apply. The $HOME-facing name is
+# the symlink instead (dotfiles/.gitignore_global -> ../.gitignore), which the
+# links stage of install.sh picks up and links to ~/.gitignore_global for
+# core.excludesFile. Do not point location back into dotfiles/.
 gitignore.extra-categories = [
     "archive",
     "archives",
@@ -34,7 +40,7 @@ gitignore.extra-categories = [
     "microsoftoffice",
 ]
 # Everything past the gitignore.io block is regenerated from this string, so an
-# entry added straight to .gitignore_global is dropped by the next sync. This
+# entry added straight to .gitignore is dropped by the next sync. This
 # replaces repomatic's default wholesale rather than extending it: the upstream
 # entries have to be repeated here or they go away too.
 gitignore.extra-content = '''
