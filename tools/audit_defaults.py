@@ -13,10 +13,19 @@ almost certainly alive, while a key reported dead could in theory still be
 built at runtime by string concatenation. Verify a prune candidate in the UI
 before removing it.
 
-Usage: audit_defaults.py [--scan] macos-config.sh
+Usage: audit_defaults.py [--scan] [--menubar] macos-config.sh
 
 Without --scan only the parse runs (instant, no system access), which is enough
 to iterate on the parser or to catch malformed invocations.
+
+--menubar switches to a different question. Instead of asking whether a key is
+still read by anything, it diffs what the script declares for the menu bar
+against what the running system actually stores, key by key. That closes the
+loop the string scan cannot: `menuExtras` passes the scan, because
+SystemUIServer still carries the name, while every value written to it is
+discarded. Rearrange the menu bar in System Settings, re-run with --menubar,
+and the diff names the keys to copy back into the script. It exits non-zero
+while the two disagree, so it can drive a fix-and-recheck loop.
 """
 
 from __future__ import annotations
@@ -66,6 +75,81 @@ APP_GLOBS = (
     "/System/Applications/Utilities/*.app",
     "/System/Library/CoreServices/*.app",
 )
+
+# Every store holding menu bar state, as (domain, per-host, keys). Control
+# Center appears twice on purpose: the module placement codes live in the
+# per-host plist that System Settings writes, while the plain status items and
+# the menu bar behaviour sit in the global one. They are separate files, and a
+# key found in one says nothing about the other.
+#
+# `keys` is None when the whole domain is menu bar state, so that a module
+# added by a future macOS shows up on its own. Siri, Spotlight and the input
+# menu keep their icon in a domain they share with unrelated settings, from
+# spell checking to keyboard shortcuts, so only the one key is in scope there.
+MENUBAR_DOMAINS: tuple[tuple[str, bool, frozenset[str] | None], ...] = (
+    ("com.apple.Siri", False, frozenset({"StatusMenuVisible"})),
+    ("com.apple.Spotlight", True, frozenset({"MenuItemHidden"})),
+    ("com.apple.TextInputMenu", False, frozenset({"visible"})),
+    ("com.apple.controlcenter", False, None),
+    ("com.apple.controlcenter", True, None),
+    ("com.apple.menuextra.clock", False, None),
+)
+
+# The menu bar plists mix configuration with runtime bookkeeping. Comparing the
+# bookkeeping would report drift on every run: the heartbeat timestamps move on
+# their own, and a preferred position changes whenever an icon is dragged.
+#
+# The numbered `Item-N` slots are dropped for a different reason. AppKit files
+# a status item under its own name when it has one, and under an anonymous slot
+# when it does not, so those entries name no module and cannot be acted on.
+MENUBAR_NOISE_RE = re.compile(
+    r"""
+      ^NSStatusItem\ Preferred\ Position   # where an icon was last dragged
+    | ^NSStatusItem\ Visible\ Item-\d+$    # anonymous status item slots
+    | ^IIO_                                # launch timing telemetry
+    | ^Last                                # heartbeat and analytics stamps
+    | ^ControlCenterDisplayable            # serialised widget registry
+    | ^LiveActivityState$
+    | ^HasAttempted                        # one-shot migration flags
+    | ^missionControlTooltipCount$
+    | Token$
+    """,
+    re.VERBOSE,
+)
+
+# Processes that own a menu bar preference. The clock keys are read from a
+# framework rather than an app, so the shared cache is scanned too, which is
+# what makes --menubar --scan slow enough to keep behind the flag.
+MENUBAR_BINARY_GLOBS = (
+    "/System/Library/CoreServices/ControlCenter.app/Contents/MacOS/ControlCenter",
+    "/System/Library/CoreServices/Siri.app/Contents/MacOS/Siri",
+    "/System/Library/CoreServices/Spotlight.app/Contents/MacOS/Spotlight",
+    "/System/Library/CoreServices/SystemUIServer.app/Contents/MacOS/SystemUIServer",
+    "/System/Library/CoreServices/TextInputMenuAgent.app/Contents/MacOS/TextInputMenuAgent",
+    "/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e*",
+)
+
+# `defaults` spells a boolean six ways and stores the same CFBoolean for each.
+BOOL_WORDS = {
+    "true": True,
+    "yes": True,
+    "1": True,
+    "false": False,
+    "no": False,
+    "0": False,
+}
+
+# Marks a declared value the audit will not compare: a container, a blob, or a
+# shell expansion. Reporting it as drift would be noise, since no comparison
+# was possible in the first place.
+OPAQUE = object()
+
+# AppKit files a status item's visibility under a key it builds at runtime, by
+# appending the item's autosave name to a fixed prefix. Neither the assembled
+# key nor the prefix survives into a string table, so the binary scan can say
+# nothing about the family and reports every one of them dead. They are
+# excluded from the verdict instead: an untestable key is not a dead one.
+COMPOSED_KEY_RE = re.compile(r"^NSStatusItem (?:Visible|VisibleCC|Preferred Position) ")
 
 
 def normalize_domain(domain: str) -> str:
@@ -118,8 +202,51 @@ def join_continuations(text: str) -> list[str]:
     return lines
 
 
+def parse_value(tokens: list[str]) -> object:
+    """Decode the value of a `defaults write` into what would land in the plist.
+
+    Only the scalar types are decoded, which is all the menu bar uses. A
+    container, a `-data` blob or anything carrying a shell expansion comes back
+    as OPAQUE: the script's text alone does not say what those store, and
+    guessing would manufacture drift.
+
+    Booleans and integers deliberately share a comparison space. `defaults`
+    accepts `-bool false` and `-int 0` for what macOS treats as the same
+    setting, and Python's `False == 0` lets one match a plist holding the
+    other, which is the answer the audit wants.
+    """
+    if not tokens:
+        return OPAQUE
+    flag = tokens[0]
+    if not flag.startswith("-"):
+        # An untyped write. `defaults` guesses the type from the text, and so
+        # does this: a bare integer is stored as one.
+        raw = " ".join(tokens)
+        if "$" in raw:
+            return OPAQUE
+        return int(raw) if raw.lstrip("-").isdigit() else raw
+    rest = tokens[1:]
+    if any("$" in token for token in rest):
+        return OPAQUE
+    if flag in ("-bool", "-boolean") and len(rest) == 1:
+        return BOOL_WORDS.get(rest[0].lower(), OPAQUE)
+    if flag in ("-int", "-integer") and len(rest) == 1:
+        try:
+            return int(rest[0])
+        except ValueError:
+            return OPAQUE
+    if flag == "-float" and len(rest) == 1:
+        try:
+            return float(rest[0])
+        except ValueError:
+            return OPAQUE
+    if flag == "-string":
+        return " ".join(rest)
+    return OPAQUE
+
+
 def parse_defaults_calls(script: Path) -> list[dict]:
-    """Extract every defaults invocation as {line, verb, domain, key, malformed}."""
+    """Extract every defaults invocation as a dict of its parsed arguments."""
     calls = []
     for lineno, line in join_continuations(script.read_text()):
         stripped = line.strip()
@@ -133,9 +260,12 @@ def parse_defaults_calls(script: Path) -> list[dict]:
         while tokens and tokens[0] != "defaults":
             tokens.pop(0)
         tokens.pop(0)
-        # Skip host-scoping flags. -host takes a hostname argument, -currentHost
-        # does not.
+        # Host-scoping flags. -host takes a hostname argument, -currentHost does
+        # not. Either one sends the write to the ByHost plist, a different file
+        # from the global one, so the scope is part of the key's identity.
+        per_host = False
         while tokens and tokens[0] in ("-currentHost", "-host"):
+            per_host = True
             if tokens.pop(0) == "-host" and tokens:
                 tokens.pop(0)
         if not tokens:
@@ -163,16 +293,18 @@ def parse_defaults_calls(script: Path) -> list[dict]:
                 "verb": verb,
                 "domain": domain,
                 "key": key,
+                "per_host": per_host,
+                "value": parse_value(tokens) if verb == "write" else OPAQUE,
                 "malformed": malformed,
             }
         )
     return calls
 
 
-def collect_binaries() -> list[Path]:
+def collect_binaries(globs: tuple[str, ...] = BINARY_GLOBS) -> list[Path]:
     """Resolve the binary globs to existing, non-empty, non-metadata files."""
     found = []
-    for pattern in BINARY_GLOBS:
+    for pattern in globs:
         for hit in glob.glob(pattern):
             path = Path(hit)
             if path.suffix in EXCLUDED_SUFFIXES:
@@ -229,6 +361,214 @@ def scan_keys(keys: set[str], binaries: list[Path]) -> dict[str, set[str]]:
     return hits
 
 
+def in_menubar_scope(domain: str, per_host: bool, key: str) -> bool:
+    """Whether a (domain, per-host, key) triplet holds menu bar state."""
+    for candidate, scoped, keys in MENUBAR_DOMAINS:
+        if candidate == domain and scoped == per_host:
+            return keys is None or key in keys
+    return False
+
+
+def read_domain(
+    domain: str, per_host: bool, keys: frozenset[str] | None
+) -> dict[str, object]:
+    """Read a preference domain into a plain dict, dropping the bookkeeping.
+
+    `defaults export` is used rather than `defaults read`, because `read`
+    prints the old NeXT plain-text format, which loses the distinction between
+    the boolean `true` and the string "true". Exported XML keeps the types the
+    comparison depends on.
+
+    A missing domain is not an error here: a fresh account has never written
+    most of these, and an empty dict is the honest answer.
+    """
+    command = ["defaults"]
+    if per_host:
+        command.append("-currentHost")
+    command += ["export", domain, "-"]
+    try:
+        raw = subprocess.run(command, capture_output=True, check=False).stdout
+    except OSError:
+        return {}
+    try:
+        data = plistlib.loads(raw)
+    except (ValueError, plistlib.InvalidFileException):
+        return {}
+    if not isinstance(data, dict):
+        return {}
+    # Data blobs are keyed archives and serialised registries. They are state,
+    # never something the script would set, and their bytes differ every run.
+    return {
+        key: value
+        for key, value in data.items()
+        if (keys is None or key in keys)
+        and not MENUBAR_NOISE_RE.search(key)
+        and not isinstance(value, bytes)
+    }
+
+
+def format_value(value: object) -> str:
+    """Render a plist value for the report, as the literal it would be set to."""
+    if value is OPAQUE:
+        return "_not compared_"
+    if isinstance(value, bool):
+        return "`true`" if value else "`false`"
+    return f"`{value}`"
+
+
+def menubar_report(script: Path, scan: bool) -> tuple[list[str], bool]:
+    """Diff the menu bar the script declares against the one macOS stores.
+
+    Returns the report lines and whether the two agree.
+    """
+    declared: dict[tuple[str, bool, str], dict] = {}
+    removed: dict[tuple[str, bool, str], dict] = {}
+    for call in parse_defaults_calls(script):
+        if call["malformed"] or not call["key"]:
+            continue
+        scope = (normalize_domain(call["domain"]), call["per_host"], call["key"])
+        if not in_menubar_scope(*scope):
+            continue
+        # The last invocation wins, exactly as it would when the script runs. A
+        # delete is a declaration too, of a key that should not be there, so it
+        # is held onto rather than dropped: that is what makes the removal of a
+        # dead key verifiable instead of merely attempted.
+        if call["verb"] == "delete":
+            declared.pop(scope, None)
+            removed[scope] = call
+        else:
+            removed.pop(scope, None)
+            declared[scope] = call
+
+    live: dict[tuple[str, bool, str], object] = {}
+    for domain, per_host, keys in MENUBAR_DOMAINS:
+        for key, value in read_domain(domain, per_host, keys).items():
+            live[(domain, per_host, key)] = value
+
+    drift, undeclared, unapplied, synced = [], [], [], []
+    for scope, call in sorted(declared.items()):
+        if scope not in live:
+            unapplied.append((scope, call))
+        elif call["value"] is OPAQUE or call["value"] == live[scope]:
+            synced.append((scope, call))
+        else:
+            drift.append((scope, call, live[scope]))
+    for scope in sorted(live):
+        if scope not in declared and scope not in removed:
+            undeclared.append((scope, live[scope]))
+    stale = [(scope, call) for scope, call in sorted(removed.items()) if scope in live]
+
+    def scope_label(scope: tuple[str, bool, str]) -> str:
+        domain, per_host, key = scope
+        return f"`{domain}`{' (per-host)' if per_host else ''} | `{key}`"
+
+    lines = [f"# Menu bar audit of {script.name}", ""]
+    lines.append(
+        f"{len(declared)} keys declared, {len(removed)} declared gone, "
+        f"{len(live)} stored by macOS: {len(drift)} in conflict, "
+        f"{len(unapplied)} never applied, {len(stale)} not cleaned up, "
+        f"{len(undeclared)} unmanaged, {len(synced)} in sync."
+    )
+    lines.append("")
+
+    lines.append(f"## Conflicting: {len(drift)}")
+    lines.append("")
+    lines.append(
+        "The script and the running system disagree. Either the system was "
+        "changed in the UI and the change belongs in the script, or the script "
+        "was edited and has not been run since."
+    )
+    lines.append("")
+    lines.append("| Line | Domain | Key | Declared | Stored |")
+    lines.append("| ---: | :--- | :--- | :--- | :--- |")
+    for scope, call, current in drift:
+        lines.append(
+            f"| {call['line']} | {scope_label(scope)} | "
+            f"{format_value(call['value'])} | {format_value(current)} |"
+        )
+    lines.append("")
+
+    lines.append(f"## Declared but never applied: {len(unapplied)}")
+    lines.append("")
+    lines.append(
+        "The script sets these and macOS stores nothing under them. Expected "
+        "before the first run. Afterwards it means the write was rejected, "
+        "which is how a dead key looks from here."
+    )
+    lines.append("")
+    lines.append("| Line | Domain | Key | Declared |")
+    lines.append("| ---: | :--- | :--- | :--- |")
+    for scope, call in unapplied:
+        lines.append(
+            f"| {call['line']} | {scope_label(scope)} | {format_value(call['value'])} |"
+        )
+    lines.append("")
+
+    lines.append(f"## Declared gone but still stored: {len(stale)}")
+    lines.append("")
+    lines.append(
+        "The script deletes these and macOS still holds them. Expected before "
+        "the first run, a failed delete afterwards."
+    )
+    lines.append("")
+    lines.append("| Line | Domain | Key | Stored |")
+    lines.append("| ---: | :--- | :--- | :--- |")
+    for scope, call in stale:
+        lines.append(
+            f"| {call['line']} | {scope_label(scope)} | {format_value(live[scope])} |"
+        )
+    lines.append("")
+
+    lines.append(f"## Stored but unmanaged: {len(undeclared)}")
+    lines.append("")
+    lines.append(
+        "This machine carries settings the script would not reproduce. Copy "
+        "the ones worth keeping into the Menubar section."
+    )
+    lines.append("")
+    lines.append("| Domain | Key | Stored |")
+    lines.append("| :--- | :--- | :--- |")
+    for scope, current in undeclared:
+        lines.append(f"| {scope_label(scope)} | {format_value(current)} |")
+    lines.append("")
+
+    if scan:
+        seen = {scope[2] for scope in set(declared) | set(live)}
+        composed = {key for key in seen if COMPOSED_KEY_RE.match(key)}
+        probes = seen - composed
+        binaries = collect_binaries(MENUBAR_BINARY_GLOBS)
+        hits = scan_keys(probes, binaries)
+        orphans = sorted(key for key in probes if not hits.get(key))
+        lines.append(f"## Carried by no menu bar process: {len(orphans)}")
+        lines.append("")
+        lines.append(
+            f"Scanned {len(binaries)} binaries for {len(probes)} keys, skipping "
+            f"{len(composed)} that AppKit assembles at runtime. A key no menu "
+            "bar process names is one macOS still stores and nothing reads, the "
+            "shape left behind when a module is retired."
+        )
+        lines.append("")
+        lines.append(
+            "Absence proves far less than presence here, so confirm in System "
+            "Settings before pruning. `Show24Hour` is the worked example: it "
+            "governs a clock that visibly reads 24-hour time, and it is in no "
+            "string table on this machine."
+        )
+        lines.append("")
+        lines.append(
+            "A presence is not proof either, since the match is on the key name "
+            "alone and says nothing about which domain it belongs to. Control "
+            "Center's retired `Spotlight` module code stays off this list only "
+            "because Spotlight's own domain uses the same word."
+        )
+        lines.append("")
+        for key in orphans:
+            lines.append(f"- `{key}`")
+        lines.append("")
+
+    return lines, not (drift or unapplied or stale)
+
+
 def emit(report: str) -> None:
     """Print the report, duplicating it into the GitHub job summary if any."""
     print(report)
@@ -246,7 +586,18 @@ def main() -> int:
         action="store_true",
         help="Scan system binaries for key consumers (macOS only).",
     )
+    parser.add_argument(
+        "--menubar",
+        action="store_true",
+        help="Diff the declared menu bar against the live one (macOS only). "
+        "Exits non-zero while they disagree.",
+    )
     args = parser.parse_args()
+
+    if args.menubar:
+        lines, agreed = menubar_report(args.script, args.scan)
+        emit("\n".join(lines))
+        return 0 if agreed else 1
 
     calls = parse_defaults_calls(args.script)
     malformed = [c for c in calls if c["malformed"]]

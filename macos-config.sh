@@ -245,16 +245,79 @@ defaults write -globalDomain "com.apple.sound.beep.feedback" -int 0
 # Enable input menu in menu bar.
 defaults write com.apple.TextInputMenu visible -bool true
 
-# Menu bar: hide the User and Battery icons
-defaults -currentHost write com.apple.systemuiserver dontAutoLoad -array \
-        "/System/Library/CoreServices/Menu Extras/User.menu"
-defaults write com.apple.systemuiserver menuExtras -array \
-        "/System/Library/CoreServices/Menu Extras/TimeMachine.menu" \
-        "/System/Library/CoreServices/Menu Extras/AirPort.menu" \
-        "/System/Library/CoreServices/Menu Extras/Bluetooth.menu" \
-        "/System/Library/CoreServices/Menu Extras/TextInput.menu" \
-        "/System/Library/CoreServices/Menu Extras/Volume.menu" \
-        "/System/Library/CoreServices/Menu Extras/Clock.menu"
+# Control Center owns the menu bar since Big Sur. The SystemUIServer
+# menuExtras/dontAutoLoad arrays that used to live here were inert: five of the
+# seven "Menu Extras/*.menu" bundles they named no longer ship, and
+# SystemUIServer silently drops every entry whose bundle it cannot load.
+#
+# A module is placed with a single per-host integer. The three states below are
+# read back from a menu bar arranged by hand, each one matched against what the
+# bar actually shows: Sound at 18 puts the output device icon up, UserSwitcher
+# at 18 the account icon, while Battery at 8 and ScreenMirroring at 2 are both
+# absent from it.
+#
+#   2   hidden from the menu bar and from Control Center
+#   8   in Control Center only
+#   18  in the menu bar and in Control Center
+#
+# Run `python3 ./tools/audit_defaults.py --menubar ./macos-config.sh` to diff
+# this block against the live system, so a change made in the UI can be
+# replayed here.
+
+# Menu bar.
+defaults -currentHost write com.apple.controlcenter Sound -int 18
+defaults -currentHost write com.apple.controlcenter UserSwitcher -int 18
+defaults -currentHost write com.apple.controlcenter WiFi -int 18
+
+# Control Center only.
+defaults -currentHost write com.apple.controlcenter AccessibilityShortcuts -int 8
+defaults -currentHost write com.apple.controlcenter AirDrop -int 8
+defaults -currentHost write com.apple.controlcenter Battery -int 8
+defaults -currentHost write com.apple.controlcenter Bluetooth -int 8
+defaults -currentHost write com.apple.controlcenter Display -int 8
+defaults -currentHost write com.apple.controlcenter FocusModes -int 8
+defaults -currentHost write com.apple.controlcenter Hearing -int 8
+defaults -currentHost write com.apple.controlcenter KeyboardBrightness -int 8
+defaults -currentHost write com.apple.controlcenter MusicRecognition -int 8
+defaults -currentHost write com.apple.controlcenter NowPlaying -int 8
+defaults -currentHost write com.apple.controlcenter StageManager -int 8
+defaults -currentHost write com.apple.controlcenter VoiceControl -int 8
+defaults -currentHost write com.apple.controlcenter Weather -int 8
+
+# Hidden everywhere.
+defaults -currentHost write com.apple.controlcenter ScreenMirroring -int 2
+
+# Items with no module code of their own are plain status items, keyed by the
+# name AppKit files them under.
+defaults write com.apple.controlcenter "NSStatusItem Visible BentoBox" -bool true
+defaults write com.apple.controlcenter "NSStatusItem Visible FaceTime" -bool false
+
+# Mirror the Live Activities of a nearby iPhone into the menu bar.
+defaults write com.apple.controlcenter RemoteLiveActivitiesEnabled -bool true
+
+# Spotlight and Siri each keep their menu bar icon in their own domain.
+defaults -currentHost write com.apple.Spotlight MenuItemHidden -bool true
+defaults write com.apple.Siri StatusMenuVisible -bool false
+
+# Three keys macOS still stores here and no menu bar process reads any more,
+# left behind by earlier releases. `Spotlight` and `VPN` were module codes
+# before those two moved out of Control Center, and `AirplayRecieverEnabled` is
+# the misspelling Apple shipped for a while alongside the corrected key set in
+# the Security section. A `defaults delete` on an already absent key fails, so
+# these have to tolerate their own success.
+defaults -currentHost delete com.apple.controlcenter Spotlight || true
+defaults -currentHost delete com.apple.controlcenter VPN || true
+defaults -currentHost delete com.apple.controlcenter AirplayRecieverEnabled || true
+
+# Menu bar clock. `ShowDate` is a three-state enum, not a boolean: 0 shows the
+# date when the menu bar has room for it, 1 always, 2 never.
+defaults write com.apple.menuextra.clock FlashDateSeparators -bool false
+defaults write com.apple.menuextra.clock IsAnalog -bool false
+defaults write com.apple.menuextra.clock Show24Hour -bool true
+defaults write com.apple.menuextra.clock ShowDate -int 0
+defaults write com.apple.menuextra.clock ShowDayOfWeek -bool true
+defaults write com.apple.menuextra.clock ShowSeconds -bool false
+defaults write com.apple.menuextra.clock TimeAnnouncementsEnabled -bool false
 
 # Autohide dock and menubar.
 #defaults write NSGlobalDomain _HIHideMenuBar -bool true
