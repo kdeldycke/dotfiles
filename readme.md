@@ -172,7 +172,7 @@ filter lists:
 
 ### Claude Code
 
-`~/.claude/settings.json` is symlinked to this repo and committed. There is no global `settings.local.json`: `~/.claude/settings.local.json` is [not a supported file](https://github.com/anthropics/claude-code/issues/35703#issuecomment-2818474293).
+`~/.claude/settings.json` is symlinked to this repo and committed. There is no global `settings.local.json`: `~/.claude/settings.local.json` is [not a supported file](https://github.com/anthropics/claude-code/issues/35703#issuecomment-4138622633).
 
 `enableWeakerNetworkIsolation: true` is set in the sandbox config to work around a macOS sandbox limitation: the sandbox blocks `Security.framework` IPC to `trustd`, breaking TLS certificate verification for all CGO-compiled Go binaries (`gh`, `terraform`, `tofu`, etc.) and Keychain access. `SSL_CERT_FILE` does not help because these binaries use `Security.framework` directly and ignore file-based certs ([anthropics/claude-code#34876](https://github.com/anthropics/claude-code/issues/34876)).
 
@@ -298,7 +298,6 @@ You can still find these as dedicated branches, but all are quite ancient
 
 ## Resources
 
-- [Awesome macOS command line](https://git.herrbischoff.com/awesome-macos-command-line/about/)
 - [`ingrino`'s dotfiles](https://github.com/lingrino/dotfiles)
 - [Mathias Bynens `.macos`](https://github.com/mathiasbynens/dotfiles/blob/master/.macos)
 

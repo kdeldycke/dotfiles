@@ -82,6 +82,29 @@ commits = [
     "49d09fd0f65b7a7a6c382272fc6819f0ead2a76c",
 ]
 
+[tool.lychee]
+# https://lychee.cli.rs/guides/config/
+# Mirrors the excludes of kdeldycke/repomatic, the upstream reference for this
+# repository's CI. Since lychee 0.24.0 this section is read straight out of
+# pyproject.toml, so no separate config file is involved. Repomatic's
+# npmjs.com, doi.org-to-Zenodo and githubstatus.com entries are left out: no
+# document here links to any of them.
+exclude = [
+    # GitHub issue comment fragments are dynamically loaded and can't be verified.
+    "^https://github.com/.+/issues/[0-9]+#issuecomment-.*$",
+    # Release binary download URLs redirect to the GitHub CDN (objects.githubusercontent.com).
+    "^https://github.com/.+/releases/.+/download/.*$",
+    # Bitdefender returns 403 to bots.
+    "bitdefender\\.com",
+    # archive.ph rate-limits crawlers.
+    "archive\\.ph",
+    # VirusTotal analysis pages are a JS app that rate-limits bots, and the
+    # binaries page links one per released binary.
+    "^https://www\\.virustotal\\.com/gui/.*$",
+    # star-history.com fragments are JS-rendered and invisible to lychee.
+    "^https://star-history\\.com/.*$",
+]
+
 [tool.typos]
 # Exclude terminal config.
 files.extend-exclude = [
