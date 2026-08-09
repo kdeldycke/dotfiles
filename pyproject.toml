@@ -58,6 +58,46 @@ skills.location = "./dotfiles/.agents/skills/"
 ]
 
 [tool.ruff]
+# Mirrors repomatic/data/ruff.toml. A `[tool.ruff]` section in pyproject.toml
+# short-circuits `repomatic run ruff` at level 2 of its config chain (see
+# repomatic.tool_runner.resolve_config), so the bundled defaults never load and
+# every knob below has to be repeated here. Without `fix`, in particular, the
+# autofix workflow's `ruff check --exit-zero` step annotates but never repairs.
+preview = true
+fix = true
+# Unsafe fixes rewrite semantics, not just style, and the autofix workflow
+# commits them unreviewed.
+# See: https://docs.astral.sh/ruff/linter/#fix-safety
+unsafe-fixes = false
+show-fixes = true
+# Report `ISC004` rather than `implicit-string-concatenation-in-collection-literal`.
+# Preview mode otherwise prints human-readable rule names, but every knob below
+# (and every CI annotation) speaks in codes, so the code is the token to paste
+# into `lint.ignore` to silence what was just read.
+# https://docs.astral.sh/ruff/settings/#output-prefer-rule-codes
+output-prefer-rule-codes = true
+# Enable reformatting of code snippets in docstrings.
+# https://docs.astral.sh/ruff/formatter/#docstring-formatting
+format.docstring-code-format = true
+# PLW1514: `open` and friends called without an explicit `encoding` argument,
+#   which falls back to the locale default and so reads differently depending
+#   on where the script runs.
+#   See: https://docs.astral.sh/ruff/rules/unspecified-encoding/
+lint.extend-select = [ "PLW1514" ]
+# D400: First line should end with a period.
+#   Allows docstrings to end up with any punctuation, not just a period.
+#   See: https://github.com/astral-sh/ruff/issues/1858#issuecomment-1382640623
+# ERA001: Found commented-out code.
+#   Do not remove commented code, as it might be used for documentation.
+#   See: https://docs.astral.sh/ruff/rules/#eradicate-era
+# LOG015: Root logger calls (logging.info(), etc.).
+#   See: https://docs.astral.sh/ruff/rules/root-logger-call/
+lint.ignore = [ "D400", "ERA001", "LOG015" ]
+# Allow rules to add `from __future__ import annotations` in cases where
+# this would simplify a fix or enable a new diagnostic.
+# https://docs.astral.sh/ruff/settings/#lint_future-annotations
+lint.future-annotations = true
+lint.isort.combine-as-imports = true
 # Broken symlink on CI: target only exists on the local macOS machine.
 extend-exclude = [
     "dotfiles/Library/Application Support/SwiftBar/",
@@ -105,18 +145,17 @@ exclude = [
 ]
 
 [tool.typos]
+# Correct capitalization for proper nouns referenced in claude.md, plus two
+# macOS preference keys that have to be spelled as-is to be read or deleted:
+# automaticEmojiSubstitutionEnablediMessage really does end in "iMessage", and
+# AirplayRecieverEnabled is Apple's own misspelling, shipped for several
+# releases next to the corrected AirplayReceiverEnabled.
+default.extend-identifiers = { Github = "GitHub", IOS = "iOS", Javascript = "JavaScript", MacOS = "macOS", PyPi = "PyPI", Typescript = "TypeScript", automaticEmojiSubstitutionEnablediMessage = "automaticEmojiSubstitutionEnablediMessage", AirplayRecieverEnabled = "AirplayRecieverEnabled" }
+# False positives: "astroid" is a Python AST library (not "asteroid"); "oject" appears when "pyproject.toml" is split across line breaks in CLI help output; "sur" is macOS 11 Big Sur and Homebrew's big_sur bottle tag (not "sure").
+default.extend-words = { astroid = "astroid", oject = "oject", sur = "sur", Sur = "Sur" }
+# Skip content between <!-- typos:off --> and <!-- typos:on --> markers.
+default.extend-ignore-re = [ "(?s)<!-- typos:off -->.*?<!-- typos:on -->" ]
 # Exclude terminal config.
 files.extend-exclude = [
     "assets/Monokai Soda.terminal",
 ]
-
-[tool.typos.default.extend-identifiers]
-# Actual macOS preference key name (ends with "iMessage", not "Message").
-automaticEmojiSubstitutionEnablediMessage = "automaticEmojiSubstitutionEnablediMessage"
-# Apple's own misspelling, shipped for several releases next to the corrected
-# AirplayReceiverEnabled. The key has to be named as-is to be deleted.
-AirplayRecieverEnabled = "AirplayRecieverEnabled"
-
-[tool.typos.default.extend-words]
-# macOS 11 codename, not a typo of "Sure".
-Sur = "Sur"

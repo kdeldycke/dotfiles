@@ -98,6 +98,14 @@ Titles in markdown use sentence case.
 
 Use the natural auto-generated heading anchor for cross-references. Add an explicit anchor (`(my-anchor)=` in MyST, `<a id="…"></a>` in plain GFM) only when the natural one is unavailable: duplicate headings, non-heading targets.
 
+In markdown (changelogs, `readme.md`, `docs/`, issue and PR bodies), link to another repository using GitHub's reference slug as the link text, not the raw URL:
+
+- Issue or PR: `[owner/repo#N](https://github.com/owner/repo/issues/N)`. Issues and PRs share one number space; pick `/issues/N` or `/pull/N` to match the real type (GitHub redirects either way).
+- Commit: `[owner/repo@shortsha](https://github.com/owner/repo/commit/fullsha)`.
+- Repository homepage: `[owner/repo](https://github.com/owner/repo)`.
+
+GitHub autolinks the bare `owner/repo#N` form only inside conversations (issues, PRs, commit messages), never in committed files, so the explicit link is what renders the compact slug in a markdown file. Same-repo references drop the slug: `[#N](…/issues/N)`.
+
 ## YAML workflows
 
 For single-line commands, use plain inline `run:`. For multi-line, use the folded block scalar (`>`) which joins lines with spaces: no backslash continuations needed. Use the literal block scalar (`|`) only when preserved newlines are required (multi-statement scripts, heredocs).

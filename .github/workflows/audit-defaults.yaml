@@ -2,6 +2,18 @@
 name: 🧪 Audit defaults
 "on":
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    # The scan only ever reads these three files, so anything else pushed to
+    # `main` has nothing to audit.
+    paths:
+      - .github/workflows/audit-defaults.yaml
+      - macos-config.sh
+      - tools/audit_defaults.py
+  # No `pull_request:` trigger, for the same reason install.yaml gives: macOS
+  # runners bill at a multiple of Linux ones and this repository's automation
+  # PRs would fire one on top of every `main` push.
 
 permissions: {}
 

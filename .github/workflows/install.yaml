@@ -39,13 +39,15 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: ${{ !startsWith(github.event.head_commit.message, '[changelog] Release') }}
 
-# Supply-chain cooldown: no package published within the window can be resolved by
-# any command in this workflow. Set here, not per command, so it also covers the
-# `metadata` bootstrap and any step added later; a workflow-level `env:` cannot
-# reference `needs`, so the window is a literal that tests/test_workflows.py holds
-# equal to `[tool.repomatic] minimum-release-age`. Deliberate bypasses are
-# per-package CLI flags (`--exclude-newer-package`, `--min-release-age-exclude`).
-# See claude.md for the rationale.
+# Supply-chain cooldown: no package published within the window can be resolved
+# by any command in this workflow. Set here, not per command, so it also covers
+# any step added later. Deliberate bypasses are per-package CLI flags
+# (`--exclude-newer-package`, `--min-release-age-exclude`).
+#
+# Both values mirror repomatic's `minimum-release-age` default of one week.
+# Upstream pins them with a test against `[tool.repomatic] minimum-release-age`;
+# this repository declares neither, so re-check them by hand when diffing
+# against the reference named at the top of this file.
 env:
   NPM_CONFIG_MIN_RELEASE_AGE: 7
   UV_EXCLUDE_NEWER: "1 week"

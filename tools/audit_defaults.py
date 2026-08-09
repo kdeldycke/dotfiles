@@ -33,8 +33,8 @@ from __future__ import annotations
 import argparse
 import glob
 import os
-import re
 import plistlib
+import re
 import shlex
 import subprocess
 import sys
@@ -161,7 +161,7 @@ def normalize_domain(domain: str) -> str:
     belongs to Aerial, not to Apple's screen saver engine.
     """
     bare = domain.rsplit("/", 1)[-1]
-    return bare[: -len(".plist")] if bare.endswith(".plist") else bare
+    return bare.removesuffix(".plist")
 
 
 def installed_bundle_ids() -> set[str]:
@@ -248,7 +248,7 @@ def parse_value(tokens: list[str]) -> object:
 def parse_defaults_calls(script: Path) -> list[dict]:
     """Extract every defaults invocation as a dict of its parsed arguments."""
     calls = []
-    for lineno, line in join_continuations(script.read_text()):
+    for lineno, line in join_continuations(script.read_text(encoding="UTF-8")):
         stripped = line.strip()
         if stripped.startswith("#") or not DEFAULTS_RE.match(line):
             continue
@@ -287,17 +287,15 @@ def parse_defaults_calls(script: Path) -> list[dict]:
                 key = tokens.pop(0)
         elif verb == "write":
             malformed = True
-        calls.append(
-            {
-                "line": lineno,
-                "verb": verb,
-                "domain": domain,
-                "key": key,
-                "per_host": per_host,
-                "value": parse_value(tokens) if verb == "write" else OPAQUE,
-                "malformed": malformed,
-            }
-        )
+        calls.append({
+            "line": lineno,
+            "verb": verb,
+            "domain": domain,
+            "key": key,
+            "per_host": per_host,
+            "value": parse_value(tokens) if verb == "write" else OPAQUE,
+            "malformed": malformed,
+        })
     return calls
 
 
