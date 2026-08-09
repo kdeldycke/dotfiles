@@ -12,23 +12,12 @@ name: 🔬 Tests
       - macos-config.sh
       - packages.toml
       - pyproject.toml
-  pull_request:
-    branches-ignore:
-      # This filter matches the PR's *base* branch (always `main`), not its
-      # head, so it does not actually exclude these PRs — see
-      # https://github.com/actions/runner/issues/1591. The real skip is the
-      # `github.head_ref` check in the `metadata` job's `if:` below. Kept
-      # here as documentation of intent.
-      - major-version-increment
-      - minor-version-increment
-      - prepare-release
-    paths:
-      - .github/workflows/tests.yaml
-      - dotfiles/**
-      - install.sh
-      - macos-config.sh
-      - packages.toml
-      - pyproject.toml
+  # No `pull_request:` trigger on purpose. A full install burns a macOS runner
+  # for 30 to 50 minutes, and every automation PR (Renovate, `Format JSON`,
+  # `Sync .gitignore`) used to fire one on top of the `main` push, tripling the
+  # macOS concurrency this repository holds and starving every other project.
+  # The install is validated on `main` after merge and monthly by the schedule
+  # below; use `workflow_dispatch` to test a branch on demand.
   schedule:
     # Run tests monthly to catch regressions from dependency or environment changes.
     - cron: "17 9 1 * *"
@@ -62,6 +51,20 @@ jobs:
     timeout-minutes: 75
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Fix GitHub worker
+        # Runs before any brew command so the untap below silences all of them.
+        # aws-cli is already installed by hand in GitHub action runners.
+        # Remove it to avoid "brew install --formula awscli" error.
+        #
+        # The runner image also taps aws/tap for aws-sam-cli. Since Homebrew
+        # added tap trust, every single brew invocation prints a 15-line
+        # "not trusted" warning about it. Nothing here installs from that tap,
+        # so drop it rather than granting whole-tap trust or setting
+        # HOMEBREW_NO_REQUIRE_TAP_TRUST, which would disable the check outright.
+        run: |
+          rm /usr/local/bin/aws
+          rm /usr/local/bin/aws_completer
+          brew untap aws/tap
       - name: Install Zsh
         run: |
           brew install zsh
@@ -71,12 +74,6 @@ jobs:
         run: |
           sudo chsh -s "$(brew --prefix zsh)/bin/zsh" root
           sudo chsh -s "$(brew --prefix zsh)/bin/zsh" "$USER"
-      - name: Fix GitHub worker
-        # aws-cli is already installed by hand in GitHub action runners.
-        # Remove it to avoid "brew install --formula awscli" error.
-        run: |
-          rm /usr/local/bin/aws
-          rm /usr/local/bin/aws_completer
       - name: Run install
         run: |
           zsh ./install.sh

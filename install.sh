@@ -139,7 +139,16 @@ stage_packages() {
 
     # Install recommended macOS updates only: --all can also stage a
     # reboot-wanting OS upgrade in the middle of the bootstrap.
-    sudo softwareupdate --install --recommended
+    #
+    # Skipped on GitHub runners. The image is discarded at the end of the job,
+    # so patching it buys nothing, and --recommended still pulls whole
+    # multi-gigabyte point releases ("Downloading macOS Tahoe 26.6.1"): that
+    # download was both the longest step of the run and, since softwareupdate
+    # has no verbosity flag and prints one line per progress tick off a TTY,
+    # the bulk of the log.
+    if (( ! ${+GITHUB_WORKFLOW} )); then
+        sudo softwareupdate --install --recommended
+    fi
 
     # Check if homebrew is already installed. See: https://unhexium.net/zsh/how-to-check-variables-in-zsh/
     # This also install xcode command line tools.
