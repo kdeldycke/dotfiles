@@ -181,7 +181,7 @@ def installed_bundle_ids() -> set[str]:
     return ids
 
 
-def join_continuations(text: str) -> list[str]:
+def join_continuations(text: str) -> list[tuple[int, str]]:
     """Merge backslash-continued lines into single logical lines.
 
     The line number reported is that of the first physical line.
