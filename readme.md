@@ -121,8 +121,7 @@ the system. Haven't found any way to automate them all.
 3. In `Security & Privacy` → `Privacy` → `Accessibility`, activate:
 
    - `Amethyst.app`
-   - `Logi Options Daemon`
-   - `Logi Options`
+   - `LogiMgrDaemon`, found at `Logi Options.app/Contents/Support/LogiMgrDaemon.app`
    - `MonitorControl.app`
 
    ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/accessibility-preferences.png)

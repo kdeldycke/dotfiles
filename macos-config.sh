@@ -92,11 +92,17 @@ if (( ${SIP_DISABLED:-0} )); then
         sudo tccutil --service "kTCCServiceSystemPolicyAllFiles" --enable "${app}"
     done
 
-    # Grant Accessibility permission
+    # Grant Accessibility permission.
+    #
+    # The Logitech entry is the daemon nested at
+    # `Logi Options.app/Contents/Support/LogiMgrDaemon.app`, not the GUI. The
+    # daemon is what launchd runs, and it is what posts the synthetic keystrokes
+    # and triggers the system actions the trackball buttons are bound to in the
+    # Logi Options section below, so without this the button map is inert.
+    # Referenced by bundle ID because the path is nested inside another bundle.
     for app (
+        "com.logitech.manager.daemon"
         "/Applications/Amethyst.app"
-        "/Library/Application Support/Logitech.localized/Logitech Options.localized/Logi Options Daemon.app"
-        "/Applications/Logi Options.app"
         "/Applications/MonitorControl.app"
     ); do
         sudo tccutil --insert "${app}"
@@ -757,6 +763,28 @@ sudo defaults write /Library/Preferences/com.apple.timezone.auto.plist Active -b
 ###############################################################################
 # `Logi Options.app` is end-of-life upstream, but its daemon still drives both
 # MX Ergo trackballs, so the settings below are what keeps them identical.
+#
+# TODO: replace this whole stack with OpenLogi, which speaks HID++ directly,
+# needs no account or telemetry, and keeps its config in a single TOML file that
+# belongs in this repo instead of the reverse-engineered plists below:
+#   https://github.com/AprilNEA/OpenLogi
+#
+# Blocked on three upstream gaps, as of 2026-08-11. Re-evaluate when they close:
+#   - Device not detected at all, this exact model on Unifying:
+#     https://github.com/AprilNEA/OpenLogi/issues/367
+#   - Wheel tilt left/right (CIDs 0x5b/0x5d) not bindable, so both Desktop
+#     switches have nowhere to go. Two competing open PRs, one diverting at the
+#     HID++ layer (verified on an MX Ergo), one hooking horizontal scroll:
+#     https://github.com/AprilNEA/OpenLogi/pull/357
+#     https://github.com/AprilNEA/OpenLogi/pull/359
+#   - No Smart zoom action, and no keystroke can stand in for it, so page-up
+#     has no equivalent. Request closed as duplicate, folded into a zoom
+#     gesture feature:
+#     https://github.com/AprilNEA/OpenLogi/issues/428
+#     https://github.com/AprilNEA/OpenLogi/issues/360
+#
+# The other four assignments map cleanly today: wheel click to MissionControl,
+# and the two keystroke buttons to CustomShortcut entries.
 #
 # Two domains are in play. `ffff` is app-global: mouse feel, update and
 # telemetry behaviour, and no button assignments at all. The button map lives
