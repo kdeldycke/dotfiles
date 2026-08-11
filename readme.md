@@ -209,6 +209,10 @@ Side button assignment → `Shift` + `Opt` + `Space`:
 
 ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/logitech-mx-ergo-side-button.png)
 
+Side button assignment → `Shift` + `Opt` + `Space`:
+
+![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/logitech-mx-ergo-side-button.png)
+
 ## Upgrade
 
 I'm trying to make the install procedure idempotent so you'll just have to

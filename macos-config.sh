@@ -753,6 +753,138 @@ sudo defaults write /Library/Preferences/com.apple.timezone.auto.plist Active -b
 
 
 ###############################################################################
+# Logi Options                                                                #
+###############################################################################
+# `Logi Options.app` is end-of-life upstream, but its daemon still drives both
+# MX Ergo trackballs, so the settings below are what keeps them identical.
+#
+# Two domains are in play. `ffff` is app-global: mouse feel, update and
+# telemetry behaviour, and no button assignments at all. The button map lives
+# in a per-*model* domain named after the product ID.
+#
+# That model-level scoping is why the two physical trackballs behave the same
+# without any per-device work: both units report the same pair of product IDs
+# (`0006b01d` over Bluetooth, `406f` over the Unifying receiver) and Logi
+# Options normalises on the Bluetooth one, so one button map covers both
+# whatever the transport. Only pairing and Flow state is per-unit, kept under
+# `unitIdSettings` keyed by unit ID and not reproducible from a script.
+LOGI_DEVICE="com.logitech.manager.setting.0006b01d"
+
+# The daemon holds these keys in memory and writes them back when it exits or
+# when the device reconnects, so writing underneath a live daemon gets silently
+# reverted. Stop it, write, then let launchd start it again.
+launchctl bootout "gui/${UID}/com.logitech.manager.daemon" || true
+
+defaults write com.logitech.manager.daemon com.logitech.trackpad.EnableHotKeys -bool true
+
+defaults write com.logitech.manager.setting.ffff SSOOnboardingHasRun -bool true
+defaults write com.logitech.manager.setting.ffff SSOAutobackups -bool false
+defaults write com.logitech.manager.setting.ffff automaticCheckUpdates -bool true
+defaults write com.logitech.manager.setting.ffff logCollectionEnabled -bool false
+defaults write com.logitech.manager.setting.ffff lowBatteryOsd -bool true
+defaults write com.logitech.manager.setting.ffff mouseDoubleClickSpeed -int 80
+defaults write com.logitech.manager.setting.ffff mouseScrolling -bool true
+defaults write com.logitech.manager.setting.ffff mouseScrollingInertia -int 1
+
+# Pointer and scroll feel, per device rather than app-global.
+defaults write "${LOGI_DEVICE}" deviceName -string "MX Ergo"
+defaults write "${LOGI_DEVICE}" trackingSpeed -int 50
+defaults write "${LOGI_DEVICE}" scrollingSpeed -int 61
+defaults write "${LOGI_DEVICE}" scrollDirectionNatural -bool false
+defaults write "${LOGI_DEVICE}" smoothScrolling -bool true
+defaults write "${LOGI_DEVICE}" secondaryClick -bool true
+defaults write "${LOGI_DEVICE}" secondaryClickValue -int 5
+defaults write "${LOGI_DEVICE}" specialKeyGestures -bool true
+defaults write "${LOGI_DEVICE}" DPISwitchPrecisionMode -bool false
+
+# Button assignments, mirroring the screenshots in `assets/logitech-mx-ergo-*`.
+#
+# These MUST be written as XML plist literals. `defaults` parses an old-style
+# literal (`{ currentAssignment = 150; }`) into a *string*, which the daemon
+# ignores. `defaults read` prints that string exactly like the integer, so the
+# breakage is invisible unless inspected with `plutil -p`.
+#
+# Keys are HID++ control IDs. `currentAssignment` is a task ID, except 73
+# (`0x49`) which means "send a keystroke" and reads its key and modifiers from
+# `assignmentData`. Both are HID usage codes: 224 Ctrl, 225 Shift, 226 Opt,
+# 13 `j`, 44 Space.
+
+# Wheel click: Mission Control.
+defaults write "${LOGI_DEVICE}" controlIDPreferences -dict-add "0x52" '<dict>
+    <key>name</key><string>MiddleButton</string>
+    <key>assignmentList</key><string>6b01d_MiddleButtonAssignmentList</string>
+    <key>currentAssignment</key><integer>150</integer>
+</dict>'
+
+# Page-down: Shift + Opt + Ctrl + J, the Amethyst window command.
+defaults write "${LOGI_DEVICE}" controlIDPreferences -dict-add "0x53" '<dict>
+    <key>name</key><string>BackAsButton4</string>
+    <key>assignmentList</key><string>6b01d_BackButtonAssignmentList</string>
+    <key>currentAssignment</key><integer>73</integer>
+    <key>assignmentData</key><dict>
+        <key>0x49</key><dict>
+            <key>name</key><string>keystroke</string>
+            <key>keystroke</key><integer>13</integer>
+            <key>modifiers</key><array>
+                <integer>225</integer>
+                <integer>226</integer>
+                <integer>224</integer>
+            </array>
+        </dict>
+    </dict>
+</dict>'
+
+# Page-up: Smart zoom.
+defaults write "${LOGI_DEVICE}" controlIDPreferences -dict-add "0x56" '<dict>
+    <key>name</key><string>ForwardAsButton5</string>
+    <key>assignmentList</key><string>6b01d_ForwardButtonAssignmentList</string>
+    <key>currentAssignment</key><integer>159</integer>
+</dict>'
+
+# Wheel tilt left: Desktop (left).
+defaults write "${LOGI_DEVICE}" controlIDPreferences -dict-add "0x5b" '<dict>
+    <key>name</key><string>LeftScrollAsAcPan</string>
+    <key>assignmentList</key><string>6b01d_LeftScrollAssignmentList</string>
+    <key>currentAssignment</key><integer>602</integer>
+</dict>'
+
+# Wheel tilt right: Desktop (right).
+defaults write "${LOGI_DEVICE}" controlIDPreferences -dict-add "0x5d" '<dict>
+    <key>name</key><string>RightScrollAsAcPan</string>
+    <key>assignmentList</key><string>6b01d_RightScrollAssignmentList</string>
+    <key>currentAssignment</key><integer>603</integer>
+</dict>'
+
+# Side thumb button: Shift + Opt + Space. Logi Options still calls this control
+# `DPIChange` after its factory precision-mode role.
+defaults write "${LOGI_DEVICE}" controlIDPreferences -dict-add "0xed" '<dict>
+    <key>name</key><string>DPIChange</string>
+    <key>assignmentList</key><string>DPIChangeButtonAssignmentList</string>
+    <key>currentAssignment</key><integer>73</integer>
+    <key>assignmentData</key><dict>
+        <key>0x49</key><dict>
+            <key>name</key><string>keystroke</string>
+            <key>keystroke</key><integer>44</integer>
+            <key>modifiers</key><array>
+                <integer>225</integer>
+                <integer>226</integer>
+            </array>
+        </dict>
+    </dict>
+</dict>'
+
+# Virtual gesture button. Not exposed in the screenshots, pinned to whatever
+# the live config carries so a re-run does not silently drop it.
+defaults write "${LOGI_DEVICE}" controlIDPreferences -dict-add "0xd7" '<dict>
+    <key>name</key><string>VirtualGestureButton</string>
+    <key>currentAssignment</key><integer>156</integer>
+</dict>'
+
+launchctl bootstrap "gui/${UID}" \
+    /Library/LaunchAgents/com.logitech.manager.daemon.plist || true
+
+
+###############################################################################
 # Energy saving                                                               #
 ###############################################################################
 
