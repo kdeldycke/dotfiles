@@ -141,6 +141,9 @@ PATH_CACHE="${HOME}/.path-env-cache"
             $(brew --prefix gnu-sed)/libexec/gnubin
             $(brew --prefix gnu-tar)/libexec/gnubin
             $(brew --prefix openssh)/bin
+            # Keg-only (provided_by_macos): the openssh formula does not ship
+            # ssh-copy-id, so it needs its own entry to shadow /usr/bin.
+            $(brew --prefix ssh-copy-id)/bin
             $(brew --prefix curl)/bin
             $(brew --prefix python)/libexec/bin
             ${HOME}/.cargo/bin
