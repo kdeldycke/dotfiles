@@ -371,14 +371,12 @@ def cmd_sessionstart() -> int:
     if isinstance(current, str) and current and not TIMESTAMP_RE.match(current):
         return 0
     print(
-        json.dumps(
-            {
-                "hookSpecificOutput": {
-                    "hookEventName": "SessionStart",
-                    "sessionTitle": title,
-                }
+        json.dumps({
+            "hookSpecificOutput": {
+                "hookEventName": "SessionStart",
+                "sessionTitle": title,
             }
-        )
+        })
     )
     return 0
 
