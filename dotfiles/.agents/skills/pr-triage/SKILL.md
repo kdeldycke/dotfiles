@@ -1,7 +1,8 @@
 ---
 name: pr-triage
 description: Audit open PRs across multiple repos for duplicates, stale drafts, Renovate noise, and conflicts. Produces a unified priority report.
-allowed-tools: Bash, Read, Grep, Glob, Agent
+compatibility: 'Designed for Claude Code. Recommended model: Sonnet.'
+allowed-tools: Bash Read Grep Glob Agent
 argument-hint: '[owner/repo1 owner/repo2 ...] or blank for current repo'
 ---
 

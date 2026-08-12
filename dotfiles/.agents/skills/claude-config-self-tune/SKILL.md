@@ -1,7 +1,8 @@
 ---
 name: claude-config-self-tune
 description: Browse all global and local Claude Code config files (settings.json, settings.local.json, CLAUDE.md), audit them for issues, percolate recurring local patterns into the global config, and review past session transcripts for tool calls denied by the sandbox or allow/deny rules to propose allowlist refinements.
-allowed-tools: Bash, Read, Grep, Glob, Edit, Agent
+compatibility: 'Designed for Claude Code. Recommended model: Opus.'
+allowed-tools: Bash Read Grep Glob Edit Agent
 argument-hint: '[~/code or parent directory to scan]'
 ---
 

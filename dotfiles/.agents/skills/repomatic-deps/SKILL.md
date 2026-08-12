@@ -38,7 +38,7 @@ You help users understand and maintain their project's dependencies. This skill 
 
 ### Mechanical layer
 
-The `autofix.yaml` workflow's `update-dep-graph` job regenerates the dependency graph on release commits only, to avoid noise from transitive dependency changes. This mode is useful for **interactive analysis** — understanding the graph, spotting concerns, or generating it before pushing.
+The `_release-engine.yaml` workflow's `update-dep-graph` job regenerates the dependency graph on release commits only, to avoid noise from transitive dependency changes. This mode is useful for **interactive analysis** — understanding the graph, spotting concerns, or generating it before pushing.
 
 ### Argument handling
 

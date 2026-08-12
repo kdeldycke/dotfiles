@@ -1,6 +1,7 @@
 ---
 name: fill-web-form
 description: Fill a web form using data extracted from local documents (PDFs, images, spreadsheets). Uses Claude Desktop (Cowork) with Chrome integration to read source documents and navigate/fill browser forms. Use when the user wants to automate filling an online form from document data.
+compatibility: 'Designed for Claude Code. Recommended model: Opus.'
 argument-hint: '[URL of the form] [path to source documents]'
 ---
 

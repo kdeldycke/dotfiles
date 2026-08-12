@@ -1,6 +1,7 @@
 ---
 name: audit-repo-issues
 description: Analyze a GitHub repository's issues and PRs to find unaddressed feature requests, dismissed ideas, maintenance signals, and opportunities relevant to the current project. Use when you want to scout a related or competing repo for gaps your project could fill.
+compatibility: 'Designed for Claude Code. Recommended model: Opus.'
 argument-hint: '{owner/repo}'
 ---
 

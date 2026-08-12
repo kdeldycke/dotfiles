@@ -1,6 +1,7 @@
 ---
 name: session-title
 description: Refresh the current Claude Code session's title (shown in /resume picker and terminal tab). Trigger on "rename session", "refresh session title", "update tab title", "set session title to ...".
+compatibility: 'Designed for Claude Code. Recommended model: Sonnet.'
 ---
 
 When the user asks to refresh or rename the current session's title:
