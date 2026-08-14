@@ -40,7 +40,7 @@ Three feedback channels run in parallel after every push, each at a different la
         └─ ruff ───┘              │    secrets, zizmor)             │
                                   │                                 │
                                   └─ tests.yaml ─────────────────┐  │
-                                      (17 stable + 6 unstable)   │  │
+                                      (12 stable + 6 unstable)   │  │
                                                                  │  │
  0:30   GATE 1: local done                                       │  │
         fail? ─── yes ──► step 5 (fix now, skip CI)              │  │
@@ -96,14 +96,18 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
 
    **Gate 1 (local, ~30s):** if any local check fails, you already have the diagnosis: skip straight to step 5 without waiting for CI.
 
-   If local passes, poll CI every 60 seconds:
+   If local passes, poll CI every 60 seconds, reading **job** state rather than run state:
 
    ```shell-session
-   $ gh run view <TESTS_RUN_ID> --json status,conclusion,jobs \
-     --jq '{status, conclusion, failed: [.jobs[] | select(.conclusion == "failure" and (.name | startswith("✅")))] | length}'
-   $ gh run view <LINT_RUN_ID> --json status,conclusion,jobs \
-     --jq '{status, conclusion, jobs: [.jobs[] | select(.conclusion == "failure")] | map(.name)}'
+   $ gh run view <RUN_ID> --json jobs \
+     --jq '[.jobs[] | .conclusion // .status] | group_by(.) | map("\(.[0])=\(length)") | join(" ")'
+   $ gh run view <TESTS_RUN_ID> --json jobs \
+     --jq '[.jobs[] | select(.conclusion == "failure" and (.name | startswith("✅")))] | map(.name)'
+   $ gh run view <LINT_RUN_ID> --json jobs \
+     --jq '[.jobs[] | select(.conclusion == "failure")] | map(.name)'
    ```
+
+   **A run's own `status` lags its jobs, so it must never gate the loop.** Run-level `queued` means the job graph is still being scheduled, not that nothing has started: all five workflows can read `queued` while `--json jobs` on the same runs shows a dozen already `success` and three `in_progress`. Gating on it hides progress and delays the first red by minutes, and it is indistinguishable from the runner-cap saturation a busy account genuinely hits. Tally `.jobs[].conclusion // .jobs[].status` instead, and call a run terminal only when no job is left `queued` or `in_progress`. The one thing run state *does* gate is log retrieval (step 4): job logs stay unreadable until the parent run itself reaches a terminal state.
 
    **Gate 2 (lint.yaml, ~4 min):** `lint.yaml` finishes before `tests.yaml`. If "Lint types" (mypy) fails, proceed to step 4 immediately.
 
@@ -188,7 +192,7 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
 
 The workflow uses `continue-on-error` for unstable jobs, so the run can succeed even when they fail.
 
-**Classify by the leading glyph, never by splitting the name.** Match `.name | startswith("✅")` (or `"⁉️"`) directly, as the `jq` filters above do. Job-name shapes differ across workflows — `tests.yaml` names carry no workflow prefix (`✅ ubuntu-24.04 / py3.10`) while `release.yaml`'s are templated (`workflow / ✅ {os} build`) — so any poll or summary logic that splits on `" / "` and reads a fixed position strips the glyph off one of them and misfiles a stable red as an unstable probe, masking a real failure as green. If you reformat job names for display, keep the raw glyph test on the original string.
+**Classify by the leading glyph, never by splitting the name.** Match `.name | startswith("✅")` (or `"⁉️"`) directly, as the `jq` filters above do. Job-name shapes differ across workflows — `tests.yaml` names carry no workflow prefix (`✅ ubuntu-26.04 / py3.10`) while `release.yaml`'s are templated (`workflow / ✅ {os} build`) — so any poll or summary logic that splits on `" / "` and reads a fixed position strips the glyph off one of them and misfiles a stable red as an unstable probe, masking a real failure as green. If you reformat job names for display, keep the raw glyph test on the original string.
 
 **A run whose `conclusion` is `failure` while *no* job has `conclusion == "failure"` is not benign.** It signals a workflow-level setup error — a `strategy`/`matrix` expression evaluating to an invalid value (like `fromJSON('')`), malformed YAML, a missing secret — that fails the run around the jobs without a failed-job log. Read the run's error annotations and fix the workflow itself. Never write off a persistently-red workflow as a known artifact without confirming which component actually failed.
 
@@ -252,7 +256,7 @@ For infrastructure, re-run the failed jobs (`gh run rerun <RUN_ID> --failed`) an
 Heavy polling from this loop spends the same REST quota (5,000 requests/hour) as every workflow authenticating as the same user (`REPOMATIC_PAT`). Exhaustion produces two failure shapes that look unrelated to quotas:
 
 - Local `gh` calls fail with `HTTP 403: API rate limit exceeded`.
-- Workflows fail with *permission-shaped* errors: `lint-repo` reports the PAT lacks `Contents`/`Dependabot`/`Workflows` scopes, or a `create-pull-request` step hangs at `Attempting creation of pull request` until its timeout or the concurrency group kills the run.
+- Workflows fail with *permission-shaped* errors: `lint-repo` reports the PAT lacks `Contents`/`Dependabot`/`Workflows` scopes, or a `Sync pull request` step (`repomatic pr-sync`) stalls on the GitHub API until its `timeout-minutes` or the concurrency group kills the run.
 
 Diagnose with `gh api rate_limit` **before** touching token settings: `remaining: 0` on the `core` bucket confirms it. Recovery: wait for the printed `reset` epoch, then re-run the failed workflows unchanged (`gh run rerun <RUN_ID> --failed`); they go green with no commit. While waiting, degrade to the channels that stay live: the GraphQL bucket is metered separately (`gh api graphql` for a commit's check suites, refs, and releases; `gh pr list` / `gh pr view`), and `git fetch` over SSH covers branch and commit verification.
 

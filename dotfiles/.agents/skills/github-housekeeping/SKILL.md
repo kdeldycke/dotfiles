@@ -37,7 +37,7 @@ You bring a repository's issue-tracker metadata up to date: a small label taxono
 $ repomatic init labels --output-dir {scratch_dir}
 ```
 
-The `labels.toml` it writes holds the whole shipped set: a `default` profile every repository gets, plus an `awesome` profile applied only to `awesome-*` repos. Nothing committed to the repository is authoritative: those files are ephemeral, regenerated right before `sync-labels` reads them, and a repo's own `labels.extra` / `labels.extra-files` entries are folded in only at sync time, so read `pyproject.toml` too for the effective taxonomy.
+The `labels.toml` it writes holds the whole shipped set: a `default` profile every repository gets, plus an `awesome` profile applied only to `awesome-*` repos. Nothing committed to the repository is authoritative: that file is ephemeral, regenerated into a scratch directory right before `sync-labels` reads it, and a repo's own `labels.extra` / `labels.extra-files` entries are folded in only at sync time, so read `pyproject.toml` too for the effective taxonomy.
 
 Present the design as a diff between that effective set and the live `gh label list` above:
 

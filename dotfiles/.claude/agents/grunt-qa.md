@@ -19,14 +19,14 @@ Work beyond the local repository: check issues, PRs, and CI runs on GitHub. Fix 
 
 - `gh issue list`, `gh pr list`, `gh pr view`, `gh run list`, `gh run view`
 - `uv run repomatic lint-repo`, `uv run repomatic metadata`, and every other subcommand
-- Tests, type checking, linting (see `CLAUDE.md` § Commands)
+- Tests, type checking, linting (see `CLAUDE.md` § Testing guidelines and § Linting and formatting)
 
 ## Checks
 
 1. **`CLAUDE.md` compliance** — Read it, then grep the codebase for violations. Fix all of: typos, grammar, stale references, ordering violations, style issues, documentation sync issues. Remove discoverable content per `CLAUDE.md` § Keeping `claude.md` lean.
 2. **CLI health** — Run every subcommand's `--help`; fix docs if output diverges
 3. **Documentation sync** — Per `CLAUDE.md` § Documentation sync
-4. **Quality checks** — Per `CLAUDE.md` § Commands; fix simple issues, escalate complex ones
+4. **Quality checks** — Per `CLAUDE.md` § Testing guidelines and § Linting and formatting; fix simple issues, escalate complex ones
 5. **Release alignment** — Per `CLAUDE.md` § Release checklist
 6. **CI/CD failures** — Review recent failed runs, distinguish systematic from one-off
 7. **Workflow CLI references** — Verify all `repomatic` invocations in workflows use valid subcommands and flags
