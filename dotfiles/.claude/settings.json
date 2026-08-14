@@ -127,9 +127,16 @@
     "padding": 0
   },
   "enabledPlugins": {
-    "pyright-lsp@claude-plugins-official": true
+    "pyright-lsp@claude-plugins-official": true,
+    "repomatic@kdeldycke": true
   },
   "extraKnownMarketplaces": {
+    "kdeldycke": {
+      "source": {
+        "source": "github",
+        "repo": "kdeldycke/repomatic"
+      }
+    },
     "kdeldycke-dotfiles": {
       "source": {
         "source": "github",
@@ -165,7 +172,9 @@
         "~/Library/Logs/pipx",
         "~/code/cpython/Objects"
       ],
-      "denyRead": ["~/.ssh"],
+      "denyRead": [
+        "~/.ssh"
+      ],
       "allowRead": [
         "~/.ssh/id_ed25519.pub",
         "~/.ssh/ssh-keygen-secretive",

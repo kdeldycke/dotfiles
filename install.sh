@@ -124,8 +124,15 @@ while true; do sleep 60; sudo --non-interactive true; kill -0 "$$" || exit; done
 
 # Symlink dotfiles in user's home.
 stage_links() {
-    # Collect all entries within the "dotfiles" sub-folder, but the "Library", ".config" and ".pi".
-    DOT_FILES=$($FIND_CLI dotfiles -depth 1 -not -name '\.DS_Store' -not -name 'Library' -not -name '.config' -not -name '.pi')
+    # Collect all entries within the "dotfiles" sub-folder, but the "Library",
+    # ".config", ".pi", ".claude" and ".agents".
+    #
+    # ".claude" and ".agents" are excluded for the same reason as LaunchAgents
+    # below: ~/.claude is a real directory Claude Code writes its own runtime
+    # state into (sessions, history.jsonl, projects, telemetry). Linking the
+    # folder would move all of that aside into a backup and drop the live state
+    # inside this git repository, so its contents are linked entry by entry.
+    DOT_FILES=$($FIND_CLI dotfiles -depth 1 -not -name '\.DS_Store' -not -name 'Library' -not -name '.config' -not -name '.pi' -not -name '.claude' -not -name '.agents')
     # Collect all ".config" content .
     DOT_FILES+="
 $($FIND_CLI dotfiles/.config -depth 1 -not -name '\.DS_Store')"
@@ -144,13 +151,25 @@ $($FIND_CLI dotfiles/Library/Preferences -depth 1 -not -name '\.DS_Store')"
     # Collect all "Application Support" subfolders but "Code" folder.
     DOT_FILES+="
 $($FIND_CLI 'dotfiles/Library/Application Support' -depth 1 -not -name '\.DS_Store' -not -name 'Code')"
-    # Manually add Code, Pi and LaunchAgents files.
+    # Manually add Code, Pi, LaunchAgents and agent-tooling files.
+    #
+    # The ".claude" and ".agents" entries are what keeps ~/.claude a real
+    # directory: each lands beside the state Claude Code owns instead of
+    # replacing the folder holding it. Two links this loop cannot express are
+    # left out and maintained by hand, because it always names a link after its
+    # source: ~/.claude/CLAUDE.md (pointing at .agents/AGENTS.md, a rename) and
+    # ~/.claude/skills (a second link to .agents/skills, already linked into
+    # ~/.agents/skills below).
     DOT_FILES+="
 dotfiles/Library/Application Support/Code/User/settings.json
 dotfiles/Library/LaunchAgents/com.kdeldycke.clamdscan.plist
 dotfiles/.pi/agent/models.json
 dotfiles/.pi/agent/settings.json
-dotfiles/.pi/agent/extensions"
+dotfiles/.pi/agent/extensions
+dotfiles/.agents/skills
+dotfiles/.claude/agents
+dotfiles/.claude/settings.json
+dotfiles/.claude/tropes.md"
 
     echo "Collected dotfiles:"
     echo "${DOT_FILES}" | sort
