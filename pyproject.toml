@@ -123,11 +123,17 @@ commits = [
 
 [tool.lychee]
 # https://lychee.cli.rs/guides/config/
-# Mirrors the excludes of kdeldycke/repomatic, the upstream reference for this
-# repository's CI. Since lychee 0.24.0 this section is read straight out of
-# pyproject.toml, so no separate config file is involved. Repomatic's
-# npmjs.com, doi.org-to-Zenodo and githubstatus.com entries are left out: no
-# document here links to any of them.
+# Since lychee 0.24.0 this section is read straight out of pyproject.toml, so
+# no separate config file is involved.
+#
+# Two upstream lists exist and they differ, so name the one being tracked: this
+# mirrors kdeldycke/repomatic's own `[tool.lychee]`, not the bundled
+# `repomatic/data/lychee.toml` template that `repomatic init lychee` writes.
+# Dropped from repomatic's own list: doi.org-to-Zenodo, npmjs.com,
+# githubstatus.com, and the `file://` docs-fragment rule that only a Sphinx tree
+# needs. Never adopted from the bundled template: sci-hub.st, ycombinator.com
+# and x.com, which it carries for awesome-list repositories. No document here
+# links to any of those hosts.
 exclude = [
     # GitHub issue comment fragments are dynamically loaded and can't be verified.
     "^https://github.com/.+/issues/[0-9]+#issuecomment-.*$",

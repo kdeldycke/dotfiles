@@ -112,6 +112,10 @@ GitHub autolinks the bare `owner/repo#N` form only inside conversations (issues,
 
 For single-line commands, use plain inline `run:`. For multi-line, use the folded block scalar (`>`) which joins lines with spaces: no backslash continuations needed. Use the literal block scalar (`|`) only when preserved newlines are required (multi-statement scripts, heredocs).
 
+YAML lines may run to 120 characters: repomatic's bundled `yamllint.yaml` sets `line-length: max: 120`. Do not carry Python's 88-character limit over into workflow files.
+
+Never use a `-latest` runner alias (`ubuntu-latest`, `macos-latest`). GitHub repoints those without a commit to review, and `repomatic lint-repo` rejects them. Pin the explicit image instead: `macos-26` or `ubuntu-26.04`.
+
 ## Modern `typing` practices
 
 Use modern equivalents from `collections.abc` and built-in types instead of `typing` imports. Use `X | Y` instead of `Union` and `X | None` instead of `Optional`. New modules should include `from __future__ import annotations` ([PEP 563](https://peps.python.org/pep-0563/)).

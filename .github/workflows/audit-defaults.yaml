@@ -17,6 +17,23 @@ name: 🧪 Audit defaults
 
 permissions: {}
 
+concurrency:
+  # Without this, two pushes to `main` in quick succession each hold a macOS
+  # runner to completion. Cancellation is unconditional, unlike the guarded
+  # expression install.yaml inherits from upstream: there is no release
+  # machinery in this repository for a `[changelog] Release` commit to protect.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Supply-chain cooldown: no package published within the window can be resolved
+# by any command in this workflow. Nothing here resolves a package today, since
+# the scan runs on the runner's system Python with no dependencies, but the
+# block sits at workflow level so it also covers any step added later. Both
+# values mirror repomatic's `minimum-release-age` default of one week.
+env:
+  NPM_CONFIG_MIN_RELEASE_AGE: 7
+  UV_EXCLUDE_NEWER: "1 week"
+
 jobs:
 
   audit-defaults:
