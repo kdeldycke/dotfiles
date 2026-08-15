@@ -1,5 +1,11 @@
 @~/.claude/tropes.md
 
+## Scope and precedence
+
+These are my personal rules, loaded on every project I open from this machine. A repository's own `claude.md` speaks for that project; this file speaks for me. **Where the two conflict, this file wins**: the repo file is written for every contributor, this one is written for how I work.
+
+The boundary is one-way. Nothing here belongs in a project's `claude.md`, least of all `kdeldycke/repomatic`'s, which ships its conventions to repos with outside contributors. Several rules below would be actively wrong advice there: "push to `main` rather than a scratch branch" assumes admin rights on the remote, "use first-person singular" assumes a solo author, and the commit-authorization rule describes my review habits rather than the project's contribution policy. Project conventions travel the other way, from `repomatic/claude.md` down into each repo, tagged by audience at the section level.
+
 ## Voice and punctuation
 
 Use first-person singular ("I", "my") in all prose written on behalf of the user: issue descriptions, PR bodies, feature requests, comments, documentation. Never use first-person plural ("we", "our") unless the text genuinely refers to a group.
