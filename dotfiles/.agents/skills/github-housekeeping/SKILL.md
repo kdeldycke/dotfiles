@@ -91,7 +91,7 @@ One closed milestone per published release, named exactly like the GitHub releas
 - **Due date = actual release date**, sourced from the package index: `https://pypi.org/pypi/{pkg}/json`, min `upload_time_iso_8601` across that version's files. Where the repository publishes no package, or a version predates its index history, fall back to the GitHub release's own `publishedAt` (`gh release view v8.4.2 --json publishedAt`): publication stamps it once, and immutable releases keep a published release from being re-cut, so it stays a faithful record. GitHub floors `due_on` to the date. Backfill milestones for ancient releases the tracker predates.
 - **Pre-releases fold into the final milestone**: no `v8.0.0a1`/`v8.0.0rc1` milestones; the `v8.0.0` description notes "Covers the whole `8.0.0` release cycle including the `8.0.0a1` and `8.0.0rc1` pre-releases."
 - **Yanked releases keep their milestone**, with the description recording PyPI's own yank reason: "🛑 Yanked from PyPI: \{reason}." Same wording and same reason as the changelog's `[!CAUTION]` admonition for that release; the emoji stands in for the alert, which does not render in a milestone description.
-- **Planned-but-never-released** milestones (a `v7.2` that never shipped) get deleted, not closed.
+- **Planned-but-never-released** milestones (a `v8.5` that never shipped) get deleted, not closed.
 - Only unreleased milestones (`v9.0.0`, the next dev version) stay open and dateless.
 
 ### Release archaeology: which milestone does a PR belong to?

@@ -55,7 +55,11 @@ The `_release-engine.yaml` workflow's `update-dep-graph` job regenerates the dep
 
 ## Review mode
 
-This is purely analytical work with no mechanical equivalent in CI.
+### Mechanical layer
+
+`<cmd> lint-deps` decides everything readable from `pyproject.toml` alone: upper bounds, missing specifiers, unsorted lists, type stubs outside the `typing` group, and floors with no comment above them. Run it first and let it own those rows. CI runs it from the release lane's `lint-deps` job (`_release-build.yaml`, reached through `release.yaml`), which fires on every push but annotates with `--no-fatal` until a release commit makes the *shippability* findings fatal. These policy rows never block either way, so no CI gate will catch them for you.
+
+What is left is the part no parser settles, and it is the reason this mode exists: whether a floor is **justified** by the APIs the code actually calls, whether a comment is **stale or weak**, and whether a rationale **contradicts** its conditional marker. Spend the review there.
 
 ### Scope selection
 
@@ -103,24 +107,19 @@ These conventions are derived from the `pyproject.toml` files across all `kdeldy
 
 11. **No upper bounds** (`<`, `<=`, `!=`, `~=` that implies an upper bound). The only exception is conditional markers like `python_version<'3.11'`.
 12. **Extras syntax** is fine: `"coverage[toml]>=7.11"`.
-13. **One dependency per line** for readable diffs. Short groups that fit on one line are acceptable — the `format-json` workflow normalizes layout automatically.
+13. **One dependency per line** for readable diffs. Short groups that fit on one line are acceptable — the `format-pyproject` job normalizes layout automatically.
 
 ### Audit procedure
 
-Read the full `pyproject.toml`. For each dependency entry, check:
+Read the full `pyproject.toml`. `lint-deps` already reports the specifier style, missing comments, ordering, bare dependencies and misplaced type stubs, so read its output rather than re-deriving them. For each dependency entry, check what it cannot:
 
 | Check                     | What to flag                                                                                                                                                    |
 | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Specifier style           | `~=`, `==`, or upper bounds on runtime deps                                                                                                                     |
-| Missing comment           | No comment above the entry explaining the version floor                                                                                                         |
 | Weak comment              | Comment cites Python version support instead of a concrete code dependency. Flag unless it documents a `requires-python` alignment or a Python version drop     |
 | Stale comment             | Comment references a reason that no longer applies (e.g., the cited method was replaced, or the Python version was dropped from the support matrix)             |
 | Inflated floor            | Floor higher than the oldest version providing the APIs actually used (see [floor verification](#floor-verification) below)                                     |
 | Marker/rationale mismatch | Floor rationale contradicts the conditional marker (e.g., "Python 3.14 wheels" on a dep gated by `python_version<'3.11'` — that dep is never installed on 3.14) |
-| Ordering                  | Dependencies not in alphabetical order                                                                                                                          |
-| Group placement           | Type stubs outside `typing` group, test deps outside `test` group                                                                                               |
 | Section style             | `[project.optional-dependencies]` used where `[dependency-groups]` would be appropriate                                                                         |
-| Bare dependency           | No version specifier at all (e.g., `"requests"`)                                                                                                                |
 | Conditional markers       | Missing Python version marker for backport packages                                                                                                             |
 | Stale cooldown exceptions | `exclude-newer-package` entries in `[tool.uv]` for packages that no longer need them (see below)                                                                |
 
@@ -162,19 +161,21 @@ These comment patterns typically signal a floor set at adoption or auto-bump tim
 
 ### `exclude-newer-package` cooldown audit
 
-The `[tool.uv]` section may contain `exclude-newer-package` entries that exempt specific packages from the global `exclude-newer` cooldown window. These exceptions exist for a reason (typically: the package is developed in-repo or needs immediate updates), but they accumulate over time and may outlive their purpose.
+The `[tool.uv]` section may contain `exclude-newer-package` entries that exempt specific packages from the global `exclude-newer` cooldown window. They arrive from two places: written by hand (the package is published by the same maintainer, or is developed in-repo), or written by `audit --fix`, which reaches a CVE fix still inside the window through an entry rather than lifting `exclude-newer` for the whole tree.
 
-For each `exclude-newer-package` entry, check:
+**Expiry is mechanical, so do not audit for it.** `sync-uv-lock` owns the lifecycle of every entry and reports each move in its PR body: it rewrites a relative span (`"0 day"`) into a fixed cutoff pinned to the locked version's upload time, which *holds* the package instead of letting it track latest, then prunes the entry outright once that held version ages past the global cooldown and the package rejoins normal resolution. A live fixed cutoff is therefore a freeze doing its job, not a leftover: proposing its deletion un-holds a package the freeze was deliberately pinning. A surviving relative span means the freeze has not run yet, not that a span is the steady state.
 
-1. **Is the package still a dependency?** If it was removed from `[project].dependencies` and all `[dependency-groups]`, the exception is dead weight.
-2. **Is the exception still justified?** A `"0 day"` override for an in-repo package makes sense. A `"0 day"` override for an external package that was temporarily pinned during a migration may no longer be needed.
-3. **Does the comment explain the reason?** Like version floors, cooldown exceptions should have a comment explaining why the package is exempted.
+What is left for this audit is the part no schedule settles:
 
-Flag stale or unjustified entries as warnings.
+1. **Is the package still a dependency?** If it was removed from `[project].dependencies` and all `[dependency-groups]`, the entry is dead weight that no prune will ever reach, since pruning keys off the locked version's age and the package is no longer in the lock.
+2. **Is a hand-written exemption still justified?** A same-maintainer or in-repo package keeps its span indefinitely and correctly. An external package exempted during a migration that has since finished no longer needs one.
+3. **Does the comment explain the reason?** Like version floors, a hand-written exemption should carry a comment naming why the cooldown does not apply to it.
+
+Flag those as warnings. Never flag an entry merely for existing or for looking old.
 
 ### Cross-repo reference
 
-When the context shows `DOWNSTREAM`, also compare the dependency list against the canonical `repomatic` `pyproject.toml` (fetch with `gh api repos/kdeldycke/repomatic/contents/pyproject.toml --jq '.content' | base64 -d`) to identify:
+When the context shows `DOWNSTREAM`, also compare the dependency list against the canonical `repomatic` `pyproject.toml`, fetched at the version this repo has adopted rather than at the tip of `main`: take the tag from the `uses:` pins in `.github/workflows/`, then run `gh api "repos/kdeldycke/repomatic/contents/pyproject.toml?ref=vX.Y.Z" --jq '.content' | base64 -d`. An unpinned fetch resolves to `main`, whose floors may have moved for a release the downstream repo cannot use yet, turning unreleased work into a phantom "downstream is behind" finding. Use it to identify:
 
 - Shared dependencies where the downstream floor is lower than upstream (may be missing a needed bump).
 - Shared dev dependencies where upstream has moved to a newer group structure.

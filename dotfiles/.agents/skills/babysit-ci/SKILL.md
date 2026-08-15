@@ -19,7 +19,7 @@ $ claude --dangerously-skip-permissions --model sonnet /babysit-ci
 > [!WARNING]
 > `--dangerously-skip-permissions` bypasses every permission prompt for the whole session: only use it in an environment you trust, ideally a sandbox or disposable checkout, never against an unfamiliar repository or untrusted input.
 
-Because this loop runs autonomously without human review, **every commit must carry a `Co-Authored-By: Claude <noreply@anthropic.com>` trailer** so unattended changes stay traceable. This is a required exception that **overrides any no-AI-attribution rule** — whether it lives in a project `CLAUDE.md` or a global `~/.claude/CLAUDE.md`. Add the trailer even when another instruction says to omit AI attribution; if a parent skill (like `/repomatic-ship`) spawned this loop, that does not relax the requirement.
+Because this loop runs autonomously without human review, **every commit carries a `Co-Authored-By: Claude <noreply@anthropic.com>` trailer by default** so unattended changes stay traceable, including where a project `CLAUDE.md` or a global `~/.claude/CLAUDE.md` has not synced that convention. The default yields to one thing: an explicit standing rule from the repository's maintainer against AI attribution, which outranks it because the trailer lands in their permanent history. A parent skill (like `/repomatic-ship`) spawning this loop does not by itself relax the requirement, but an exemption that skill passes down does, and it binds every commit made from that point on.
 
 Keep the message itself short, per `claude.md` § Commit messages: an imperative subject naming the fix, under 50 characters, and **no body at all** unless the why is not evident from the diff. A CI fix rarely needs one — `` Fix Windows path assertion in `test_cache_paths` `` is a complete commit message. The exception worth taking: when the red traces to an upstream bug, a dependency release or a linked discussion, put that link in the body, since it is the only place the next reader will find why the fix looks the way it does.
 
@@ -88,26 +88,25 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
 
    ```shell-session
    $ uv run pytest --no-header -q &
-   $ git ls-files '*.py' | xargs uv run --group typing repomatic run mypy -- &
+   $ uv run --group typing repomatic run mypy &
    $ uv run repomatic run ruff -- check repomatic tests docs &
    ```
 
-   The mypy command must cover **every tracked Python file**, which is why it pipes `git ls-files` rather than naming directories: CI's `lint.yaml` feeds `metadata`'s `python_files` through `xargs` into the same command, so this form matches it exactly, while a directory list silently misses any tracked `.py` living outside them (see § mypy scope mismatch below).
+   Give `run mypy` no arguments: the tool runner resolves the same file list CI's `lint.yaml` runs it on, so the two cannot diverge. Naming directories instead is what used to make mypy pass locally and fail in CI.
 
    **Gate 1 (local, ~30s):** if any local check fails, you already have the diagnosis: skip straight to step 5 without waiting for CI.
 
-   If local passes, poll CI every 60 seconds, reading **job** state rather than run state:
+   If local passes, poll CI every 60 seconds with:
 
    ```shell-session
-   $ gh run view <RUN_ID> --json jobs \
-     --jq '[.jobs[] | .conclusion // .status] | group_by(.) | map("\(.[0])=\(length)") | join(" ")'
-   $ gh run view <TESTS_RUN_ID> --json jobs \
-     --jq '[.jobs[] | select(.conclusion == "failure" and (.name | startswith("✅")))] | map(.name)'
-   $ gh run view <LINT_RUN_ID> --json jobs \
-     --jq '[.jobs[] | select(.conclusion == "failure")] | map(.name)'
+   $ uv run repomatic ci-status --branch=<BRANCH> --no-fatal
    ```
 
-   **A run's own `status` lags its jobs, so it must never gate the loop.** Run-level `queued` means the job graph is still being scheduled, not that nothing has started: all five workflows can read `queued` while `--json jobs` on the same runs shows a dozen already `success` and three `in_progress`. Gating on it hides progress and delays the first red by minutes, and it is indistinguishable from the runner-cap saturation a busy account genuinely hits. Tally `.jobs[].conclusion // .jobs[].status` instead, and call a run terminal only when no job is left `queued` or `in_progress`. The one thing run state *does* gate is log retrieval (step 4): job logs stay unreadable until the parent run itself reaches a terminal state.
+   It reads every workflow a push can start (derived from `.github/workflows/`, so its list is wider than the five above), reports each one's latest run, and names the failing jobs that actually gate a merge. Three traps it settles, so no hand-rolled `jq` has to: a run's own `status` lags its jobs (every monitored workflow can read `queued` while a dozen jobs have already finished, which is indistinguishable from the runner-cap saturation a busy account genuinely hits); a `continue-on-error` probe that crashed hides inside a `success` run conclusion; and a run whose `conclusion` is `failure` with *no* failed job is a workflow-level error (an invalid `strategy.matrix` expression, malformed YAML, a missing secret) with no job log to read, which the command flags rather than letting you write off a persistently-red workflow as a known artifact.
+
+   The one thing run state *does* gate is log retrieval (step 4): job logs stay unreadable until the parent run itself reaches a terminal state.
+
+   **A queue is not a hang, and elapsed time alone cannot tell them apart.** A long stall invites the theory that some run is stuck and that cancelling it would free the pool, which is a conclusion worth reaching only on evidence, because acting on it destroys work that was progressing fine. Two readings settle it, and neither is the elapsed clock. Get a **baseline** from that workflow's recent successful runs (`gh run list --workflow <wf> --repo <owner/repo> --status success --json createdAt,updatedAt`): a suite whose normal duration is two hours is not hung at ninety minutes. Then read **per-job `completedAt` timestamps** (`gh run view <id> --json jobs`) rather than an aggregate: a flat count of `in_progress` jobs is not evidence of a stall, since jobs finish and others start into the freed slots, holding the count steady while real progress continues. Watch for the self-contradiction that exposes the mistake, a report that the count "dropped from 11 to 9" *and* that nothing has changed. Two smaller traps live here too: `gh` reports a pending job's `conclusion` as `""`, not `null`, so a `select(.conclusion == null)` filter silently matches nothing and reads as "no pending jobs"; and jobs queue against the runner pool their `runs-on` names, so a stall confined to macOS cells says nothing about Linux capacity. **Never cancel another repository's run to free slots without the maintainer's explicit go-ahead**, and never ask for that go-ahead on a diagnosis you have not backed with a baseline and timestamps.
 
    **Gate 2 (lint.yaml, ~4 min):** `lint.yaml` finishes before `tests.yaml`. If "Lint types" (mypy) fails, proceed to step 4 immediately.
 
@@ -117,23 +116,25 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
 
    **Every wait between polls must be a `sleep`, never a busy-wait.** A poll loop with no delay (`until gh run view ...; do true; done`) fires thousands of requests per minute and exhausts the REST quota (5,000/hour) within minutes. The harness blocking a bare foreground `sleep` is not a reason to drop the delay: put the `sleep 60` *inside* the loop command itself, which runs fine in both foreground and background. Exhaustion does not just blind your own polling — workflows authenticating with the same PAT start failing server-side with misleading errors (see [§ GitHub API rate-limit exhaustion](#github-api-rate-limit-exhaustion)).
 
-4. **On any CI failure**, cancel remaining `tests.yaml` runs to free runners:
+4. **On any CI failure**, cancel the branch's remaining runs to free runners:
 
    ```shell-session
-   $ gh run list --workflow=tests.yaml --status=queued --status=in_progress --json databaseId,displayTitle
+   $ uv run repomatic cancel-runs --branch=<BRANCH>
    ```
 
-   **Never cancel** a run whose `displayTitle` starts with `[changelog] Release`: this mirrors the `cancel-in-progress` condition in the `tests.yaml` concurrency group, which protects release runs. Cancel everything else.
+   The command spares any run whose head commit carries `[changelog] Release`, mirroring the `cancel-in-progress` condition in every workflow's concurrency group. Cancelling a release run costs that version its binaries permanently, so never hand-roll the sweep with `gh run cancel`.
 
    Then download logs from **all** failed jobs across the workflows (logs are retained after cancellation):
 
    ```shell-session
    # Failed stable test jobs:
-   $ gh run view <TESTS_RUN_ID> --json jobs --jq '[.jobs[] | select(.conclusion == "failure" and (.name | startswith("✅")))] | .[].databaseId'
+   $ gh run view <TESTS_RUN_ID> --json jobs --jq '[.jobs[] | select(.conclusion == "failure" and (.name | contains("⁉️") | not))] | .[].databaseId'
 
-   # Failed lint jobs (especially "Lint types" for mypy):
+   # Failed lint jobs (especially "🛡️ Lint types" for mypy):
    $ gh run view <LINT_RUN_ID> --json jobs --jq '[.jobs[] | select(.conclusion == "failure")] | .[].databaseId'
    ```
+
+   The first filter negates the unstable glyph rather than matching a `✅` prefix, mirroring `JobStatus.required`. `tests.yaml` runs four required jobs whose names carry no `✅` at all (`🧬 Project metadata`, `1️⃣ Run-once tests`, `📦 Package install`, `🖥️ Validate …`), and the release engine prefixes the workflow ahead of the glyph, so a prefix test silently drops a real failure from the batch.
 
    Fetch each failed job's log (`gh api repos/<OWNER>/<REPO>/actions/jobs/<JOB_ID>/logs`) and fix them as one batch: different sources surface different issues, and logs survive cancellation. Batch only what has *already failed*, never what might still fail. Once every harvested failure is root-caused and fixed, push immediately rather than waiting for undrained cells to surface more: the fresh run supersedes the stale one, and serially waiting out each full matrix is the slow path. Analyze following the [error triage discipline](#error-triage-discipline): stable-job `FAILED`/`AssertionError` lines only.
 
@@ -151,7 +152,7 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
 
    ```shell-session
    $ uv run pytest --no-header -q
-   $ git ls-files '*.py' | xargs uv run --group typing repomatic run mypy --
+   $ uv run --group typing repomatic run mypy
    $ uv run repomatic run ruff -- check repomatic tests docs
    $ uv run repomatic run ruff -- format repomatic tests docs
    ```
@@ -167,7 +168,7 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
    $ gh pr list --state=open --json number,title,headRefName,url
    ```
 
-   If any open autofix PR already contains your fix — a `format-python` branch (ruff's own autofixes), a `sync-repomatic`/`sync-workflow-pins` branch (a bumped workflow pin), or another `sync-*`/`fix-*` branch — prefer merging it over authoring your own commit: GitHub signs the merge commit server-side, so this sidesteps a local hardware-key signing prompt entirely. If it resolves the failure, merge it (`gh pr merge <n> --squash --delete-branch`), pull, and rebase your fix before pushing — or skip your own commit if the merge is the whole fix. If `gh pr merge` is denied outright (a standing `permissions.deny` on the verb, not a retryable prompt), see [§ PR-merge permission wall](#pr-merge-permission-wall).
+   If any open autofix PR already contains your fix — a `format-python` branch (ruff's own autofixes), a `sync-repomatic`/`sync-workflow-pins` branch (a bumped workflow pin, or a spliced-in `--exclude-newer-package` cooldown exemption carrying no version bump at all — that one is the whole fix when the `metadata` job cannot resolve its own pin), or another `sync-*`/`fix-*` branch — prefer merging it over authoring your own commit: GitHub signs the merge commit server-side, so this sidesteps a local hardware-key signing prompt entirely. If it resolves the failure, merge it (`gh pr merge <n> --squash --delete-branch`), pull, and rebase your fix before pushing — or skip your own commit if the merge is the whole fix. If `gh pr merge` is denied outright (a standing `permissions.deny` on the verb, not a retryable prompt), see [§ PR-merge permission wall](#pr-merge-permission-wall).
 
 7. **Commit the fix** with a clear message describing what changed and why, then `git push`.
 
@@ -187,14 +188,12 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
 
 ## Stable vs. unstable
 
-- **Stable jobs** (✅): must pass. Their names start with `✅`.
-- **Unstable jobs** (⁉️): allowed to fail (Python dev versions like 3.15, 3.15t). Their failures never gate the loop; a release context still fixes the repo-fixable ones (see [error triage discipline](#error-triage-discipline), rule 1).
+- **Stable jobs** (✅): must pass. So does every job carrying no stability glyph at all (`🛡️ Lint types`, `1️⃣ Run-once tests`, `📦 Package install`): the test is the *absence* of `⁉️` anywhere in the name, never the presence of a `✅` prefix.
+- **Unstable jobs** (⁉️): allowed to fail (an in-development Python, currently 3.15). Their failures never gate the loop; a release context still fixes the repo-fixable ones (see [error triage discipline](#error-triage-discipline), rule 1).
 
 The workflow uses `continue-on-error` for unstable jobs, so the run can succeed even when they fail.
 
-**Classify by the leading glyph, never by splitting the name.** Match `.name | startswith("✅")` (or `"⁉️"`) directly, as the `jq` filters above do. Job-name shapes differ across workflows — `tests.yaml` names carry no workflow prefix (`✅ ubuntu-26.04 / py3.10`) while `release.yaml`'s are templated (`workflow / ✅ {os} build`) — so any poll or summary logic that splits on `" / "` and reads a fixed position strips the glyph off one of them and misfiles a stable red as an unstable probe, masking a real failure as green. If you reformat job names for display, keep the raw glyph test on the original string.
-
-**A run whose `conclusion` is `failure` while *no* job has `conclusion == "failure"` is not benign.** It signals a workflow-level setup error — a `strategy`/`matrix` expression evaluating to an invalid value (like `fromJSON('')`), malformed YAML, a missing secret — that fails the run around the jobs without a failed-job log. Read the run's error annotations and fix the workflow itself. Never write off a persistently-red workflow as a known artifact without confirming which component actually failed.
+`repomatic ci-status` does this classification, and doing it by hand is where it goes wrong: job-name shapes differ across workflows — `tests.yaml` names carry no workflow prefix (`✅ ubuntu-26.04 / py3.10`) while the release engine's arrive through the reusable call (`release / ✅ ubuntu-26.04, abc1234 build`) — so a test anchored at the start of the name misfiles one shape and a split on `" / "` misfiles the other, either way masking a real failure as green. Containment is the one test both shapes satisfy. Only `✅`/`⁉️` carry stability: a job whose name opens on some other emoji (`🛡️ Lint types`, `1️⃣ Run-once tests`) is required, so test for the absence of `⁉️` rather than for the presence of any glyph. If you reformat job names for display, keep the raw string for the test.
 
 ## Error triage discipline
 
@@ -222,7 +221,7 @@ When the same lines toggle between fixes across iterations, stop and apply a com
 
 ### mypy scope mismatch (local vs CI)
 
-The most common false-green scenario: mypy passes locally because you checked a subset of directories, while CI's `lint.yaml` runs mypy on **every tracked Python file** (`tests/` and `docs/` included). Always drive it from the file list locally, `git ls-files '*.py' | xargs repomatic run mypy --`, which is what CI pipes in: an error only in a test or docs file still blocks CI, and a tracked `.py` outside `repomatic/`, `tests/` and `docs/` is invisible to a directory list.
+The classic false green: mypy passes locally over a subset of directories while CI checks **every tracked Python file** (`tests/` and `docs/` included). Run it as a bare `repomatic run mypy` and the runner resolves that same list, so an error in a test or docs file surfaces before the push rather than after it. A directory list is what reintroduces the gap.
 
 ### Platform-specific test skips
 
@@ -246,6 +245,7 @@ Not all CI failures are code bugs:
 - **Action version mismatches**: `Unable to resolve action`, deprecated-runtime errors. Fix the workflow YAML, not the Python.
 - **Network/registry flakiness**: `uv`/`pip` timeouts, PyPI 503s, `ConnectionResetError`. Re-run.
 - **Permission errors**: `Resource not accessible by integration`, 403s. Check `gh api rate_limit` first ([§ GitHub API rate-limit exhaustion](#github-api-rate-limit-exhaustion)), then token permissions; never code.
+- **A whole workflow red with nothing executed**, every job reporting failure and the `metadata` job unable to resolve its own toolkit pin: the inline `uvx 'repomatic==X.Y.Z'` command is missing `--exclude-newer-package repomatic=P0D`, so the workflow-wide `UV_EXCLUDE_NEWER` refuses a pin naming a release younger than the window, and each `needs: metadata` job dies with it. Splice the flag onto that command line — `uvx` reads no project configuration, so there is nowhere else the bypass can live — or merge the `sync-workflow-pins` PR that backfills it. `lint-repo`'s fatal `self-pin-cooldown-exemption` check names the offending files. Re-running changes nothing.
 
 For infrastructure, re-run the failed jobs (`gh run rerun <RUN_ID> --failed`) and continue polling; never modify code to work around transient infra.
 

@@ -21,7 +21,7 @@ name: 🧹 Lint
 jobs:
 
   lint:
-    uses: kdeldycke/repomatic/.github/workflows/lint.yaml@66650046de54a8032f4c38358b7ef8c9ae39e7b5 # v7.11.0
+    uses: kdeldycke/repomatic/.github/workflows/lint.yaml@69cfe3259bda727942bcffe4a382d341cae69c44 # v7.12.1
     secrets:
       REPOMATIC_NOTIFICATIONS_PAT: ${{ secrets.REPOMATIC_NOTIFICATIONS_PAT }}
       REPOMATIC_PAT: ${{ secrets.REPOMATIC_PAT }}

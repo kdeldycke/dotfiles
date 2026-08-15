@@ -151,11 +151,6 @@ exclude = [
 ]
 
 [tool.typos]
-# Correct capitalization for proper nouns referenced in claude.md, plus two
-# macOS preference keys that have to be spelled as-is to be read or deleted:
-# automaticEmojiSubstitutionEnablediMessage really does end in "iMessage", and
-# AirplayRecieverEnabled is Apple's own misspelling, shipped for several
-# releases next to the corrected AirplayReceiverEnabled.
 default.extend-identifiers = { Github = "GitHub", IOS = "iOS", Javascript = "JavaScript", MacOS = "macOS", PyPi = "PyPI", Typescript = "TypeScript", automaticEmojiSubstitutionEnablediMessage = "automaticEmojiSubstitutionEnablediMessage", AirplayRecieverEnabled = "AirplayRecieverEnabled" }
 # False positives: "astroid" is a Python AST library (not "asteroid"); "oject" appears when "pyproject.toml" is split across line breaks in CLI help output; "sur" is macOS 11 Big Sur and Homebrew's big_sur bottle tag (not "sure").
 default.extend-words = { astroid = "astroid", oject = "oject", sur = "sur", Sur = "Sur" }

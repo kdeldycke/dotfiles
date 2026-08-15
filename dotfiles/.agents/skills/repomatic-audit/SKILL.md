@@ -25,7 +25,8 @@ You perform a comprehensive audit of a downstream repository against the upstrea
 Before flagging an issue, verify that the gap isn't **deliberate** or covered by a runtime mechanism. Common false positives:
 
 - **`[tool.repomatic] exclude` is authoritative.** Files listed there (like `workflows/changelog.yaml` or `labels`) are intentionally absent on disk. Do **not** report them as MISSING.
-- **Bundled defaults applied at runtime.** Some config is materialized from the bundled template at runtime when the file is absent: `[tool.ruff]`/`[tool.typos]` defaults from the tool registry are applied without requiring an on-disk copy. **Absence of these files is not a problem** — it is the intended state when the user is happy with the bundled policy. Only flag DRIFT if the user wants to deviate from the bundled policy.
+- **Bundled defaults applied at runtime.** Some config is materialized from the bundled template at runtime when the file is absent, so no on-disk copy is needed. **Absence of these files is not a problem**: it is the intended state when the user is happy with the bundled policy. Only flag DRIFT if the user wants to deviate from it. Exactly five tools carry such a fallback, the ones whose `ToolSpec` sets `default_config` in `repomatic/tool_registry.py`: `actionlint`, `mdformat`, `ruff`, `yamllint` and `zizmor`.
+- **A `[tool.X]` section is never a candidate for deletion.** The inverse of the rule above, and the more expensive mistake. Every other tool has no `default_config`, so its resolution chain has no level 3 to fall back on: `lychee`, `typos`, `mypy`, `pytest`, `coverage`, `bumpversion` and `uv` are *deployed* into `pyproject.toml` by `repomatic init`, and that section is the only config the tool will ever see. Deleting it does not restore inheritance from a bundled default, it drops the tool to level 4 and runs it bare, silently discarding every rule the section held. Read the tool's `default_config` before proposing a section be dropped "to inherit upstream updates". A deployed section that has gone stale is fixed by re-running `repomatic init`, which resyncs the components marked `SyncMode.ONGOING` in `repomatic/registry.py`.
 - **Generator artifacts vs user error.** When local thin-callers diverge from upstream (e.g., extra `workflow_dispatch:`, missing `paths:`), the cause may be the **upstream generator**, not downstream tampering. Inspect `repomatic/github/workflow_sync.py` (`generate_thin_caller`, `_adapt_trigger_paths`, `generate_workflow_header`) before recommending the user re-run `repomatic init` to "fix" something `init` itself produced.
 - **Project-level `claude.md` may live under a sub-directory.** `[tool.repomatic] agents.location` and `skills.location` indicate a project where `.claude/` is not at the root (e.g., dotfiles repos with `dotfiles/.claude/CLAUDE.md`). Search the configured location, not just `./CLAUDE.md`.
 
@@ -41,7 +42,19 @@ When in doubt, search the upstream codebase to confirm whether a behavior is int
 
 ### Fetching reference files
 
-Use `gh api repos/kdeldycke/repomatic/contents/{path} --jq '.content' | base64 -d` to fetch upstream reference files.
+Fetch every reference file at **the version the downstream repo has actually adopted**, never at the tip of `main`. The Context block above prints the `uses:` pins; take the tag from there and pass it as `ref` on every call:
+
+```shell-session
+$ gh api "repos/kdeldycke/repomatic/contents/{path}?ref=vX.Y.Z" --jq '.content' | base64 -d
+```
+
+An unpinned fetch resolves to `main`, which carries unreleased work. Audited against it, every change waiting for the next release reads as downstream drift, and the "fix" that follows can be worse than the phantom problem: a `[tool.X]` section matching its adopted bundled template exactly gets reported as stale, because `main` has since grown entries no release has shipped yet.
+
+Keep the two axes apart in the report, because only one of them is actionable:
+
+- **Drift** is a difference against the adopted tag. Report it.
+- **Available in a newer release** is a difference between the adopted tag and a later published one. That is an upgrade note, never a DRIFT row. Confirm the version actually exists with `gh api repos/kdeldycke/repomatic/releases --jq '.[].tag_name'`.
+- **Only on `main`** is unreleased and belongs in neither list. The changelog's top section is headed with a `.devN` version and a "not released yet" warning; anything described there is not yet available to any downstream repo.
 
 ### 1. Workflow audit (`workflows`)
 
@@ -57,7 +70,8 @@ Compare each local thin-caller workflow against its reference. These should be i
 
 The header (name, `on:`, `concurrency:`) is synced automatically, but custom job content is not. Compare the job content against the reference for:
 
-- **Stale action versions**: e.g., `actions/checkout`, `astral-sh/setup-uv` — compare pinned versions.
+- **Stale action versions**: e.g., `actions/checkout`, `astral-sh/setup-uv` — compare pinned versions. `setup-uv` carries a second, independent pin: a `with: version: "X.Y.Z"` input naming the uv it downloads. Absent, the runner installs whatever uv is newest, leaving the tool that enforces every cooldown without one; split across two values, the fleet silently tests two resolvers. `lint-repo`'s `setup-uv-version-pin` check reports both, non-fatally.
+- **Inline upstream pin with no cooldown exemption**: a `run:` command pinning the toolkit (`uvx 'repomatic==X.Y.Z' …`) under a workflow that sets `UV_EXCLUDE_NEWER` must carry `--exclude-newer-package repomatic=P0D` on the same command line, since `uvx` reads no project configuration and the pin routinely names a release published hours ago. Without it the command cannot resolve, and every `needs: metadata` job dies with it. `lint-repo`'s `self-pin-cooldown-exemption` check is fatal on this.
 - **Missing workarounds**: e.g., the "Force native ARM64 Python on Windows ARM64" step that sets `UV_PYTHON`.
 - **Missing matrix exclusions**: e.g., `windows-11-arm` + Python 3.10 (no native ARM64 build).
 - **Outdated integration patterns**: e.g., a third-party action still in use where upstream replaced it with a `repomatic run` tool.
@@ -68,8 +82,8 @@ The header (name, `on:`, `concurrency:`) is synced automatically, but custom job
 
 Header-only sync inherits the canonical `paths:` filter verbatim (after `repomatic/**` substitution). When the project's filesystem layout doesn't match, two outcomes are possible:
 
-- **Inherited entries that don't exist locally** (e.g., `tests/**`, `uv.lock` in a non-Python repo): the trigger never fires for them. Coverage is missing, not noisy. Recommend `[tool.repomatic.workflow.ignore_paths]` to drop them.
-- **Locally relevant paths not in the canonical filter** (e.g., `install.sh`, `dotfiles/**` in a config repo): the trigger silently skips PRs that should run CI. Recommend `[tool.repomatic.workflow.extra_paths]` to append them globally, or `[tool.repomatic.workflow.paths]` keyed by filename for a per-workflow wholesale replacement.
+- **Inherited entries that don't exist locally** (e.g., `tests/**`, `uv.lock` in a non-Python repo): the trigger never fires for them. Coverage is missing, not noisy. Recommend `[tool.repomatic.workflow.ignore-paths]` to drop them.
+- **Locally relevant paths not in the canonical filter** (e.g., `install.sh`, `dotfiles/**` in a config repo): the trigger silently skips PRs that should run CI. Recommend `[tool.repomatic.workflow.extra-paths]` to append them globally, or `[tool.repomatic.workflow.paths]` keyed by filename for a per-workflow wholesale replacement.
 
 The relevant config schema lives in `WorkflowConfig` (`repomatic/config.py`): `source_paths`, `extra_paths`, `ignore_paths`, and `paths` (per-workflow override dict, keyed by workflow filename). Per-workflow override is authoritative — it replaces the entire `paths:` list and ignores the other knobs.
 
@@ -81,17 +95,17 @@ Respect `exclude` entries from `[tool.repomatic]` in `pyproject.toml`. Report ex
 
 Compare these files against the upstream reference. **Before flagging absence as DRIFT**, verify the file is not deliberately omitted (see "Distinguishing real drift" above):
 
-| File                                  | What to check                                                                                                     | Absence is OK when                                                                    |
-| ------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| `pyproject.toml` `[tool.typos]`       | Missing `default.extend-identifiers` for common capitalizations (GitHub, macOS, PyPI, iOS, etc.)                  | Tool registry applies bundled defaults; only flag when the local file overrides them. |
-| `pyproject.toml` `[tool.bumpversion]` | Missing `ignore_missing_files`                                                                                    | Project is not Python-versioned (no `[project]` table).                               |
-| `pyproject.toml` `[tool.ruff]`        | Missing or divergent lint rules, preview settings                                                                 | Project has no `*.py` files (only flag if Python files exist that ruff would scan).   |
-| `pyproject.toml` `[tool.mypy]`        | Missing settings compared to reference                                                                            | No Python source.                                                                     |
-| `.github/ISSUE_TEMPLATE/`             | Filename conventions (hyphens, not underscores), missing labels                                                   | Personal/internal repo without external bug reporters.                                |
-| `.github/code-of-conduct.md`          | Title-case headings vs upstream sentence case, plaintext email vs anti-scrape obfuscation, stale attribution URLs | Replace verbatim with upstream when divergence is detected.                           |
-| `.github/funding.yml`                 | Compare with reference                                                                                            | —                                                                                     |
-| `.gitignore`                          | Must be a real file: git skips an in-tree `.gitignore` reached via symlink; otherwise content vs upstream         | Auto-generated by repomatic; drift means the user should re-run sync.                 |
-| `lychee.toml`                         | Note differences (usually project-specific, just flag for review)                                                 | Project doesn't run lychee.                                                           |
+| File                                  | What to check                                                                                                     | Absence is OK when                                                                                                                                       |
+| ------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pyproject.toml` `[tool.typos]`       | Missing `default.extend-identifiers` for common capitalizations (GitHub, macOS, PyPI, iOS, etc.)                  | Never: typos carries no bundled fallback, so an absent section means the canonical proper-noun map is simply inactive. Recommend `repomatic init typos`. |
+| `pyproject.toml` `[tool.bumpversion]` | Missing `ignore_missing_files`                                                                                    | Project is not Python-versioned (no `[project]` table).                                                                                                  |
+| `pyproject.toml` `[tool.ruff]`        | Missing or divergent lint rules, preview settings                                                                 | Always: ruff falls back to the bundled `ruff.toml` at runtime. Only flag when a local section overrides it and diverges.                                 |
+| `pyproject.toml` `[tool.mypy]`        | Missing settings compared to reference                                                                            | No Python source.                                                                                                                                        |
+| `.github/ISSUE_TEMPLATE/`             | Filename conventions (hyphens, not underscores), missing labels                                                   | Personal/internal repo without external bug reporters.                                                                                                   |
+| `.github/code-of-conduct.md`          | Title-case headings vs upstream sentence case, plaintext email vs anti-scrape obfuscation, stale attribution URLs | Replace verbatim with upstream when divergence is detected.                                                                                              |
+| `.github/funding.yml`                 | Compare with reference                                                                                            | —                                                                                                                                                        |
+| `.gitignore`                          | Must be a real file: git skips an in-tree `.gitignore` reached via symlink; otherwise content vs upstream         | Auto-generated by repomatic; drift means the user should re-run sync.                                                                                    |
+| `lychee.toml`                         | Note differences (usually project-specific, just flag for review)                                                 | Project doesn't run lychee.                                                                                                                              |
 
 **Skip** files that are intentionally excluded via `exclude` in `[tool.repomatic]`. Cross-check `[tool.ruff] extend-exclude` and similar before flagging "missing" entries.
 
@@ -102,22 +116,30 @@ Compare these files against the upstream reference. **Before flagging absence as
 - Check `[tool.repomatic] agents.location` and `skills.location` for a sub-directory (e.g., `dotfiles/.claude/`); if those are set, look for `{location_parent}/CLAUDE.md`.
 - Try common alternates: `claude.md`, `CLAUDE.md`, `.claude/CLAUDE.md`, `dotfiles/.claude/CLAUDE.md`.
 
-Fetch the upstream `claude.md` and identify universally applicable sections that the local file is missing. Focus on:
+`repomatic init claude` only manages a root-level `claude.md`. When the file you find is somewhere else, the push direction below does not apply to it: audit the pull direction only, and note that the file sits outside what the sync can reach.
 
-- Terminology and spelling rules.
-- Version formatting conventions.
-- File naming conventions (long-form extensions, lowercase, GitHub exceptions table).
-- Modern typing practices.
-- YAML scalar style (`>` vs `|`).
-- Markdown heading anchor rules.
-- Python version compatibility caveats.
-- Testing guidelines (e.g., "no test classes" rule, `@pytest.mark.once`).
-- Common maintenance pitfalls (CI URL, root-cause tracing, doc drift, type-check divergence, angle-bracket placeholders, route-through-existing-infra).
-- Command-line option conventions.
+**Read the audience tags before judging anything.** Upstream marks every section with an HTML comment right under its heading, and that comment answers the question this audit used to answer by eye:
 
-Do **not** flag upstream sections that are project-specific (e.g., CLI abstractions, knowledge placement table, workflow design rationale, release checklists, agent conventions, MyST docstring rules, `__init__.py` discipline, `TYPE_CHECKING` block patterns).
+```markdown
+### Version formatting
 
-**Do not treat the local file as a downstream copy of upstream.** Many downstream `claude.md` files are personal-conventions documents with project-agnostic preferences (voice, commit policy, shell-command patterns, language preferences) that should not appear in upstream. Only flag missing content that is universally applicable.
+<!-- audience: all -->
+```
+
+`audience: all` and `audience: downstream` sections belong to upstream and are pushed down by `repomatic init claude`. `audience: upstream` never leaves `kdeldycke/repomatic`. A `; scope: package` qualifier narrows a section to repos that build a distributable, so a uv virtual project skipping one is correct, not missing. A section with **no tag at all** is the repository's own.
+
+That splits the work into two directions, and they are not symmetric:
+
+**Push (mechanical, do not hand-edit).** For each tagged local section, compare its body against upstream's. Any difference is stale, whichever side looks better: the fix is to run `repomatic init claude`, never to hand-patch the section or to propose the local wording upstream. Report the count and name the sections, but do not draft the diff. A tagged section upstream no longer sends here (retagged `upstream`, or scoped away) is an orphan the same command prunes.
+
+**Pull (analytical, this is your job).** Untagged local sections are where repo-specific knowledge lives and are correct by default. Read them for two things:
+
+1. **Content that generalizes.** A section describing something every repomatic consumer faces (how a workflow is regenerated, what a sync owns, how a pinned tool moves) is an upstream proposal. Say which audience it would carry, and check that no tagged section already covers it under a different title.
+2. **Content that upstream has since replaced.** A local section on a subject upstream now covers under a *different heading* is stale and will not be adopted, because the merge keys on the title. That is what upstream's `<!-- supersedes: {old title} -->` is for: propose adding one rather than asking the repo to delete its section.
+
+**Degrade gracefully when the file carries no tags at all.** The `claude` component is opt-in, so a repository may never have run it. Say so once, treat the whole file as untagged repo-owned content, and audit only the pull direction. Do not hand-classify the file section by section against upstream: recommending `repomatic init claude` is both the smaller message and the durable fix.
+
+**A downstream `claude.md` is not a copy of upstream, tags or no tags.** Personal or project conventions (voice, commit policy, shell patterns, language preferences) are deliberately absent upstream and must never be proposed for it, since upstream ships to repos with outside contributors where several such rules are wrong advice.
 
 ### 4. Upstream contribution opportunities (`upstream`)
 
