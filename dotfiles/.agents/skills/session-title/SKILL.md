@@ -23,7 +23,7 @@ When the user asks to refresh or rename the current session's title:
    /Users/kde/code/dotfiles/dotfiles/.claude/hooks/session-title.py set "$session_id" "$transcript" "Refactor API client error handling"
    ```
 
-   The helper sanitizes (strips control chars, rejects path-shaped values, caps at 80 chars), writes a sidecar at `~/.claude/session-titles/<session_id>` (re-applied as a sticky title on the next start/resume, so the rename survives), appends a `{"type":"custom-title",...}` line to the JSONL (so `/resume` picks it up live), and writes OSC 0 to update the terminal tab.
+   The helper sanitizes (strips control chars, rejects path-shaped values, caps at 80 chars), writes the sidecar at `~/.claude/session-titles/<session_id>`, and writes OSC 0 to update the terminal tab immediately. The `UserPromptSubmit` hook applies the sidecar title at the next prompt through Claude Code's supported rename path (the same write `/rename` uses), which persists it in the transcript and re-applies it on every later start/resume: the new title lands one prompt after this step.
 
 4. **Confirm in one short sentence**, e.g.:
    `Session title updated to: 04-29@10:14 Refactor API client error handling`

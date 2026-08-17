@@ -1,38 +1,48 @@
 #!/usr/bin/env python3
 """Session title hook for Claude Code.
 
-Background — why this workaround exists (Claude Code v2.1.x, verified 2026-07):
+How titling works (verified against Claude Code 2.1.224, 2026-08):
 
-- Claude Code itself writes ``{"type":"custom-title","customTitle":"MM-DD@HH:MM
-  <cwd>",...}`` lines into the session JSONL at init and re-writes them
-  repeatedly during a session (observed 6x in a 1-turn session, 99x in a
-  36-turn one). The ``/resume`` picker shows the *last* such line, so a title
-  merely appended by a hook is clobbered by Claude Code's next default write.
-  This ``MM-DD@HH:MM <cwd>`` default is distinct from the documented
-  ``dirname-XX`` agent-view label.
-- Only a ``SessionStart`` hook can set a *sticky* title, by printing
-  ``{"hookSpecificOutput":{"hookEventName":"SessionStart","sessionTitle":...}}``
-  on stdout (``sessionTitle`` nested inside ``hookSpecificOutput``). ``Stop`` and
-  ``UserPromptSubmit`` cannot: the hooks docs list ``sessionTitle`` only for
-  SessionStart, and UserPromptSubmit attempts are silently ignored by the
-  auto-titler. Once set via SessionStart, Claude Code treats the value as the
-  session *name* (a ``--resume`` handle) and stops writing its cwd default
-  entirely (verified live: 1 custom-title line instead of dozens).
-- There is no setting to disable Claude Code's auto-titler (the first-prompt
-  Haiku summary) or the cwd default. Appending ``custom-title`` lines to the
-  JSONL is an unsupported, version-fragile pattern (the sidebar/index reads
-  from a separate store).
-- SessionStart fires *before* the first prompt, so a fresh session has no
-  content to summarize; only ``resume``/``compact`` sources do. Its stdin
-  carries ``session_id``, ``transcript_path``, ``source``, and ``session_title``
-  (Claude Code's current default, e.g. ``MM-DD@HH:MM /full/cwd/path``).
+- A ``UserPromptSubmit`` hook can set a *persistent* title by printing
+  ``{"hookSpecificOutput":{"hookEventName":"UserPromptSubmit",
+  "sessionTitle":...}}`` on stdout. Claude Code applies it through the same
+  write path as ``/rename`` (source ``"hook"``): it appends the
+  ``{"type":"custom-title",...}`` record to the session JSONL itself,
+  updates the session-name metadata, and pushes the title to the
+  remote-control bridge and ccr sessions. The ``/resume`` picker shows the
+  last such record.
+- A ``SessionStart`` hook can also carry ``sessionTitle``, but that path is
+  cache-only: it sets the in-memory title for the run and writes nothing to
+  disk, so on its own it never reaches the ``/resume`` picker. It is still
+  used below to display the sidecar title immediately on start/resume,
+  before the first prompt.
+- The AI auto-titler (first-prompt Haiku summary) writes a separate
+  ``{"type":"ai-title",...}`` record into a separate slot, and the display
+  always prefers the custom title, so the auto-titler can never clobber a
+  title set here.
+- The ``MM-DD@HH:MM <cwd>`` default title is seeded by this repo's own zsh
+  wrapper in ``.zshrc`` (``claude () { command claude --name "$(date
+  +%m-%d@%H:%M) ..." "$@" }``), not by Claude Code. ``TIMESTAMP_RE``
+  recognizes that prefix, which both the wrapper default and our titles
+  carry, and the hook payload's ``session_title`` tells us the current one.
+- ``Stop`` hooks have no ``sessionTitle`` in their output schema: the
+  titling hand-off must happen on ``UserPromptSubmit`` or ``SessionStart``.
 
-Design: the ``Stop`` worker writes the Haiku summary to a sidecar at
-``~/.claude/session-titles/<session_id>`` (the reliable, sticky path) *and*
-appends a live ``custom-title`` line to the JSONL (so one-off, never-resumed
-sessions still get titled during their single run). The ``SessionStart`` hook
-re-applies the sidecar as a sticky name on the next start/resume, which stops
-the clobbering for resumed and long-running sessions.
+Older releases (verified 2026-07) inverted this: only SessionStart stuck,
+UserPromptSubmit output was silently dropped, and Claude Code re-wrote the
+wrapper's cwd default over a merely appended title dozens of times per
+session. The sidecar, the SessionStart re-apply and the hand-appended JSONL
+lines were built for that world. The supported UserPromptSubmit path has
+since replaced the JSONL appends; the sidecar survives as the hand-off queue
+between the backgrounded worker and the next hook, because UserPromptSubmit
+is synchronous on every prompt and cannot host the Haiku call itself. Cost:
+a generated title lands one prompt late.
+
+Design: the ``Stop`` hook detaches a backgrounded ``generate`` worker on a
+refresh schedule. The worker summarizes the transcript with Haiku and writes
+the result to the sidecar at ``~/.claude/session-titles/<session_id>``. The
+next ``UserPromptSubmit`` persists it through the supported path, and every
+``SessionStart`` re-applies it in-memory for instant display.
 
 Subcommands:
 
@@ -40,21 +50,27 @@ Subcommands:
   payload on stdin, decides whether the current turn is on the refresh
   schedule, and (if so) detaches a ``generate`` worker.
 - ``generate <session_id> <transcript_path> <prefix>``: backgrounded worker.
-  Calls Claude Haiku to summarize the transcript, writes the sidecar, appends a
-  ``custom-title`` line to the JSONL, and writes OSC 0 to ``/dev/tty``.
-- ``sessionstart``: invoked by the ``SessionStart`` hook. Reads the sidecar and
-  emits ``hookSpecificOutput.sessionTitle`` (skipping if the user set their own
-  non-prefixed name). Fast: no Haiku call, so it adds no startup latency.
+  Calls Claude Haiku to summarize the transcript, writes the sidecar, and
+  writes OSC 0 to ``/dev/tty`` for instant tab feedback.
+- ``sessionstart``: invoked by the ``SessionStart`` hook. Reads the sidecar
+  and emits ``hookSpecificOutput.sessionTitle`` (cache-only; skips if the
+  user set their own non-prefixed name). Fast: no Haiku call, so it adds no
+  startup latency.
+- ``userpromptsubmit``: invoked by the ``UserPromptSubmit`` hook. Reads the
+  sidecar and emits ``hookSpecificOutput.sessionTitle``, which Claude Code
+  then persists like a ``/rename`` (skips if the user set their own
+  non-prefixed name).
 - ``set <session_id> <transcript_path> <title>``: manual setter used by the
-  ``session-title`` skill. Same sidecar + JSONL persistence, no Haiku call.
+  ``session-title`` skill. Writes the sidecar + OSC 0; the title lands at
+  the next prompt via ``userpromptsubmit``. No Haiku call.
 
 Refresh schedule: turns 1, 3, 6, 10, 15, 20, ... (i.e. {1, 3, 6} then every
 5 turns starting at 10). 33% of past sessions never reach turn 2, so turn 1
 is mandatory; the rest tracks the long tail without spamming Haiku.
 
-Upstream: the supported "set the session title from a hook" feature (which
-would replace this workaround) is tracked in
-https://github.com/anthropics/claude-code/issues/44786 (open).
+Upstream: anthropics/claude-code#44786 asked for exactly this and was closed
+2026-08-17 as available today, with anthropics/claude-code#34243 and
+anthropics/claude-code#33527 closed alongside it.
 """
 
 from __future__ import annotations
@@ -172,12 +188,6 @@ def extract_prefix(title: str | None) -> str:
     return m.group(1) if m else ""
 
 
-def append_title(jsonl: Path, session_id: str, title: str) -> None:
-    record = {"type": "custom-title", "customTitle": title, "sessionId": session_id}
-    with jsonl.open("a", encoding="utf-8") as fh:
-        fh.write(json.dumps(record, ensure_ascii=False) + "\n")
-
-
 def sidecar_path_for(session_id: str) -> Path:
     return SIDECAR_DIR / session_id
 
@@ -262,11 +272,8 @@ def transcript_path_for(session_id: str, cwd: str) -> Path:
 
 
 def cmd_hook() -> int:
-    if os.environ.get(GUARD_ENV) == "1":
-        return 0
-    try:
-        payload = json.load(sys.stdin)
-    except (json.JSONDecodeError, ValueError):
+    payload = read_hook_payload()
+    if payload is None:
         return 0
     if payload.get("hook_event_name") != "Stop":
         return 0
@@ -310,7 +317,7 @@ def cmd_generate(session_id: str, transcript: str, prefix: str) -> int:
     jsonl = Path(transcript)
     if not jsonl.exists():
         return 0
-    _turns, _first, last_title, prompts = parse_transcript(jsonl)
+    _turns, _first, _last_title, prompts = parse_transcript(jsonl)
     if not prompts:
         return 0
     summary = call_haiku("\n\n---\n\n".join(prompts))
@@ -319,10 +326,10 @@ def cmd_generate(session_id: str, transcript: str, prefix: str) -> int:
     final = compose(prefix, summary)
     if not final:
         return 0
+    # Persistence happens at the next UserPromptSubmit through Claude Code's
+    # own rename path; the sidecar is the queue until then. OSC 0 gives
+    # instant tab feedback in the meantime.
     write_sidecar(session_id, final)
-    if final == last_title:
-        return 0
-    append_title(jsonl, session_id, final)
     write_osc(final)
     return 0
 
@@ -332,7 +339,7 @@ def cmd_set(session_id: str, transcript: str, title: str) -> int:
     if not jsonl.exists():
         print(f"transcript not found: {transcript}", file=sys.stderr)
         return 1
-    _turns, first_title, last_title, _prompts = parse_transcript(jsonl)
+    _turns, first_title, _last_title, _prompts = parse_transcript(jsonl)
     cleaned = sanitize(title)
     if not cleaned:
         print("empty or invalid title", file=sys.stderr)
@@ -340,56 +347,100 @@ def cmd_set(session_id: str, transcript: str, title: str) -> int:
     prefix = extract_prefix(first_title)
     if prefix and not TIMESTAMP_RE.match(cleaned):
         cleaned = compose(prefix, cleaned)
+    # The sidecar is persisted at the next UserPromptSubmit through Claude
+    # Code's own rename path; OSC 0 gives instant tab feedback meanwhile.
     write_sidecar(session_id, cleaned)
-    if cleaned == last_title:
-        print(cleaned)
-        return 0
-    append_title(jsonl, session_id, cleaned)
     write_osc(cleaned)
     print(cleaned)
     return 0
 
 
-def cmd_sessionstart() -> int:
+def read_hook_payload() -> dict | None:
+    """The hook JSON payload on stdin, or ``None`` to bail out silently."""
     if os.environ.get(GUARD_ENV) == "1":
-        return 0
+        return None
     try:
         payload = json.load(sys.stdin)
     except (json.JSONDecodeError, ValueError):
-        return 0
-    session_id = payload.get("session_id")
-    if not session_id:
-        return 0
-    title = read_sidecar(session_id)
-    if not title:
-        return 0
-    # Respect a deliberate user-set name: one that is non-empty and does not
-    # carry our MM-DD@HH:MM prefix (which both our titles and Claude Code's
-    # "<prefix> <cwd>" default do). Anything else is the user's own rename, so
-    # leave it alone.
-    current = payload.get("session_title")
-    if isinstance(current, str) and current and not TIMESTAMP_RE.match(current):
-        return 0
+        return None
+    if not isinstance(payload, dict):
+        return None
+    return payload
+
+
+def is_user_rename(current: object) -> bool:
+    """Whether ``session_title`` holds a deliberate rename by the user.
+
+    Both our titles and the zsh wrapper's ``<prefix> <cwd>`` default carry
+    the ``MM-DD@HH:MM`` prefix, so anything else is the user's own rename
+    and must be left alone.
+    """
+    return (
+        isinstance(current, str)
+        and bool(current)
+        and not TIMESTAMP_RE.match(current)
+    )
+
+
+def emit_session_title(event: str, title: str) -> None:
     print(
         json.dumps({
             "hookSpecificOutput": {
-                "hookEventName": "SessionStart",
+                "hookEventName": event,
                 "sessionTitle": title,
             }
         })
     )
+
+
+def sidecar_title_for(payload: dict) -> str | None:
+    """The sidecar title to emit, if any, for this hook payload."""
+    session_id = payload.get("session_id")
+    if not isinstance(session_id, str) or not session_id:
+        return None
+    title = read_sidecar(session_id)
+    if not title:
+        return None
+    if is_user_rename(payload.get("session_title")):
+        return None
+    return title
+
+
+def cmd_sessionstart() -> int:
+    payload = read_hook_payload()
+    if payload is None:
+        return 0
+    title = sidecar_title_for(payload)
+    if title:
+        emit_session_title("SessionStart", title)
+    return 0
+
+
+def cmd_userpromptsubmit() -> int:
+    payload = read_hook_payload()
+    if payload is None:
+        return 0
+    title = sidecar_title_for(payload)
+    if title:
+        emit_session_title("UserPromptSubmit", title)
     return 0
 
 
 def main(argv: list[str]) -> int:
     if len(argv) < 2:
-        print("usage: session-title.py {hook|generate|set} ...", file=sys.stderr)
+        print(
+            "usage: session-title.py "
+            "{hook|generate|sessionstart|userpromptsubmit|set} ...",
+            file=sys.stderr,
+        )
         return 2
     cmd = argv[1]
     if cmd == "hook":
         return cmd_hook()
     if cmd == "sessionstart":
         return cmd_sessionstart()
+    if cmd == "userpromptsubmit":
+        return cmd_userpromptsubmit()
     if cmd == "generate" and len(argv) == 5:
         return cmd_generate(argv[2], argv[3], argv[4])
     if cmd == "set" and len(argv) == 5:

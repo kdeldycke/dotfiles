@@ -119,6 +119,16 @@
           }
         ]
       }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/kde/code/dotfiles/dotfiles/.claude/hooks/session-title.py userpromptsubmit"
+          }
+        ]
+      }
     ]
   },
   "statusLine": {
