@@ -24,7 +24,7 @@ If `$ARGUMENTS` is empty, use the latest release tag from the context above. Oth
 
 Detect the repository from the context (`nameWithOwner`). Extract the project name, license, and homepage URL from `pyproject.toml`.
 
-Start from the scan history when present: `docs/assets/virustotal-scans.json` holds one at-release snapshot per binary (tag, filename, SHA-256, scan date, per-category verdict counts), written by the release pipeline's `scan-virustotal` job. It identifies the flagged binaries of the target release without any API call, and the catalog in `docs/binaries.md` shows the same data at a glance. Fall back to listing release assets when the history has no records for the version:
+Start from the scan history when present: `docs/assets/virustotal-scans.csv` holds one at-release snapshot per binary (tag, filename, SHA-256, scan date, per-category verdict counts), written by the release pipeline's `scan-virustotal` job. It identifies the flagged binaries of the target release without any API call, and the catalog in `docs/binaries.md` shows the same data at a glance. Fall back to listing release assets when the history has no records for the version:
 
 ```shell-session
 $ gh release view v{VERSION} --json assets --jq '.assets[].name'
@@ -32,7 +32,7 @@ $ gh release view v{VERSION} --json assets --jq '.assets[].name'
 
 ### Step 2: retrieve or refresh VirusTotal results
 
-The release pipeline already uploaded every release binary at publication time, so a fresh upload is rarely needed. Per-engine detection details (which neither the CLI nor the scan history expose) always require querying the VT API directly via Python with the `vt` library. For a re-upload, use the `scan-virustotal` CLI command: it requires `--tag` and `--binaries-dir`, and `--poll --records docs/assets/virustotal-scans.json` appends the fresh snapshot to the scan history (same-day re-scans replace their record; later dates accumulate, and the catalog keeps showing the earliest, at-release snapshot).
+The release pipeline already uploaded every release binary at publication time, so a fresh upload is rarely needed. Per-engine detection details (which neither the CLI nor the scan history expose) always require querying the VT API directly via Python with the `vt` library. For a re-upload, use the `scan-virustotal` CLI command: it requires `--tag` and `--binaries-dir`, and `--poll --records docs/assets/virustotal-scans.csv` appends the fresh snapshot to the scan history (same-day re-scans replace their record; later dates accumulate, and the catalog keeps showing the earliest, at-release snapshot).
 
 The VT API key comes from: `$VIRUSTOTAL_API_KEY` env var, or ask the user.
 
@@ -94,7 +94,7 @@ All submission text blocks must derive project details from `pyproject.toml` and
 
 #### Vendor definitions
 
-User-facing documentation of vendor portals, submission priority, and common issues is in [`docs/security.md` § AV false-positive submissions](https://kdeldycke.github.io/repomatic/security.html#av-false-positive-submissions).
+User-facing documentation of vendor portals, submission priority, and common issues is in [`docs/security.md` § AV false-positive submissions](https://repomatic.net/security#av-false-positive-submissions).
 
 ##### Microsoft (engines: `Microsoft`)
 
@@ -260,4 +260,4 @@ Print a summary of what was generated:
 - Submission priority order and expected turnaround times
 - Note any vendor portals known to have intermittent issues (Microsoft, Avast, BitDefender)
 
-Suggest a follow-up for after the vendors process the reports: re-running `scan-virustotal --tag v{VERSION} --binaries-dir {dir} --poll --records docs/assets/virustotal-scans.json` appends the post-submission snapshot to the scan history, keeping the delisting trajectory on record without altering the at-release numbers shown in `docs/binaries.md`.
+Suggest a follow-up for after the vendors process the reports: re-running `scan-virustotal --tag v{VERSION} --binaries-dir {dir} --poll --records docs/assets/virustotal-scans.csv` appends the post-submission snapshot to the scan history, keeping the delisting trajectory on record without altering the at-release numbers shown in `docs/binaries.md`.

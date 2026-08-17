@@ -91,4 +91,4 @@ Suggest the user run:
 
 - `/repomatic-audit` for broader workflow and config alignment across the same projects.
 - `/repomatic-deps` to analyze dependency graphs for projects with stale or divergent docs deps.
-- Opting into the `sphinx-docs` agent (`repomatic init agents/sphinx-docs`) on any project that drifted significantly — Claude will then auto-load the conventions when working in that repo.
+- Opting into the `sphinx-docs` agent (`repomatic init subagents/sphinx-docs`) on any project that drifted significantly — Claude will then auto-load the conventions when working in that repo.

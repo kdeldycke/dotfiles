@@ -15,7 +15,7 @@ The Sphinx side of the convention (`html_logo`, `html_favicon`, `ogp_image` path
 
 Every project produces four SVG variants, each with light and dark PNG exports:
 
-1. **Favicon** (`favicon.svg`): The project icon only, no text, no margins. Tight-cropped to the icon's bounding box. Used as `html_favicon` in Sphinx and as the browser tab icon. Transparent background. Does not need PNG exports (browsers handle SVG favicons natively).
+1. **Favicon** (`favicon.svg`): The project icon only, no text, no margins. Tight-cropped to the icon's bounding box. Used as `html_favicon` in Sphinx and as the browser tab icon. Transparent background. Does not need PNG exports (browsers handle SVG favicons natively). If the mark itself is theme-invariant (flat, unoutlined — see "Isometric / faceted marks" below), the same source also serves any platform app-icon bundle (`.ico`, `.icns`, a build tool's icon input) with a single rendering: a browser tab and a dock are surfaces with no theme this script can query, and a mark with no outline needs no dark variant to stay legible on either.
 
 2. **Square logo** (`logo-square.svg`): The project icon with the project name centered below it. Used as the Sphinx sidebar logo (`html_logo`). Transparent background. The viewBox is taller than the icon to accommodate the text below.
 
@@ -35,6 +35,14 @@ When base SVGs already exist (at least a square logo or banner), skip any intera
 4. Wire any new assets into `docs/conf.py` if not already configured.
 
 Only ask the user a question when the gap analysis is genuinely ambiguous (multiple competing icon sources, unclear which element is the project icon).
+
+## Redesigning an existing mark
+
+Revising the *treatment* of a mark that already has SVG sources — outlined vs flat, how many shading planes, how a cutout gets painted — is a different exercise from Design exploration below, which assumes no SVG exists yet. It still deserves the same breadth before committing to a direction, and it must be judged on both themes at once: a treatment that reads fine on white can fail outright on near-black (see "Isometric / faceted marks" below for why an outlined mark is especially prone to this).
+
+Render a contact sheet of candidates, each shown on **both** light and dark backgrounds side by side, plus small thumbnails (16/24/32/48px) next to the full-size renders. Reviewing every candidate at working size and at icon size in one image is what catches a treatment that reads well full-size and turns to mush at 16px, or that loses a plane's contrast on one theme while looking fine on the other — a theme-specific failure is easy to miss when a candidate is only ever shown on the theme you happen to be looking at. Ten to fourteen candidates is a reasonable spread per round; expect two rounds in practice, one for the coarse direction and a second to refine the winner's remaining open question (how a void or cutout inside the mark gets treated, for instance).
+
+Once a direction is picked, "Isometric / faceted marks" below covers the specific techniques — flat plane shading, a computed midpoint color, painting a void behind a cutout, keeping a terminal rendition in sync — that this kind of redesign usually needs.
 
 ## Design exploration
 
@@ -76,6 +84,8 @@ SVGs use CSS classes for themed properties (fills, strokes). To export a themed 
 4. Convert to PNG with `rsvg-convert`.
 5. Delete the temporary SVG.
 
+**Key substitutions on the whole CSS declaration, never on the bare color.** A mark that uses a brand color as a literal fill (a flat isometric plane, an icon's own stroke) and a themed element using the *same* hex (lettering, a caption) look identical to a substitution keyed on the color alone: it has no way to tell "this should flip" from "this should stay put," and repaints both. Key each entry of the substitution map on the full declaration — `.word{fill:#2d2364}` → `.word{fill:#d3d3f6}` — never on `#2d2364` → `#d3d3f6` in isolation, so a class rule the mark itself owns can never match. This is easy to get away with for a while: an outlined mark that only uses a color for its *stroke* is safe under a bare-color swap, because nothing else in the file happens to share that stroke's exact hex. The moment the mark's faces start declaring that same hex as a literal `fill` (the flat-shading style below), the identical swap starts repainting the mark along with whatever else used to be the only thing carrying that color.
+
 Typical light/dark color pairs (Tailwind Slate palette):
 
 | Role       | Light     | Dark      |
@@ -88,6 +98,26 @@ Typical light/dark color pairs (Tailwind Slate palette):
 | Background | `#F8FAFC` | `#0F172A` |
 | Vein light | `#e2e8ef` | `#1a2535` |
 | Vein dark  | `#c6cfda` | `#253040` |
+
+## Isometric / faceted marks
+
+A mark built from isometric solids (boxes, cubes, prisms) reads correctly with flat, unoutlined faces — one color per plane the light can catch, and the eye reconstructs the shape from the pattern of values alone, the way a game sprite does. This is the fix when a stroked version of the same mark fails on a dark background: an outline drawn in the dark brand color has nothing to contrast against near-black, so the silhouette dissolves at its edges while anything drawn with a plain *fill* (lettering, other flat elements) stays perfectly legible beside it. If a themed mark loses its edges on one background but not the other, that mismatch is usually the tell that it wants flat shading instead of an outline, not a different dark-mode color for the same stroke.
+
+**Three planes need three values.** A glance at an isometric solid shows at most three faces: one lit from above, and two vertical faces turned away from each other. Two brand colors are not enough on their own for that third plane, and the honest way to produce a third value without expanding the palette is the arithmetic midpoint of the other two, computed per channel and enforced with a test rather than hand-picked:
+
+```python
+mid = "#{:02x}{:02x}{:02x}".format(
+    *((int(ink[i : i + 2], 16) + int(wash[i : i + 2], 16)) // 2 for i in (1, 3, 5))
+)
+```
+
+That keeps the palette "two colors and a derivation" instead of three unrelated choices, and a test that recomputes the midpoint from the two brand constants and compares it against the shipped one catches drift the moment someone nudges the third value by eye instead of by formula.
+
+**Discovering which path is which plane.** When the source SVG is already a flat list of `<path>` elements with no naming that says what each one draws, recolor every path a distinct hue (step through HSV, one hue per path index) and render at a readable size. The rainbow render makes the plane each path belongs to obvious at a glance, so the mapping from path index to plane becomes a literal fact to hard-code once, rather than something re-derived by eye on every future edit.
+
+**Filling a void inside the silhouette.** A mark with a cutout (an open lid, a ring) that used to hide the gap behind an outline needs the interior actually painted once the outline is gone, or the void reads as a hole rather than as depth. Compute the interior walls from vertices the exterior geometry already has (the rim of the opening), draw each wall at its full extent, and clip it to the rim polygon with `<clipPath>` — that avoids hand-computing where two walls intersect, since the clip does the trimming for free. Critically, an interior wall is lit as the plane it *faces*, not the plane it sits *behind*: the wall on the far side of a left-facing opening itself faces right, and so takes the right-plane color, mirrored from what a same-side exterior face would show. Getting this backwards makes any object floating inside the void blend into the wall directly behind it on one of its own faces; getting it right guarantees every face of that object lands on the tone opposite whatever sits behind it.
+
+**Keep a terminal or block-character rendition in sync with the same source.** If the project also ships a low-resolution rendition of the mark (half-block terminal art for a CLI's `--version` banner, an ASCII favicon), derive its interior detail from the SVG rather than hand-tuning it: for every grid cell not already covered by the silhouette, test its center point against the source's rim polygon — in the SVG's own coordinate space, not pixel space — with a standard point-in-polygon test, and fill it only when the test passes. Symmetrize by testing a cell together with its mirror (fill both if either passes) rather than trusting the sampling grid to be perfectly centered: a rounding error in the grid math is a far easier way to end up asymmetric than the source geometry itself. This is what keeps two renditions of "the same" mark from drifting into two different designs over time.
 
 ## Backgrounds
 
@@ -131,6 +161,7 @@ If `rsvg-convert` is unavailable, fall back to `inkscape --export-type=png --exp
 - Never modify the source `.svg` files. Only create temporary copies for baking.
 - Always clean up temporary SVGs after conversion.
 - SVG source files must NOT contain `@media (prefers-color-scheme: dark)` blocks. Light-mode styles are the only styles in the SVG. Dark mode is handled exclusively through baked PNG exports.
+- Give every themed element its own explicit class, even one reused nowhere else (lettering, a caption). A migration or bake step that identifies "themed" nodes by stripping inline paint off wrapper `<g>` elements will also strip color from any child that was relying on inherited fill instead of a class of its own, silently turning it black.
 - The font stack for text elements is: `'Inter', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif`.
 - When creating new SVGs, use the Tailwind Slate palette for all grays and the same `radialGradient` for the lens glass.
 

@@ -27,7 +27,7 @@ Work beyond the local repository: check issues, PRs, and CI runs on GitHub. Fix 
 2. **CLI health** — Run every subcommand's `--help`; fix docs if output diverges
 3. **Documentation sync** — Inside `kdeldycke/repomatic` only, per `CLAUDE.md` § Documentation sync (upstream maintainers). Skip it elsewhere: the section is upstream-only and never reaches a downstream `claude.md`.
 4. **Quality checks** — Per `CLAUDE.md` § Testing guidelines and § Linting and formatting; fix simple issues, escalate complex ones
-5. **Release alignment** — Inside `kdeldycke/repomatic` only, per `CLAUDE.md` § Release checklist (upstream maintainers). Downstream repos follow their own release process.
+5. **Release alignment** — Inside `kdeldycke/repomatic` only: the checklist lives in `docs/upstream-development.md` § Release checklist, and `/repomatic-ship` drives it. Downstream repos follow their own release process.
 6. **CI/CD failures** — Review recent failed runs, distinguish systematic from one-off
 7. **Workflow CLI references** — Verify all `repomatic` invocations in workflows use valid subcommands and flags
 

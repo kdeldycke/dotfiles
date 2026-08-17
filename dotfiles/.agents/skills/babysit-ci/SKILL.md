@@ -21,7 +21,7 @@ $ claude --dangerously-skip-permissions --model sonnet /babysit-ci
 
 Because this loop runs autonomously without human review, **every commit carries a `Co-Authored-By: Claude <noreply@anthropic.com>` trailer by default** so unattended changes stay traceable, including where a project `CLAUDE.md` or a global `~/.claude/CLAUDE.md` has not synced that convention. The default yields to one thing: an explicit standing rule from the repository's maintainer against AI attribution, which outranks it because the trailer lands in their permanent history. A parent skill (like `/repomatic-ship`) spawning this loop does not by itself relax the requirement, but an exemption that skill passes down does, and it binds every commit made from that point on.
 
-Keep the message itself short, per `claude.md` § Commit messages: an imperative subject naming the fix, under 50 characters, and **no body at all** unless the why is not evident from the diff. A CI fix rarely needs one — `` Fix Windows path assertion in `test_cache_paths` `` is a complete commit message. The exception worth taking: when the red traces to an upstream bug, a dependency release or a linked discussion, put that link in the body, since it is the only place the next reader will find why the fix looks the way it does.
+Keep the message itself short, per `claude.md` § Commit messages: an imperative subject naming the fix, under 72 characters, and **no body at all** unless the why is not evident from the diff. A CI fix rarely needs one — `` Fix Windows path assertion in `test_cache_paths` `` is a complete commit message. The exception worth taking: when the red traces to an upstream bug, a dependency release or a linked discussion, put that link in the body, since it is the only place the next reader will find why the fix looks the way it does.
 
 ### Yield to the orchestrator that spawned you
 
@@ -140,9 +140,14 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
 
    `gh run view --log-failed` writes its log cache under `~/.cache/gh`, which the harness sandbox denies: the resulting `failed to get run log: creating cache entry ... operation not permitted` masquerades as a `gh` bug. Disable the sandbox for that read, exactly like the signing calls in step 7.
 
-   **Job logs are gated on the parent *run* reaching a terminal state, not the job.** A cell that failed twenty minutes ago stays unreadable while its slowest sibling still builds: `gh run view --log-failed` answers `run <id> is still in progress; logs will be available when it is complete`, and `gh api repos/<OWNER>/<REPO>/actions/jobs/<JOB_ID>/logs` is no way around it — it returns `200` with a `Content-Length` but writes no body, because `gh` does not follow the redirect into blob storage, and following it by hand fails `401` (the blob rejects the `Authorization` header the API needed). So the diagnosis you want can be an hour away while the run drains.
+   **A completed job's log is readable while the rest of the run drains, but only with `--allow-escape-sequences`.** The run-scoped reads *are* gated on the whole run going terminal (`gh run view --log-failed` answers `run <id> is still in progress; logs will be available when it is complete`), while the job-scoped `gh api repos/<OWNER>/<REPO>/actions/jobs/<JOB_ID>/logs` answers a failed cell immediately, twenty minutes into its slowest sibling's build. What makes it look otherwise is a `gh` guard rather than the API: CI logs carry ANSI colour, so `gh` refuses to emit them and prints `the response contains terminal escape sequences; pass --allow-escape-sequences to output it anyway` — one line where a log was expected, indistinguishable from an empty body if the output went to a file. Pass the flag and strip the codes:
 
-   Do not wait it out. **Make the run terminal**: push the fix you already have, which supersedes and cancels it, or cancel it outright. Logs survive cancellation, so every already-completed failed cell becomes readable at once. This is the same reasoning as the batch-and-push rule above, applied to reading rather than fixing: the stale run has no verification value left, and its only remaining use is its logs.
+   ```shell-session
+   $ gh api repos/<OWNER>/<REPO>/actions/jobs/<JOB_ID>/logs --allow-escape-sequences \
+       | sed 's/\x1b\[[0-9;]*m//g' > job.log
+   ```
+
+   So the diagnosis is minutes away, not an hour: harvest every failed cell as it lands and keep the run alive for the cells still to report. Cancelling to read logs is never the reason — logs survive cancellation, but they never needed it. **Make the run terminal only when you have a fix**, per the batch-and-push rule above: the stale run has no verification value left once superseded.
 
 5. **Fix the root cause** using the combined picture from CI logs and local results. Fix the codebase, not the tests, unless the tests are genuinely wrong. Address mypy and ruff failures together (see [§ mypy/ruff fix oscillation](#mypy-ruff-fix-oscillation)).
 
@@ -185,6 +190,36 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
 **This shortcut applies only when a human invoked the loop directly.** Once all fast platforms (Linux, Windows) have completed with zero stable failures and only slow runners (macOS) remain queued or in progress, declare success and stop — macOS runners are resource-constrained, and platform-independent fixes gain no diagnostic value from waiting. **Announce this exit; never end on a silent idle.** Report that the fast channels are green and name what stays unverified (the `release.yaml` binary-matrix run ID, any still-queued macOS or congestion-delayed cells) so the human takes over that check instead of assuming the whole matrix passed.
 
 **When an orchestrator spawned this loop (like `/repomatic-ship`), do not early-exit — drive every monitored workflow to terminal green before returning.** The orchestrator spawned you precisely to own the slow tail it would otherwise poll itself; returning at "fast platforms green" just hands the macOS cells and the `release.yaml` binary matrix back to a caller that must then detect your stall and re-drive them, and an idle sub-agent is indistinguishable from a dead one. Keep polling — with the step-3 `sleep` cadence, never a busy-wait — until macOS and the full `release.yaml` matrix have finished and every stable (✅) job is green, fixing and re-pushing on any stable failure (steps 4-7). Then send the orchestrator a final `SendMessage` naming each monitored workflow's conclusion. A harness idle/available signal is not that report: end the turn only with that explicit message, or on a blocker you cannot resolve (say which).
+
+### When supersession never lets a run conclude
+
+A busy default branch can cancel the same workflow indefinitely. Every push shares the `${{ github.workflow }}-${{ github.ref }}` concurrency group, so an unrelated commit landing mid-matrix cancels yours, and the next one cancels its replacement. Three consecutive heads leaving `tests.yaml` cancelled is an ordinary afternoon, not a fault. Dispatching a fresh run does not escape it: a `workflow_dispatch` run joins the same group and is cancelled by the next push like any other.
+
+**A cancelled run is neither a failure nor a pass, and the run-level conclusion hides which.** Read the jobs:
+
+```shell-session
+$ gh run view {run-id} --json jobs \
+    --jq '[.jobs[] | .conclusion] | group_by(.) | map({(.[0] // "running"): length}) | add'
+{"cancelled":2,"success":25}
+```
+
+Twenty-five green and zero failures is a strong signal that the tree is fine; it is not a green run, and must never be reported as one.
+
+**Establish coverage by union, then close the residue locally.** List the cells that never reached `success` on any head containing your change, across every cancelled run:
+
+```shell-session
+$ gh run view {run-id} --json jobs --jq '.jobs[] | select(.conclusion != "success") | "\(.conclusion): \(.name)"'
+```
+
+The residue is almost always macOS, which is the slowest tier and therefore last standing whenever a run is cut short. Discount any `⁉️` cell (it gates nothing) and run whatever stable cells remain on the matching interpreter locally:
+
+```shell-session
+$ uv --no-progress run --python 3.10 --all-extras --group test --frozen -- pytest -m "not once"
+```
+
+`--group test` is required: without it uv resolves an environment with no pytest in it and fails with `Failed to spawn: pytest`, which reads as a broken command rather than a missing dependency group. A cell whose OS differs from the machine you are on cannot be closed this way — name it as unverified instead of implying otherwise.
+
+Report the union explicitly: which cells passed in CI, which you closed locally, and which remain open and why. "CI was cancelled" on its own tells the caller nothing they can act on.
 
 ## Stable vs. unstable
 
@@ -278,7 +313,7 @@ The matrix is slow: let `tests.yaml` and `lint.yaml` set the loop cadence, but a
 
 **On a release run, a red build cell means that version ships short, permanently.** When the run's head commit is a `[changelog] Release vX.Y.Z` push, `publish-release` sits at the end of that same run and flips the draft to published once the asset jobs settle, locking the asset list. Whatever the matrix failed to produce by then is missing from that version forever: no re-run, no later upload. `v6.30.0` shipped without `windows-arm64`, `v7.5.0` without either Windows build, and `v7.7.0` without any binary at all.
 
-**This is by design, so do not try to stop it.** Publishing a release short beats holding it, and the recovery is the next version, not a draft the maintainer has to babysit. Keep doing exactly what you do for any stable red: fix the cause, push, and let the fix ride the next release. The one addition is reporting: name the platforms that version lost, so the maintainer knows the gap exists and can note it in the release. A short ship also leaves the changelog section, the release body and `docs/install.md` still advertising binaries that are not there (`claude.md` § A published release freezes what is missing from it covers the cleanup); flag it rather than fixing it silently mid-loop.
+**This is by design, so do not try to stop it.** Publishing a release short beats holding it, and the recovery is the next version, not a draft the maintainer has to babysit. Keep doing exactly what you do for any stable red: fix the cause, push, and let the fix ride the next release. The one addition is reporting: name the platforms that version lost, so the maintainer knows the gap exists and can note it in the release. A short ship also leaves the changelog section, the release body and `docs/install.md` still advertising binaries that are not there (the `repomatic-ship` skill's § Repairing a short ship covers the cleanup); flag it rather than fixing it silently mid-loop.
 
 ### Autofix job failures (autofix.yaml)
 

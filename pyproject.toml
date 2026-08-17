@@ -12,8 +12,24 @@ exclude = [
     # job keeps its separate filename.
     "workflows/tests.yaml",
 ]
-include = ["agents", "skills"]
-agents.location = "./dotfiles/.claude/agents/"
+include = ["agent", "skills", "subagents"]
+# The instructions file this repository owns is not a root-level claude.md: it
+# is dotfiles/.agents/AGENTS.md, symlinked to ~/.claude/CLAUDE.md by install.sh
+# and therefore loaded on every project opened from this machine, not just this
+# one. Naming it here is what lets `repomatic init agent` reach it instead of
+# writing a second document at the root.
+#
+# `agent` is in `include` above to measure what the sync actually does, which
+# means the unattended sync-repomatic job will open that pull request on its
+# own. Expect a large one: a dry run against v7.13's tagged set takes this file
+# from 160 lines to 757. Ten sections are hand-copies of upstream's and get
+# adopted, which is the point; the other 56 arrive new and are a repomatic
+# development guide (`__init__.py` discipline, TYPE_CHECKING blocks, registry
+# query logic, the release cooldown), landing in rules that load against every
+# repository on this machine. Read that PR before merging it, and drop `agent`
+# from `include` if the ratio does not improve: `repomatic init agent` run by
+# hand refreshes the same ten sections without the standing invitation.
+agent.location = "./dotfiles/.agents/AGENTS.md"
 # gitignore.location is left at its default, the repository root, and the file
 # there has to be a real one: git opens in-tree .gitignore, .gitattributes and
 # .mailmap with O_NOFOLLOW, so a symlink is skipped with a "Too many levels of
@@ -49,6 +65,11 @@ gitignore.extra-content = '''
 **/.claude/.cc-writes/
 '''
 skills.location = "./dotfiles/.agents/skills/"
+# Subagent definitions, distinct from `agent.location` above: that one names an
+# instructions document, this one a directory of subagent .md files. They sit
+# under different trees here because the skills moved to the agent-neutral
+# .agents/ while the subagents are still a Claude Code layout.
+subagents.location = "./dotfiles/.claude/agents/"
 
 [tool.repomatic.workflow.paths]
 "docs.yaml" = [
@@ -151,7 +172,13 @@ exclude = [
 ]
 
 [tool.typos]
-default.extend-identifiers = { Github = "GitHub", IOS = "iOS", Javascript = "JavaScript", MacOS = "macOS", PyPi = "PyPI", Typescript = "TypeScript", automaticEmojiSubstitutionEnablediMessage = "automaticEmojiSubstitutionEnablediMessage", AirplayRecieverEnabled = "AirplayRecieverEnabled" }
+# Correct capitalization for proper nouns referenced in claude.md, plus "PATCHed"
+# and "PNGs": typos cuts an all-caps run before its trailing lowercase letters,
+# so "PNGs" is checked as "PN" + "Gs" and rewritten to "ONGs", and "PATCHed" as
+# "PATC" + "Hed" and rewritten to "PATCHead". Only an identifier accept
+# suppresses either, since the checker never sees the whole word. Any acronym
+# carrying a lowercase suffix needs its own entry here.
+default.extend-identifiers = { Github = "GitHub", IOS = "iOS", Javascript = "JavaScript", MacOS = "macOS", PATCHed = "PATCHed", PNGs = "PNGs", PyPi = "PyPI", Typescript = "TypeScript", automaticEmojiSubstitutionEnablediMessage = "automaticEmojiSubstitutionEnablediMessage", AirplayRecieverEnabled = "AirplayRecieverEnabled" }
 # False positives: "astroid" is a Python AST library (not "asteroid"); "oject" appears when "pyproject.toml" is split across line breaks in CLI help output; "sur" is macOS 11 Big Sur and Homebrew's big_sur bottle tag (not "sure").
 default.extend-words = { astroid = "astroid", oject = "oject", sur = "sur", Sur = "Sur" }
 # Skip content between <!-- typos:off --> and <!-- typos:on --> markers.

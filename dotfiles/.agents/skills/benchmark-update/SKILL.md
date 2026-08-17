@@ -124,7 +124,9 @@ Follow this template structure:
 
 ## Popularity
 
-[![Star History Chart](<star-history-url>)](<star-history-link>)
+![Star history of `this-project` and its alternatives](assets/star-history-compared.svg)
+
+<a sentence on the axis, when the chart is logarithmic, and one on how far back the store reaches>
 
 | Metrics | `this-project` | `competitor-1`[^1] | ... |
 (Stars, SourceRank, Dependent repos)
@@ -152,7 +154,9 @@ Follow this template structure:
 
 Badge format follows shields.io conventions: `![GitHub](https://img.shields.io/github/<metric>/<owner>/<repo>?label=%20&style=flat-square)` for compact badges with no label text.
 
-Star history chart: `[![Star History Chart](https://api.star-history.com/svg?repos=<comma-separated>&type=Date)](https://star-history.com/#<ampersand-separated>&Date)`
+Star history chart: render it locally, never as a third-party embed. GitHub restricted its stargazer endpoints to a repository's own admins in June 2026, so `api.star-history.com` and every equivalent service now answer with an error card, and no export can be obtained for a repository the visitor does not own. `repomatic sample-metrics` accrues the counts into a committed CSV and draws them as a themeable SVG: declare the projects in `[tool.repomatic.metrics] subjects`, declare a chart in `[tool.repomatic.metrics] charts`, and reference that chart's `output` path from this section. A comparison spanning projects of very different sizes wants `scale = "logarithmic"`, and one comparing trajectories rather than dates wants `mode = "relative"`.
+
+Peers sampled from today carry only two points, their creation date and the first reading, so a chart drawn early states a straight line between them. That is worth saying in a sentence under the chart rather than hiding, since the history accrues weekly and cannot be backdated.
 
 ### Auditing an existing benchmark (`audit`)
 
@@ -193,7 +197,7 @@ Verify the GitHub `owner/repo` in badge URLs matches the current canonical locat
 
 #### 6. Star history chart
 
-Verify the star-history.com URL includes all current projects and no excluded ones.
+Check the chart is a locally rendered asset rather than a third-party embed, which has served an error card since GitHub restricted stargazer access in June 2026. Then check `[tool.repomatic.metrics] subjects` lists every project the page still compares and none it has excluded, since that one list feeds both the chart and the weekly sampler.
 
 ### Adding a project (`add`)
 

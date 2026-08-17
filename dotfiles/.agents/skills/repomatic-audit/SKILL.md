@@ -3,7 +3,7 @@ name: repomatic-audit
 description: Audit downstream repo alignment with upstream repomatic reference, covering workflows, configs, and conventions.
 compatibility: 'Designed for Claude Code. Recommended model: Opus.'
 allowed-tools: Bash Read Grep Glob WebFetch Agent
-argument-hint: '[all|workflows|configs|claude]'
+argument-hint: '[all|workflows|configs|agent]'
 ---
 
 ## Context
@@ -11,7 +11,7 @@ argument-hint: '[all|workflows|configs|claude]'
 !`ls .github/workflows/*.yaml 2>/dev/null`
 !`grep -h 'uses:.*kdeldycke/repomatic' .github/workflows/*.yaml 2>/dev/null | head -5`
 !`grep -A5 '\[tool.repomatic\]' pyproject.toml 2>/dev/null || echo "No [tool.repomatic] section"`
-!`grep -E '^(agents|skills|gitignore)\.location' pyproject.toml 2>/dev/null`
+!`grep -E '^(agent|subagents|skills|gitignore)\.location' pyproject.toml 2>/dev/null`
 !`[ -f repomatic/__init__.py ] && echo "CANONICAL_REPO" || echo "DOWNSTREAM"`
 
 ## Instructions
@@ -28,7 +28,7 @@ Before flagging an issue, verify that the gap isn't **deliberate** or covered by
 - **Bundled defaults applied at runtime.** Some config is materialized from the bundled template at runtime when the file is absent, so no on-disk copy is needed. **Absence of these files is not a problem**: it is the intended state when the user is happy with the bundled policy. Only flag DRIFT if the user wants to deviate from it. Exactly five tools carry such a fallback, the ones whose `ToolSpec` sets `default_config` in `repomatic/tool_registry.py`: `actionlint`, `mdformat`, `ruff`, `yamllint` and `zizmor`.
 - **A `[tool.X]` section is never a candidate for deletion.** The inverse of the rule above, and the more expensive mistake. Every other tool has no `default_config`, so its resolution chain has no level 3 to fall back on: `lychee`, `typos`, `mypy`, `pytest`, `coverage`, `bumpversion` and `uv` are *deployed* into `pyproject.toml` by `repomatic init`, and that section is the only config the tool will ever see. Deleting it does not restore inheritance from a bundled default, it drops the tool to level 4 and runs it bare, silently discarding every rule the section held. Read the tool's `default_config` before proposing a section be dropped "to inherit upstream updates". A deployed section that has gone stale is fixed by re-running `repomatic init`, which resyncs the components marked `SyncMode.ONGOING` in `repomatic/registry.py`.
 - **Generator artifacts vs user error.** When local thin-callers diverge from upstream (e.g., extra `workflow_dispatch:`, missing `paths:`), the cause may be the **upstream generator**, not downstream tampering. Inspect `repomatic/github/workflow_sync.py` (`generate_thin_caller`, `_adapt_trigger_paths`, `generate_workflow_header`) before recommending the user re-run `repomatic init` to "fix" something `init` itself produced.
-- **Project-level `claude.md` may live under a sub-directory.** `[tool.repomatic] agents.location` and `skills.location` indicate a project where `.claude/` is not at the root (e.g., dotfiles repos with `dotfiles/.claude/CLAUDE.md`). Search the configured location, not just `./CLAUDE.md`.
+- **Project-level `claude.md` may live under a sub-directory.** `[tool.repomatic] subagents.location` and `skills.location` indicate a project where `.claude/` is not at the root (e.g., dotfiles repos with `dotfiles/.claude/CLAUDE.md`). Search the configured location, not just `./CLAUDE.md`.
 
 When in doubt, search the upstream codebase to confirm whether a behavior is intentional. Read `[tool.repomatic]` in the local `pyproject.toml` carefully before declaring anything missing.
 
@@ -37,7 +37,7 @@ When in doubt, search the upstream codebase to confirm whether a behavior is int
 - `all` (default when `$ARGUMENTS` is empty): Run all audits below.
 - `workflows`: Audit workflow files only.
 - `configs`: Audit non-workflow config files only.
-- `claude`: Audit `claude.md` alignment only.
+- `agent`: Audit the agent instructions file alignment only.
 - `upstream`: Identify downstream innovations that could be contributed back to repomatic.
 
 ### Fetching reference files
@@ -109,14 +109,14 @@ Compare these files against the upstream reference. **Before flagging absence as
 
 **Skip** files that are intentionally excluded via `exclude` in `[tool.repomatic]`. Cross-check `[tool.ruff] extend-exclude` and similar before flagging "missing" entries.
 
-### 3. `claude.md` audit (`claude`)
+### 3. Agent instructions audit (`agent`)
 
-**Locate the local file first.** It may not be at the repo root:
+**Read `[tool.repomatic] agent.location` first.** That key is the answer, and it defaults through `[tool.repomatic.flavor] agent` to the selected runtime's own filename (`./claude.md` for Claude Code). Only when the repository sets neither, and nothing sits at the default, is guessing warranted:
 
-- Check `[tool.repomatic] agents.location` and `skills.location` for a sub-directory (e.g., `dotfiles/.claude/`); if those are set, look for `{location_parent}/CLAUDE.md`.
-- Try common alternates: `claude.md`, `CLAUDE.md`, `.claude/CLAUDE.md`, `dotfiles/.claude/CLAUDE.md`.
+- Check `subagents.location` and `skills.location` for a sub-directory (like `dotfiles/.claude/`); if those are set, look beside them.
+- Try the common alternates: `claude.md`, `CLAUDE.md`, `AGENTS.md`, `.claude/CLAUDE.md`.
 
-`repomatic init claude` only manages a root-level `claude.md`. When the file you find is somewhere else, the push direction below does not apply to it: audit the pull direction only, and note that the file sits outside what the sync can reach.
+A file found by guessing is one `repomatic init agent` will not write to. Say so, and recommend setting `agent.location` to it: that is the whole fix, and it turns the push direction below from unreachable into a one-command sync.
 
 **Read the audience tags before judging anything.** Upstream marks every section with an HTML comment right under its heading, and that comment answers the question this audit used to answer by eye:
 
@@ -126,20 +126,20 @@ Compare these files against the upstream reference. **Before flagging absence as
 <!-- audience: all -->
 ```
 
-`audience: all` and `audience: downstream` sections belong to upstream and are pushed down by `repomatic init claude`. `audience: upstream` never leaves `kdeldycke/repomatic`. A `; scope: package` qualifier narrows a section to repos that build a distributable, so a uv virtual project skipping one is correct, not missing. A section with **no tag at all** is the repository's own.
+`audience: all` and `audience: downstream` sections belong to upstream and are pushed down by `repomatic init agent`. `audience: upstream` never leaves `kdeldycke/repomatic`. A `; scope: package` qualifier narrows a section to repos that build a distributable, so a uv virtual project skipping one is correct, not missing. A section with **no tag at all** is the repository's own.
 
 That splits the work into two directions, and they are not symmetric:
 
-**Push (mechanical, do not hand-edit).** For each tagged local section, compare its body against upstream's. Any difference is stale, whichever side looks better: the fix is to run `repomatic init claude`, never to hand-patch the section or to propose the local wording upstream. Report the count and name the sections, but do not draft the diff. A tagged section upstream no longer sends here (retagged `upstream`, or scoped away) is an orphan the same command prunes.
+**Push (mechanical, do not hand-edit).** For each tagged local section, compare its body against upstream's. Any difference is stale, whichever side looks better: the fix is to run `repomatic init agent`, never to hand-patch the section or to propose the local wording upstream. Report the count and name the sections, but do not draft the diff. A tagged section upstream no longer sends here (retagged `upstream`, or scoped away) is an orphan the same command prunes.
 
 **Pull (analytical, this is your job).** Untagged local sections are where repo-specific knowledge lives and are correct by default. Read them for two things:
 
 1. **Content that generalizes.** A section describing something every repomatic consumer faces (how a workflow is regenerated, what a sync owns, how a pinned tool moves) is an upstream proposal. Say which audience it would carry, and check that no tagged section already covers it under a different title.
 2. **Content that upstream has since replaced.** A local section on a subject upstream now covers under a *different heading* is stale and will not be adopted, because the merge keys on the title. That is what upstream's `<!-- supersedes: {old title} -->` is for: propose adding one rather than asking the repo to delete its section.
 
-**Degrade gracefully when the file carries no tags at all.** The `claude` component is opt-in, so a repository may never have run it. Say so once, treat the whole file as untagged repo-owned content, and audit only the pull direction. Do not hand-classify the file section by section against upstream: recommending `repomatic init claude` is both the smaller message and the durable fix.
+**Degrade gracefully when the file carries no tags at all.** The `agent` component is opt-in, so a repository may never have run it. Say so once, treat the whole file as untagged repo-owned content, and audit only the pull direction. Do not hand-classify the file section by section against upstream: recommending `repomatic init agent` is both the smaller message and the durable fix.
 
-**A downstream `claude.md` is not a copy of upstream, tags or no tags.** Personal or project conventions (voice, commit policy, shell patterns, language preferences) are deliberately absent upstream and must never be proposed for it, since upstream ships to repos with outside contributors where several such rules are wrong advice.
+**A downstream instructions file is not a copy of upstream, tags or no tags.** Personal or project conventions (voice, commit policy, shell patterns, language preferences) are deliberately absent upstream and must never be proposed for it, since upstream ships to repos with outside contributors where several such rules are wrong advice.
 
 ### 4. Upstream contribution opportunities (`upstream`)
 
@@ -181,6 +181,6 @@ Suggest the user run:
 
 - Apply mechanical fixes by pushing to `main`: the `sync-repomatic` autofix job reconciles thin-caller workflow drift, and `lint.yaml` flags remaining metadata issues.
 - Make manual edits for header-only workflow drift and config changes that sync cannot fix.
-- `/sphinx-docs-sync` to audit `docs/` against the upstream `kdeldycke/repomatic` reference when this repo has a Sphinx documentation tree. The `sphinx-docs` agent (`.claude/agents/sphinx-docs.md`, opt-in via `repomatic init agents/sphinx-docs`) holds the canonical conventions for `configuration.md`, `cli.md`, `install.md`, `conf.py`, and the standard page roster — recommend opting in when the repo has Sphinx docs that drift from upstream patterns.
+- `/sphinx-docs-sync` to audit `docs/` against the upstream `kdeldycke/repomatic` reference when this repo has a Sphinx documentation tree. The `sphinx-docs` agent (`.claude/agents/sphinx-docs.md`, opt-in via `repomatic init subagents/sphinx-docs`) holds the canonical conventions for `configuration.md`, `cli.md`, `install.md`, `conf.py`, and the standard page roster — recommend opting in when the repo has Sphinx docs that drift from upstream patterns.
 
 If the audit surfaces a generator behavior that produces unwanted output (e.g., a thin-caller trigger the user wants gone, a header `paths:` filter that doesn't fit), fix it in the upstream tool (`repomatic/github/workflow_sync.py`, `repomatic/config.py`) rather than asking the user to hand-patch the generated file every time `repomatic init` runs.

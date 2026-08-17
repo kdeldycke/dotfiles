@@ -49,6 +49,26 @@ Depart from the defaults only for a domain axis they cannot express, and land th
 
 The sections below name labels by their default (`🪫 AI slop`, `🚫 wont do/fix`, `🐛 bug`, …): substitute the repository's own names wherever it has departed.
 
+### Retiring a label is a migration, not a deletion
+
+`sync-labels` only creates and updates. Dropping a label from the configuration never removes it from the repository, it just stops managing it, so the label stays live on every issue and pull request still carrying it. A repository reorganizing its taxonomy (folding per-item labels into an ecosystem group, renaming a family) therefore silently accumulates orphans that no longer appear in any config and that only a maintainer can clear.
+
+Prefer a rename to a create-and-delete, because GitHub keeps every issue and pull request attached across a rename while a deletion drops the association outright. `rename-from` is how that is declared, and it is strictly **one-to-one**: labelmaker renames only when the target does *not* exist and exactly one listed source does. Two live sources is an unconditional error, and a target that already exists falls to `on-rename-clash`, which `[defaults]` pins to `error` so the clash surfaces instead of passing silently.
+
+Two consequences worth knowing before writing the field:
+
+- **An N-to-1 merge cannot be automated.** Name the single source carrying the most history, let the rename move it wholesale, and hand-migrate the remainder. Listing every source instead errors and migrates nothing.
+- **Order matters against the sync.** Once a sync has created the new label, a rename into it can only clash. So declare `rename-from` in the same change that introduces the label, never after; a fold whose target is already live has missed the window and is left with a manual migration.
+
+Check what is actually attached before planning any of this:
+
+```shell-session
+$ gh issue list --label "{label}" --state all --limit 200
+$ gh pr list --label "{label}" --state all --limit 200
+```
+
+An orphan with nothing on it is a plain deletion, and much of a taxonomy change usually turns out to be exactly that.
+
 ### Local cache
 
 Fetch the complete inventory once into SQLite (a `{repo}-github.sqlite` file at the repo root, gitignored) instead of hammering the API per item:

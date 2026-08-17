@@ -57,7 +57,7 @@ The `_release-engine.yaml` workflow's `update-dep-graph` job regenerates the dep
 
 ### Mechanical layer
 
-`<cmd> lint-deps` decides everything readable from `pyproject.toml` alone: upper bounds, missing specifiers, unsorted lists, type stubs outside the `typing` group, and floors with no comment above them. Run it first and let it own those rows. CI runs it from the release lane's `lint-deps` job (`_release-build.yaml`, reached through `release.yaml`), which fires on every push but annotates with `--no-fatal` until a release commit makes the *shippability* findings fatal. These policy rows never block either way, so no CI gate will catch them for you.
+`<cmd> lint-deps` decides everything readable from `pyproject.toml` alone: upper bounds, missing specifiers, unsorted lists, type stubs outside the `typing` group, floors with no comment above them, and floor comments running past `[tool.repomatic] lint-deps.comment-word-threshold` words (40 by default). Run it first and let it own those rows. CI runs it from the release lane's `lint-deps` job (`_release-build.yaml`, reached through `release.yaml`), which fires on every push but annotates with `--no-fatal` until a release commit makes the *shippability* findings fatal. These policy rows never block either way, so no CI gate will catch them for you.
 
 What is left is the part no parser settles, and it is the reason this mode exists: whether a floor is **justified** by the APIs the code actually calls, whether a comment is **stale or weak**, and whether a rationale **contradicts** its conditional marker. Spend the review there.
 
@@ -70,7 +70,7 @@ What is left is the part no parser settles, and it is the reason this mode exist
 
 ### Version specifier policy
 
-These conventions are derived from the `pyproject.toml` files across all `kdeldycke/*` repositories. User-facing documentation of the same content is in [`docs/dependencies.md`](https://kdeldycke.github.io/repomatic/dependencies.html).
+These conventions are derived from the `pyproject.toml` files across all `kdeldycke/*` repositories. User-facing documentation of the same content is in [`docs/dependencies.md`](https://repomatic.net/dependencies).
 
 #### Runtime dependencies (`[project].dependencies`)
 
@@ -82,6 +82,7 @@ These conventions are derived from the `pyproject.toml` files across all `kdeldy
    "wcmatch>=10",
    ```
    A good floor comment answers: "if someone installed an older version, what would break and where?" If you cannot point to a concrete usage, the floor may be unnecessarily high.
+   **A floor comment documents the floor as it stands, in one short paragraph.** It is not a record of how the floor got there. Left alone it drifts that way on its own: each bump appends a paragraph about the newly required version, nothing is deleted, and the comment becomes a private changelog of the dependency with the declared version buried under the floors it replaced. When raising a floor, **rewrite the comment rather than extending it**: keep what the new version buys (API, fix, `requires-python` alignment, the call site consuming it, a CVE or upstream issue identifier), delete every superseded floor (`git log -- pyproject.toml` keeps that history), and move out what is not about this floor (usage detail belongs in the module using it, a comparison against an alternative package in an `XXX` pointer to the upstream ticket). `lint-deps` warns past 40 words, which is the ceiling to write to even where it is not run.
    **Security fixes are also a valid floor bump reason.** A CVE or advisory in an older version justifies raising the floor even when the API is unchanged. The comment should cite the CVE or advisory:
    ```toml
    # requests 2.32.0 fixes CVE-2024-35195 (session credential leak on redirects).
@@ -116,7 +117,8 @@ Read the full `pyproject.toml`. `lint-deps` already reports the specifier style,
 | Check                     | What to flag                                                                                                                                                    |
 | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Weak comment              | Comment cites Python version support instead of a concrete code dependency. Flag unless it documents a `requires-python` alignment or a Python version drop     |
-| Stale comment             | Comment references a reason that no longer applies (e.g., the cited method was replaced, or the Python version was dropped from the support matrix)             |
+| Stale comment             | Comment references a reason that no longer applies (the cited method was replaced, or the Python version left the support matrix)                               |
+| Accreted comment          | Comment narrates superseded floors beside the declared one. Rewrite it around the version in force; `lint-deps` catches only the long ones                      |
 | Inflated floor            | Floor higher than the oldest version providing the APIs actually used (see [floor verification](#floor-verification) below)                                     |
 | Marker/rationale mismatch | Floor rationale contradicts the conditional marker (e.g., "Python 3.14 wheels" on a dep gated by `python_version<'3.11'` — that dep is never installed on 3.14) |
 | Section style             | `[project.optional-dependencies]` used where `[dependency-groups]` would be appropriate                                                                         |
