@@ -1,5 +1,5 @@
 {
-  "cleanupPeriodDays": 30,
+  "cleanupPeriodDays": 3650,
   "env": {
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
     "DISABLE_AUTOUPDATER": "1",
