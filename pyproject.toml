@@ -19,16 +19,19 @@ include = ["agent", "skills", "subagents"]
 # one. Naming it here is what lets `repomatic init agent` reach it instead of
 # writing a second document at the root.
 #
-# `agent` is in `include` above to measure what the sync actually does, which
-# means the unattended sync-repomatic job will open that pull request on its
-# own. Expect a large one: a dry run against v7.13's tagged set takes this file
-# from 160 lines to 757. Ten sections are hand-copies of upstream's and get
-# adopted, which is the point; the other 56 arrive new and are a repomatic
-# development guide (`__init__.py` discipline, TYPE_CHECKING blocks, registry
-# query logic, the release cooldown), landing in rules that load against every
-# repository on this machine. Read that PR before merging it, and drop `agent`
-# from `include` if the ratio does not improve: `repomatic init agent` run by
-# hand refreshes the same ten sections without the standing invitation.
+# `agent` stays in `include`, so the unattended sync-repomatic job keeps this
+# file current on its own. The v7.13 adoption landed the predicted ratio: 67
+# managed sections (58 `all`, 9 `downstream`) against the 9 written here, most
+# of the new ones a repomatic development guide (`__init__.py` discipline,
+# TYPE_CHECKING blocks, registry query logic, the release cooldown) that is
+# inert outside a Python package yet loads against every repository on this
+# machine. That cost is accepted for now; revisit by dropping `agent` from
+# `include` and running `repomatic init agent` by hand, which refreshes the
+# same sections without the standing invitation.
+#
+# Each sync can silently duplicate a rule this file already stated, since it
+# only ever writes tagged sections and never reads the untagged ones. After a
+# large adoption, grep the untagged sections for rules upstream now covers.
 agent.location = "./dotfiles/.agents/AGENTS.md"
 # gitignore.location is left at its default, the repository root, and the file
 # there has to be a real one: git opens in-tree .gitignore, .gitattributes and

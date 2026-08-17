@@ -723,7 +723,7 @@ Write commit messages as a human developer would — describe what the code chan
 
 When a change needs a live CI run to validate it, push to `main` rather than to a scratch branch. My workflows key their concurrency group on `${{ github.workflow }}-${{ github.ref }}` with `cancel-in-progress`, so each push to the same ref cancels the previous run and hands its runners straight back. A side branch is a different ref: its run queues alongside `main`'s instead of superseding it, and both then crawl through a runner pool that is capped, most tightly on macOS.
 
-Never write `#N` (a literal `#` followed by a number) in commit messages, PR titles, or PR bodies unless N is the actual number of a GitHub issue or pull request in the target repository. GitHub auto-links every `#N` token to issue/PR N, so positional references like `test #1` or `tests #14 and #15` render as misleading cross-references to unrelated tickets. Use plain numbers (`test 1`, `tests 14 and 15`), backtick-quote the identifier when it names a slot in a test plan or list (`` test `1` ``, `` item `14` ``), or rephrase (`the first test`, `the fourteenth case`).
+The `#N` autolink hazard applies here in full: see [§ GitHub cross-references in commit messages and PRs](#github-cross-references-in-commit-messages-and-prs).
 
 ## Shell commands
 
@@ -749,16 +749,6 @@ When producing matplotlib figures, follow the design system at https://github.co
 
 ## Markdown and documentation
 
-Markdown files have no line-length limit: do not hard-wrap prose in markdown. Each sentence or logical clause should flow as a single long line; let the renderer handle wrapping.
+The markdown no-hard-wrap rule above is not merely a ceiling to stay under: each sentence or logical clause flows as a single long line and the renderer handles wrapping. Never reflow a paragraph to a column width, in any markdown file.
 
-Titles in markdown use sentence case.
-
-Use the natural auto-generated heading anchor for cross-references. Add an explicit anchor (`(my-anchor)=` in MyST, `<a id="…"></a>` in plain GFM) only when the natural one is unavailable: duplicate headings, non-heading targets.
-
-In markdown (changelogs, `readme.md`, `docs/`, issue and PR bodies), link to another repository using GitHub's reference slug as the link text, not the raw URL:
-
-- Issue or PR: `[owner/repo#N](https://github.com/owner/repo/issues/N)`. Issues and PRs share one number space; pick `/issues/N` or `/pull/N` to match the real type (GitHub redirects either way).
-- Commit: `[owner/repo@shortsha](https://github.com/owner/repo/commit/fullsha)`.
-- Repository homepage: `[owner/repo](https://github.com/owner/repo)`.
-
-GitHub autolinks the bare `owner/repo#N` form only inside conversations (issues, PRs, commit messages), never in committed files, so the explicit link is what renders the compact slug in a markdown file. Same-repo references drop the slug: `[#N](…/issues/N)`.
+Sentence-case titles, natural heading anchors and the `[owner/repo#N]` link form are stated above and need no restating here: see [§ Comments and docstrings](#comments-and-docstrings) and [§ Linking to external repositories in Markdown](#linking-to-external-repositories-in-markdown). One case those do not reach: in plain GFM, where MyST's `(my-anchor)=` is unavailable, the explicit anchor form is `<a id="…"></a>`.
