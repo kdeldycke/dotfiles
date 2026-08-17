@@ -1,8 +1,8 @@
 {
-  "lastChangelogVersion": "0.84.0",
+  "lastChangelogVersion": "0.84.1",
   "theme": "dark",
-  "defaultProvider": "github-copilot",
-  "defaultModel": "claude-sonnet-5",
+  "defaultProvider": "openrouter",
+  "defaultModel": "qwen/qwen3.8-max",
   "defaultThinkingLevel": "medium",
   "enableInstallTelemetry": false,
   "enableAnalytics": false
