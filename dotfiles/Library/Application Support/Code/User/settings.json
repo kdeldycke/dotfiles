@@ -102,8 +102,8 @@
   "mermaid-chat.enabled": true,
   "editor.inlayHints.enabled": "offUnlessPressed",
   "github.copilot.selectedCompletionModel": "",
-  "chat.viewSessions.orientation": "stacked",
   "claudeCode.selectedModel": "opus",
   "chat.agent.sandbox.enabled": "on",
-  "git.addAICoAuthor": "off"
+  "git.addAICoAuthor": "off",
+  "chat.viewSessions.orientation": "stacked"
 }
