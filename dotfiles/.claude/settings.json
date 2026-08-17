@@ -137,20 +137,13 @@
     "padding": 0
   },
   "enabledPlugins": {
-    "pyright-lsp@claude-plugins-official": true,
-    "repomatic@kdeldycke": true
+    "pyright-lsp@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "kdeldycke": {
       "source": {
         "source": "github",
         "repo": "kdeldycke/repomatic"
-      }
-    },
-    "kdeldycke-dotfiles": {
-      "source": {
-        "source": "github",
-        "repo": "kdeldycke/dotfiles"
       }
     }
   },

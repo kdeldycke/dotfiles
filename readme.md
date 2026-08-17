@@ -175,6 +175,15 @@ filter lists:
 
 `enableWeakerNetworkIsolation: true` is set in the sandbox config to work around a macOS sandbox limitation: the sandbox blocks `Security.framework` IPC to `trustd`, breaking TLS certificate verification for all CGO-compiled Go binaries (`gh`, `terraform`, `tofu`, etc.) and Keychain access. `SSL_CERT_FILE` does not help because these binaries use `Security.framework` directly and ignore file-based certs ([anthropics/claude-code#34876](https://github.com/anthropics/claude-code/issues/34876)).
 
+Claude Code reads skills and agents from the filesystem (`~/.claude/skills/` and `~/.claude/agents/`, symlinked to this repo), but Cowork and the Desktop chat resolve them from the account-level deployment store and cannot read local files. Until a sync or publish path lands upstream ([anthropics/claude-code#20697](https://github.com/anthropics/claude-code/issues/20697), [anthropics/claude-code#84611](https://github.com/anthropics/claude-code/issues/84611)), the workaround is to upload the `repomatic` plugin archive by hand, once per release whose skills matter there:
+
+1. Download the `repomatic-claude-plugin.zip` asset of the [latest `kdeldycke/repomatic` release](https://github.com/kdeldycke/repomatic/releases/latest).
+2. In the Claude Desktop app, open **Settings** → **Customize** → **Plugins**.
+3. Click **Add** → **Upload plugin** and select the zip.
+4. Check the plugin installs as `Repomatic`, enabled, with its `Skills` and `Agents` tabs populated.
+
+The upload reports its source as `Uploaded from file` with no update channel, so every release needs a fresh upload. Keep the filename version-free: the app derives the plugin name from it, and a versioned name installs a duplicate instead of updating ([anthropics/claude-code#20697](https://github.com/anthropics/claude-code/issues/20697)).
+
 ### Pi
 
 `~/.pi/agent/settings.json` is symlinked to this repo and committed. Session logs, auth tokens and model caches stay local to the machine.
