@@ -114,6 +114,9 @@ export HOMEBREW_NO_ANALYTICS=1
 export PI_TELEMETRY=0
 export PI_OFFLINE=1
 
+# Global bin directory of pnpm-installed packages.
+export PNPM_HOME="${HOME}/Library/pnpm"
+
 # Route SSH agent through Secretive for Touch ID-gated signing.
 # Required for git commit signing (gpg.ssh.defaultKeyCommand = ssh-add -L).
 # IdentityAgent in ~/.ssh/config handles SSH auth, but ssh-add and ssh-keygen
@@ -148,6 +151,7 @@ PATH_CACHE="${HOME}/.path-env-cache"
             $(brew --prefix python)/libexec/bin
             ${HOME}/.cargo/bin
             ${HOME}/.local/bin
+            ${PNPM_HOME}/bin
             /Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin
         )
         print -rl -- ${PATH_LIST} > ${PATH_CACHE}
