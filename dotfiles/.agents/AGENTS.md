@@ -726,11 +726,33 @@ When a change needs a live CI run to validate it, push to `main` rather than to 
 
 The `#N` autolink hazard applies here in full: see [§ GitHub cross-references in commit messages and PRs](#github-cross-references-in-commit-messages-and-prs).
 
+## Upstream reports and comments
+
+When drafting a bug report, a reproducer write-up, or a reply on an upstream issue, the maintainer of that code is the authority on it. The job is to hand over observations they can verify in one click, not conclusions to agree with.
+
+- **Every factual claim links the exact line that proves it.** A claim drawn from a CI log links the log line (see [§ GitHub Actions log anchors](#github-actions-log-anchors)); a claim that only exists in an uploaded artifact links the artifact, since no log line proves it.
+- **Line-range permalinks pin a tag or a commit SHA, never a moving branch.** `blob/main#L10-L20` silently points at different code after the next push; a tag-pinned or SHA-pinned link is the only form that stays true. A "here is the thing" link without a line range may still use the default branch.
+- **Verify before asserting.** A sentence about how an upstream tool behaves gets checked against that tool's source or manual first, and a code comment that says it better is quoted verbatim with a link. Memory is not a source.
+- **Search before claiming novelty.** Open *and* closed issues and PRs upstream: a finding that reads as new often has a predecessor that was closed for lack of a reproducer, and that closure is itself the citation.
+- **Observations in, attribution out.** Present what varied, where, and the link to it; leave the diagnosis and the next step to the maintainer. A maintainer who wrote the code reaches the conclusion faster than any summary of it, and trusts their own reasoning more.
+- **One issue, one bug.** A second finding surfaced while working an issue gets its own issue with cross-references, never a renamed broader one: the title must still describe the fix that closes it.
+- **The reproducer's vocabulary is published evidence.** When the prose quotes log lines, artifact names, and paths, renaming any of them in the reproducer forces a rerun and then a full repoint of every link and quoted phrase, in that order.
+
 ## Shell commands
 
 Never use `$()` command substitutions inside `gh` (or any other) Bash calls. The sandbox flags `$()` as a separate security check that fires regardless of permission allow rules — it can't statically verify what executes inside a substitution. Instead, run compound commands as separate sequential Bash calls: capture the inner result first, then use it in the next call. Both commands then match the allow rules individually and auto-approve.
 
 Never `cd` in Bash calls: pass absolute paths to the tool instead. Claude Code creates a `.claude/.cc-writes/` atomic-write staging directory in the session's tracked working directory, and that directory follows every `cd`. So a single `cd` into a source tree, a `.venv`, or a document folder leaves a permanent empty `.claude/` behind. No setting disables this. For the same reason, launch `claude` from a repo root rather than from a deep subdirectory or a data folder. Run `claude-sweep` to clear the strays.
+
+## GitHub Actions log anchors
+
+A `…/actions/runs/{run}/job/{job}#step:{N}:{line}` link follows non-obvious numbering, verified against live runs:
+
+- **Fetch the raw log** with `gh api repos/{owner}/{repo}/actions/jobs/{id}/logs --allow-escape-sequences`. Without the flag, `gh` refuses the escape sequences and writes an empty file. The job's numeric ID comes from `gh api repos/{owner}/{repo}/actions/runs/{run}/jobs` (`gh run view --json jobs` reports it as `null`).
+- **The step number counts "Set up job" as 1**, so a workflow's sixth step is `step:7`.
+- **The line number starts at the step's `##[group]Run …` marker**, which is line 1, and includes the echoed script plus the `shell:`/`env:` preamble before any output.
+- **Strip the leading timestamp** (`^\S+Z `) from each raw line before counting or matching.
+- **Anchors rot on every rerun.** Any change in a job's output shifts every line below it, and a tool printing one extra banner line moves anchors nobody touched. After a rerun, repoint every anchor programmatically and re-resolve each one against the new logs to confirm it still lands on the intended line; never trust the arithmetic.
 
 ## Local environment
 
