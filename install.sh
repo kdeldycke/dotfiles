@@ -338,11 +338,23 @@ ProtonVPN
     qlmanage -r
     qlmanage -r cache
 
-    # Configure SwiftBar.
-    BAR_PLUGINS_FOLDER="${HOME}/Library/Application Support/SwiftBar/Plugins"
+    # Configure SwiftBar. The plugin folder is kept out of ~/Library/Application
+    # Support/SwiftBar, which is SwiftBar's own data directory: it writes its
+    # diagnostics reports there and gives every plugin a state folder under
+    # Plugins/. Scanning that tree makes SwiftBar load its own output as
+    # plugins, which is how a system report ended up in the menu bar.
+    # ~/.swiftbar is the alternative SwiftBar itself looks for, and it keeps the
+    # app's state out of this repository.
+    BAR_PLUGINS_FOLDER="${HOME}/.swiftbar"
     mkdir -p "${BAR_PLUGINS_FOLDER}"
     ln -sf "$(mpm --bar-plugin-path)" "${BAR_PLUGINS_FOLDER}/meta_package_manager.7h.py"
     chmod +x "${BAR_PLUGINS_FOLDER}/"*.(sh|py|rb)
+    # A running app rewrites its preferences from memory when it quits, so the
+    # write below has to land while SwiftBar is stopped. The `open -a` further
+    # down brings it back. `|| true` covers a SwiftBar that was never started,
+    # which is the case on a fresh machine and on a GitHub runner.
+    killall SwiftBar || true
+    defaults write com.ameba.SwiftBar PluginDirectory -string "${BAR_PLUGINS_FOLDER}"
     # The rest of this stage seeds an app's profile by launching it, so it needs
     # a real login session and is skipped on GitHub runners. Without a session
     # the apps never come up and every step below takes the script down with it
