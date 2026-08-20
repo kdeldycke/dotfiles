@@ -337,6 +337,10 @@ alias g="git"
 alias h="history"
 alias q='exit'
 
+# Keep the machine awake for 4 hours: -d display, -i idle, -s system (on AC),
+# -u declare user activity; -t seconds.
+alias stayawake="caffeinate -disu -t 14400"
+
 # eza is a maintained fork of exa (a modern ls).
 LS_FLAGS="--all --group-directories-first --time-style=long-iso --sort=name --icons=always"
 alias ls="eza ${LS_FLAGS} --across"
