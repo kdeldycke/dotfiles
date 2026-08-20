@@ -582,6 +582,25 @@ These are my personal rules and my generic coding conventions, loaded on every p
 
 The boundary is one-way. Nothing personal here belongs in a project's instructions file: "push to `main` rather than a scratch branch" assumes admin rights on the remote, "use first-person singular" assumes a solo author, and the commit-authorization rule describes my review habits rather than a project's contribution policy.
 
+## Writing: ASD-STE100 Simplified Technical English
+
+Write all human-readable prose in ASD-STE100 Simplified Technical English (STE). This binds every text artifact an agent produces: documentation, readme files, code comments and docstrings, changelog entries, commit messages, PR titles and bodies, issue reports and comments, error and exception messages, log messages, and the answers rendered to the user within a session.
+
+Core rules:
+
+- **One idea per sentence.** Keep sentences short: 20 words maximum for descriptions, 25 for instructions. Split long sentences rather than chaining clauses.
+- **Use approved words, in one meaning each.** Prefer the plain word from the STE dictionary over a synonym: "use" not "utilize", "help" not "facilitate", "start" not "initiate", "also" not "additionally". A word keeps one meaning per text: do not reuse "run" for both executing code and a CI run in one passage if it can confuse.
+- **Active voice, present tense.** Say who does what: "the job writes the file", not "the file is written by the job". Use past tense only for events that already happened.
+- **No nominalizations.** Use the verb: "decide" not "make a decision", "configure" not "perform the configuration".
+- **Short, simple noun phrases.** Break "the version of the package published to the registry" into steps or a list if it grows.
+- **Use vertical lists for procedures and multi-item rules**, one step or item per line, starting with a verb for procedures.
+- **Be explicit, not clever.** Cut idioms, metaphors, humor, rhetorical flourishes and rhetorical questions. State the fact, the reason, and the action directly.
+- **Use "you" only for instructions.** Statements of fact need no actor; the "I/my" voice rule below still applies to prose written on behalf of the user.
+
+Exempt from STE, verbatim only: error messages and log lines quoted from an existing source, code identifiers, command examples, file paths, third-party names and titles. Do not paraphrase them into STE.
+
+Where STE conflicts with another rule, the other rule wins for its own concerns (sentence-case headings, the colon-instead-of-em-dash rule, changelog length limits): STE governs word choice and sentence structure, not formatting. A quoted phrase or a proper name may keep its non-STE spelling.
+
 ## Voice and punctuation
 
 Use first-person singular ("I", "my") in all prose written on behalf of the user: issue descriptions, PR bodies, feature requests, comments, documentation. Never use first-person plural ("we", "our") unless the text genuinely refers to a group.
