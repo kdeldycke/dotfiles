@@ -18,7 +18,7 @@ Overuse of "quietly" and similar adverbs to convey subtle importance or understa
 
 ### "Honestly" and "Genuinely"
 
-Sincerity markers that imply everything else was less than honest: "honestly", "genuinely", "to be fair", "frankly", "let's be real". The words perform earnestness instead of earning it; strip them out and the sentence loses nothing but the AI cadence.
+Sincerity markers that imply everything else was less than honest: "honest", "honestly", "honesty", "genuinely", "to be fair", "frankly", "let's be real". Same family: performative emotion staged for weight ("I say this in anger", "I resent"). The words perform earnestness instead of earning it; strip them out and the sentence loses nothing but the AI cadence.
 
 **Avoid patterns like:**
 
@@ -28,7 +28,7 @@ Sincerity markers that imply everything else was less than honest: "honestly", "
 
 ### "Delve" and Friends
 
-Used to be the most infamous AI tell. "Delve" went from an uncommon English word to appearing in a staggering percentage of AI-generated text. Part of a family of overused AI vocabulary including "certainly", "utilize", "leverage" (as a verb), "robust", "streamline", "harness", "pivotal", "crucial", "intricate", "underscore", "garner", "showcase", "meticulous", "foster", and "synthesize".
+Used to be the most infamous AI tell. "Delve" went from an uncommon English word to appearing in a staggering percentage of AI-generated text. Part of a family of overused AI vocabulary including "certainly", "utilize", "leverage" (as a verb), "robust", "streamline", "harness", "pivotal", "crucial", "intricate", "underscore", "garner", "showcase", "meticulous", "foster", "synthesize", "surface" (as a verb), and "unpack" outside the "Let's unpack" framing.
 
 **Avoid patterns like:**
 
@@ -48,7 +48,7 @@ Overuse of ornate or grandiose nouns where simpler words would do. "Tapestry" is
 
 ### Brochure Puffery
 
-Travel-guide and press-release vocabulary applied to anything at all. Every town is "vibrant", every building is "nestled in the heart of" somewhere, every project is "groundbreaking", every maintainer "renowned". LLMs drift into promotional tone even when explicitly asked for neutral prose. Also includes: "boasts a", "rich cultural heritage", "stunning natural beauty", "must-visit", "diverse array", "commitment to".
+Travel-guide and press-release vocabulary applied to anything at all. Every town is "vibrant", every building is "nestled in the heart of" somewhere, every project is "groundbreaking", every maintainer "renowned". LLMs drift into promotional tone even when explicitly asked for neutral prose. Also includes: "boasts a", "rich cultural heritage", "stunning natural beauty", "must-visit", "diverse array", "commitment to", and enthusiasm adjectives with no information in them: "amazing", "incredible", "perfect".
 
 **Avoid patterns like:**
 
@@ -94,7 +94,7 @@ Cycling through synonyms to avoid repeating a word: the festival becomes "the ev
 
 ### "Load-Bearing" and Other Engineering Metaphors
 
-Mechanical and structural metaphors that dress prose up as rigorous systems analysis. Anything important is "load-bearing", every trade-off is a "tension", decisions get "gated", risks get "guarded against", and disagreement is announced as "pushing back" (usually "gently"). These words let the model sound like a measured senior engineer without doing the analysis that register implies. Literal technical uses are fine (a guard clause, a feature gate, tension in a cable); the tell is the metaphorical spread into ordinary prose.
+Mechanical and structural metaphors that dress prose up as rigorous systems analysis. Anything important is "load-bearing", every trade-off is a "tension", decisions get "gated", risks get "guarded against", and disagreement is announced as "pushing back" (usually "gently"). The family reaches further into ops and planning vocabulary: failures have a "blast radius", changes "land", architectures have a "spine", "seams" and a "grammar", plans "bake", releases become a "cutover", schedules have a "long pole", boundaries "dissolve", outcomes get "sealed", ideas "earn their keep", and everything has a "register", a "grain", a "floor" and a "ladder". These words let the model sound like a measured senior engineer without doing the analysis that register implies. Literal technical uses are fine (a guard clause, a feature gate, tension in a cable, a version floor, a patch landing on a branch); the tell is the metaphorical spread into ordinary prose.
 
 **Avoid patterns like:**
 
@@ -102,6 +102,18 @@ Mechanical and structural metaphors that dress prose up as rigorous systems anal
 - "There's a real tension between developer velocity and code quality."
 - "I want to gently push back on that framing."
 - "Gate the rollout on usage data to guard against regressions."
+- "This change lands behind a gate to keep the blast radius small."
+- "The long pole is the auth refactor; everything else bakes in parallel."
+
+### Agile Ceremony Jargon
+
+Sprint-planning vocabulary leaking into prose that has no scrum in it: "sprint", "epic", "story points", "stand-up", "retro", "grooming". The model defaults to these for any plan, review, or meeting, even when the project has none of that machinery. Use the plain word: iteration, feature, estimate, meeting, review.
+
+**Avoid patterns like:**
+
+- "Let's take this to the next retro."
+- "That's an epic; break it into story points."
+- "We can groom the backlog before the sprint."
 
 ---
 
@@ -159,7 +171,7 @@ Overuse of the rule-of-three pattern, often extended to four or five. A single t
 
 ### "It's Worth Noting"
 
-Filler transitions that signal nothing. AI uses these phrases to introduce new points without actually connecting them to the previous argument. Also includes: "It bears mentioning", "Importantly", "Interestingly", "Notably".
+Filler transitions that signal nothing. AI uses these phrases to introduce new points without actually connecting them to the previous argument. Also includes: "It bears mentioning", "Importantly", "Interestingly", "Notably", and the hedge transitions "To be clear" and "That said", which announce a clarification or concession that the sentence already delivers on its own.
 
 **Avoid patterns like:**
 
@@ -283,6 +295,16 @@ Diagnostic confidence without the diagnosis. Guesses arrive labeled "the root ca
 - "The key insight is that caching solves this."
 - "This is precisely why the pattern fails at scale."
 
+### Rigor-Washing Adjectives
+
+Self-praise adjectives that claim rigor without showing it: "comprehensive", "rigorous", "systematic", "surgical", "elegant". The word delivers the verdict so the prose does not have to earn it. If the analysis is rigorous, the reader can tell from the analysis; the adjective is a confession that they cannot.
+
+**Avoid patterns like:**
+
+- "A comprehensive review of the codebase."
+- "A surgical fix that elegantly resolves the issue."
+- "A systematic and rigorous approach to testing."
+
 ### Grandiose Stakes Inflation
 
 Everything is the most important thing ever. AI inflates the stakes of every argument to world-historical significance. A blog post about API pricing becomes a meditation on the fate of civilization.
@@ -303,6 +325,16 @@ Unearned significance vocabulary that awards every subject a legacy: "stands as 
 - "The release marked a pivotal moment that cemented the project's legacy."
 - "Deeply rooted in Unix tradition, the tool continues to captivate developers."
 
+### Staged Gravity
+
+Phrases that stop the prose to announce that something matters: "the moment", "in one breath", "the thing itself", "near and dear". They slow the sentence down and point at the subject instead of showing why it matters.
+
+**Avoid patterns like:**
+
+- "In one breath it promises speed, and in the next it takes it away."
+- "This is the thing itself, not a copy of it."
+- "A tool near and dear to every maintainer."
+
 ### "Let's Break This Down"
 
 The pedagogical voice that assumes the reader needs hand-holding. AI defaults to a teacher-student dynamic even when writing for expert audiences. Also includes: "Let's unpack this", "Let's explore", "Let's dive in".
@@ -312,6 +344,7 @@ The pedagogical voice that assumes the reader needs hand-holding. AI defaults to
 - "Let's break this down step by step."
 - "Let's unpack what this really means."
 - "Let's explore this idea further."
+- "A deep-dive into the scheduler" or "let me unpack that", as standalone synonyms for "look at" and "explain".
 
 ### Vague Attributions
 
