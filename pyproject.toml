@@ -12,27 +12,23 @@ exclude = [
     # job keeps its separate filename.
     "workflows/tests.yaml",
 ]
-include = ["agent", "skills", "subagents"]
-# The instructions file this repository owns is not a root-level claude.md: it
-# is dotfiles/.agents/AGENTS.md, symlinked to ~/.claude/CLAUDE.md by install.sh
-# and therefore loaded on every project opened from this machine, not just this
-# one. Naming it here is what lets `repomatic init agent` reach it instead of
-# writing a second document at the root.
+include = ["skills", "subagents"]
+# Skills and subagents deploy here, into dotfiles/.agents/ (symlinked to
+# ~/.claude/skills and ~/.claude/agents by install.sh), because this machine
+# consumes them from home: every session starts from this laptop, and the
+# shadowing probe of 2026-08-20 showed user-level copies win over project
+# ones anyway, so repo-carried duplicates would only ever run on surfaces
+# this fleet does not use. The downstream repos dropped their copies at the
+# same time and keep only their own domain-specific skills and agents.
 #
-# `agent` stays in `include`, so the unattended sync-repomatic job keeps this
-# file current on its own. The v7.13 adoption landed the predicted ratio: 67
-# managed sections (58 `all`, 9 `downstream`) against the 9 written here, most
-# of the new ones a repomatic development guide (`__init__.py` discipline,
-# TYPE_CHECKING blocks, registry query logic, the release cooldown) that is
-# inert outside a Python package yet loads against every repository on this
-# machine. That cost is accepted for now; revisit by dropping `agent` from
-# `include` and running `repomatic init agent` by hand, which refreshes the
-# same sections without the standing invitation.
-#
-# Each sync can silently duplicate a rule this file already stated, since it
-# only ever writes tagged sections and never reads the untagged ones. After a
-# large adoption, grep the untagged sections for rules upstream now covers.
-agent.location = "./dotfiles/.agents/AGENTS.md"
+# The `agent` component left `include` on 2026-08-20 for the same reason. The
+# instructions file dotfiles/.agents/AGENTS.md is symlinked to
+# ~/.claude/CLAUDE.md and therefore loads on every project opened from this
+# machine, so syncing per-repo copies of the same generic conventions merely
+# duplicated them in every session, modulo the drift between sync schedules.
+# The generic content moved into that file as hand-owned text instead, and
+# each downstream repository's instructions file keeps only what is specific
+# to it.
 # gitignore.location is left at its default, the repository root, and the file
 # there has to be a real one: git opens in-tree .gitignore, .gitattributes and
 # .mailmap with O_NOFOLLOW, so a symlink is skipped with a "Too many levels of
