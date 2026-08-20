@@ -3,7 +3,7 @@ name: repomatic-audit
 description: Audit downstream repo alignment with upstream repomatic reference, covering workflows, configs, and conventions.
 compatibility: 'Designed for Claude Code. Recommended model: Opus.'
 allowed-tools: Bash Read Grep Glob WebFetch Agent
-argument-hint: '[all|workflows|configs|agent]'
+argument-hint: '[all|workflows|configs]'
 ---
 
 ## Context
@@ -11,7 +11,7 @@ argument-hint: '[all|workflows|configs|agent]'
 !`ls .github/workflows/*.yaml 2>/dev/null`
 !`grep -h 'uses:.*kdeldycke/repomatic' .github/workflows/*.yaml 2>/dev/null | head -5`
 !`grep -A5 '\[tool.repomatic\]' pyproject.toml 2>/dev/null || echo "No [tool.repomatic] section"`
-!`grep -E '^(agent|subagents|skills|gitignore)\.location' pyproject.toml 2>/dev/null`
+!`grep -E '^(subagents|skills|gitignore)\.location' pyproject.toml 2>/dev/null`
 !`[ -f repomatic/__init__.py ] && echo "CANONICAL_REPO" || echo "DOWNSTREAM"`
 
 ## Instructions
@@ -37,7 +37,6 @@ When in doubt, search the upstream codebase to confirm whether a behavior is int
 - `all` (default when `$ARGUMENTS` is empty): Run all audits below.
 - `workflows`: Audit workflow files only.
 - `configs`: Audit non-workflow config files only.
-- `agent`: Audit the agent instructions file alignment only.
 - `upstream`: Identify downstream innovations that could be contributed back to repomatic.
 
 ### Fetching reference files
@@ -109,39 +108,7 @@ Compare these files against the upstream reference. **Before flagging absence as
 
 **Skip** files that are intentionally excluded via `exclude` in `[tool.repomatic]`. Cross-check `[tool.ruff] extend-exclude` and similar before flagging "missing" entries.
 
-### 3. Agent instructions audit (`agent`)
-
-**Read `[tool.repomatic] agent.location` first.** That key is the answer, and it defaults through `[tool.repomatic.flavor] agent` to the selected runtime's own filename (`./claude.md` for Claude Code). Only when the repository sets neither, and nothing sits at the default, is guessing warranted:
-
-- Check `subagents.location` and `skills.location` for a sub-directory (like `dotfiles/.claude/`); if those are set, look beside them.
-- Try the common alternates: `claude.md`, `CLAUDE.md`, `AGENTS.md`, `.claude/CLAUDE.md`.
-
-A file found by guessing is one `repomatic init agent` will not write to. Say so, and recommend setting `agent.location` to it: that is the whole fix, and it turns the push direction below from unreachable into a one-command sync.
-
-**Read the audience tags before judging anything.** Upstream marks every section with an HTML comment right under its heading, and that comment answers the question this audit used to answer by eye:
-
-```markdown
-### Version formatting
-
-<!-- audience: all -->
-```
-
-`audience: all` and `audience: downstream` sections belong to upstream and are pushed down by `repomatic init agent`. `audience: upstream` never leaves `kdeldycke/repomatic`. A `; scope: package` qualifier narrows a section to repos that build a distributable, so a uv virtual project skipping one is correct, not missing. A section with **no tag at all** is the repository's own.
-
-That splits the work into two directions, and they are not symmetric:
-
-**Push (mechanical, do not hand-edit).** For each tagged local section, compare its body against upstream's. Any difference is stale, whichever side looks better: the fix is to run `repomatic init agent`, never to hand-patch the section or to propose the local wording upstream. Report the count and name the sections, but do not draft the diff. A tagged section upstream no longer sends here (retagged `upstream`, or scoped away) is an orphan the same command prunes.
-
-**Pull (analytical, this is your job).** Untagged local sections are where repo-specific knowledge lives and are correct by default. Read them for two things:
-
-1. **Content that generalizes.** A section describing something every repomatic consumer faces (how a workflow is regenerated, what a sync owns, how a pinned tool moves) is an upstream proposal. Say which audience it would carry, and check that no tagged section already covers it under a different title.
-2. **Content that upstream has since replaced.** A local section on a subject upstream now covers under a *different heading* is stale and will not be adopted, because the merge keys on the title. That is what upstream's `<!-- supersedes: {old title} -->` is for: propose adding one rather than asking the repo to delete its section.
-
-**Degrade gracefully when the file carries no tags at all.** The `agent` component is opt-in, so a repository may never have run it. Say so once, treat the whole file as untagged repo-owned content, and audit only the pull direction. Do not hand-classify the file section by section against upstream: recommending `repomatic init agent` is both the smaller message and the durable fix.
-
-**A downstream instructions file is not a copy of upstream, tags or no tags.** Personal or project conventions (voice, commit policy, shell patterns, language preferences) are deliberately absent upstream and must never be proposed for it, since upstream ships to repos with outside contributors where several such rules are wrong advice.
-
-### 4. Upstream contribution opportunities (`upstream`)
+### 3. Upstream contribution opportunities (`upstream`)
 
 Scan the downstream repo for patterns, workarounds, or configurations that are **better** than or **missing from** the upstream reference. These are candidates for contributing back to `kdeldycke/repomatic`. Look for:
 

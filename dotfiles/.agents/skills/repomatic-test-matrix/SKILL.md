@@ -23,9 +23,27 @@ A matrix cell costs a runner on every push, so each one has to earn its place. T
 
 ### Cover the shipped config broadly; probe unreleased axes narrowly; smoke-test released flavors
 
-Released dependencies on stable Python get the full cross-platform spread. Unreleased dependency branches and prerelease Python run on one runner as `continue-on-error` probes (`test-matrix.unstable`), never across platforms: a probe that fails is information, and paying for it six times over buys none.
+Released dependencies on stable Python get a broad spread, but *broad* means broad on the axis the product actually varies along, not on both at once. A tool whose behaviour changes per platform (it drives different system binaries, resolves different paths, ships a different feature set) earns a cell for every OS and architecture, because that spread **is** the product. Interpreter compatibility is OS-independent by construction, so the floor, the prerelease and the free-threaded build each need one runner rather than one per OS. Crossing the two axes multiplies cells to buy their *interaction*, which is worth paying for only where the failure history shows an interaction exists: measure it (see below) instead of assuming it, and put the floor on whichever OS its users actually run, which for a Python tool is usually Linux, where distribution packagers build against whatever interpreter their channel ships.
+
+Unreleased dependency branches and prerelease Python run on one runner as `continue-on-error` probes (`test-matrix.unstable`), never across platforms: a probe that fails is information, and paying for it six times over buys none.
 
 A *released* free-threaded build (`3.14t`) is a different case and runs **stable** on a single runner, as a `python-version` variation pinned with `exclude` and left out of `unstable`. It is shipped software, so a failure there is a real failure.
+
+### Ask what a cell has caught, not what it might
+
+A cell justifies itself by having failed while its siblings passed. Anything less is a hypothesis, and the repository already holds the evidence to test it: walk recent runs of the workflow and, for every failing cell, check whether the *same OS* passed at its other Python version in that same run. A cell that never fails alone has never repaid its cost.
+
+```shell-session
+$ gh run list --workflow tests.yaml --branch main --limit 40 --json databaseId
+$ gh run view {run-id} --json jobs \
+    --jq '.jobs[] | select(.name | test("py")) | "\(.name): \(.conclusion)"'
+```
+
+Count cancelled runs too. A busy default branch cancels most of its runs through `cancel-in-progress`, and the cells that had already reported a verdict inside them are where most of the failure history lives; filtering to conclusive runs alone can shrink a real sample to nothing.
+
+Two readings make the decision. A failure hitting **every** cell of an OS is an OS-level or universal bug, which one cell per OS would have caught. A failure hitting **one** cell while its twin passed is the only kind a per-OS version pair can catch, and if that count is zero across a real sample, the pairs are redundant. Expect the second reading to also surface environment artifacts rather than code bugs (one runner of a label carrying a different tool layout than another), and do not count those as a cell earning its keep.
+
+State the sample size and both counts when proposing the change, and record in the config comment what would justify restoring what you cut, so the next reader inherits the measurement rather than the conclusion alone.
 
 ### Pin the dependency floor, and any release a workaround targets
 
