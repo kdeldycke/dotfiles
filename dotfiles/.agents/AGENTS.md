@@ -227,6 +227,17 @@ Each piece of knowledge has one canonical home, chosen by audience; other locati
 
 Document design decisions, trade-offs, and non-obvious choices in the code: MyST docstring admonitions (```` ```{warning} ````, ```` ```{note} ````, ```` ```{caution} ````), inline comments, and module-level docstrings for constants that need context.
 
+### Pending work goes in a `todo` admonition
+
+A statement about work not done yet (a shim waiting on an upstream release, a swap deferred until a library grows an API, an idea worth evaluating) belongs in a ```` ```{todo} ```` admonition, never a bare `# TODO` or `XXX` comment and never a loose sentence trailing a paragraph. `sphinx.ext.todo` collects every one of them onto a single `todolist` page, which is the difference between a project that knows what it owes and one where the answer is whatever a grep for four different spellings turns up.
+
+- **Say the action and its trigger.** "Delete this module once [owner/repo#N](url) ships" tells a reader whether it is actionable today; "this could be simplified eventually" does not. Link the upstream ticket, since that ticket is usually what closes the item.
+- **Split it out of the note describing current behavior**, rather than appending the plan to it. The `{note}` stays true for as long as the code does; the `{todo}` is the part that expires, and a reader deleting the shim should not have to unpick one paragraph into two.
+- **Only what Sphinx renders reaches the page:** `docs/*.md` and any docstring `autodoc` covers. A `#` comment, a YAML comment and a TOML comment are invisible to it, so move the plan into the docstring that owns the concern and leave the config file a one-line `XXX` plus the ticket link. That split is also what the floor-comment rule wants (see [§ A floor comment justifies one version](#a-floor-comment-justifies-one-version)).
+- **Retire it in the same change that retires the shim.** A todo outliving its trigger is worse than none: the page is published, so it advertises work already done.
+
+Enable the extension where it is missing (`sphinx.ext.todo` plus `todo_include_todos = True`), and give `docs/todolist.md` a toctree entry, or the items render nowhere.
+
 ### Example data
 
 Example data everywhere (docs, docstrings, comments, workflows, fixtures) must be domain-neutral: cities, weather, fruits, animals, recipes. Do not reference the project, software engineering concepts, or package metadata. The reader should understand the example without knowing what the project is.
