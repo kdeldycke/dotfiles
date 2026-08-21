@@ -23,6 +23,7 @@ name: 🔬 Install
       - macos-config.sh
       - packages.toml
       - pyproject.toml
+      - tools/audit_defaults.py
   # No `pull_request:` trigger on purpose. A full install burns a macOS runner
   # for 30 to 50 minutes, and every automation PR (Renovate, `Format JSON`,
   # `Sync .gitignore`) used to fire one on top of the `main` push, tripling the
@@ -100,3 +101,19 @@ jobs:
           SURVEY_LOG: ${{ runner.temp }}/dotfiles-survey.log
         run: |
           zsh ./install.sh
+
+      # The menu bar audit asks what macOS kept of what the script declared,
+      # which only means something on a machine the script has configured. A
+      # developer's Mac answers it whenever they think to ask; the step above
+      # just built the one machine that can answer it reproducibly, on a stock
+      # image, with the run stamp `--menubar` reads to tell a refused write
+      # from a line nothing has reached yet.
+      #
+      # `always()` because a survey run fails the step above by design, and a
+      # failed install is when the audit has the most to say. Advisory, since
+      # a key macOS has retired is a finding to act on in the next commit, not
+      # a broken install: it lands in the job summary and leaves the job green.
+      - name: Audit the declared menu bar
+        if: always()
+        continue-on-error: true
+        run: python3 ./tools/audit_defaults.py --menubar ./macos-config.sh
