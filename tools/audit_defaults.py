@@ -414,6 +414,9 @@ def format_value(value: object) -> str:
     return f"`{value}`"
 
 
+RUN_STAMP = Path.home() / ".local" / "state" / "macos-config-last-run"
+"""Where macos-config.sh records the start of its last run."""
+
 HOST_UUID_RE = re.compile(r"[0-9A-F]{8}(?:-[0-9A-F]{4}){3}-[0-9A-F]{12}", re.IGNORECASE)
 
 
@@ -472,25 +475,46 @@ def declared_when(script: Path, line: int) -> float | None:
     return None
 
 
-def run_verdict(script: Path, domain: str, per_host: bool, line: int) -> str:
-    """Whether a line can be ruled out as ever having run.
+def last_run() -> float | None:
+    """When macos-config.sh last started, in epoch seconds.
 
-    The two ambiguous sections of the report each have the same pair of
-    readings: the script has not run since the line was written, or it ran and
-    macOS refused what the line asked for. One timestamp comparison settles the
-    first, and only the first. Storage older than the line is proof the line
-    never ran, since applying it would have rewritten the file.
-
-    The opposite comparison proves nothing, and is deliberately not read as a
-    refusal: a plist carries one timestamp for the whole domain, so a single
-    unrelated toggle in System Settings makes every line in that domain look
-    like it has been run past.
+    The script stamps a file on its way in, which is the only record that it
+    ran at all. Absent on a machine it has never configured, and on one
+    configured before the stamp was introduced.
     """
-    written = storage_written(domain, per_host)
+    try:
+        return float(RUN_STAMP.read_text(encoding="UTF-8").strip())
+    except (OSError, ValueError):
+        return None
+
+
+def run_verdict(
+    script: Path, domain: str, per_host: bool, line: int, refused: str
+) -> str:
+    """Which of a finding's two readings holds, when either can be shown.
+
+    The two ambiguous sections of the report each carry the same pair: the
+    script has not run since the line was written, or it ran and macOS refused
+    what the line asked for. Two independent timestamps settle them, one each.
+
+    The run stamp is what proves a line was reached, so `refused` is only ever
+    returned on its word. A plist timestamp cannot stand in for it, since it
+    covers a whole domain and moves whenever anything else in that domain is
+    touched, which would convict every line in it after one toggle in System
+    Settings. That timestamp proves the opposite direction instead: storage
+    older than the line is proof the line never ran, since applying it would
+    have rewritten the file.
+    """
     declared = declared_when(script, line)
-    if written is None or declared is None:
+    if declared is None:
         return "inconclusive"
-    return "inconclusive" if written >= declared else "not run yet"
+    stamped = last_run()
+    if stamped is not None and stamped >= declared:
+        return refused
+    written = storage_written(domain, per_host)
+    if written is not None and written < declared:
+        return "not run yet"
+    return "inconclusive"
 
 
 def menubar_report(script: Path, scan: bool) -> tuple[list[str], bool]:
@@ -571,13 +595,13 @@ def menubar_report(script: Path, scan: bool) -> tuple[list[str], bool]:
         "The script sets these and macOS stores nothing under them, either "
         "because the script has not run since the line was written, or "
         "because the write was refused, which is how a dead key looks from "
-        "here. The verdict rules out the first reading when it can."
+        "here. The verdict names whichever reading the timestamps can show."
     )
     lines.append("")
     lines.append("| Line | Domain | Key | Declared | Verdict |")
     lines.append("| ---: | :--- | :--- | :--- | :--- |")
     for scope, call in unapplied:
-        verdict = run_verdict(script, *scope[:2], call["line"])
+        verdict = run_verdict(script, *scope[:2], call["line"], "write refused")
         lines.append(
             f"| {call['line']} | {scope_label(scope)} | "
             f"{format_value(call['value'])} | {verdict} |"
@@ -594,7 +618,7 @@ def menubar_report(script: Path, scan: bool) -> tuple[list[str], bool]:
     lines.append("| Line | Domain | Key | Stored | Verdict |")
     lines.append("| ---: | :--- | :--- | :--- | :--- |")
     for scope, call in stale:
-        verdict = run_verdict(script, *scope[:2], call["line"])
+        verdict = run_verdict(script, *scope[:2], call["line"], "delete refused")
         lines.append(
             f"| {call['line']} | {scope_label(scope)} | "
             f"{format_value(live[scope])} | {verdict} |"

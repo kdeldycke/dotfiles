@@ -9,6 +9,20 @@ if (( ${SURVEY:-0} )); then
     set +e
 fi
 
+# Record when this run started, for `tools/audit_defaults.py --menubar`. A
+# declaration older than this stamp has been applied at least once, which is
+# what separates a key macOS refused from one the script has never reached: a
+# plist timestamp cannot say, since it covers a whole domain and moves whenever
+# anything else in that domain is touched.
+#
+# A file rather than a `defaults` key, on two counts. The audit parses this
+# script for `defaults` calls, so a stamp written that way would come back as
+# one more declaration to check, under a domain no system binary reads. And the
+# killall block at the foot of this file takes cfprefsd down, which can discard
+# a write it has not flushed yet.
+mkdir -p "${HOME}/.local/state"
+date +%s > "${HOME}/.local/state/macos-config-last-run"
+
 ###############################################################################
 # Plist and preferences                                                       #
 ###############################################################################
