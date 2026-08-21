@@ -175,9 +175,7 @@
         "~/Library/Logs/pipx",
         "~/code/cpython/Objects"
       ],
-      "denyRead": [
-        "~/.ssh"
-      ],
+      "denyRead": ["~/.ssh"],
       "allowRead": [
         "~/.ssh/id_ed25519.pub",
         "~/.ssh/ssh-keygen-secretive",
