@@ -414,6 +414,85 @@ def format_value(value: object) -> str:
     return f"`{value}`"
 
 
+HOST_UUID_RE = re.compile(r"[0-9A-F]{8}(?:-[0-9A-F]{4}){3}-[0-9A-F]{12}", re.IGNORECASE)
+
+
+def storage_written(domain: str, per_host: bool) -> float | None:
+    """When macOS last wrote the plist backing a domain, in epoch seconds.
+
+    A `defaults write` or `delete` that changes anything rewrites the file, so
+    a plist older than the line declaring a key is proof that line never ran.
+    """
+    prefs = Path.home() / "Library" / "Preferences"
+    if not per_host:
+        path = prefs / f"{domain}.plist"
+        return path.stat().st_mtime if path.is_file() else None
+    # A per-host plist carries the machine's UUID, and a domain can have
+    # siblings of its own (`com.apple.controlcenter.bentoboxes`) whose names
+    # begin the same way. Only the bare UUID form belongs to the domain itself.
+    for path in (prefs / "ByHost").glob(f"{domain}.*.plist"):
+        if HOST_UUID_RE.fullmatch(path.name[len(domain) + 1 : -len(".plist")]):
+            return path.stat().st_mtime
+    return None
+
+
+def declared_when(script: Path, line: int) -> float | None:
+    """When a script line was last edited, in epoch seconds.
+
+    Read from git rather than from the file's own mtime, which a fresh
+    checkout resets to the moment of cloning. A line not yet committed cannot
+    have been applied whatever the storage says, so it answers infinity.
+    """
+    script = script.resolve()
+    result = subprocess.run(
+        (
+            "git",
+            "-C",
+            str(script.parent),
+            "blame",
+            "--porcelain",
+            "-L",
+            f"{line},{line}",
+            "--",
+            str(script),
+        ),
+        capture_output=True,
+        text=True,
+        encoding="UTF-8",
+        check=False,
+    )
+    if result.returncode:
+        return None
+    rows = result.stdout.splitlines()
+    if rows and rows[0].startswith("0" * 40):
+        return float("inf")
+    for row in rows:
+        if row.startswith("author-time "):
+            return float(row.split()[1])
+    return None
+
+
+def run_verdict(script: Path, domain: str, per_host: bool, line: int) -> str:
+    """Whether a line can be ruled out as ever having run.
+
+    The two ambiguous sections of the report each have the same pair of
+    readings: the script has not run since the line was written, or it ran and
+    macOS refused what the line asked for. One timestamp comparison settles the
+    first, and only the first. Storage older than the line is proof the line
+    never ran, since applying it would have rewritten the file.
+
+    The opposite comparison proves nothing, and is deliberately not read as a
+    refusal: a plist carries one timestamp for the whole domain, so a single
+    unrelated toggle in System Settings makes every line in that domain look
+    like it has been run past.
+    """
+    written = storage_written(domain, per_host)
+    declared = declared_when(script, line)
+    if written is None or declared is None:
+        return "inconclusive"
+    return "inconclusive" if written >= declared else "not run yet"
+
+
 def menubar_report(script: Path, scan: bool) -> tuple[list[str], bool]:
     """Diff the menu bar the script declares against the one macOS stores.
 
@@ -489,31 +568,36 @@ def menubar_report(script: Path, scan: bool) -> tuple[list[str], bool]:
     lines.append(f"## Declared but never applied: {len(unapplied)}")
     lines.append("")
     lines.append(
-        "The script sets these and macOS stores nothing under them. Expected "
-        "before the first run. Afterwards it means the write was rejected, "
-        "which is how a dead key looks from here."
+        "The script sets these and macOS stores nothing under them, either "
+        "because the script has not run since the line was written, or "
+        "because the write was refused, which is how a dead key looks from "
+        "here. The verdict rules out the first reading when it can."
     )
     lines.append("")
-    lines.append("| Line | Domain | Key | Declared |")
-    lines.append("| ---: | :--- | :--- | :--- |")
+    lines.append("| Line | Domain | Key | Declared | Verdict |")
+    lines.append("| ---: | :--- | :--- | :--- | :--- |")
     for scope, call in unapplied:
+        verdict = run_verdict(script, *scope[:2], call["line"])
         lines.append(
-            f"| {call['line']} | {scope_label(scope)} | {format_value(call['value'])} |"
+            f"| {call['line']} | {scope_label(scope)} | "
+            f"{format_value(call['value'])} | {verdict} |"
         )
     lines.append("")
 
     lines.append(f"## Declared gone but still stored: {len(stale)}")
     lines.append("")
     lines.append(
-        "The script deletes these and macOS still holds them. Expected before "
-        "the first run, a failed delete afterwards."
+        "The script deletes these and macOS still holds them, on the same two "
+        "readings and the same verdict as above."
     )
     lines.append("")
-    lines.append("| Line | Domain | Key | Stored |")
-    lines.append("| ---: | :--- | :--- | :--- |")
+    lines.append("| Line | Domain | Key | Stored | Verdict |")
+    lines.append("| ---: | :--- | :--- | :--- | :--- |")
     for scope, call in stale:
+        verdict = run_verdict(script, *scope[:2], call["line"])
         lines.append(
-            f"| {call['line']} | {scope_label(scope)} | {format_value(live[scope])} |"
+            f"| {call['line']} | {scope_label(scope)} | "
+            f"{format_value(live[scope])} | {verdict} |"
         )
     lines.append("")
 
