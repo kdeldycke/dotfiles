@@ -124,9 +124,14 @@ symbol = "\\(╯°□°）╯︵ ┻━┻ "
 style = "bg:color_red fg:color_fg0"
 format = "[](bg:prev_bg fg:color_red)[$status $symbol]($style)"
 
+# Explicit colour, not `fg:prev_fg`. The segment before the fill is the closing cap, which takes
+# the colour of whichever block ended the run, and the conditional groups above mean that block
+# varies: the dark tail in a repo, the yellow directory outside one. Inheriting it painted the
+# rule yellow whenever git, python and the metrics were all absent. `color_bg1` also matches the
+# block the fill runs into on the right.
 [fill]
 symbol = '─'
-style = 'fg:prev_fg'
+style = 'fg:color_bg1'
 
 ###############################################################################
 # Claude Code status line
