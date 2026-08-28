@@ -1,6 +1,6 @@
 ---
 name: benchmark-update
-description: Create or update a competitive benchmark page (docs/benchmark.md) comparing the current project against alternatives in the same space. Checks maintenance status, feature accuracy, new candidates, and badge health.
+description: Create or update the competitive benchmark page (docs/benchmark.md) that compares this project against its alternatives. Check maintenance status, feature accuracy, new candidates and badge health.
 compatibility: 'Designed for Claude Code. Recommended model: Opus.'
 allowed-tools: Bash Read Grep Glob WebFetch WebSearch Agent
 argument-hint: '[audit|init|add <project>|refresh-badges]'

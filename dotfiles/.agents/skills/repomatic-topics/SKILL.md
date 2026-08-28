@@ -1,6 +1,6 @@
 ---
 name: repomatic-topics
-description: Optimize GitHub topics for discoverability by analyzing competition on topic pages.
+description: Optimize a repository's GitHub topics. Analyze the competition on each topic page, then pick the topics that make the project easier to find.
 compatibility: 'Designed for Claude Code. Recommended model: Sonnet.'
 allowed-tools: Bash Read Grep Glob WebFetch WebSearch Agent Edit
 argument-hint: '[audit|apply]'

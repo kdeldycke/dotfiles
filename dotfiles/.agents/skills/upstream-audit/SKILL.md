@@ -1,6 +1,6 @@
 ---
 name: upstream-audit
-description: Create or update an upstream contributions page (docs/upstream.md) tracking the project's relationship with its dependencies. Discovers merged PRs, reported issues, workarounds, and declined features.
+description: Create or update the upstream contributions page (docs/upstream.md), which records what this project sends back to its dependencies. Find merged PRs, reported issues, workarounds and declined features.
 compatibility: 'Designed for Claude Code. Recommended model: Opus.'
 allowed-tools: Bash Read Grep Glob Agent
 argument-hint: '[audit|init|refresh|sync-git]'

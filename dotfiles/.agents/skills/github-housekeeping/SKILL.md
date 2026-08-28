@@ -1,6 +1,6 @@
 ---
 name: github-housekeeping
-description: Backfill and curate labels and milestones across a repository's full issue and PR history, with taxonomy design, bulk classification, AI-slop detection, and release archaeology.
+description: Backfill and curate labels and milestones across a repository's whole issue and PR history. Design the taxonomy, classify in bulk, detect AI slop, and reconstruct past releases.
 compatibility: 'Designed for Claude Code. Recommended model: Sonnet.'
 allowed-tools: Bash Read Write Edit Grep Glob WebFetch Agent
 argument-hint: '[audit|labels|milestones|slop]'

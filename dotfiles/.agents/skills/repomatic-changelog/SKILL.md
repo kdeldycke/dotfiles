@@ -24,7 +24,7 @@ The `changelog.yaml` workflow's `fix-changelog` job runs `lint-changelog --fix` 
 
 - If the context above shows `CANONICAL_REPO`, use `uv run repomatic`.
 - Otherwise, use `uvx -- repomatic`.
-- Gate the `uvx` form with the supply-chain cooldown: `uvx --exclude-newer '1 week' --exclude-newer-package repomatic=P0D -- repomatic`. The window matches `[tool.repomatic] minimum-release-age`; repomatic itself is exempt because a fresh release must stay installable, while its dependency tree stays gated. See `claude.md` § Cooldown on every install.
+- Gate the `uvx` form with the supply-chain cooldown: `uvx --exclude-newer '1 week' --exclude-newer-package repomatic=P0D -- repomatic`. The window matches `[tool.repomatic] minimum-release-age`; repomatic itself is exempt because a fresh release must stay installable, while its dependency tree stays gated.
 
 ### Argument handling
 
@@ -54,7 +54,7 @@ Entries accumulate during development as features are built incrementally. Befor
 
 ### Style rules
 
-Follow `CLAUDE.md` § Changelog and docs updates and § Version formatting (bare versions in changelog headings, no `v` prefix), plus the canonical entry-length guideline (one short sentence per change, what-not-how-or-why): https://github.com/kdeldycke/repomatic/blob/main/claude.md#changelog-entry-length
+Follow `CLAUDE.md` § Changelog and docs updates, write bare versions in changelog headings (no `v` prefix), plus the canonical entry-length guideline (one short sentence per change, what-not-how-or-why): https://github.com/kdeldycke/repomatic/blob/main/claude.md#changelog-entry-length
 
 ### Next steps
 

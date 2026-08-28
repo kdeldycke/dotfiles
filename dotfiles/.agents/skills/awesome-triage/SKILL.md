@@ -1,6 +1,6 @@
 ---
 name: awesome-triage
-description: Triage new issues and PRs on awesome-list repos by applying curation criteria distilled from past decisions.
+description: Triage new issues and PRs on awesome-list repos. Apply the curation criteria drawn from past decisions.
 compatibility: 'Designed for Claude Code. Recommended model: Opus.'
 allowed-tools: Bash Read Grep Glob WebFetch WebSearch
 argument-hint: <issue-or-pr-url>

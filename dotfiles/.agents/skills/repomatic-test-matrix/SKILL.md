@@ -1,6 +1,6 @@
 ---
 name: repomatic-test-matrix
-description: Choose what a repository's CI test matrix covers. Decides which Python versions, operating systems and runner images earn a cell, which axes stay unstable probes, and which runner a one-off job should sit on. Use when adding or dropping a Python version or OS, pinning a dependency floor, or picking where a new job runs.
+description: Choose what a repository's CI test matrix covers. Decide which Python versions, operating systems and runner images earn a cell. Mark which axes stay unstable probes, and pick where a one-off job runs. Use when you add or drop a Python version or OS, pin a dependency floor, or place a new job.
 compatibility: 'Designed for Claude Code. Recommended model: Sonnet.'
 allowed-tools: Bash Read Grep Glob Edit
 argument-hint: '[review|add <axis>|drop <axis>]'
