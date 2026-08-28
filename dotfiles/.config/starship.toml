@@ -5,14 +5,9 @@ $sudo\
 $username\
 [](fg:prev_bg bg:color_yellow)\
 $directory\
-[](fg:prev_bg bg:color_aqua)\
-$git_branch\
-$git_status\
-$git_state\
-[](fg:prev_bg bg:color_blue)\
-$python\
-$package\
-[](fg:prev_bg bg:color_bg1)\
+([](fg:prev_bg bg:color_aqua)$git_branch$git_status$git_state)\
+([](fg:prev_bg bg:color_blue)$python$package)\
+([](fg:prev_bg bg:color_bg1)$git_metrics)\
 [](fg:prev_bg)\
 $fill\
 [](fg:color_bg1)\
@@ -22,6 +17,37 @@ $line_break\
 $character"""
 
 palette = 'gruvbox_dark'
+
+# Claude Code status line, rendered by `starship statusline claude-code`. The built-in profile
+# is `$claude_model$git_branch$claude_context$claude_cost`, with no separators and no directory.
+# This one mirrors the block grammar of `format` above, so both rows read the same way: an
+# identity block, the directory, the git state, the language, then a padded right edge.
+#
+# Separators are literal glyphs, not something a module emits, so every one is spelled out here.
+# An empty module collapses its block to the two glyphs around it, the same as in `format`.
+#
+# `~/code/dotfiles/dotfiles/.claude/statusline.py` supplies the pieces starship cannot reach on
+# its own: the session directory through `--path`, the terminal width for `$fill`, and the
+# `CC_*` variables below.
+[profiles]
+claude-code = """
+$claude_model\
+[](fg:prev_bg bg:color_yellow)\
+$directory\
+([](fg:prev_bg bg:color_aqua)$git_branch$git_status$git_state)\
+([](fg:prev_bg bg:color_blue)$python$package)\
+([](fg:prev_bg bg:color_bg1)$git_metrics)\
+[](fg:prev_bg)\
+$fill\
+[](fg:color_bg1)\
+${env_var.CC_WORKTREE}\
+${env_var.CC_PR}\
+${env_var.CC_FLAGS}\
+${env_var.CC_RATE_OK}\
+${env_var.CC_RATE_WARN}\
+${env_var.CC_RATE_CRIT}\
+$claude_context\
+$claude_cost"""
 
 [palettes.gruvbox_dark]
 color_fg0 = '#fbf1c7'
@@ -62,6 +88,21 @@ format = '[[ $symbol $branch ](fg:color_fg0 bg:color_aqua)]($style)'
 style = "bg:color_aqua"
 format = '[[($all_status$ahead_behind )](fg:color_fg0 bg:color_aqua)]($style)'
 
+# Without this the default "bold yellow" prints on the terminal background, tearing a hole in
+# the aqua block mid-rebase.
+[git_state]
+style = "bg:color_aqua"
+format = '[[\($state( $progress_current/$progress_total)\) ](fg:color_red bg:color_aqua)]($style)'
+
+# Working-tree lines against HEAD, which is what a session has changed on disk. starship ships
+# this module disabled. `claude_cost` counts the same thing per session, as $lines_added and
+# $lines_removed, if that reading is ever wanted instead.
+[git_metrics]
+disabled = false
+added_style = "fg:color_green bg:color_bg1"
+deleted_style = "fg:color_red bg:color_bg1"
+format = '([ +$added]($added_style))([ -$deleted]($deleted_style))[ ](bg:color_bg1)'
+
 [python]
 symbol = ""
 style = "bg:color_blue"
@@ -86,3 +127,72 @@ format = "[](bg:prev_bg fg:color_red)[$status $symbol]($style)"
 [fill]
 symbol = '─'
 style = 'fg:prev_fg'
+
+###############################################################################
+# Claude Code status line
+#
+# Every module below renders only inside the `claude-code` profile, so their styling is free to
+# assume the blocks that profile draws. The `display` lists replace starship's defaults, whose
+# first entry is `hidden = true`: out of the box the gauge appears only past 30% and the cost
+# only past $1.00, which is most of a session spent showing nothing.
+###############################################################################
+
+# Leads the row the way `username` leads the shell prompt, in the same orange. The aliases keep
+# the block short: an unaliased name renders in full, so a new model degrades to something long
+# rather than to nothing. Reasoning effort would belong here as $effort, but starship 1.26.0
+# does not parse it: `statusline.py` reports it through CC_FLAGS instead.
+[claude_model]
+style = "fg:color_fg0 bg:color_orange"
+format = '[ $symbol$model ]($style)'
+model_aliases = { "Opus 5 (1M context)" = "Opus 5 1M", "Sonnet 5 (1M context)" = "Sonnet 5 1M" }
+
+# Not in the profile: the session name is already in the terminal tab title, set by
+# `.claude/hooks/session-title.py`, and in Claude Code's own badge above the input box. A third
+# copy costs 20 columns. Add `${env_var.CC_SESSION}` back to the profile to restore it.
+[env_var.CC_SESSION]
+variable = "CC_SESSION"
+format = '[ $env_value ](dimmed fg:color_fg0 bg:color_bg1)'
+
+[claude_context]
+format = '[$gauge $percentage ]($style)'
+display = [
+  { threshold = 0, style = "bold green bg:color_bg1" },
+  { threshold = 60, style = "bold yellow bg:color_bg1" },
+  { threshold = 80, style = "bold red bg:color_bg1" },
+]
+
+[claude_cost]
+format = '[$symbol\$$cost ]($style)'
+display = [
+  { threshold = 0, style = "bold green bg:color_bg1" },
+  { threshold = 1, style = "bold yellow bg:color_bg1" },
+  { threshold = 5, style = "bold red bg:color_bg1" },
+]
+
+# Fields with no starship module, exported by `statusline.py` from the session JSON. Each one
+# hides itself when its variable is unset, which is what an absent field leaves behind.
+[env_var.CC_WORKTREE]
+variable = "CC_WORKTREE"
+format = '[ $env_value ](bold purple bg:color_bg1)'
+
+[env_var.CC_PR]
+variable = "CC_PR"
+format = '[  $env_value ](bold green bg:color_bg1)'
+
+[env_var.CC_FLAGS]
+variable = "CC_FLAGS"
+format = '[ $env_value ](bold cyan bg:color_bg1)'
+
+# One tier per severity, because `env_var` carries a single style and cannot colour by threshold
+# the way `claude_context` does. `statusline.py` sets exactly one of the three.
+[env_var.CC_RATE_OK]
+variable = "CC_RATE_OK"
+format = '[ ⏳ $env_value ](bold green bg:color_bg1)'
+
+[env_var.CC_RATE_WARN]
+variable = "CC_RATE_WARN"
+format = '[ ⏳ $env_value ](bold yellow bg:color_bg1)'
+
+[env_var.CC_RATE_CRIT]
+variable = "CC_RATE_CRIT"
+format = '[ ⏳ $env_value ](bold red bg:color_bg1)'

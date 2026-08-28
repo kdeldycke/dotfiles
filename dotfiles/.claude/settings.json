@@ -133,7 +133,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "starship statusline claude-code",
+    "command": "/Users/kde/code/dotfiles/dotfiles/.claude/statusline.py",
     "padding": 0
   },
   "enabledPlugins": {
@@ -191,5 +191,6 @@
   "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
   "skipWorkflowUsageWarning": true,
+  "agentPushNotifEnabled": true,
   "skipAutoPermissionPrompt": true
 }
