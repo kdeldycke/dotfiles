@@ -2,7 +2,6 @@
 exclude = [
     "changelog",
     "workflows/changelog.yaml",
-    "workflows/debug.yaml",
     "workflows/release.yaml",
     # There is no Python test matrix to run here, so this repository genuinely
     # has no upstream tests.yaml. Its own check is a full macOS install, which
