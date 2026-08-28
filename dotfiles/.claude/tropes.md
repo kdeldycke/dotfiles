@@ -1,6 +1,6 @@
 # AI Writing Tropes to Avoid
 
-Add this file to your AI assistant's system prompt or context to help it avoid common AI writing patterns. Sources: [AI writing tropes](https://gist.github.com/ossa-ma/f3baa9d25154c33095e22272c631f5a1) and Wikipedia's [Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing).
+Add this file to your AI assistant's system prompt or context to help it avoid common AI writing patterns. Sources: [AI writing tropes](https://gist.github.com/ossa-ma/f3baa9d25154c33095e22272c631f5a1), Wikipedia's [Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing), and [load-bearing](https://github.com/louisabraham/load-bearing), a cluster analysis of 461,121 GitHub pull request descriptions, grouped by the words they are written with rather than anything anyone told it to look for. It finds ten ways of writing and measures each one's share week by week.
 
 ---
 
@@ -28,7 +28,7 @@ Sincerity markers that imply everything else was less than honest: "honest", "ho
 
 ### "Delve" and Friends
 
-Used to be the most infamous AI tell. "Delve" went from an uncommon English word to appearing in a staggering percentage of AI-generated text. Part of a family of overused AI vocabulary including "certainly", "utilize", "leverage" (as a verb), "robust", "streamline", "harness", "pivotal", "crucial", "intricate", "underscore", "garner", "showcase", "meticulous", "foster", "synthesize", "surface" (as a verb), and "unpack" outside the "Let's unpack" framing.
+Used to be the most infamous AI tell. "Delve" went from an uncommon English word to appearing in a staggering percentage of AI-generated text. Part of a family of overused AI vocabulary including "certainly", "utilize", "leverage" (as a verb), "robust", "streamline", "harness", "pivotal", "crucial", "intricate", "underscore", "garner", "showcase", "meticulous", "foster", "synthesize", "surface" (as a verb), and "unpack" outside the "Let's unpack" framing, and "enhance" with its whole conjugation ("enhanced", "enhancing", "enhancements"): the word adds approval without saying what changed.
 
 **Avoid patterns like:**
 
@@ -48,7 +48,7 @@ Overuse of ornate or grandiose nouns where simpler words would do. "Tapestry" is
 
 ### Brochure Puffery
 
-Travel-guide and press-release vocabulary applied to anything at all. Every town is "vibrant", every building is "nestled in the heart of" somewhere, every project is "groundbreaking", every maintainer "renowned". LLMs drift into promotional tone even when explicitly asked for neutral prose. Also includes: "boasts a", "rich cultural heritage", "stunning natural beauty", "must-visit", "diverse array", "commitment to", and enthusiasm adjectives with no information in them: "amazing", "incredible", "perfect".
+Travel-guide and press-release vocabulary applied to anything at all. Every town is "vibrant", every building is "nestled in the heart of" somewhere, every project is "groundbreaking", every maintainer "renowned". LLMs drift into promotional tone even when explicitly asked for neutral prose. Also includes: "boasts a", "rich cultural heritage", "stunning natural beauty", "must-visit", "diverse array", "commitment to", and enthusiasm adjectives with no information in them: "amazing", "incredible", "perfect". Product-marketing compounds belong here too: "enterprise-grade", "production-ready", "community-driven", "ai-powered", and the "-ability" nouns that promise virtue without a mechanism: "modularity", "maintainability", "scalability", "flexibility".
 
 **Avoid patterns like:**
 
@@ -94,7 +94,7 @@ Cycling through synonyms to avoid repeating a word: the festival becomes "the ev
 
 ### "Load-Bearing" and Other Engineering Metaphors
 
-Mechanical and structural metaphors that dress prose up as rigorous systems analysis. Anything important is "load-bearing", every trade-off is a "tension", decisions get "gated", risks get "guarded against", and disagreement is announced as "pushing back" (usually "gently"). The family reaches further into ops and planning vocabulary: failures have a "blast radius", changes "land", architectures have a "spine", "seams" and a "grammar", plans "bake", releases become a "cutover", schedules have a "long pole", boundaries "dissolve", outcomes get "sealed", ideas "earn their keep", and everything has a "register", a "grain", a "floor" and a "ladder". These words let the model sound like a measured senior engineer without doing the analysis that register implies. Literal technical uses are fine (a guard clause, a feature gate, tension in a cable, a version floor, a patch landing on a branch); the tell is the metaphorical spread into ordinary prose.
+Mechanical and structural metaphors that dress prose up as rigorous systems analysis. Anything important is "load-bearing", every trade-off is a "tension", decisions get "gated", risks get "guarded against", and disagreement is announced as "pushing back" (usually "gently"). The family reaches further into ops and planning vocabulary: failures have a "blast radius", changes "land", architectures have a "spine", "seams" and a "grammar", plans "bake", releases become a "cutover", schedules have a "long pole", boundaries "dissolve", outcomes get "sealed", ideas "earn their keep", and everything has a "register", a "grain", a "floor" and a "ladder". The legal and accounting branch of the family is just as busy: arguments have a "premise", reviews issue a "ruling", an exception is a "carve-out", limits are a "ceiling", and someone is always "owed" an explanation. Machinery and plumbing: plans have a "backstop" and a "chokepoint", arguments pull a "lever", processes get "wedged", and approval is "stamped". Code itself is personified: it "refuses" input, "carries" responsibility, and "survives" refactors, as if a failing test were a character choice. These words let the model sound like a measured senior engineer without doing the analysis that register implies. Literal technical uses are fine (a guard clause, a feature gate, tension in a cable, a version floor, a patch landing on a branch); the tell is the metaphorical spread into ordinary prose. This is the tell that is winning: in the load-bearing corpus, this style's cluster went from 0.7% of everything written at the start of 2025 to 39% by mid-2026, still growing at about a point a week, and "load-bearing" itself is the single most distinctive word in all 461,121 descriptions, written 39 times more often inside the cluster than anywhere else.
 
 **Avoid patterns like:**
 
@@ -104,6 +104,9 @@ Mechanical and structural metaphors that dress prose up as rigorous systems anal
 - "Gate the rollout on usage data to guard against regressions."
 - "This change lands behind a gate to keep the blast radius small."
 - "The long pole is the auth refactor; everything else bakes in parallel."
+- "The whole system rests on that premise."
+- "Only the parser survived the refactor."
+- "That rule owes the reader an explanation."
 
 ### Agile Ceremony Jargon
 
@@ -287,13 +290,15 @@ Asserting that something is obvious, clear or simple instead of actually proving
 
 ### False Precision
 
-Diagnostic confidence without the diagnosis. Guesses arrive labeled "the root cause", hunches become "the key insight", approximations come wrapped in "exactly" and "precisely". The vocabulary of rigor gets applied before any rigor has happened, which reads as authoritative right up until it's wrong.
+Diagnostic confidence without the diagnosis. Guesses arrive labeled "the root cause", hunches become "the key insight", approximations come wrapped in "exactly" and "precisely". Same family: certainty adverbs that close a case nobody opened ("plainly", "outright", "merely", "provably", "empirically"), and check-claiming compounds ("byte-identical", "bit-identical", "mutation-checked") that report a verification the writer never ran. The vocabulary of rigor gets applied before any rigor has happened, which reads as authoritative right up until it's wrong. The direction is measured: human hedging ("seems", "perhaps", "probably") is falling out of PR prose while this certainty vocabulary takes its place.
 
 **Avoid patterns like:**
 
 - "The root cause is a race condition in the scheduler."
 - "The key insight is that caching solves this."
 - "This is precisely why the pattern fails at scale."
+- "The two outputs are byte-identical, so the rewrite is provably safe."
+- "Plainly, the only fix is a rewrite."
 
 ### Rigor-Washing Adjectives
 
