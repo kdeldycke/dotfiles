@@ -188,9 +188,14 @@ default.extend-ignore-re = [ "(?s)<!-- typos:off -->.*?<!-- typos:on -->" ]
 # rest of the word, so the picture gains a doubled letter. typos ships an "svg"
 # file type, so no glob is needed here. Filenames stay checked.
 type.svg.check-file = false
-# Exclude terminal config.
 files.extend-exclude = [
+    # Terminal config.
     "assets/Monokai Soda.terminal",
+    # Every key is an upstream package ID, not prose. `mpm restore` looks each
+    # name up verbatim, so a spelling correction here drops the package on a
+    # fresh machine. `mpm snapshot --update-version` never repairs the name.
+    # The Homebrew cask `nativ` is the first name typos flagged.
+    "packages.toml",
 ]
 
 [tool.mypy]
