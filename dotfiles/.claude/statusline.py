@@ -99,6 +99,23 @@ def session_directory(session: dict) -> str | None:
     return workspace.get("current_dir") or session.get("cwd")
 
 
+def caller_terminal_width(argv: list[str]) -> int | None:
+    """Return the width the caller passed as `--terminal-width`, if it passed one.
+
+    A caller that states the width knows it exactly and has already accounted for its own
+    frame, so `WIDTH_MARGIN` must not be subtracted again: pi hands its footer component the
+    real usable width, where Claude Code only reports the terminal and hides the box.
+    """
+    for index, argument in enumerate(argv):
+        if argument == "--terminal-width" and index + 1 < len(argv):
+            value = argv[index + 1]
+            return int(value) if value.isdigit() else None
+        if argument.startswith("--terminal-width="):
+            value = argument.split("=", 1)[1]
+            return int(value) if value.isdigit() else None
+    return None
+
+
 def terminal_width() -> int | None:
     """Return the terminal width Claude Code reports, for the `fill` module to pad against.
 
@@ -232,9 +249,15 @@ def build_environment(session: dict, width: int | None) -> dict[str, str]:
 
 def main() -> int:
     payload = sys.stdin.buffer.read()
-    command = STARSHIP_COMMAND.copy()
+    # Own arguments pass straight through to starship, which is how a second agent selects its
+    # own profile: `statusline.py --profile pi`. Everything else here is agent-agnostic, so the
+    # pi extension reuses this mapping rather than reimplementing it in TypeScript, and any
+    # field with no Claude Code equivalent reaches starship as an environment variable the
+    # caller sets, since this process forwards its whole environment.
+    command = [*STARSHIP_COMMAND, *sys.argv[1:]]
     environment = os.environ.copy()
-    width = terminal_width()
+    supplied = caller_terminal_width(sys.argv[1:])
+    width = terminal_width() if supplied is None else supplied
 
     try:
         session = json.loads(payload)
@@ -246,7 +269,7 @@ def main() -> int:
             command += ["--path", directory, "--logical-path", directory]
         environment.update(build_environment(session, width))
 
-    if width:
+    if width and supplied is None:
         command += ["--terminal-width", str(width)]
 
     # `add_newline` defaults to true and applies to a profile as much as to the prompt, so

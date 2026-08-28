@@ -40,6 +40,7 @@ $directory\
 [](fg:prev_bg)\
 $fill\
 [](fg:color_bg1)\
+[ ](bg:color_bg1)\
 ${env_var.CC_WORKTREE}\
 ${env_var.CC_PR}\
 ${env_var.CC_FLAGS}\
@@ -48,6 +49,32 @@ ${env_var.CC_RATE_WARN}\
 ${env_var.CC_RATE_CRIT}\
 $claude_context\
 $claude_cost"""
+
+# pi renders this one, through `.pi/agent/extensions/starship-footer.ts`, which replaces pi's
+# built-in footer. Same block grammar as the two above; the right-hand block carries what pi's
+# own footer showed and starship has no module for. `PI_*` variables are set by that extension,
+# never by `statusline.py`, so they stay empty in the Claude Code row.
+pi = """
+$claude_model\
+[](fg:prev_bg bg:color_yellow)\
+$directory\
+([](fg:prev_bg bg:color_aqua)$git_branch$git_status$git_state)\
+([](fg:prev_bg bg:color_blue)$python$package)\
+([](fg:prev_bg bg:color_bg1)$git_metrics)\
+[](fg:prev_bg)\
+$fill\
+[](fg:color_bg1)\
+[ ](bg:color_bg1)\
+${env_var.CC_SESSION}\
+${env_var.CC_WORKTREE}\
+${env_var.CC_PR}\
+${env_var.CC_FLAGS}\
+${env_var.PI_TOKENS}\
+${env_var.PI_CACHE}\
+$claude_context\
+${env_var.PI_CTXWINDOW}\
+$claude_cost\
+${env_var.PI_SUB}"""
 
 [palettes.gruvbox_dark]
 color_fg0 = '#fbf1c7'
@@ -147,6 +174,12 @@ style = 'fg:color_bg1'
 # rather than to nothing. Reasoning effort would belong here as $effort, but starship 1.26.0
 # does not parse it: `statusline.py` reports it through CC_FLAGS instead.
 [claude_model]
+# `nf-md-robot`, not starship's default `🤖`. The emoji is East Asian Wide, so the terminal
+# reserves two cells while the font paints about one and a half, and that slack read as a stray
+# space beside the literal one. This glyph is one cell painted full, verified in
+# SauceCodeProNerdFont at advance 600, the same as `M` and as the powerline separators. Being
+# single width it takes its trailing space back, exactly like `` in `username`.
+symbol = "󰚩 "
 style = "fg:color_fg0 bg:color_orange"
 format = '[ $symbol$model ]($style)'
 model_aliases = { "Opus 5 (1M context)" = "Opus 5 1M", "Sonnet 5 (1M context)" = "Sonnet 5 1M" }
@@ -156,7 +189,7 @@ model_aliases = { "Opus 5 (1M context)" = "Opus 5 1M", "Sonnet 5 (1M context)" =
 # copy costs 20 columns. Add `${env_var.CC_SESSION}` back to the profile to restore it.
 [env_var.CC_SESSION]
 variable = "CC_SESSION"
-format = '[ $env_value ](dimmed fg:color_fg0 bg:color_bg1)'
+format = '[$env_value ](dimmed fg:color_fg0 bg:color_bg1)'
 
 [claude_context]
 format = '[$gauge $percentage ]($style)'
@@ -178,26 +211,65 @@ display = [
 # hides itself when its variable is unset, which is what an absent field leaves behind.
 [env_var.CC_WORKTREE]
 variable = "CC_WORKTREE"
-format = '[ $env_value ](bold purple bg:color_bg1)'
+format = '[$env_value ](bold purple bg:color_bg1)'
 
 [env_var.CC_PR]
 variable = "CC_PR"
-format = '[  $env_value ](bold green bg:color_bg1)'
+format = '[ $env_value ](bold green bg:color_bg1)'
 
+# Reasoning level: Claude Code's effort, pi's thinking level. Same slot, same meaning.
 [env_var.CC_FLAGS]
 variable = "CC_FLAGS"
-format = '[ $env_value ](bold cyan bg:color_bg1)'
+format = '[󰧑 $env_value ](bold cyan bg:color_bg1)'
 
+# `` is `fa-hourglass`, the glyph `cmd_duration` already uses; `⏳` is absent from the font.
 # One tier per severity, because `env_var` carries a single style and cannot colour by threshold
 # the way `claude_context` does. `statusline.py` sets exactly one of the three.
 [env_var.CC_RATE_OK]
 variable = "CC_RATE_OK"
-format = '[ ⏳ $env_value ](bold green bg:color_bg1)'
+format = '[ $env_value ](bold green bg:color_bg1)'
 
 [env_var.CC_RATE_WARN]
 variable = "CC_RATE_WARN"
-format = '[ ⏳ $env_value ](bold yellow bg:color_bg1)'
+format = '[ $env_value ](bold yellow bg:color_bg1)'
 
 [env_var.CC_RATE_CRIT]
 variable = "CC_RATE_CRIT"
-format = '[ ⏳ $env_value ](bold red bg:color_bg1)'
+format = '[ $env_value ](bold red bg:color_bg1)'
+
+###############################################################################
+# pi footer only
+#
+# Values pi's built-in footer printed that no starship module reproduces. The extension formats
+# each one the way pi did, so replacing the footer loses nothing.
+###############################################################################
+
+# Cumulative session tokens: input, output, cache read and cache write. starship exposes totals
+# for input and output through `claude_context`, but the cache figures only for the last call,
+# where pi reported them for the whole session. One preformatted string is simpler than fighting
+# that mismatch, and it keeps pi's own k/M rounding.
+[env_var.PI_TOKENS]
+variable = "PI_TOKENS"
+format = '[$env_value ](fg:color_fg0 bg:color_bg1)'
+
+# Cache hit rate of the most recent call. starship holds the inputs but cannot divide them.
+[env_var.PI_CACHE]
+variable = "PI_CACHE"
+format = '[$env_value ](bold green bg:color_bg1)'
+
+# Context window size. `claude_context` renders the percentage and the gauge but never the window
+# it is a percentage of. A trailing `?` means the size is known and the percentage is not, which
+# happens between a compaction and the next response: the gauge reads empty there rather than
+# unknown, which is the one thing this row states loosely. pi's `(auto)` auto-compaction marker is
+# absent because `ExtensionContext` does not expose that flag at all.
+[env_var.PI_CTXWINDOW]
+variable = "PI_CTXWINDOW"
+format = '[$env_value ](dimmed fg:color_fg0 bg:color_bg1)'
+
+# Marks a cost as covered by a subscription rather than billed per token. Only pi's hardcoded
+# `kimi-coding` provider sets it: the general test is `ModelRuntime.isUsingSubscription()`, and an
+# extension is handed `modelRegistry` instead, whose `AuthStatus` never names a subscription.
+[env_var.PI_SUB]
+variable = "PI_SUB"
+format = '[$env_value ](dimmed fg:color_fg0 bg:color_bg1)'
+
