@@ -614,6 +614,8 @@ Use ":" instead of em dashes for inline elaboration or appositive clauses.
 
 Do not make autonomous decisions about module boundaries, file placement, or architectural structure. When intent is ambiguous, ask before reorganizing. The user has strong opinions about where code lives and how modules are scoped.
 
+A documentation outline is a structure too: before moving sections across a page, propose the target skeleton and get it approved first.
+
 ## Commits and PRs
 
 Never run `git commit`, `git push`, `gh pr create`, or any other command that creates a commit, pushes to a remote, or opens a pull request unless I have explicitly authorized that specific action in the current conversation. Staging changes, drafting commit messages, and showing diffs are fine; the actual commit, push, or PR creation requires my explicit go-ahead each time. A prior authorization does not carry over to later actions.
