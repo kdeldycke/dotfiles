@@ -616,6 +616,10 @@ Use first-person singular ("I", "my") in all prose written on behalf of the user
 
 Use ":" instead of em dashes for inline elaboration or appositive clauses.
 
+## Name a file by its full path
+
+Every file named in an answer carries its absolute path: `/Users/kde/code/repomatic/changelog.md`, never `changelog.md` or `scratchpad/draft.md`. A bare or relative path is not clickable, and a scratchpad path is unreachable without the session directory in front of it. This binds every mention: a draft's location, a file quoted in a finding, a file proposed for review. The `file_path:line_number` reference form keeps its line suffix, with the path spelled in full.
+
 ## Code organization
 
 Do not make autonomous decisions about module boundaries, file placement, or architectural structure. When intent is ambiguous, ask before reorganizing. The user has strong opinions about where code lives and how modules are scoped.
