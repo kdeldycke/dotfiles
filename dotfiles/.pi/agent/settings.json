@@ -1,6 +1,6 @@
 {
   "lastChangelogVersion": "0.84.1",
-  "theme": "dark",
+  "theme": "gruvbox",
   "defaultProvider": "openrouter",
   "defaultModel": "qwen/qwen3.8-max",
   "defaultThinkingLevel": "medium",

@@ -1,6 +1,17 @@
 /**
- * Replace pi's footer with the starship row the shell prompt and the Claude Code status line
- * already use, so all three read the same way.
+ * Render the starship row the shell prompt and the Claude Code status line already use, so all
+ * three read the same way, and place it above pi's editor rather than below it.
+ *
+ * ## Why a widget and not the footer
+ *
+ * Above the editor the row reads like a shell prompt: the state first, then the line you type
+ * on. `ctx.ui.setWidget` takes exactly that placement, and `aboveEditor` is even its default,
+ * so no upstream change is needed. Claude Code has no equivalent: its `statusLine` accepts only
+ * `type`, `command` and `padding`, and always renders at the bottom.
+ *
+ * The trade is that a widget factory receives `(tui, theme)` and no `FooterDataProvider`, where
+ * a footer factory gets one. Only `getExtensionStatuses()` is lost with it, so the footer stays
+ * on as {py:class}`ExtensionStatusFooter`, rendering that and nothing else.
  *
  * The rendering itself is not done here. `dotfiles/.claude/statusline.py` already maps a session
  * onto starship, and this extension feeds it the same JSON shape Claude Code sends on stdin,
@@ -67,6 +78,7 @@ interface RenderTarget {
 }
 
 const PROFILE = "pi";
+const WIDGET_KEY = "starship-row";
 
 const STALE_MS = 2000;
 /**
@@ -292,7 +304,7 @@ function buildEnvironment(
 	return environment;
 }
 
-class StarshipFooter {
+class StarshipRow {
 	private lines: string[] = [];
 	private signature = "";
 	private lastRun = 0;
@@ -303,40 +315,20 @@ class StarshipFooter {
 
 	private readonly tui: RenderTarget;
 	private readonly ctx: ExtensionContext;
-	private readonly footerData: ReadonlyFooterDataProvider;
 	private readonly statusline: string;
 
 	// Plain assignment rather than TypeScript's constructor parameter properties: those need a
 	// real transform, so they fail under any strip-only TypeScript loader.
-	constructor(
-		tui: RenderTarget,
-		ctx: ExtensionContext,
-		footerData: ReadonlyFooterDataProvider,
-		statusline: string,
-	) {
+	constructor(tui: RenderTarget, ctx: ExtensionContext, statusline: string) {
 		this.tui = tui;
 		this.ctx = ctx;
-		this.footerData = footerData;
 		this.statusline = statusline;
 	}
 
 	render(width: number): string[] {
 		this.maybeRefresh(width);
 
-		const rendered = this.lines.length > 0 ? [...this.lines] : [];
-		// pi's footer devoted its last line to whatever other extensions publish through
-		// ctx.ui.setStatus(). Replacing the footer would drop that line silently, with no error
-		// to notice, so it is rebuilt here.
-		const statuses = this.footerData.getExtensionStatuses();
-		if (statuses.size > 0) {
-			rendered.push(
-				Array.from(statuses.entries())
-					.sort(([a], [b]) => a.localeCompare(b))
-					.map(([, text]) => text.replace(/[\r\n\t]/g, " ").replace(/ +/g, " ").trim())
-					.join(" "),
-			);
-		}
-		return rendered;
+		return this.lines.length > 0 ? [...this.lines] : [];
 	}
 
 	dispose(): void {
@@ -416,19 +408,50 @@ class StarshipFooter {
 	}
 }
 
+/**
+ * All that is left of the footer: the statuses other extensions publish via `ctx.ui.setStatus()`.
+ *
+ * pi's built-in footer devoted its last line to them. Replacing that footer with nothing would
+ * drop the line silently, with no error for the author of such an extension to notice, so this
+ * keeps rendering it. With no statuses set, it returns no rows and costs no terminal line.
+ */
+class ExtensionStatusFooter {
+	private readonly footerData: ReadonlyFooterDataProvider;
+
+	constructor(footerData: ReadonlyFooterDataProvider) {
+		this.footerData = footerData;
+	}
+
+	render(_width: number): string[] {
+		const statuses = this.footerData.getExtensionStatuses();
+		if (statuses.size === 0) return [];
+		return [
+			Array.from(statuses.entries())
+				.sort(([a], [b]) => a.localeCompare(b))
+				.map(([, text]) => text.replace(/[\r\n\t]/g, " ").replace(/ +/g, " ").trim())
+				.join(" "),
+		];
+	}
+}
+
 export default function (pi: ExtensionAPI) {
 	pi.on("session_start", async (_event, ctx) => {
-		// Only the TUI has a footer to replace. In print and RPC modes setFooter is a no-op at
-		// best, and the subprocess per frame would be pure cost.
+		// Only the TUI has an editor to sit above. In print and RPC modes the widget goes nowhere
+		// and the subprocess per frame would be pure cost.
 		if (ctx.mode !== "tui") return;
 		const statusline = resolveStatusline();
 		if (!statusline) {
 			// Leaving pi's own footer in place beats replacing it with a blank row.
-			ctx.ui.notify("starship-footer: statusline.py not found, keeping pi's footer", "warning");
+			ctx.ui.notify("starship-row: statusline.py not found, keeping pi's footer", "warning");
 			return;
 		}
-		ctx.ui.setFooter((tui, _theme, footerData) =>
-			new StarshipFooter(tui as RenderTarget, ctx, footerData, statusline),
+		// Above the editor, not below it, so the row reads like a shell prompt: state first, then
+		// the line you type on. `aboveEditor` is the default, and is stated here to say it is meant.
+		ctx.ui.setWidget(
+			WIDGET_KEY,
+			(tui, _theme) => new StarshipRow(tui as RenderTarget, ctx, statusline),
+			{ placement: "aboveEditor" },
 		);
+		ctx.ui.setFooter((_tui, _theme, footerData) => new ExtensionStatusFooter(footerData));
 	});
 }

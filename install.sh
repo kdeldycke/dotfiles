@@ -166,6 +166,7 @@ dotfiles/Library/LaunchAgents/com.kdeldycke.clamdscan.plist
 dotfiles/.pi/agent/models.json
 dotfiles/.pi/agent/settings.json
 dotfiles/.pi/agent/extensions
+dotfiles/.pi/agent/themes
 dotfiles/.agents/skills
 dotfiles/.claude/agents
 dotfiles/.claude/settings.json

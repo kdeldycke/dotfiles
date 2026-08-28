@@ -50,7 +50,7 @@ ${env_var.CC_RATE_CRIT}\
 $claude_context\
 $claude_cost"""
 
-# pi renders this one, through `.pi/agent/extensions/starship-footer.ts`, which replaces pi's
+# pi renders this one, through `.pi/agent/extensions/starship-row.ts`, which replaces pi's
 # built-in footer. Same block grammar as the two above; the right-hand block carries what pi's
 # own footer showed and starship has no module for. `PI_*` variables are set by that extension,
 # never by `statusline.py`, so they stay empty in the Claude Code row.
