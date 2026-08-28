@@ -3,7 +3,7 @@
   "theme": "gruvbox",
   "defaultProvider": "openrouter",
   "defaultModel": "qwen/qwen3.8-max",
-  "defaultThinkingLevel": "medium",
+  "defaultThinkingLevel": "high",
   "enableInstallTelemetry": false,
   "enableAnalytics": false
 }
