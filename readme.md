@@ -175,14 +175,20 @@ filter lists:
 
 `enableWeakerNetworkIsolation: true` is set in the sandbox config to work around a macOS sandbox limitation: the sandbox blocks `Security.framework` IPC to `trustd`, breaking TLS certificate verification for all CGO-compiled Go binaries (`gh`, `terraform`, `tofu`, etc.) and Keychain access. `SSL_CERT_FILE` does not help because these binaries use `Security.framework` directly and ignore file-based certs ([anthropics/claude-code#34876](https://github.com/anthropics/claude-code/issues/34876)).
 
-Claude Code reads skills and agents from the filesystem (`~/.claude/skills/` and `~/.claude/agents/`, symlinked to this repo), but Cowork and the Desktop chat resolve them from the account-level deployment store and cannot read local files. Until a sync or publish path lands upstream ([anthropics/claude-code#20697](https://github.com/anthropics/claude-code/issues/20697), [anthropics/claude-code#84611](https://github.com/anthropics/claude-code/issues/84611)), the workaround is to upload the `repomatic` plugin archive by hand, once per release whose skills matter there:
+Claude Code reads skills and agents from the filesystem (`~/.claude/skills/` and `~/.claude/agents/`, symlinked to this repo), but Cowork and the Desktop chat resolve them from the account-level deployment store and cannot read local files ([anthropics/claude-code#76724](https://github.com/anthropics/claude-code/issues/76724), [anthropics/claude-code#84611](https://github.com/anthropics/claude-code/issues/84611)). A plugin is what reaches those surfaces, and two catalogs cover my skills:
 
-1. Download the `repomatic-claude-plugin.zip` asset of the [latest `kdeldycke/repomatic` release](https://github.com/kdeldycke/repomatic/releases/latest).
-2. In the Claude Desktop app, open **Settings** → **Customize** → **Plugins**.
-3. Click **Add** → **Upload plugin** and select the zip.
-4. Check the plugin installs as `Repomatic`, enabled, with its `Skills` and `Agents` tabs populated.
+- `kdeldycke/repomatic` carries the 17 skills and 3 agents that repository owns, which is their canonical source.
+- `kdeldycke/dotfiles` carries the 6 that live only here: `audit-repo-issues`, `claude-config-self-tune`, `fill-web-form`, `pr-triage`, `rename-with-dates` and `session-title`.
 
-The upload reports its source as `Uploaded from file` with no update channel, so every release needs a fresh upload. Keep the filename version-free: the app derives the plugin name from it, and a versioned name installs a duplicate instead of updating ([anthropics/claude-code#20697](https://github.com/anthropics/claude-code/issues/20697)).
+Add each in the Claude Desktop app under **Settings** → **Customize** → **Plugins**, through **Add** → **Add marketplace** → **Add from a repository**, then install its plugin from the **Discover** tab. Both verified on 2026-08-29 against Claude Code `2.1.236` and Desktop `1.37937.3`.
+
+This repository's own plugin declares its six skills by path, and its root is the repository itself, so an install carries every other file here too: 106 of them, assets and workflows included. Scoping that payload would mean moving the plugin root down to `dotfiles/.agents`, where `skills/` sits at the location the spec scans and all 23 skills would likely be discovered, including the repomatic ones this catalog must not republish. The wasted files are the cheaper of the two.
+
+Adding a public catalog and installing from it needs no GitHub App. Keeping it current on every push does, and that app grants read and write on code, workflows, issues and pull requests, so it is worth a thought before installing. Without it a plugin still updates on request, and the app polls every 20 minutes anyway.
+
+Uploading a release archive by hand still works offline and stays the fallback: download the `repomatic-claude-plugin.zip` asset of the [latest `kdeldycke/repomatic` release](https://github.com/kdeldycke/repomatic/releases/latest) and use **Add** → **Upload plugin**. It costs an upload per release, since such a plugin reports its source as `Uploaded from file`, shows no version and offers no update check. Keep that filename version-free: the app derives the plugin name from it, and a versioned name installs a duplicate instead of updating ([anthropics/claude-code#20697](https://github.com/anthropics/claude-code/issues/20697)).
+
+Diagnose any of this from `~/Library/Logs/Claude/main.log`, never the dialog, which reports a bare "Marketplace sync failed" naming no cause. Findings are tracked in [kdeldycke/repomatic#2540](https://github.com/kdeldycke/repomatic/issues/2540).
 
 `/session-wrapup` (the shared [skill](dotfiles/.agents/skills/session-wrapup/SKILL.md)) closes out a session: loose ends, then lessons worth persisting. Claude Code cannot quit after a turn, so run it by hand before exiting; a [`SessionEnd` hook](dotfiles/.claude/hooks/session-wrapup-nudge.py) prints a reminder when an interactive exit skipped it.
 
