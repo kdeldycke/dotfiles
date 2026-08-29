@@ -5,5 +5,17 @@
   "defaultModel": "qwen/qwen3.8-max",
   "defaultThinkingLevel": "high",
   "enableInstallTelemetry": false,
-  "enableAnalytics": false
+  "enableAnalytics": false,
+  "enabledModels": [
+    "z-ai/glm-5.3",
+    "qwen/qwen3.8-max",
+    "qwen/qwen3.8-flash",
+    "deepseek/deepseek-v4-pro",
+    "deepseek/deepseek-v4-flash",
+    "~anthropic/claude-opus-latest",
+    "~anthropic/claude-sonnet-latest",
+    "~openai/gpt-latest",
+    "~google/gemini-pro-latest",
+    "~moonshotai/kimi-latest"
+  ]
 }
