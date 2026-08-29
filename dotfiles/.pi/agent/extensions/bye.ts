@@ -35,8 +35,13 @@
  * ## The nudge
  *
  * A plain `/quit` or Ctrl+D on a session with real user turns prints one dim
- * line next to pi's own resume hint, as a reminder that `pi -c` plus `/bye`
- * can still close it properly. TUI mode only, so `pi -p` output stays clean.
+ * line next to pi's own resume hint, carrying a complete one-liner:
+ * `pi --session <id> "/bye"`. An initial CLI message goes through
+ * `session.prompt()`, whose `expandPromptTemplates` defaults to true, so the
+ * `/bye` argument dispatches as an extension command (verified against pi
+ * 0.84.3) and the one-liner resumes, wraps up, and quits in one move. TUI
+ * mode only, so `pi -p` output stays clean, and only for persisted sessions:
+ * an unsaved session has nothing to resume.
  *
  * ```{todo}
  * Ask upstream for a cancellable pre-quit event (or extension-visible
@@ -175,8 +180,19 @@ export default function (pi: ExtensionAPI) {
 	pi.on("session_shutdown", async (event, ctx) => {
 		if (event.reason !== "quit" || armed || ctx.mode !== "tui") return;
 		if (!hasRealUserTurns(ctx)) return;
+		// The runtime object behind ReadonlySessionManager is the full SessionManager;
+		// the probes beyond the Pick type are optional so a slimmer object degrades to -c.
+		const manager = ctx.sessionManager as unknown as {
+			getSessionId?(): string;
+			isPersisted?(): boolean;
+			usesDefaultSessionDir?(): boolean;
+		};
+		if (manager.isPersisted && !manager.isPersisted()) return; // Nothing resumable to wrap up.
+		// A non-default session dir would need a --session-dir flag the id alone cannot carry.
+		const sessionId = manager.usesDefaultSessionDir?.() === false ? undefined : manager.getSessionId?.();
+		const command = sessionId ? `pi --session ${sessionId} "/bye"` : `pi -c "/bye"`;
 		try {
-			process.stdout.write("\x1b[2mWrap-up skipped: `pi -c` then `/bye` closes the session properly.\x1b[0m\n");
+			process.stdout.write(`\x1b[2mWrap-up skipped: \`${command}\` closes it properly.\x1b[0m\n`);
 		} catch {
 			// A signal shutdown can reach here with the terminal already gone.
 		}
