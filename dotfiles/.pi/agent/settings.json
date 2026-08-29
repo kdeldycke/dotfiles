@@ -9,7 +9,7 @@
   "enabledModels": [
     "z-ai/glm-5.3",
     "qwen/qwen3.8-max",
-    "qwen/qwen3.8-flash",
+    "qwen/qwen3.8-27b",
     "deepseek/deepseek-v4-pro",
     "deepseek/deepseek-v4-flash",
     "~anthropic/claude-opus-latest",
