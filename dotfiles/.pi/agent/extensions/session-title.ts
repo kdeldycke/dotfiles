@@ -35,8 +35,33 @@
  * "MM-DD@HH:MM" or "MM-DD@HH:MM <summary>" pattern) is left untouched.
  */
 
-import { complete } from "@earendil-works/pi-ai/compat";
+import { appendFileSync, existsSync, statSync, unlinkSync } from "node:fs";
+import { homedir } from "node:os";
+import { join } from "node:path";
+
+import { complete, registerBuiltInApiProviders } from "@earendil-works/pi-ai/compat";
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
+
+// The compat module this import resolves to is not pi core's bundled instance, so its
+// api-registry starts empty and every complete() call errors with "no provider". Registration
+// is idempotent and never clobbers existing entries, per its own doc comment.
+registerBuiltInApiProviders();
+
+const DEBUG_LOG = join(homedir(), ".pi", "agent", "session-title.log");
+
+/**
+ * Best-effort observability, mirroring dotfiles/.claude/hooks/session-wrapup-nudge.py: this
+ * handler runs at exit and swallows every failure, so without a log there is no telling "never
+ * fired" from "fired and gave up at step N". Wiped past 64 KiB.
+ */
+function debugLog(note: string): void {
+	try {
+		if (existsSync(DEBUG_LOG) && statSync(DEBUG_LOG).size > 65536) unlinkSync(DEBUG_LOG);
+		appendFileSync(DEBUG_LOG, `${new Date().toISOString()} ${note}\n`);
+	} catch {
+		// Logging must never break the host.
+	}
+}
 
 const TIMESTAMP_RE = /^(\d\d-\d\d@\d\d:\d\d)(?: (.+))?$/;
 const MAX_TRANSCRIPT_CHARS = 8000;
@@ -87,7 +112,10 @@ function sanitizeTitle(title: string): string {
 	// Strip surrounding quotes the model sometimes adds despite instructions.
 	cleaned = cleaned.replace(/^["'`]+|["'`]+$/g, "").trim();
 	if (!cleaned || cleaned.startsWith("/")) return "";
-	return cleaned.length > 60 ? cleaned.slice(0, 60) : cleaned;
+	// A real title fits the 50-character instruction. Far past it, the model answered or
+	// refused instead of titling (observed: a refusal fragment stored as the session name),
+	// and a truncated answer is worse than keeping the old name.
+	return cleaned.length > 60 ? "" : cleaned;
 }
 
 export default function (pi: ExtensionAPI) {
@@ -101,9 +129,15 @@ export default function (pi: ExtensionAPI) {
 		if (event.reason !== "quit") return;
 
 		const currentName = pi.getSessionName();
-		if (!currentName) return;
+		if (!currentName) {
+			debugLog("skip: no session name set");
+			return;
+		}
 		const match = currentName.match(TIMESTAMP_RE);
-		if (!match) return; // User-set name that doesn't carry our prefix: leave it alone.
+		if (!match) {
+			debugLog(`skip: name not ours (${currentName})`);
+			return; // User-set name that doesn't carry our prefix: leave it alone.
+		}
 		const prefix = match[1];
 
 		const userTurns = ctx.sessionManager
@@ -111,14 +145,33 @@ export default function (pi: ExtensionAPI) {
 			.filter((e) => e.type === "message" && e.message.role === "user")
 			.map((e) => extractTextParts((e as { message: { content: unknown } }).message.content).join("\n"))
 			.filter((text) => text.trim().length > 0 && !text.trimStart().startsWith("<"));
-		if (userTurns.length === 0) return;
+		if (userTurns.length === 0) {
+			debugLog("skip: no user turns");
+			return;
+		}
 
 		const model = ctx.model;
-		if (!model) return;
-		const auth = await ctx.modelRegistry.getApiKeyAndHeaders(model);
-		if (!auth.ok || !auth.apiKey) return;
+		if (!model) {
+			debugLog("skip: no model");
+			return;
+		}
+		let auth: Awaited<ReturnType<typeof ctx.modelRegistry.getApiKeyAndHeaders>>;
+		try {
+			auth = await ctx.modelRegistry.getApiKeyAndHeaders(model);
+		} catch (error) {
+			debugLog(`skip: auth lookup threw: ${error}`);
+			return;
+		}
+		if (!auth.ok || !auth.apiKey) {
+			debugLog(`skip: auth not usable (ok=${auth.ok})`);
+			return;
+		}
 
 		const transcript = userTurns.join("\n\n---\n\n").slice(0, MAX_TRANSCRIPT_CHARS);
+		// Delimit the transcript and restate the task after it: with instructions only in the
+		// system prompt, a low-effort model responds to the transcript's content instead of
+		// titling it (observed live: a refusal about the transcript stored as the name).
+		const request = `<transcript>\n${transcript}\n</transcript>\n\nReply with only the session title for the transcript above: 3 to 7 words, maximum 50 characters, sentence case, no quotes.`;
 
 		try {
 			const response = await complete(
@@ -128,7 +181,7 @@ export default function (pi: ExtensionAPI) {
 					messages: [
 						{
 							role: "user",
-							content: [{ type: "text", text: transcript }],
+							content: [{ type: "text", text: request }],
 							timestamp: Date.now(),
 						},
 					],
@@ -139,6 +192,13 @@ export default function (pi: ExtensionAPI) {
 					env: auth.env,
 					cacheRetention: "none",
 					signal: AbortSignal.timeout(SUMMARY_TIMEOUT_MS),
+					// Room for a thinking model's reasoning preamble plus the one-line title.
+					maxTokens: 2000,
+					// Without an effort, the openrouter adapter sends `reasoning: {effort: "none"}`,
+					// which mandatory-reasoning models (qwen3.8-max) reject with a 400. "low" keeps
+					// the title call valid there and cheap everywhere; providers that do not
+					// support an effort ignore it.
+					reasoningEffort: "low",
 				},
 			);
 			const summary = sanitizeTitle(
@@ -147,11 +207,20 @@ export default function (pi: ExtensionAPI) {
 					.map((c) => c.text)
 					.join(""),
 			);
+			if (!summary) {
+				const blocks = response.content.map((c) => c.type).join(",");
+				const error = (response as { errorMessage?: string }).errorMessage ?? "";
+				debugLog(`empty summary: stopReason=${response.stopReason} blocks=[${blocks}] ${error}`);
+			}
 			if (summary) {
 				pi.setSessionName(`${prefix} ${summary}`);
+				debugLog(`renamed: ${prefix} ${summary}`);
+			} else {
+				debugLog("skip: summary came back empty");
 			}
-		} catch {
+		} catch (error) {
 			// Best-effort only: never block or fail exit over a summarization error.
+			debugLog(`skip: summary call failed: ${error}`);
 		}
 	});
 }
