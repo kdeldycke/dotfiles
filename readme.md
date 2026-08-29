@@ -184,9 +184,13 @@ Claude Code reads skills and agents from the filesystem (`~/.claude/skills/` and
 
 The upload reports its source as `Uploaded from file` with no update channel, so every release needs a fresh upload. Keep the filename version-free: the app derives the plugin name from it, and a versioned name installs a duplicate instead of updating ([anthropics/claude-code#20697](https://github.com/anthropics/claude-code/issues/20697)).
 
+`/session-wrapup` (the shared [skill](dotfiles/.agents/skills/session-wrapup/SKILL.md)) closes out a session: loose ends, then lessons worth persisting. Claude Code cannot quit after a turn, so run it by hand before exiting; a [`SessionEnd` hook](dotfiles/.claude/hooks/session-wrapup-nudge.py) prints a reminder when an interactive exit skipped it.
+
 ### Pi
 
 `~/.pi/agent/settings.json` is symlinked to this repo and committed. Session logs, auth tokens and model caches stay local to the machine.
+
+`/bye` (from the [`bye.ts` extension](dotfiles/.pi/agent/extensions/bye.ts)) runs the shared [`session-wrapup` skill](dotfiles/.agents/skills/session-wrapup/SKILL.md) as a final turn, then quits once it settles. A plain `/quit` or Ctrl+D prints a one-line reminder instead.
 
 ### Logi Options
 
