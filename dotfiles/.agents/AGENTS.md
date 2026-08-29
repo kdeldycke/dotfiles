@@ -657,6 +657,8 @@ When drafting a bug report, a reproducer write-up, or a reply on an upstream iss
 
 Never use `$()` command substitutions inside `gh` (or any other) Bash calls. The sandbox flags `$()` as a separate security check that fires regardless of permission allow rules — it can't statically verify what executes inside a substitution. Instead, run compound commands as separate sequential Bash calls: capture the inner result first, then use it in the next call. Both commands then match the allow rules individually and auto-approve.
 
+Never hand `git clean` a directory. Name each path to delete, even when most of the directory is going: `git clean -f -- docs/assets/` removes *every* untracked file there, including ones renamed into place seconds earlier and about to be committed. It bypasses the Trash, so they are unrecoverable. Keeping a subset means naming the discards one by one, or moving the keepers out first.
+
 Never `cd` in Bash calls: pass absolute paths to the tool instead. Claude Code creates a `.claude/.cc-writes/` atomic-write staging directory in the session's tracked working directory, and that directory follows every `cd`. So a single `cd` into a source tree, a `.venv`, or a document folder leaves a permanent empty `.claude/` behind. No setting disables this. For the same reason, launch `claude` from a repo root rather than from a deep subdirectory or a data folder. Run `claude-sweep` to clear the strays.
 
 ## GitHub Actions log anchors
