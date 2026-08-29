@@ -24,7 +24,7 @@ Route each keeper to its one home:
 
 - A cross-project habit or correction: the global agent instructions file (the `CLAUDE.md` or `AGENTS.md` loaded from the home directory). Resolve symlinks and edit the target file inside its repository, never through the `$HOME` path: a replace-then-rename write forks the symlink.
 - A rule specific to this project: the project's own `CLAUDE.md` or `AGENTS.md`.
-- A repeatable procedure: a new or updated skill.
+- A repeatable procedure: a new or updated skill. This wrap-up skill is itself a valid target: an improvement here compounds across every later session.
 - A fact about this machine or the user: persistent memory, when the harness provides one.
 - A decision tied to one spot in the code: a comment or docstring at that spot.
 - A rule a machine can check: propose a test or lint. Mechanical enforcement beats prose.
