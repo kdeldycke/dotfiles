@@ -382,8 +382,8 @@ sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setallowsignedapp off
 #   Thunderbolt Bridge
 net_interfaces=$(networksetup -listallnetworkservices | awk '{gsub(/^*/,""); if(NR>1)print}')
 for net_service (${(f)net_interfaces}); do
-    # Use Cloudflare's fast and privacy friendly DNS.
-    networksetup -setdnsservers "${net_service}" 1.1.1.1 1.0.0.1 2606:4700:4700::1111 2606:4700:4700::1001
+    # NextDNS servers.
+    networksetup -setdnsservers "${net_service}" 2a07:a8c0::b9:b127 2a07:a8c1::b9:b127
     # Clear out all search domains.
     networksetup -setsearchdomains "${net_service}" "Empty"
     # Setup 10G NIC.
