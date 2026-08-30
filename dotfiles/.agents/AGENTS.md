@@ -665,6 +665,8 @@ Never hand `git clean` a directory. Name each path to delete, even when most of 
 
 Never `cd` in Bash calls: pass absolute paths to the tool instead. Claude Code creates a `.claude/.cc-writes/` atomic-write staging directory in the session's tracked working directory, and that directory follows every `cd`. So a single `cd` into a source tree, a `.venv`, or a document folder leaves a permanent empty `.claude/` behind. No setting disables this. For the same reason, launch `claude` from a repo root rather than from a deep subdirectory or a data folder. Run `claude-sweep` to clear the strays.
 
+`git mv` stages the rename only: unstaged content edits on the moved file stay unstaged, and the commit records a 100%-similarity rename without them. Read an `RM` status as "rename staged, content not" and `git add` the file before committing.
+
 ## GitHub Actions log anchors
 
 A `…/actions/runs/{run}/job/{job}#step:{N}:{line}` link follows non-obvious numbering, verified against live runs:
