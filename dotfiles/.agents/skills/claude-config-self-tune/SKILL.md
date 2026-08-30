@@ -1,6 +1,6 @@
 ---
 name: claude-config-self-tune
-description: Browse all global and local Claude Code config files (settings.json, settings.local.json, CLAUDE.md), audit them for issues, percolate recurring local patterns into the global config, and review past session transcripts for tool calls denied by the sandbox or allow/deny rules to propose allowlist refinements.
+description: Browse all global and local Claude Code config files (settings.json, settings.local.json, CLAUDE.md), audit them for issues, percolate recurring local patterns into the global config, compress verbose instruction files to cut per-session token cost, and review past session transcripts for tool calls denied by the sandbox or allow/deny rules to propose allowlist refinements.
 compatibility: 'Designed for Claude Code. Recommended model: Opus.'
 allowed-tools: Bash Read Grep Glob Edit Agent
 argument-hint: '[~/code or parent directory to scan]'
@@ -8,7 +8,7 @@ argument-hint: '[~/code or parent directory to scan]'
 
 # Audit and consolidate Claude Code configuration
 
-Scan all Claude Code configuration files across projects, audit them for issues, and promote recurring local patterns into the global config.
+Scan all Claude Code configuration files across projects, audit them for issues, promote recurring local patterns into the global config, and cut the token cost of instruction files.
 
 ## Config file types
 
@@ -70,6 +70,8 @@ Read every config file discovered. For each, check:
 - **Contradictory instructions**: local rules that conflict with global rules.
 - **Stale references**: `@` includes pointing to files that don't exist.
 - **Generic instructions**: local instructions that aren't project-specific and could be promoted to global.
+- **Token bloat**: measure every CLAUDE.md with a tokenizer before judging its size. Word counts and filler rates do not predict token cost; cl100k or o200k sits within ~5-10% of Claude's tokenizer in aggregate. Flag a file for compression only when a measured pass would save ~10% or more. Below that, the remaining words are the payload and the edit is churn.
+- **Compressibility**: for a flagged file, re-encode rather than delete. Keep every MUST/NEVER line, every default with its unit, every exact string, example, and failure condition, and declare every intended loss before rewriting. If the `semantic-compression` skill is available, follow its procedure; this bullet is the fallback minimum.
 
 ### Phase 3: Promotion candidates
 
@@ -91,7 +93,9 @@ Identify patterns that appear across multiple projects and would benefit from pr
 
 ### Phase 3.5: Session transcript review
 
-Scan past session transcripts to find tool calls that were denied by the sandbox or by the permission allow/deny rules, then propose allowlist refinements.
+Scan past session transcripts to find tool calls that were denied by the sandbox or by the permission allow/deny rules, then propose allowlist refinements. Denials are the primary signal, but also mine the corpus for recurring failures and retry loops that point at misconfiguration (see Beyond denials below).
+
+Keep re-runs incremental: record the last-scanned `mtime` and size per session file in `~/.claude/.self-tune-transcript-state.json`, and parse only files that changed since the previous run. The corpus grows with every session, and a full re-scan each time costs the reading time the tuning is meant to save.
 
 #### Where transcripts live
 
@@ -130,11 +134,20 @@ Each recurring denial falls into one of three buckets, and the proposed change d
 
 Skip one-off denials (single occurrence, no project recurrence): they are noise.
 
+#### Beyond denials: failure and loop signals
+
+Two more corpus signals produce config findings, though both are noisier than denials:
+
+- **Retry loops**: the same tool call, with the same or near-identical arguments, repeated several times in one session. This is often a permission prompt the user kept answering, or a hook that keeps failing. Extract the repeated call, check it against the allow list and the hook definitions, and classify it as a permission gap, a broken hook, or agent noise.
+- **Recurring command errors**: the same command shape failing with the same non-permission error across sessions. This usually points at a hook or environment misconfiguration, not an allowlist gap.
+
+Classify a finding as config-related before proposing anything. Most tool errors in a transcript are ordinary coding failures, not configuration.
+
 #### Output
 
 Add a "Session denials" section to the Phase 4 report with:
 
-- A table of recurring denials: rule shape, count, distinct projects, last seen date, classification.
+- A table of recurring denials and config-related failures: rule shape, count, distinct projects, last seen date, classification.
 - For each promoted allow/deny rule, the exact diff to apply to `~/.claude/settings.json` (or the project `settings.json` when the pattern is project-specific).
 - For sandbox denials, the proposed `additionalDirectories` or network host entry, with the originating command for context.
 
@@ -181,6 +194,8 @@ A numbered list of concrete changes, ordered by impact:
 5. Allow/deny rules derived from recurring session denials (Phase 3.5)
 6. Sandbox `additionalDirectories` or network host additions for recurring sandbox denials
 
+For every proposed removal, state what the entry prevents and why removing it is still safe. A declared loss is a decision the user can audit; an undeclared one is a guess.
+
 ### Phase 5: Apply changes
 
 After presenting the report, ask the user which actions to apply. Then:
@@ -202,3 +217,10 @@ After presenting the report, ask the user which actions to apply. Then:
 - Do not touch files outside the Claude config directories.
 - Spawn parallel Agents to read project configs when there are more than 5 projects.
 - If `settings.json` is a symlink (common in dotfiles repos), follow it and report the real path.
+- Before proposing the removal of a permission rule or an instruction line, `git blame` it when the file is version-controlled. A line that looks redundant is often scar tissue from a past incident, and only its history shows that.
+- Measure size in tokens, never words or line counts, before flagging a file as bloated or a change as worthwhile.
+- Skip marginal changes: a fix that saves nothing the user would notice is churn, not tuning.
+
+## Origin
+
+The token-measurement, incrementality, and scar-tissue rules are adapted from [can1357/oh-my-pi](https://github.com/can1357/oh-my-pi) (MIT): its `scripts/session-stats` corpus analysis, the `semantic-compression` skill, and the `tool-prompt-optimization` methodology.
