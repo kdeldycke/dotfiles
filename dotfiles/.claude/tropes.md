@@ -241,13 +241,14 @@ Numbered or labeled points dressed up as continuous prose. The model writes what
 
 ### "Here's the Kicker"
 
-False suspense transitions that promise a revelation but deliver a point that did NOT need the buildup. The model uses these phrases to manufacture drama before an otherwise unremarkable observation LOL. Also includes: "Here's the thing", "Here's where it gets interesting", "Here's what most people miss", "Here's the starting point", "Here's the deal".
+False suspense transitions that promise a revelation but deliver a point that did NOT need the buildup. The model uses these phrases to manufacture drama before an otherwise unremarkable observation LOL. Also includes: "Here's the thing", "Here's where it gets interesting", "Here's what most people miss", "Here's the starting point", "Here's the deal", and the caveat variant "One caveat, and it's a real one", which builds drama before a warning that could stand on its own.
 
 **Avoid patterns like:**
 
 - "Here's the kicker."
 - "Here's the thing about AI adoption."
 - "Here's where it gets interesting."
+- "One caveat, and it's a real one:"
 
 ### "Think of It As..."
 

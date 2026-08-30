@@ -327,6 +327,9 @@ GitHub autolinks the bare `owner/repo#N` form only inside conversations (issues,
 ### Comments and docstrings
 
 - All comments in Python files must end with a period.
+- **A comment describes how the code works now, not how it used to work.** A refactor replaces the old behavior. The story of why it changed belongs in the commit message, not in a comment beside the new code.
+- **A comment stands alone.** The reader never saw the session that wrote it: no phase numbers, no design-doc section references, no narration of the path taken ("first we tried X"), no note about what the code is not ("this is the deployment manual, not the README"). That context belongs in the commit message or the ticket.
+- **A comment explains what the code does not say.** The code shows what it does; a comment earns its place by saying why. Do not justify every change: a block narrating the diff belongs in the commit message.
 - Docstrings use MyST markdown (single-backtick inline code, `[text](url)` links, `` {role}`target` `` cross-references, ```` ```{directive} ```` admonitions); `click_extra.sphinx.myst_docstrings` converts to reST at build time. For Sphinx operational detail (fence style, `click-extra convert-to-myst`, page rosters, `conf.py` hygiene), see `.claude/agents/sphinx-docs.md`.
 - **No Google-style docstring sections** (`Args:`, `Returns:`, `Raises:`, …; no `sphinx.ext.napoleon`). Use reST field lists: `:param name:`, `:return:` (not `:returns:`), `:raises ExceptionType:`. Markers pass through unchanged; their content is MyST-converted, and continuation lines indent to align with the description above.
 - **Dataclass field docs:** attribute docstrings (a string literal immediately after the field), not `:param:` entries; the class docstring is for the class purpose only.
@@ -595,12 +598,13 @@ Write all human-readable prose in ASD-STE100 Simplified Technical English (STE).
 Core rules:
 
 - **One idea per sentence.** Keep sentences short: 20 words maximum for descriptions, 25 for instructions. Split long sentences rather than chaining clauses.
-- **Use approved words, in one meaning each.** Prefer the plain word from the STE dictionary over a synonym: "use" not "utilize", "help" not "facilitate", "start" not "initiate", "also" not "additionally". A word keeps one meaning per text: do not reuse "run" for both executing code and a CI run in one passage if it can confuse.
+- **Use approved words, in one meaning each.** Prefer the plain word from the STE dictionary over a synonym: "use" not "utilize", "help" not "facilitate", "start" not "initiate", "also" not "additionally". When several words fit, pick the most common one. A word keeps one meaning per text: do not reuse "run" for both executing code and a CI run in one passage if it can confuse.
 - **Active voice, present tense.** Say who does what: "the job writes the file", not "the file is written by the job". Use past tense only for events that already happened.
 - **No nominalizations.** Use the verb: "decide" not "make a decision", "configure" not "perform the configuration".
 - **Short, simple noun phrases.** Break "the version of the package published to the registry" into steps or a list if it grows.
 - **Use vertical lists for procedures and multi-item rules**, one step or item per line, starting with a verb for procedures.
 - **Be explicit, not clever.** Cut idioms, metaphors, humor, rhetorical flourishes and rhetorical questions. State the fact, the reason, and the action directly.
+- **Caveats are inline, not closing footers.** State a caveat where it is relevant, without preamble, and do not save it for the end of the message.
 - **Use "you" only for instructions.** Statements of fact need no actor; the "I/my" voice rule below still applies to prose written on behalf of the user.
 
 Exempt from STE, verbatim only: error messages and log lines quoted from an existing source, code identifiers, command examples, file paths, third-party names and titles. Do not paraphrase them into STE.
