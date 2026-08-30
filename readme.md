@@ -192,13 +192,13 @@ Uploading a release archive by hand still works offline and stays the fallback: 
 
 Diagnose any of this from `~/Library/Logs/Claude/main.log`, never the dialog, which reports a bare "Marketplace sync failed" naming no cause. Findings are tracked in [kdeldycke/repomatic#2540](https://github.com/kdeldycke/repomatic/issues/2540).
 
-`/session-wrapup` (the shared [skill](dotfiles/.agents/skills/session-wrapup/SKILL.md)) closes out a session: loose ends, then lessons worth persisting. Claude Code cannot quit after a turn, so run it by hand before exiting; a [`SessionEnd` hook](dotfiles/.claude/hooks/session-wrapup-nudge.py) prints a reminder when an interactive exit skipped it.
+`/wrapup-session` (the shared [skill](dotfiles/.agents/skills/wrapup-session/SKILL.md)) closes out a session: loose ends, then lessons worth persisting. Claude Code cannot quit after a turn, so run it by hand before exiting; a [`SessionEnd` hook](dotfiles/.claude/hooks/wrapup-session-nudge.py) prints a reminder when an interactive exit skipped it.
 
 ### Pi
 
 `~/.pi/agent/settings.json` is symlinked to this repo and committed. Session logs, auth tokens and model caches stay local to the machine.
 
-`/bye` (from the [`bye.ts` extension](dotfiles/.pi/agent/extensions/bye.ts)) runs the shared [`session-wrapup` skill](dotfiles/.agents/skills/session-wrapup/SKILL.md) as a final turn, then quits once it settles. A plain `/quit` or Ctrl+D prints a one-line reminder instead.
+`/bye` (from the [`bye.ts` extension](dotfiles/.pi/agent/extensions/bye.ts)) runs the shared [`wrapup-session` skill](dotfiles/.agents/skills/wrapup-session/SKILL.md) as a final turn, then quits once it settles. A plain `/quit` or Ctrl+D prints a one-line reminder instead.
 
 ### Logi Options
 

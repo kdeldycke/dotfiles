@@ -1,5 +1,5 @@
 /**
- * `/bye [focus]`: run the session-wrapup skill as a final turn, then quit.
+ * `/bye [focus]`: run the wrapup-session skill as a final turn, then quit.
  *
  * ## Why the wrap-up is a command and not a quit hook
  *
@@ -19,7 +19,7 @@
  * while the agent is still idle, and the shutdown would race the wrap-up.
  * Instead the command arms a flag and `agent_settled` decides: quit only when
  * the last user message in the branch is the wrap-up prompt (matched on the
- * `<skill name="session-wrapup">` block pi expands, or on the fallback tag)
+ * `<skill name="wrapup-session">` block pi expands, or on the fallback tag)
  * and the turn ended cleanly. The signature check also covers the case where
  * the send failed silently (compaction in progress) and a later, unrelated
  * turn settles: that turn's last user message is not the wrap-up, so it
@@ -52,7 +52,7 @@
 
 import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
 
-const SKILL_NAME = "session-wrapup";
+const SKILL_NAME = "wrapup-session";
 const SKILL_COMMAND = `skill:${SKILL_NAME}`;
 
 /** How a wrap-up prompt starts: pi's skill expansion block, or the fallback's own tag. */

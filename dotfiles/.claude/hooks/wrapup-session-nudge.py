@@ -3,7 +3,7 @@
 
 Claude Code counterpart of the pi extension ``dotfiles/.pi/agent/extensions/bye.ts``. Only the
 nudge half ports: Claude Code has no interceptable quit and no way for a hook or skill to run one
-more agentic turn at exit, so the wrap-up itself stays a manual ``/session-wrapup`` last turn, and
+more agentic turn at exit, so the wrap-up itself stays a manual ``/wrapup-session`` last turn, and
 this hook reminds about it when a session with real prompts quits without one.
 
 Verified against Claude Code 2.1.236 (2026-08-29), by strings-grepping the Caskroom binary, live
@@ -24,7 +24,7 @@ transcripts, and this hook's own log across real exits:
   is a string and which has no ``toolUseResult`` key; tool results carry a content array instead.
   Synthetic user messages (command wrappers, system reminders) start with ``<`` and do not count.
 - A wrap-up ran when an assistant entry holds a ``Skill`` tool_use with ``input.skill`` equal to
-  ``session-wrapup``, or a user entry contains the ``/session-wrapup`` command tag.
+  ``wrapup-session``, or a user entry contains the ``/wrapup-session`` command tag.
 
 The tty write is detached and delayed rather than direct. Under ``tui: fullscreen`` the session
 runs on the alternate screen, and an immediate write can land there and vanish when Claude Code
@@ -36,7 +36,7 @@ The tty device is the only working channel. The hook-output schema documents a `
 display field for all hooks, but a ``SessionEnd`` hook printing one renders nothing (tested live,
 2.1.236, 2026-08-29): the session is past displaying anything through the harness by then.
 
-Every invocation appends one line to ``~/.claude/debug/session-wrapup-nudge.log`` with the
+Every invocation appends one line to ``~/.claude/debug/wrapup-session-nudge.log`` with the
 payload keys and the decision, and the delayed writer appends its own outcome, because a hook
 that only acts at exit is otherwise invisible: the log is the only way to tell "did not fire"
 from "fired and chose silence" from "wrote to a dead terminal". The file is wiped when it grows
@@ -52,15 +52,15 @@ import sys
 import time
 from pathlib import Path
 
-SKILL_NAME = "session-wrapup"
+SKILL_NAME = "wrapup-session"
 
 DIM = "\x1b[2m"
 RESET = "\x1b[0m"
 
-LOG_PATH = Path.home() / ".claude" / "debug" / "session-wrapup-nudge.log"
+LOG_PATH = Path.home() / ".claude" / "debug" / "wrapup-session-nudge.log"
 LOG_MAX_BYTES = 65536
 
-LAST_NUDGE_PATH = Path.home() / ".claude" / "debug" / "session-wrapup-nudge.last"
+LAST_NUDGE_PATH = Path.home() / ".claude" / "debug" / "wrapup-session-nudge.last"
 DEDUPE_SECONDS = 60
 
 TTY_DELAY_SECONDS = 0.5

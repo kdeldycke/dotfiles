@@ -50,7 +50,7 @@ registerBuiltInApiProviders();
 const DEBUG_LOG = join(homedir(), ".pi", "agent", "session-title.log");
 
 /**
- * Best-effort observability, mirroring dotfiles/.claude/hooks/session-wrapup-nudge.py: this
+ * Best-effort observability, mirroring dotfiles/.claude/hooks/wrapup-session-nudge.py: this
  * handler runs at exit and swallows every failure, so without a log there is no telling "never
  * fired" from "fired and gave up at step N". Wiped past 64 KiB.
  */
