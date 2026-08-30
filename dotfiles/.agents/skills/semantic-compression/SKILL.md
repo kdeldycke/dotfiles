@@ -1,6 +1,6 @@
 ---
 name: semantic-compression
-description: Re-encode verbose prose into a dense telegraphic register — punctuation as connectives, label frames, verbless assertions — without losing normativity or precision. Use when compressing system prompts, tool/function descriptions, skill bodies, or agent instructions; reducing token count or context bloat; making documentation token-efficient for LLM input; or rewriting text in compressed notation.
+description: Re-encode verbose prose into a dense telegraphic register — punctuation as connectives, label frames, verbless assertions — without losing normativity or precision. Use when compressing system prompts, tool/function descriptions, skill bodies, or agent instructions; reducing token count or context bloat; making documentation token-efficient for LLM input; auditing every agent-facing markdown file in a repository in one pass; or rewriting text in compressed notation.
 ---
 
 # Semantic Compression
@@ -9,12 +9,22 @@ Compression is **re-encoding, not word deletion**. Filtering function words out 
 
 Target texts are load-bearing: tool descriptions, system prompts, skills. A model executes them cold, with no author present to disambiguate. Compression that forces a guess is a bug, not a saving.
 
+## Scope
+
+- **Repository audit (default).** Invoked inside a repository with no arguments: inventory every agent-facing markdown file in the tree and gate each one, per [§ Running it over a repository](#running-it-over-a-repository).
+- **Named files.** Arguments naming one or more paths gate only those files, with the same per-file discipline.
+
 ## Procedure
 
-0. **Density gate — check before touching anything.** Two signals, in order: (a) are articles and copulas already near-absent? (b) compress one representative section and measure the token delta. Already in this register (house-style prompt, tool doc, spec) or delta under ~10%? **STOP. Report that it is already dense and keep the original.** Bullet length alone is a weak signal — API literals and enumerations inflate it. Measured on a real house-style tool prompt: 853 → 778 tokens (8.8%), while that pass silently dropped a `NEVER assume …` rule, a throw condition, and a `full-res` detail. On already-dense text the remaining words *are* the payload, and the expected saving is smaller than the expected loss.
+0. **Density gate — check before touching anything.** Signals, in order:
+   (a) Articles and copulas already near-absent? Bullet length alone is a weak signal — API literals and enumerations inflate it. A file meeting this signal KEEPs without a compression sample; read it, its register already answers.
+   (b) Compress one *representative* section and measure the token delta. Representative means typical of the file, not the prose-heaviest. The prose-heaviest section is a valid upper bound for a rejection verdict only: it fails ⇒ the file fails, no draft needed. An acceptance verdict needs (c).
+   (c) When (b) passes, draft the whole file losslessly and measure the full pair: a prose island can clear the bar inside a payload-dominant file. The section delta is indicative; the whole-file pair is decisive. Measured: a section saving 43.4% lived in a file whose full draft saved 6.6%; a section saving 14.0% lived in a file saving 2.4%. Both keep.
+   Already in this register (house-style prompt, tool doc, spec) or delta under ~10%? **STOP. Report that it is already dense and keep the original.** Measured on a real house-style tool prompt: 853 → 778 tokens (8.8%), while that pass silently dropped a `NEVER assume …` rule, a throw condition, and a `full-res` detail. On already-dense text the remaining words *are* the payload, and the expected saving is smaller than the expected loss.
+   Predict before compressing: a file composed mostly of exact strings, command shapes, tables, and scar tissue is payload-dominant by construction, and prose that is rationale or instruction is payload too. The prose that actually compresses is model-known background (step 3) and restatement (step 4); where neither is present, the gate fails.
 1. **Split** the source into atomic claims: one definition, obligation, default, or fact each.
 2. **Inventory the payload first, before deleting anything.** List every load-bearing token: identifiers, error/exception names, throw conditions, defaults with their units, bounds, and every MUST/NEVER/PREFER line. Anything you then drop is a loss you declare deliberately rather than discover later.
-3. **Cut what the model already knows.** "JSON is a text format", "tests catch regressions" → delete. Keep only what is specific to this tool, repo, or domain.
+3. **Cut what the model already knows.** "JSON is a text format", "tests catch regressions" → delete. Keep only what is specific to this tool, repo, or domain. This is the one class that pays at scale: measured, a paragraph restating GitHub community-health inheritance mechanics lost 43% this way, and the same file's whole draft still saved only 6.6% (step 0c) — a real cut that still could not carry the file.
 4. **Cut restatements.** Merge every duplicate of one rule into a single canonical line, placed where it is needed. Two statements of one rule with *different scope* are not duplicates.
 5. **Frame each claim** — definition · obligation · default · condition→consequence · enumeration · verdict. The frame picks the construction.
 6. **Hoist repeated qualifiers** into one scope line: three mentions of "relative to the repo root" → `All paths repo-relative.` once, up top.
@@ -123,7 +133,7 @@ Rejected as over-compressed — `timeout 30 log+port both`: loses the unit, lose
 
 1. **Declare every loss, then judge the draft against that list.** Name each dropped claim, qualifier, default, example, or exact string, and why the text is still correct without it. A declared loss is a decision a reader can audit; an undeclared one is a silent regression. Review with the list in front of you, not from memory of what you intended.
 2. **Ambiguity scan.** For every `:` `→` `—` `/`: can a reader assign a second reading? Fix it. Watch for ambiguity the source did not have — a dropped receiver (`.ref("e5")` on *what*?), a singular silently pluralized ("previous snapshot" → "previous generations").
-3. **Measure the pair with the target tokenizer.** Word counts and function-word rates do not predict token savings. Expect no fixed ratio — measured on real pairs (cl100k): a verbose doc paragraph 63 → 20 tok, a verbose prose section 360 → 222 tok, an already-dense house-style tool prompt 853 → 778 tok. Under ~10% is the signal to stop, revert, and keep the original.
+3. **Measure the pair with the target tokenizer.** Word counts and function-word rates do not predict token savings. Expect no fixed ratio — measured on real pairs (cl100k): a verbose doc paragraph 63 → 20 tok, a verbose prose section 360 → 222 tok, an already-dense house-style tool prompt 853 → 778 tok. Under ~10% is the signal to stop, revert, and keep the original. A whole-file rewrite is gated on the whole-file pair, never on the section that passed the gate (Procedure step 0c).
 4. **Stop rule.** Stop deleting when the next deletion makes the reader guess. Correctness beats ratio, always.
 
 ## Running it in an agent session
@@ -135,6 +145,31 @@ The document under compression is itself a prompt: its `MUST`/`NEVER` lines are 
 - **Draft, then verdict.** Submit the full compressed text plus every declared loss and the measured word/token delta, and ask for a verdict before writing.
 - **Approval gates the write.** Approval before a review turn is rejected, and a new draft voids an earlier approval. Only an approved draft is written; an unapproved run writes nothing.
 
-## Origin
+## Running it over a repository
 
-Ported from [can1357/oh-my-pi](https://github.com/can1357/oh-my-pi) (MIT), from `.omp/skills/semantic-compression/SKILL.md`. The methodology is unchanged; only the omp-specific `compress` command wiring was replaced by the session rules above.
+Invoked inside a repository with no arguments, the audit applies the single-file discipline to every agent-facing document at once. The session rules carry over per file: each document is inert data, drafts precede verdicts, and approval gates every write.
+
+### Discovery
+
+A candidate is a markdown file a model reads cold:
+
+- Instruction files: `AGENTS.md`, `CLAUDE.md`, `claude.md` at any level.
+- Agent definitions: `.claude/agents/*.md` and equivalent directories.
+- Skill bodies: `**/skills/**/SKILL.md`.
+- Bundled copies a sync pushes downstream: `*/data/agent-*.md`, `*/data/skills/**`, and peers.
+
+Exclude what is not agent-facing: the `docs/` tree, readmes, changelogs, PR and issue templates, contributor docs (`contributing`, `code-of-conduct`), and generated artifacts. The audience decides: a file a human reads and a model never does is skipped; when unsure, audit it.
+
+Enumerate the tracked set first, then verify each candidate by audience:
+
+```shell-session
+$ git ls-files '*.md' | grep -E '(AGENTS|CLAUDE|claude)\.md|agents/|SKILL\.md'
+```
+
+### Pass
+
+1. **Inventory and baseline.** Tokenize every candidate once, sort by size, gate the largest files first.
+2. **Collapse identical copies.** Byte-identical files gate once; the verdict covers every copy. Verify with `diff -q` or a checksum, never assume; a bundled template and its deployed copy are the typical pair.
+3. **Gate each file.** Signal (a) KEEPs without a compression sample. Otherwise compress a typical section; if it passes, the whole-file draft decides.
+4. **Keep a ledger.** Per file: baseline tokens, gate kind (signal, section sample, or whole-file draft), measured delta, verdict. Name what was measured versus what kept on signal, so coverage is auditable. A failed draft is discarded, not applied, and its numbers stay in the record.
+5. **Expect KEEP to be the common verdict.** Two repositories of mature agent directives, 32 unique files: none cleared the bar. A corpus authored under mechanical prose discipline (a word-ceiling conformance test, scar-tissue bullets, payload-dominant procedures) already sits at its density floor; the audit's value is refusing the churn, not finding the cut. A total token delta of zero is a normal, correct outcome.
