@@ -1,12 +1,17 @@
 {
+  "attribution": {
+    "commit": "",
+    "pr": "",
+    "sessionUrl": false
+  },
   "cleanupPeriodDays": 3650,
   "env": {
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "CLAUDE_CODE_SUPPRESS_SESSION_ATTRIBUTION": "1",
     "DISABLE_AUTOUPDATER": "1",
     "LLM": "1",
     "NO_COLOR": "1"
   },
-  "includeCoAuthoredBy": false,
   "permissions": {
     "allow": [
       "Edit(**)",
