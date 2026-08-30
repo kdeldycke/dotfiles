@@ -18,6 +18,7 @@
       "Bash(actionlint:*)",
       "Bash(alias:*)",
       "Bash(bash:*)",
+      "Bash(cat:*)",
       "Bash(command:*)",
       "Bash(convert:*)",
       "Bash(cp:*)",
@@ -185,11 +186,11 @@
         "~/.cache/uv",
         "~/.local/share/nvim",
         "~/.local/state/nvim",
+        "~/code",
         "~/Library/Application Support/uv",
         "~/Library/Caches/mdedup",
         "~/Library/Caches/repomatic",
-        "~/Library/Logs/pipx",
-        "~/code/cpython/Objects"
+        "~/Library/Logs/pipx"
       ],
       "denyRead": [
         "~/.ssh"
