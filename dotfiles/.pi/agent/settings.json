@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.84.3",
+  "lastChangelogVersion": "0.84.4",
   "theme": "gruvbox",
   "defaultProvider": "openrouter",
   "defaultModel": "qwen/qwen3.8-max",

@@ -674,6 +674,12 @@ Never `cd` in Bash calls: pass absolute paths to the tool instead. Claude Code c
 
 `git mv` stages the rename only: unstaged content edits on the moved file stay unstaged, and the commit records a 100%-similarity rename without them. Read an `RM` status as "rename staged, content not" and `git add` the file before committing.
 
+`sed -i ''` misbehaves in this harness: the empty-suffix argument is read as a file name, so the edits apply to the named files but the call exits `2` with `can't read :`, a half-succeeded state. Use Python for in-place multi-file rewrites instead.
+
+Quote any `gh api` path carrying a query string: zsh expands the `?` as a glob and kills the call with `no matches found` before `gh` runs. Write `gh api 'repos/{owner}/{repo}/contents/{path}?ref={tag}'`. Reading one file this way needs `-H "Accept: application/vnd.github.raw"`; to search an unfamiliar repository, fetch `gh api repos/{owner}/{repo}/tarball/{ref}` and grep the extracted tree once, rather than guessing paths one call at a time.
+
+Never run `ruff --fix --select RUF100` outside the project's full rule set: with only RUF100 selected, ruff cannot see the violations the `# noqa` comments suppress, judges every one unused, and strips load-bearing suppressions (it deleted the `# noqa: F401` off registration-side-effect imports this way). Autofix RUF100 only under the project's own configuration, and diff the result before staging.
+
 ## GitHub Actions log anchors
 
 A `…/actions/runs/{run}/job/{job}#step:{N}:{line}` link follows non-obvious numbering, verified against live runs:
