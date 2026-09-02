@@ -628,9 +628,19 @@ Use first-person singular ("I", "my") in all prose written on behalf of the user
 
 Use ":" instead of em dashes for inline elaboration or appositive clauses.
 
-## Name a file by its full path
+## Name every file and URL by its full address
 
-Every file named in an answer carries its absolute path: `/Users/kde/code/repomatic/changelog.md`, never `changelog.md` or `scratchpad/draft.md`. A bare or relative path is not clickable, and a scratchpad path is unreachable without the session directory in front of it. This binds every mention: a draft's location, a file quoted in a finding, a file proposed for review. The `file_path:line_number` reference form keeps its line suffix, with the path spelled in full.
+Every file and every URL named in a message carries its complete address: `/Users/kde/code/repomatic/changelog.md`, never `changelog.md` or `scratchpad/draft.md`; `https://github.com/kdeldycke/repomatic/issues/42`, never "the issue above". A bare or relative path is not clickable, and a scratchpad path is unreachable without the session directory in front of it. This binds every message an agent emits, not the final answer alone: a clarifying question, a plan step, a finding, the reason given for a tool call, a draft offered for review. The `file_path:line_number` reference form keeps its line suffix, with the path spelled in full. Put the address in parentheses when it would otherwise break the sentence: "the changelog (`/Users/kde/code/repomatic/changelog.md`) gained one bullet".
+
+### Copying an address off the screen
+
+I select these by hand in a terminal, so where an address sits on the line decides whether one gesture gets all of it:
+
+- **An address I am expected to paste goes alone on its own line.** Triple-click selects a whole line in every terminal. Double-click selects a "word", and each terminal draws that boundary differently, so an address inside a sentence can need a careful drag. A line holding one address and nothing else always copies clean.
+- **Never let punctuation touch the last character.** A period, comma or closing bracket against the end joins the selection and corrupts the paste. End the sentence on the address, or leave a space before the punctuation mark.
+- **Write the bare URL, never `[label](url)`, when the point is to paste it.** Claude Code turns a markdown link into an OSC 8 hyperlink on a terminal that supports one, which moves the address into an escape sequence and can leave only `label` on screen. A bare URL keeps its own characters visible everywhere. Apple Terminal is on no hyperlink allow-list, so it degrades to `label (url)`, but I do not always read from Apple Terminal. Verified against Claude Code `2.1.236` on 2026-09-02.
+- **Escape for one destination, and name it.** A path going to a shell is single-quoted when it holds a space or a shell character: `'/Users/kde/My Documents/report 2026.pdf'`. A URL is percent-encoded instead, because a quote is not part of a URL. Never apply both, and never quote a path I am meant to read rather than run.
+- **Never hide a character in the text.** A zero-width space, a word joiner or a soft hyphen is copied with the selection, so the paste carries it into the address bar or the shell, where it fails with no visible cause. Nothing hidden can widen a double-click either: the terminal draws that boundary from the visible glyphs alone.
 
 ## Code organization
 
