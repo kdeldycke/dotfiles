@@ -156,7 +156,9 @@ def recently_nudged(session_id: str) -> bool:
     """Whether this session already got a nudge inside the dedupe window."""
     now = time.time()
     try:
-        previous_id, previous_stamp = LAST_NUDGE_PATH.read_text(encoding="UTF-8").split()
+        previous_id, previous_stamp = LAST_NUDGE_PATH.read_text(
+            encoding="UTF-8"
+        ).split()
         if previous_id == session_id and now - float(previous_stamp) < DEDUPE_SECONDS:
             return True
     except (OSError, ValueError):
