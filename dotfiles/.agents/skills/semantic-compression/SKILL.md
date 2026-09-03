@@ -32,17 +32,17 @@ Target texts are load-bearing: tool descriptions, system prompts, skills. A mode
 
 ## Frames
 
-| frame | English | compressed |
-|---|---|---|
-| definition | "The `name` field is the stable launch identifier." | `name: stable launch id.` |
-| obligation | "You must call open before you can run code." | `MUST open before run.` |
-| default | "If no value is given, the timeout defaults to 30 seconds." | `Default 30s.` |
-| condition→consequence | "Because navigation re-renders the page, refs become stale, so you should snapshot again." | `Navigation invalidates refs → re-snapshot.` |
-| property chain | "z' is an integer because z divides x²+y², and it is positive because x²+y²>0." | `z' integer since z divides x²+y²; positive since x²+y²>0.` |
-| enumeration | "The action may be open, close, or run." | `action: open, close, run.` |
-| exclusion | "any triple that is neither (1,1,1) nor (1,1,2)" | `triple ≠ (1,1,1),(1,1,2)` |
-| verdict | "Claim A is true, and claim B is false as stated." | `A true; B false as stated.` |
-| precondition | "This requires that the branch has already been checked out." | `Requires prior checkout.` |
+| frame                 | English                                                                                    | compressed                                                  |
+| --------------------- | ------------------------------------------------------------------------------------------ | ----------------------------------------------------------- |
+| definition            | "The `name` field is the stable launch identifier."                                        | `name: stable launch id.`                                   |
+| obligation            | "You must call open before you can run code."                                              | `MUST open before run.`                                     |
+| default               | "If no value is given, the timeout defaults to 30 seconds."                                | `Default 30s.`                                              |
+| condition→consequence | "Because navigation re-renders the page, refs become stale, so you should snapshot again." | `Navigation invalidates refs → re-snapshot.`                |
+| property chain        | "z' is an integer because z divides x²+y², and it is positive because x²+y²>0."            | `z' integer since z divides x²+y²; positive since x²+y²>0.` |
+| enumeration           | "The action may be open, close, or run."                                                   | `action: open, close, run.`                                 |
+| exclusion             | "any triple that is neither (1,1,1) nor (1,1,2)"                                           | `triple ≠ (1,1,1),(1,1,2)`                                  |
+| verdict               | "Claim A is true, and claim B is false as stated."                                         | `A true; B false as stated.`                                |
+| precondition          | "This requires that the branch has already been checked out."                              | `Requires prior checkout.`                                  |
 
 Constructions behind them:
 
@@ -72,7 +72,7 @@ Punctuation carries the connective:
 
 Ambiguity is the only disqualifier, never unfamiliarity. Where a glyph takes a second reading *in its slot* — `—` as a parenthetical dash, `/` as a path separator or "per", `,` as a list comma — write the word instead.
 
-**Symbols do not save tokens; structure does.** Measured (cl100k_base; Claude's tokenizer differs, but BPE arity for rare glyphs is similar): `→` `⇒` `≤` `·` `✓` cost 1 token each, `≡` costs 2, ` -> ` costs 2, and ` gives` costs 1. So a one-for-one word→glyph swap saves nothing and costs clarity. Substitute a glyph only where it eats a *multi-word phrase*. Superscripts do pay: `x²+y²` = 4 tokens, `x^2+y^2` = 6.
+**Symbols do not save tokens; structure does.** Measured (cl100k_base; Claude's tokenizer differs, but BPE arity for rare glyphs is similar): `→` `⇒` `≤` `·` `✓` cost 1 token each, `≡` costs 2, `->` costs 2, and ` gives` costs 1. So a one-for-one word→glyph swap saves nothing and costs clarity. Substitute a glyph only where it eats a *multi-word phrase*. Superscripts do pay: `x²+y²` = 4 tokens, `x^2+y^2` = 6.
 
 Never invent private glyphs — a bespoke one needs a legend that costs more than it saves.
 
