@@ -376,9 +376,7 @@ def is_user_rename(current: object) -> bool:
     and must be left alone.
     """
     return (
-        isinstance(current, str)
-        and bool(current)
-        and not TIMESTAMP_RE.match(current)
+        isinstance(current, str) and bool(current) and not TIMESTAMP_RE.match(current)
     )
 
 
