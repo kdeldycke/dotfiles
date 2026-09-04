@@ -847,3 +847,6 @@ $RECYCLE.BIN/
 .claude/scheduled_tasks.lock
 .claude/settings.local.json
 **/.claude/.cc-writes/
+
+# Host keys of the local UTM guests, rewritten whenever a guest is rebuilt.
+**/.ssh/known_hosts_utm
