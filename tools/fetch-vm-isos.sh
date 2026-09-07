@@ -70,13 +70,17 @@ resolve_fedora() {
         sort --version-sort | tail -1
 }
 
-# xbps. "base" is the installer image, without a desktop. The glibc build is
-# the default one; swap in "aarch64-musl" to test against musl instead.
+# xbps. x86_64 despite the arm64 preference, because `void-installer` is x86
+# only: the aarch64 live image boots but cannot install itself, leaving a
+# ROOTFS tarball unpacked by hand in a chroot as the only arm64 route. An
+# emulated guest beats a manual install here. "base" carries no desktop, and
+# the glibc build is the default one; swap "x86_64" for "x86_64-musl" to test
+# against musl instead.
 resolve_void() {
     local base=https://repo-default.voidlinux.org/live/current
     local file
     file=$(curl "${curl_meta[@]}" "${base}/" |
-        grep -oE 'void-live-aarch64-[0-9]{8}-base\.iso' | sort -u | tail -1)
+        grep -oE 'void-live-x86_64-[0-9]{8}-base\.iso' | sort -u | tail -1)
     [ -n "${file}" ] || return 1
     printf '%s/%s\n' "${base}" "${file}"
 }
@@ -133,7 +137,7 @@ resolve_slitaz() {
 # Package manager, image, architecture, resolver.
 guests=(
     "dnf|Fedora Server netinst|arm64|resolve_fedora"
-    "xbps|Void Linux base|arm64|resolve_void"
+    "xbps|Void Linux base|x86_64|resolve_void"
     "nix|NixOS minimal|arm64|resolve_nixos"
     "emerge|Gentoo minimal|arm64|resolve_gentoo"
     "guix|Guix System|arm64|resolve_guix"
