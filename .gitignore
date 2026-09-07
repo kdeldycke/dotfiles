@@ -398,7 +398,7 @@ ipython_config.py
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
 
 # Thumbnails
 ._*
@@ -849,4 +849,5 @@ $RECYCLE.BIN/
 **/.claude/.cc-writes/
 
 # Host keys of the local UTM guests, rewritten whenever a guest is rebuilt.
-**/.ssh/known_hosts_utm
+# The glob also covers the `.old` backup `ssh-keygen -R` leaves behind.
+**/.ssh/known_hosts_utm*
