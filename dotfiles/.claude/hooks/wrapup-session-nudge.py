@@ -190,7 +190,7 @@ def find_terminal() -> str | None:
             return f"/dev/{tty}"
         if parent in ("0", "1"):
             return None
-        pid = parent
+        pid = int(parent)
     return None
 
 

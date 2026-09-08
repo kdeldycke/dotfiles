@@ -177,7 +177,7 @@ def format_pull_request(session: dict) -> str | None:
     if number is None:
         return None
     prefix = "!" if pull_request.get("kind") == "mr" else "#"
-    glyph = PR_REVIEW_GLYPHS.get(pull_request.get("review_state"))
+    glyph = PR_REVIEW_GLYPHS.get(pull_request.get("review_state") or "")
     return f"{prefix}{number} {glyph}" if glyph else f"{prefix}{number}"
 
 
