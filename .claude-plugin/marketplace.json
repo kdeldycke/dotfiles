@@ -12,7 +12,10 @@
       "category": "productivity",
       "description": "Personal skills for document wrangling, web form filling, multi-repo triage and Claude Code upkeep",
       "name": "dotfiles",
-      "source": "./",
+      "source": {
+        "repo": "kdeldycke/dotfiles",
+        "source": "github"
+      },
       "tags": [
         "claude-code",
         "documents",
