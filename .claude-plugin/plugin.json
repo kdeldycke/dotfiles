@@ -20,12 +20,14 @@
   "name": "dotfiles",
   "repository": "https://github.com/kdeldycke/dotfiles",
   "skills": [
+    "./dotfiles/.agents/skills/agent-config-self-tune",
     "./dotfiles/.agents/skills/audit-repo-issues",
-    "./dotfiles/.agents/skills/claude-config-self-tune",
     "./dotfiles/.agents/skills/fill-web-form",
     "./dotfiles/.agents/skills/pr-triage",
     "./dotfiles/.agents/skills/rename-with-dates",
-    "./dotfiles/.agents/skills/session-title"
+    "./dotfiles/.agents/skills/semantic-compression",
+    "./dotfiles/.agents/skills/session-title",
+    "./dotfiles/.agents/skills/wrapup-session"
   ],
   "version": "1.0.0"
 }
