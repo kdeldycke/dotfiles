@@ -13,10 +13,10 @@ argument-hint: '[review|add <axis>|drop <axis>]'
 
 ## Instructions
 
-`repomatic metadata` builds the full and PR test matrices from `[tool.repomatic.test-matrix.*]`. Read the effective matrices before proposing anything:
+`repomatic show-metadata` builds the full and PR test matrices from `[tool.repomatic.test-matrix.*]`. Read the effective matrices before proposing anything:
 
 ```shell-session
-$ repomatic metadata --format json test_matrix test_matrix_pr
+$ repomatic show-metadata --format json test_matrix test_matrix_pr
 ```
 
 A matrix cell costs a runner on every push, so each one has to earn its place. These are the selection conventions.
@@ -71,7 +71,7 @@ A measurement that times only tool execution misses checkout and install, which 
 
 ### Watch what is arriving and retiring
 
-You are not the first to know an image is changing. `repomatic sync-runner-images` runs weekly from the `autofix.yaml` workflow, looks up every label this repository runs in GitHub's *Available Images* table, and proposes the mechanical half as a pull request: rewriting a deprecated image's literal `runs-on:` onto its successor, or adding a strictly newer *version* of an image already in use to the full matrix as a `continue-on-error` probe. It opens one only when something here is exposed, so its existence is the signal.
+You are not the first to know an image is changing. `repomatic sync-runner-images` runs weekly from the `autofix.yaml` workflow, looks up every label this repository runs in GitHub's *Available Images* table, and proposes the mechanical half as a pull request. A retiring image has its literal `runs-on:` values moved onto a successor. A strictly newer *version* of an image in use gets the same rewrite, and also joins the full matrix as a `continue-on-error` probe unless the fleet already runs it. It opens a pull request only when something here is exposed, so its existence is the signal.
 
 Deciding whether to merge is this skill's job, and the CI run that pull request triggers is the evidence for it. Closing the pull request alone brings the proposal back on the next run; declining one for good means naming the label in `[tool.repomatic.sync-runner-images] ignore`.
 
@@ -85,7 +85,7 @@ Never introduce a `-latest` alias to sidestep the question: GitHub repoints thos
 
 ### Every job runs on a test axis
 
-The images a job may run on are exactly those the test matrices use, and `lint-repo` rejects any other `runs-on:`. Read the effective set from `repomatic metadata` rather than from the package source, which a repository consuming repomatic does not have checked out. That keeps "where is the suite exercised" and "what may a job run on" a single question, because each extra image is one more to track, pin and migrate.
+The images a job may run on are exactly those the test matrices use, and `lint-repo` rejects any other `runs-on:`. Read the effective set from `repomatic show-metadata` rather than from the package source, which a repository consuming repomatic does not have checked out. That keeps "where is the suite exercised" and "what may a job run on" a single question, because each extra image is one more to track, pin and migrate.
 
 A job that genuinely needs something else widens the axes rather than naming a one-off image. This covers the Linux Nuitka hosts (a published binary is built on the image the suite is validated against, and its toolchain comes from a digest-pinned manylinux container regardless) and the light mechanical jobs.
 
@@ -93,4 +93,4 @@ A job that genuinely needs something else widens the axes rather than naming a o
 
 Propose changes as a `[tool.repomatic.test-matrix.*]` diff, and for each added or removed cell say what it buys or costs: a version nothing else exercises, an OS-specific failure mode, a runner-minute saving. A cell nobody can justify in one sentence is a cell to drop.
 
-Verify with `repomatic metadata` after editing, since the config is an input to a computed matrix rather than the matrix itself.
+Verify with `repomatic show-metadata` after editing, since the config is an input to a computed matrix rather than the matrix itself.

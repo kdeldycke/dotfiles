@@ -14,7 +14,7 @@ argument-hint: '[add|check|fix|consolidate [VERSION]|VERSION]'
 
 ## Instructions
 
-You help users manage their `changelog.md` file. Follow `CLAUDE.md` § Changelog and docs updates for style rules.
+You help users manage their `changelog.md` file. See § Style rules below for how an entry must read.
 
 ### Mechanical layer
 
@@ -29,7 +29,7 @@ The `changelog.yaml` workflow's `fix-changelog` job runs `lint-changelog --fix` 
 ### Argument handling
 
 - (default when `$ARGUMENTS` is empty): Run `add` then `consolidate` on the unreleased section, sequentially.
-- `add`: Review recent git commits and draft changelog entries. Place entries under the current unreleased section. Describe **what** changed, not **how** or **why**: one sentence per user-facing change (~10-25 words), per the canonical entry-length guideline (https://github.com/kdeldycke/repomatic/blob/main/claude.md#changelog-entry-length). Mechanism, internal names, and rationale go in the commit and PR, not the entry.
+- `add`: Review recent git commits and draft changelog entries. Place entries under the current unreleased section. Describe **what** changed, not **how** or **why**: one sentence per user-facing change, ~10-25 words. Mechanism, internal names, and rationale go in the commit and PR, not the entry.
 - `check`: Run `<cmd> lint-changelog` and report results. Explain each issue found.
 - `fix`: Run `<cmd> lint-changelog --fix` and show what was changed.
 - `consolidate [VERSION]`: Consolidate redundant entries in a changelog section. This is analytical work with no CLI equivalent — read the entries, compare against `git log` for the relevant range, and rewrite. See § Consolidation rules below. If `VERSION` is omitted, target the unreleased section. If `VERSION` is given (e.g., `consolidate 6.8.0`), target that released section instead — locate it in `changelog.md` by matching the heading, and use the git range between its tag and the previous tag (e.g., `v6.7.0..v6.8.0`).
@@ -44,17 +44,20 @@ Entries accumulate during development as features are built incrementally. Befor
 03. **Merge entries that describe the same feature at different stages.** Multiple bullets about adding tools to a registry, then migrating workflows for those tools, then wiring up their version pins — that is one feature ("add unified tool runner with 13 managed tools"), not twelve.
 04. **Merge entries that describe infrastructure and its usage together.** "Add binary download infrastructure" + "add 5 binary tools" + "migrate 5 workflow steps" = one bullet covering the feature end-to-end.
 05. **Keep distinct user-facing changes as separate entries.** A breaking config key change and a new CLI command are separate features even if they landed in the same development cycle.
-06. **Keep the names users need, shed the rest.** Tool names, config keys, CLI options, and breaking-change notes stay explicit. But consolidation cuts per-entry *length*, not just bullet count: a merged entry is one short sentence naming the feature, not a paragraph stacking every mechanism and rationale from the bullets it replaced. Target ~10-25 words (https://github.com/kdeldycke/repomatic/blob/main/claude.md#changelog-entry-length); push implementation detail and "why" to the commit, PR, code comment, or `docs/`.
+06. **Keep the names users need, shed the rest.** Tool names, config keys, CLI options, and breaking-change notes stay explicit. But consolidation cuts per-entry *length*, not just bullet count: a merged entry is one short sentence naming the feature, not a paragraph stacking every mechanism and rationale from the bullets it replaced. Target ~10-25 words; push implementation detail and "why" to the commit, PR, code comment, or `docs/`.
 07. **Remove implementation details** that don't affect users: internal refactors, helper functions, test additions.
     Also strip upstream issue commentary: trailing prose that links to upstream tickets and narrates their status ("Click does not ship an equivalent: the upstream conversation is in `pallets/click#NNNN` (open)…", "mirrors the upstream fix in PR `…#NNNN`"). The status rots within days and the prose duplicates what the linked thread already says. A bare upstream link is acceptable on a direct backport entry; longer rationale belongs in a code comment, docstring, or PR body.
-08. **Never leave the section empty** (`claude.md` § Changelog and docs updates: never ship an empty release section). When rules 02-07 collapse the unreleased section to zero bullets and the net cycle is genuinely mechanical, backfill one generic bullet naming what moved — e.g. "Sync CI tooling, workflow pins and dependency floors with the latest repomatic release." This is a fallback for an empty net cycle, not a substitute for drafting: it fires only after `add` has had its own chance to draft real entries from `git log`. As the section's sole bullet it needs no category ordering.
+08. **Never leave the section empty.** A heading with no bullets still gets tagged and published, and reads as broken to whoever scans the release notes. When rules 02-07 collapse the unreleased section to zero bullets and the net cycle is genuinely mechanical, backfill one generic bullet naming what moved — e.g. "Sync CI tooling, workflow pins and dependency floors with the latest repomatic release." This is a fallback for an empty net cycle, not a substitute for drafting: it fires only after `add` has had its own chance to draft real entries from `git log`. As the section's sole bullet it needs no category ordering.
 09. **Order entries by category, breaking changes first:** lead with `**Breaking:**` entries, then `**Deprecated:**` entries, then new features, then broad/global changes, then bug fixes, then documentation and testing. Breaking changes are what a reader scans for before upgrading, so they go at the top of the block. `**Deprecated:**` marks a surface that still resolves but warns and is slated for removal in a named future release.
 10. **Apply directly.** Write the consolidated section to `changelog.md` without asking for approval. Summarize what was merged, dropped, or reordered after writing.
 11. **Validate after writing.** A bulk rewrite can introduce malformed markup, silently drop structure, or leave entries over-long. Run `<cmd> lint-changelog`, which measures the bullet lengths against `changelog.bullet-word-threshold` — gate on what it reports, not on a delegated agent's self-report of how much it compressed. Then run `<cmd> run mdformat --verify -- <file>`, which reports what the write path would change without touching the file; a bare `mdformat`/`mdformat --with mdformat-myst` diverges on MyST directive colon-options like a `{list-table}`'s `:header-rows:`, so gate on the pinned runner. Confirm by eye what neither tool measures: rule 08 (its empty-section check covers *released* sections only, and deliberately skips the unreleased one you just consolidated, which is legitimately empty for most of a cycle), no doubled list markers (a stray `- -`), and the `## [...]` heading count and availability-admonition count unchanged from before the edit. Breaking entries lead each section (rule 9).
 
 ### Style rules
 
-Follow `CLAUDE.md` § Changelog and docs updates, write bare versions in changelog headings (no `v` prefix), plus the canonical entry-length guideline (one short sentence per change, what-not-how-or-why): https://github.com/kdeldycke/repomatic/blob/main/claude.md#changelog-entry-length
+- **Write bare versions in changelog headings**, with no `v` prefix. The `v` prefix names a git tag, not a package version.
+- **One bullet per user-facing change**, one sentence of ~10-25 words, saying what changed rather than how it was built or why. A second sentence only flags a breaking change or a migration step.
+- **Cut what the user cannot act on.** Mechanism goes to the commit or PR; rationale goes to a code comment or `docs/`.
+- **Mark a change breaking when a surface the reader uses is gone**, so their code, invocation, config or workflow must change to keep working.
 
 ### Next steps
 
