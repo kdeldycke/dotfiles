@@ -169,6 +169,7 @@ dotfiles/.pi/agent/extensions
 dotfiles/.pi/agent/themes
 dotfiles/.agents/skills
 dotfiles/.claude/agents
+dotfiles/.claude/output-styles
 dotfiles/.claude/settings.json
 dotfiles/.claude/tropes.md"
 
