@@ -512,6 +512,16 @@ References that look right and aren't: URLs that 404, DOIs and ISBNs that don't 
 - "A book cited with no page number and no matching library record"
 - "https://example.com/report?utm_source=chatgpt.com"
 
+### Invented Facts
+
+Plausible specifics with no source behind them: a version number nobody looked up, a line count nobody ran, a "typical" latency, "I've seen this pattern before". The specific number reads as evidence, which is what makes it worse than a vague claim: the reader stops checking. Keep the facts, names and numbers you were given and invent none unless asked. Say "unknown" where you do not know.
+
+**Avoid patterns like:**
+
+- "This takes about 200ms on a typical machine."
+- "The file is around 300 lines."
+- "I've seen this take down production systems many times."
+
 ---
 
 Remember: any of these patterns used once might be fine. The problem is when
