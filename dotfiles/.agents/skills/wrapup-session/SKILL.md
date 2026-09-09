@@ -1,7 +1,7 @@
 ---
 name: wrapup-session
 description: Close out a coding session. List what is left to do, then persist any lesson worth keeping into agent instructions, skills, memory, or code comments. Use when the user ends a session, asks to wrap up, or runs /bye.
-argument-hint: "[focus]"
+argument-hint: '[focus]'
 ---
 
 # Session wrap-up
