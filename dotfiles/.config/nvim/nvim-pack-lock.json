@@ -1,11 +1,11 @@
 {
   "plugins": {
     "conform.nvim": {
-      "rev": "619363c30309d29ffa631e67c8183f2a72caa373",
+      "rev": "016802de402556da54c36bd7359b441266b01cdd",
       "src": "https://github.com/stevearc/conform.nvim"
     },
     "gitsigns.nvim": {
-      "rev": "31d6fb2d618bca1482b9f274751ead5f03461408",
+      "rev": "5be654f2232c10ddcad19c1607a67b6b4b78fc29",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
     },
     "lualine.nvim": {
@@ -13,7 +13,7 @@
       "src": "https://github.com/nvim-lualine/lualine.nvim"
     },
     "mini.nvim": {
-      "rev": "629bf6792187e11b4829411c1648f86f28df3963",
+      "rev": "455856f765c78220fe547fb0862708942b52c42c",
       "src": "https://github.com/nvim-mini/mini.nvim"
     },
     "monokai-pro.nvim": {
@@ -21,16 +21,16 @@
       "src": "https://github.com/loctvl842/monokai-pro.nvim"
     },
     "nvim-autopairs": {
-      "rev": "7b9923abad60b903ece7c52940e1321d39eccc79",
+      "rev": "430522f95fe4fb7c511ec64f8c1a90cc6a66c05c",
       "src": "https://github.com/windwp/nvim-autopairs"
     },
     "nvim-treesitter": {
-      "rev": "c9f9ed6c1892f629ea399f4ee7905f2686fa13f2",
+      "rev": "5cb0114e6242625db56dd6440e945ed1ece10bc7",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter",
       "version": "'main'"
     },
     "nvim-web-devicons": {
-      "rev": "2ae6958df7ced50baac5035cec0c15799eedfbf7",
+      "rev": "5f032a85be210cd1c6ac98861eb3b187ff3bd5eb",
       "src": "https://github.com/nvim-tree/nvim-web-devicons"
     },
     "vim-visual-multi": {
