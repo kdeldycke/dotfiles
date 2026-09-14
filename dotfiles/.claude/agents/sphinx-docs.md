@@ -459,7 +459,7 @@ Document **dataclass fields with attribute docstrings** (PEP 257 string literal 
 
 ## Recipes for common doc artifacts
 
-The patterns below are how this repo renders `docs/configuration.md`, `docs/cli.md`, and `docs/install.md`. Downstream CLI projects can replicate them verbatim by pointing at their own dataclass schema and Click root command. Every reference page renders live (click-extra directives for the CLI and config references, `{python:render}` blocks over `repomatic.tooling.tool_registry` for the tool registry); the repo's `docs_update.py` regenerates the committed CLI captures rather than any doc region, and only `install.md`'s matrix stays checked in as a marker region for GitHub rendering. Free-form per-tool prose lives in the registry itself (`ToolSpec.docs_notes`), not in the page, so it survives without marker islands.
+The patterns below are how this repo renders `docs/configuration.md`, `docs/cli.md`, and `docs/install.md`. Downstream CLI projects can replicate them verbatim by pointing at their own dataclass schema and Click root command. Every reference page renders live (click-extra directives for the CLI and config references, `{python:render}` blocks over `repomatic.tooling.tool_registry` for the tool registry); the repo has no `docs_update.py` regenerator, and only `install.md`'s matrix stays checked in as a marker region for GitHub rendering. Free-form per-tool prose lives in the registry itself (`ToolSpec.docs_notes`), not in the page, so it survives without marker islands.
 
 ### `configuration.md`: option reference from a dataclass
 
@@ -525,9 +525,9 @@ Hand-written, but with a strict structure that downstream projects should mirror
 
 2. **Quick start** section: the minimum command to bootstrap a project (typically a `uvx` one-liner) followed by a single sentence on what happens next. No setup detail, no exception lists — those belong in a separate getting-started page.
 
-3. **Try it now** tab-set with three tabs: `Latest release`, `Specific version`, `Development version`. The Latest release tab pairs the `uvx` command with a `{click:run}` block rendering live `--help` so visitors can preview the CLI without opening a terminal. The other two tabs stay as `shell-session` because they're about how to invoke `uvx`, not what the help looks like. An optional fourth `Local version` tab (`uvx --from file:///path/to/checkout -- <cli>`) helps maintainers exercise a working tree; it stays `shell-session` too.
+3. **Try it** tab-set with three tabs: `Latest release`, `Specific version`, `Development version`. The Latest release tab pairs the `uvx` command with a `{click:run}` block rendering live `--help` so visitors can preview the CLI without opening a terminal. The other two tabs stay as `shell-session` because they're about how to invoke `uvx`, not what the help looks like. An optional fourth `Local version` tab (`uvx --from file:///path/to/checkout -- <cli>`) helps maintainers exercise a working tree; it stays `shell-session` too.
 
-4. **Installation methods** tab-set with one tab per package manager that actually distributes the package. Order: `uv`, `pip`, `pipx`, then everything else alphabetized (Arch Linux, Homebrew, Nix, etc.). Each tab leads with a one-sentence pointer to the upstream installer's docs and shows a single install command. `uv tool install` (or `uv pip install`) is the primary command; alternative installers may appear as secondary options but never replace `uv` as the default. If a project ships extras, render them as a `{list-table}` only when there are 3 or more — for 1-2 extras, an inline `uv pip install pkg[extra]` line is clearer.
+4. **Install methods** tab-set with one tab per package manager that actually distributes the package. Order: `uv`, `pip`, `pipx`, then everything else alphabetized (Arch Linux, Homebrew, Nix, etc.). Each tab leads with a one-sentence pointer to the upstream installer's docs and shows a single install command. `uv tool install` (or `uv pip install`) is the primary command; alternative installers may appear as secondary options but never replace `uv` as the default. If a project ships extras, render them as a `{list-table}` only when there are 3 or more — for 1-2 extras, an inline `uv pip install pkg[extra]` line is clearer.
 
    **Repology is the source of truth for which tabs exist.** Before adding, removing, or refreshing tabs:
 
@@ -537,11 +537,11 @@ Hand-written, but with a strict structure that downstream projects should mirror
    4. Skip rows that aren't real downstream installers (mirrors, vendor forks, source-only "pkgsrc" entries that no one uses interactively). If unsure, prefer omission — a missing tab is less harmful than a stale one.
    5. On every release, re-check the page. New distros mean new tabs; dropped distros mean tab removal. The Repology badge in the sidebar is the user-visible cross-check, but the prose tabs should match it row-for-row.
 
-   When the package is not on Repology at all, list only the directly-controlled installers (uv, pip, pipx for PyPI projects) and skip the `Installation methods` tab-set entirely if even those don't apply.
+   When the package is not on Repology at all, list only the directly-controlled installers (uv, pip, pipx for PyPI projects) and skip the `Install methods` tab-set entirely if even those don't apply.
 
 5. **Python compatibility matrix** — a `<!-- matrix python -->` / `<!-- matrix-end -->` comment-marker region whose embedded table is regenerated by `click-extra refresh-directives` (the fourth `repomatic update-docs` phase runs it automatically), so it refreshes on every release without manual intervention. click-extra's matrix machinery owns the generation logic: per-tag Python support from classifiers with `requires-python`/Poetry/`setup.py` fallbacks, release-date capping, and range grouping. Keep the marker form (not the live `{matrix}` fence) so the table also renders when browsing the file on GitHub. Rendering conventions the reader relies on: `✅` / `❌` glyph cells, consecutive same-support tags grouped into one row labelled `` `4.25.x` → `6.15.x` ``, newest ranges on top. Tags with no Python declaration at all are out of scope; note the cutoff in a sentence beneath the table rather than padding with blank rows.
 
-6. **Binaries** table linking to GitHub Release binaries for each platform/architecture. Its URLs belong to the release freeze (`PrepareRelease.freeze_install_download_urls`), which ratchets them forward to `/releases/download/vX.Y.Z/<package>-X.Y.Z-linux-arm64.bin` on every release: a repo that has shipped once carries versioned URLs permanently, and there is no unfreeze step. A never-released repo starts from the evergreen `releases/latest/download/<package>-linux-arm64.bin` form, which resolves because the release pipeline uploads versionless alias assets alongside the version-stamped ones. Both spellings resolve, so neither is drift: never hand-edit one into the other.
+6. **Executables** table linking to GitHub Release binaries for each platform/architecture. Its URLs belong to the release freeze (`PrepareRelease.freeze_install_download_urls`), which ratchets them forward to `/releases/download/vX.Y.Z/<package>-X.Y.Z-linux-arm64.bin` on every release: a repo that has shipped once carries versioned URLs permanently, and there is no unfreeze step. A never-released repo starts from the evergreen `releases/latest/download/<package>-linux-arm64.bin` form, which resolves because the release pipeline uploads versionless alias assets alongside the version-stamped ones. Both spellings resolve, so neither is drift: never hand-edit one into the other.
 
 7. **Release verification** section showing `gh attestation verify` against the package's own repo, with the `--signer-repo` flag if the release workflow runs as a reusable workflow from another repo. Mirror exactly: a stale flag here breaks reader trust.
 
@@ -550,7 +550,7 @@ Sync rules:
 - Re-check the Repology page on every release. New distros get a new tab; dropped distros get the tab removed.
 - The Python compatibility matrix is auto-generated; never hand-edit it.
 - Download URLs in `install.md` are generated, not hand-maintained, so a version number in one is expected rather than drift. The single manual intervention is the documented repair: when a release's binary lane failed, re-point the table at the last release that actually carries binaries, since the freeze pins the version optimistically before the binaries exist (`lint-repo` reports the gap but never repairs it; see the `repomatic-ship` skill's § Repairing a short ship).
-- The Try it now tab-set's `Specific version` tab does carry a pinned version as an example — that's intentional (it teaches the syntax). From repomatic `v7.4.0` on, the prepare-release freeze step bumps it automatically (`freeze_install_cli_version` rewrites `{package}@X.Y.Z` and `{package}==X.Y.Z` pins in `docs/install.md`); hand-bumping is only needed on repos pinned to older release engines.
+- The Try it tab-set's `Specific version` tab does carry a pinned version as an example — that's intentional (it teaches the syntax). From repomatic `v7.4.0` on, the prepare-release freeze step bumps it automatically (`freeze_install_cli_version` rewrites `{package}@X.Y.Z` and `{package}==X.Y.Z` pins in `docs/install.md`); hand-bumping is only needed on repos pinned to older release engines.
 
 ### `packaging.md`: distribution and dependency reference
 
@@ -564,17 +564,17 @@ The graph used to close `install.md`; it moved here so the install page stays en
 
 A Sphinx site for a CLI/library project should converge on a predictable page set. Downstream repos that mirror this roster get free coherence with every other repo following the convention, and readers learn one navigation pattern.
 
-`docs/index.md` is the landing page. It holds nothing but `{toctree}` blocks, all `:hidden:`, so the body (typically a `{include} ../readme.md`) carries the visible content. The first block takes no caption and the rest are captioned; § Grouping pages into sidebar sections below settles how many there are and what each is called.
+`docs/index.md` is the landing page. Three `{toctree}` blocks: a primary one listing user-facing pages, then a `{caption: Agent tooling}` block for the assets the project ships to an AI agent, then a `{caption: Development}` block listing maintainer-facing pages. All `:hidden:` so the body of `index.md` (typically a `{include} ../readme.md`) carries the visible content.
 
-User-facing pages, and when a project carries one:
+Primary toctree (user-facing), in this order:
 
 01. `install` — § Recipes › `install.md`. Always first.
 02. `cli` — § Recipes › `cli.md`. CLIs only.
-03. `man` — Index of the man pages `click_extra_manpages` emits, one link per (sub)command. Only when the project declares that list; pair it with a `## Man pages` section in `install.md` covering `--man`, the release tarball and regeneration, or the emitted `man/` tree publishes unreachable.
-04. `configuration` — § Recipes › `configuration.md`. Projects with `[tool.X]` schema.
-05. `dependencies` — Dependency policy page (version-specifier rules, floor-comment conventions, audit procedures). The project's own dependency graph is not a page of its own: it renders in `packaging.md`'s `## Dependencies` section (see § Recipes › `packaging.md`).
-06. `tool-runner` — Only when the project ships a `repomatic run`-style tool runner.
-07. `workflows` — Only when the project publishes reusable workflows.
+03. `configuration` — § Recipes › `configuration.md`. Projects with `[tool.X]` schema.
+04. `dependencies` — Dependency policy page (version-specifier rules, floor-comment conventions, audit procedures). The project's own dependency graph is not a page of its own: it renders in `packaging.md`'s `## Dependencies` section (see § Recipes › `packaging.md`).
+05. `tool-runner` — Only when the project ships a `repomatic run`-style tool runner.
+06. `workflows` — Only when the project publishes reusable workflows.
+07. `cloudflare` — Only when the project sets `[tool.repomatic] site.deploy = "cloudflare-pages"`: the operating manual for that hosting model (deploy mechanics, token scope and rotation, the drift check, the `_redirects` engine).
 08. `test-matrix` — Only when the project documents its CI test-matrix composition.
 09. `nuitka` — Only for projects compiling standalone executables through the release engine: the canonical home for build targets, fleet cadence, compile caching and measured build times (the `binaries` page below stays the per-release catalog).
 10. `security` — Optional, and absent by default: a security page with nothing project-specific to say (no real threat model, no attack surface worth describing, no dedicated reporting channel) is boilerplate that dilutes the docs. Add it only when the project has a genuine security consideration. When present, single-source it as `docs/security.md`: GitHub's security tab detects the file in `docs/` as well as `.github/`, so no duplicate copy is needed.
@@ -586,39 +586,23 @@ Agent tooling toctree, in this order. Drop the whole block when the project ship
 2. `subagents` — Only when the project ships subagent definitions.
 3. `claude-code-plugin` — Only when those skills and subagents are also published as an installable Claude Code plugin. Both distribution paths coexist, so the page covers the marketplace install, what the archive ships, and how to wire it into a repository.
 
-Maintainer-facing pages, and when a project carries one:
+Development toctree, in this order:
 
 01. `contributing` — Setup, dev loop, code-style pointers (or `{include} ../contributing.md` if the root file already exists).
 02. `commit-messages` — Only when automation reads or writes the project's commit subjects, which makes the subject a shared namespace rather than free text: the reserved-prefix rules, who else parses a message, and how to write a subject and body.
 03. `upstream-development` — Project-internal release process. Mark `(upstream maintainers only)` in the page heading so readers know this is not for consumers.
 04. `operation-contracts` — Optional, for projects with formal automated-operation contracts.
-05. `{package}`, `tests` — Autodoc API pages: the package's root autodoc page and the test-suite package. Name them bare, never as an `API <{package}>` alias: the `API reference` caption they sit under already says what they are, and the alias then prints the word twice. Both keep plain octicon-free headings (see Title octicons below).
+05. `API <{package}>`, `tests` — Autodoc API pages: the `API <...>` entry aliases the package's root autodoc page, `tests` covers the test-suite package. Both keep plain octicon-free headings (see Title octicons below).
 06. `packaging` — Distribution and dependency reference (see § Recipes › `packaging.md`). Every project renders its dependency graph here; projects distributed through package managers add their per-channel build instructions alongside it. Maintainer/packager-facing, so it sits in Development.
-07. `binaries` — Standalone-executables catalog written by the repomatic binaries pipeline. Only for projects compiling Nuitka binaries; a maintainer-facing reference, so it belongs here rather than in the primary toctree (end users reach the same downloads through `install.md`'s `## Binaries` section).
-08. `cloudflare` — Only when the project sets `[tool.repomatic] site.deploy = "cloudflare-pages"`: the operating manual for that hosting model (deploy mechanics, token scope and rotation, the drift check, the `_redirects` engine). Deploy tokens and an audit log are maintainer material, so it sits here rather than in the primary toctree.
-09. `genindex`, `modindex` — Sphinx-generated index and module index.
-10. `changelog` — Reference the root changelog via `{include} ../changelog.md` so the file stays single-sourced.
-11. `changelog-archive` — Only when `[tool.repomatic] changelog.archive-location` points into `docs/`.
-12. `history` — Optional narrative of how the project got to here, opening on its own star-history chart. Context for maintainers rather than instruction for users, so it sits in Development next to the changelog it complements.
-13. `todolist` — `sphinx.ext.todo` output. Drop this entry when the project has no TODOs.
-14. `code-of-conduct`, `license` — `{include}` from root files; never duplicate the text.
-15. `GitHub repository <https://...>` — External link as the last entry.
-16. `Funding <https://github.com/sponsors/...>` — External link if the project accepts funding.
-
-### Grouping pages into sidebar sections
-
-One flat `{toctree}` works until it does not. Past roughly a dozen entries the sidebar stops being a map and becomes a list to scan, and the reader has no way to tell which pages answer the question they arrived with. So **group a block once it passes ~12 entries, and leave it flat below that.** The threshold is per block, not per site: `repomatic` groups its 17-entry maintainer tail while its 11-entry user-facing block stays as it is.
-
-The shape a grouped `index.md` takes:
-
-- **The first block takes no caption and holds only entry points** — the two or three pages someone opens before they know what they want. `install` is always one. `click-extra` pairs it with `tutorial`, `meta-package-manager` with `managers`, its hub for a hundred-odd manager pages. Everything else earns a caption.
-- **Captions name what the reader is doing, not what the code is.** `Colors and output`, `Package operations`, `Execution model`, `Exports and reports`, `Testing`. Sentence case, like every other title here. A caption naming a module or a subsystem has picked the author's mental model over the reader's.
-- **Two to five entries per section.** One entry is not a section: fold it into a neighbour, as `meta-package-manager` folds `desktop-menus` in beside `cli-parameters` and `man` under `Interfaces`. Much past five and the section wants splitting, which is the same threshold one level down.
-- **The maintainer tail splits in three, plus one where it earns it.** `Contributing` (the contribution guide, the extension walkthroughs, packaging, the code of conduct), `API reference` (the autodoc pages plus `genindex` and `modindex`), and `Project` (changelog, history, todolist, license, and the external links last). A project shipping release artifacts adds `Release and hosting` for them, rather than letting `Project` grow into a catch-all: `meta-package-manager` puts `binaries`, `releasing` and `infrastructure` there, `repomatic` puts `binaries` and `cloudflare`.
-- **`Agent tooling` keeps its own caption**, between the user-facing sections and the maintainer tail.
-- **Regrouping conserves the set.** It moves pages between blocks and adds none, drops none, and duplicates none. Diff the entry lists before and after and assert all three, because a page silently lost from every toctree still builds: Sphinx reports it as `document isn't included in any toctree`, one warning among however many the build already emits.
-
-The `API reference` caption is also what retires the `API <{package}>` alias: the caption names the section, so the entry can be the bare page.
+07. `binaries` — Standalone-executables catalog written by the repomatic binaries pipeline. Only for projects compiling Nuitka binaries; a maintainer-facing reference, so it belongs here rather than in the primary toctree (end users reach the same downloads through `install.md`'s `## Executables` section).
+08. `genindex`, `modindex` — Sphinx-generated index and module index.
+09. `changelog` — Reference the root changelog via `{include} ../changelog.md` so the file stays single-sourced.
+10. `changelog-archive` — Only when `[tool.repomatic] changelog.archive-location` points into `docs/`.
+11. `history` — Optional narrative of how the project got to here, opening on its own star-history chart. Context for maintainers rather than instruction for users, so it sits in Development next to the changelog it complements.
+12. `todolist` — `sphinx.ext.todo` output. Drop this entry when the project has no TODOs.
+13. `code-of-conduct`, `license` — `{include}` from root files; never duplicate the text.
+14. `GitHub repository <https://...>` — External link as the last entry.
+15. `Funding <https://github.com/sponsors/...>` — External link if the project accepts funding.
 
 Page-shape rules that apply across the roster:
 
@@ -641,14 +625,10 @@ Page-shape rules that apply across the roster:
   | `changelog.md`             | `diff`                 |
   | `ci.md`                    | `container`            |
   | `claude-code-plugin.md`    | `plug`                 |
-  | `cli-parameters.md`        | `command-palette`      |
   | `cli.md`                   | `command-palette`      |
-  | `cloudflare.md`            | `cloud`                |
   | `code-of-conduct.md`       | `code-of-conduct`      |
   | `colorize.md`              | `paintbrush`           |
   | `commands.md`              | `apps`                 |
-  | `commit-messages.md`       | `git-commit`           |
-  | `concurrency.md`           | `cpu`                  |
   | `config.md`                | `sliders`              |
   | `configuration.md`         | `sliders`              |
   | `context.md`               | `database`             |
@@ -656,28 +636,23 @@ Page-shape rules that apply across the roster:
   | `cooldown.md`              | `history`              |
   | `decorators.md`            | `mention`              |
   | `dependencies.md`          | `package-dependencies` |
-  | `desktop-menus.md`         | `device-desktop`       |
   | `detection.md`             | `pulse`                |
   | `dump.md`                  | `file-moved`           |
   | `duplicates.md`            | `stack`                |
   | `envvar.md`                | `pin`                  |
   | `execution.md`             | `play`                 |
   | `falsehoods.md`            | `copilot-warning`      |
-  | `gnome-shell.md`           | `plug`                 |
   | `groups.md`                | `apps`                 |
   | `history.md`               | `log`                  |
-  | `infrastructure.md`        | `globe`                |
   | `install.md`               | `download`             |
   | `license.md`               | `law`                  |
   | `logging.md`               | `log`                  |
   | `man-page.md`              | `repo`                 |
-  | `man.md`                   | `book`                 |
   | `managers.md`              | `file-submodule`       |
   | `mkdocs.md`                | `markdown`             |
   | `myst-docstrings.md`       | `pencil`               |
   | `nuitka.md`                | `file-binary`          |
   | `operation-contracts.md`   | `tasklist`             |
-  | `output-formats.md`        | `table`                |
   | `overrides.md`             | `pin`                  |
   | `packaging.md`             | `package-dependents`   |
   | `parameters.md`            | `tasklist`             |
@@ -708,7 +683,6 @@ Page-shape rules that apply across the roster:
   | `tutorial.md`              | `mortar-board`         |
   | `typer.md`                 | `git-compare`          |
   | `types.md`                 | `file-binary`          |
-  | `unsupported.md`           | `circle-slash`         |
   | `upstream-development.md`  | `gear`                 |
   | `upstream.md`              | `cross-reference`      |
   | `usecase.md`               | `light-bulb`           |
@@ -716,7 +690,7 @@ Page-shape rules that apply across the roster:
   | `workflows.md`             | `workflow`             |
   | `wrap.md`                  | `terminal`             |
 
-  When introducing a page that's not in the table, pick the closest [GitHub Octicon](https://primer.style/foundations/icons) and add the entry here so the next repo follows suit. Icons must be unique within a repo — two pages sharing an icon defeats the visual-anchor purpose. A generated, homogeneous page catalog is exempt: meta-package-manager's `docs/managers/<id>.md` stubs (one per supported manager) all share a single category icon (`package`) as a group marker and sit under their own `{toctree}`, not competing for sidebar anchoring, so the uniqueness rule governs the hand-authored roster, not such catalogs. A hand-authored *family* is exempt on the same grounds: meta-package-manager's `bar-plugin.md` and `gnome-shell.md` both take `plug` because they document the two desktop-menu frontends of one feature, which a reader scans as a pair rather than tells apart by icon. The rule bites when two *unrelated* pages collide. Across repos, reuse is acceptable when the concepts are related (`sliders` for anything configuration-shaped, `chevron-right` for anything shell-shaped); at fleet scale some reuse is inevitable. Auto-generated API pages (`<package>.md`, `tests.md`, and other autodoc module pages) keep plain octicon-free headings, with the package name in backticked form (like `` # `click_extra` package ``): their sidebar icons come from the `custom.css` toctree workaround instead.
+  When introducing a page that's not in the table, pick the closest [GitHub Octicon](https://primer.style/foundations/icons) and add the entry here so the next repo follows suit. Icons must be unique within a repo — two pages sharing an icon defeats the visual-anchor purpose. A generated, homogeneous page catalog is exempt: meta-package-manager's `docs/managers/<id>.md` stubs (one per supported manager) all share a single category icon (`package`) as a group marker and sit under their own `{toctree}`, not competing for sidebar anchoring, so the uniqueness rule governs the hand-authored roster, not such catalogs. Across repos, reuse is acceptable when the concepts are related (`sliders` for anything configuration-shaped, `chevron-right` for anything shell-shaped); at fleet scale some reuse is inevitable. Auto-generated API pages (`<package>.md`, `tests.md`, and other autodoc module pages) keep plain octicon-free headings, with the package name in backticked form (like `` # `click_extra` package ``): their sidebar icons come from the `custom.css` toctree workaround instead.
 
 - **Sentence case in titles.** "Repository conventions", not "Repository Conventions".
 
@@ -734,22 +708,6 @@ Pages that **don't** belong in the roster:
 - A "Glossary" page. Inline definitions next to first use are easier to maintain. If a term appears project-wide, record its spelling in `CLAUDE.md` instead.
 - "Tutorials" separate from feature pages. Each feature page should carry its own walkthrough; a separate tutorial section bit-rots fast.
 
-## Guide pages carry the prose, API pages carry the API
-
-A guide page teaches one subject: what a feature does, how to invoke it, what its output means. The generated API reference answers a different question for a different reader. Repeating it at the foot of the guide serves neither, so **no narrative page carries an `automodule` block**. Each module is documented once, on the page `sphinx-apidoc` writes for it.
-
-Both repos in this lineage grew `` ## `package.module` API `` sections back when the API was small enough to read as an appendix, and both paid twice: the modules were documented on two pages, so Sphinx reported a duplicate object description for every member (316 in `repomatic`, 192 in `meta-package-manager`), and the guide's message drowned under implementation detail its reader never asked for.
-
-Applying it:
-
-- **Delete the section outright** when its body is nothing but `{eval-rst}` autodoc fences. Leave no "see the API" pointer: the sidebar already lists the API tree, and a stub section is one more thing to keep true.
-- **Keep the diagram, drop the dump** where a section holds both. An `autoclasstree` is authored content showing the shape of a hierarchy, so retitle the section for what survives (`## Command hierarchy`, `` ## `Metadata` class hierarchy ``) instead of leaving it named after a module it no longer documents.
-- **Check the cross-references first.** Under `nitpicky = True` a `{class}` or `{func}` ref resolves against whichever page registered the target, so dropping the guide's copy is harmless while the API page carries one. What breaks is a ref naming a module `sphinx-apidoc` skips: a private, `_`-prefixed one it writes no page for. Every project here leaves those undocumented, so downgrade the ref to a code span rather than widen the API surface to rescue it.
-- **Give each module its own page** with `[tool.repomatic] docs.apidoc-extra-args = [ "--separate" ]`. Page length then follows the module rather than the package, which is what makes the reference readable enough to be the only home.
-- **Watch for the section creeping back.** A new module lands with a guide page and the appendix habit returns, so grep `docs/*.md` for `automodule` on every pass: outside the generated `<package>.*.md` and `tests.*.md` stubs, every hit is a finding.
-
-Module anchors move with the content: `/sbom/#module-package.sbom.base` becomes `/package.sbom.base/`. Nothing recovers the old form, a fragment never reaching the server, so an inbound link lands at the top of the guide instead. That is the accepted cost, paid once.
-
 ## `docs/conf.py` hygiene
 
 `conf.py` is a long-lived file that drifts unless actively pruned. Treat it like a lockfile: every non-default setting should earn its place.
@@ -764,8 +722,6 @@ Default-pruning rule:
 - Drop conditional import shims once the project's minimum Python no longer needs them. The `try: import tomllib / except: import tomli` pattern is dead code on `requires-python = ">=3.11"`. Same for any `if sys.version_info < (3, X):` branch where `X` is now below the floor. The deps group should lose the corresponding fallback dependency in the same PR.
 - Always pass `encoding="utf-8"` to `Path.read_text()` calls in `conf.py`. Bare `read_text()` picks up the locale, which on minimal CI runners has bitten many projects.
 - `exclude_patterns = ["_build", "_linkcheck", "html", "Thumbs.db", ".DS_Store"]` is the canonical set: `_build` and `_linkcheck` are the build and linkcheck output directories (both also gitignored), and `html` catches stray in-tree builds left by ad-hoc `sphinx-build` invocations.
-- Publish content, not build scaffolding. `html_copy_source = False` and `html_show_sourcelink = False` together drop the `_sources/` copy of every document, which no page in this lineage links to and only a hand-typed URL could reach. Name both: they gate different halves of the feature, and a theme reading only the second offers a link to files that are no longer there. Sphinx still creates the (now empty) directory and writes `.buildinfo` from an unconditional finish task, so a `build-finished` hook removing `.buildinfo`, `.buildinfo.bak` and the empty `_sources/` is what actually keeps them out of the deployed tree.
-- `sphinx_sitemap` earns its place on any site big enough that a crawler would have to walk the whole link graph to find the API pages. It needs `html_baseurl`, and **that value must end in a slash**: sphinx-sitemap concatenates it with each page link (its own normalization line computes the slash-terminated form and discards the result), so a slash-less base emits `https://example.netinstall.html`. Derive it once from `project.urls.Documentation` with `.rstrip("/") + "/"`, feed both `html_baseurl` and `ogp_site_url` from it, and set `sitemap_url_scheme = "{link}"`: the default `{lang}{version}{link}` layout is for sites publishing translations or versions side by side, and yields 404s anywhere else. Pair it with a `robots.txt` in `html_extra_path` naming the sitemap, alongside a self-contained `404.html` — Cloudflare Pages answers an unmatched route with the home page and a `200` when none is present, which tells a crawler every misspelled URL is real.
 
 Extensions list:
 
@@ -827,7 +783,7 @@ Theme assets and OpenGraph:
 
 - The sidebar logo is Furo's `light_logo`/`dark_logo` **pair** of theme options, set to `"logo-square-light.png"` and `"logo-square-dark.png"`. Never `html_logo`: Furo performs no dark-mode swap on a single logo, so the light-only `assets/logo-square.svg` keeps its near-black wordmark on the dark theme, where it lands around 1.2:1 against Furo's background. Both options must be set for the pair to render at all, and `html_logo` must be unset, since Furo's `sidebar/brand.html` prefers it and skips the pair when it is present. Furo resolves both names against `_static/`, so each PNG needs its own `html_static_path` entry (that setting accepts individual files, which land at the root of `_static/`; listing `docs/assets/` wholesale would copy every screenshot and report along with them). The two PNGs are same-aspect exports of the same SVG, so the swap holds geometry.
 - `html_favicon = "assets/favicon.svg"` is the canonical path, an SVG since browsers handle SVG favicons natively. The `/brand-assets` skill is the canonical producer of every one of these files: it manages the SVG sources (favicon, square logo, banner, social banner), exports light/dark PNG variants, and wires the new files into `docs/conf.py`. When they are missing or out of date, run `/brand-assets` instead of editing the assets by hand.
-- `ogp_image` names the social card, and the card is served by the site itself: add `assets/banner-social-<variant>.png` to `html_static_path` and set `ogp_image = "_static/banner-social-<variant>.png"`. `sphinxext.opengraph` joins that onto `ogp_site_url`, so every page emits the same absolute URL whatever its depth, one origin answers for it, and a redeploy refreshes it. Pair it with `ogp_image_alt = project`. What the path must never be is a bare `assets/...`: `docs/assets/` is not copied into the built site, so that resolves to a URL which 404s for the social crawlers that only ever see the raw HTML — the `html_static_path` entry is the whole reason the `_static/` spelling works. An absolute `raw.githubusercontent.com` URL also resolves and was the earlier rule here, but it hands a second origin a page asset and pins it to whatever sits on `main`. Set one or the other whenever the project has a banner; without `ogp_image`, `sphinxext.opengraph` falls back to the favicon, which scales poorly. Define `ogp_site_url` from the same constant `html_baseurl` reads, so the `og:url` a crawler gets can never name a different host than the canonical link beside it. The PNG is exported from `assets/banner-social.svg` by the `/brand-assets` skill (which also produces the dark variant for dark-mode social cards on platforms that support them).
+- `ogp_image` must be an **absolute** URL to the committed PNG on the GitHub raw host — `f"https://raw.githubusercontent.com/{github_user}/{project_id}/main/docs/assets/banner-social-light.png"` — never a site-relative `assets/...` path. `docs/assets/` is not copied into the built site (only the two sidebar logos are named in `html_static_path`, and no doc body references the banner, so Sphinx's image collector never picks it up), so a relative `ogp_image` resolves against `ogp_site_url` to a URL that 404s for the social crawlers that only ever see the raw HTML. Set it when the project has a banner asset; without `ogp_image`, `sphinxext.opengraph` falls back to the favicon, which scales poorly. Still define `ogp_site_url = f"https://{github_user}.github.io/{project_id}/"` for the page-level `og:url` tag. The PNG is exported from `assets/banner-social.svg` by the `/brand-assets` skill (which also produces the dark variant for dark-mode social cards on platforms that support them).
 - The Furo `announcement` banner template across this lineage references the same `github_user` constant defined at the top of `conf.py`. Rebuilding the announcement string locally inside `html_theme_options` avoids a per-theme override layer.
 
 Pruning checklist before merging any `conf.py` change:
@@ -876,8 +832,6 @@ Watch for these every pass:
 - A new `[tool.repomatic]` field added without a docstring, producing an empty Description cell.
 - `{click:run}` blocks that fail at build time because the CLI was renamed: Sphinx logs the failure but the build still produces a page with a missing block.
 - Cross-references to docs/ pages from skills/agents that don't degrade gracefully when the target page is excluded downstream.
-- A `{toctree}` that outgrew the ~12-entry threshold and is still flat, or a captioned section left holding a single entry after pages moved around it. See § Grouping pages into sidebar sections.
-- An `automodule` block on a narrative page, repeating what the module's own API page already documents. Every such pair costs a duplicate object description per member and buries the guide's message; see § Guide pages carry the prose, API pages carry the API.
 - Stale `.rst` files in `docs/` left over from package renames or earlier `sphinx-apidoc` runs that reference modules or packages no longer in the source tree. They build silently (autodoc skips missing modules with a warning, not an error) but pollute search results and the modindex. Sweep with `git status` after `update-docs`; delete orphans in the same PR.
 - A `## Development` section in `readme.md` that should have been removed when the project added a `claude.md`. Once `claude.md` exists, the developer-facing setup goes there; keeping a duplicated section in the readme creates two places to update.
 - A `dependencies.md` page whose embedded Mermaid graph hasn't been regenerated since the last `uv lock` change. The graph stays in sync only if `repomatic update-dep-graph` is wired into a workflow job; manual regeneration drifts. Upstream that job lives in `_release-engine.yaml` and fires on release commits only, so a graph lagging `pyproject.toml` mid-cycle is expected rather than drift.
