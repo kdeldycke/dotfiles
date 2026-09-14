@@ -59,6 +59,6 @@ Measured on hosted `ubuntu-26.04` runners and `alpine:edge` containers, 2026-08.
 
 Delete the workflow the moment every gate is green:
 
-- The retirement commit's body states what the probe proved, in one sentence per claim. This is the durable record: the workflow file is gone, and `git log` on it is where the findings live.
-- Route each finding to its lasting home before the delete: a real-output fixture into the test corpus, an environment quirk into a comment beside the code that works around it, a user-facing fix into the changelog. The probe itself must hold nothing that still matters.
+- Route each finding to its lasting home before the delete, and treat that placement as the durable record: a real-output fixture into the test corpus, an environment quirk into a comment beside the code that works around it, a measured number into the docstring whose claim rests on it, a user-facing fix into the changelog. The probe itself must hold nothing that still matters.
+- The retirement commit is then a subject line naming the question it answered, not a write-up. A finding that reaches only `git log` is lost to every reader who never runs it, and the commit-message rules cap a body at two lines regardless.
 - If a scenario deserves *permanent* coverage, that is a new decision with a cost: propose a schedule-only job to the user rather than quietly keeping the probe alive.
