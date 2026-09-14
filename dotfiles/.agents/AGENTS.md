@@ -659,7 +659,7 @@ Before sending, check: a reader who sees only the first line and the last line k
 
 Use first-person singular ("I", "my") in all prose written on behalf of the user: issue descriptions, PR bodies, feature requests, comments, documentation. Never use first-person plural ("we", "our") unless the text genuinely refers to a group.
 
-Use ":" instead of em dashes for inline elaboration or appositive clauses. That substitutes for the dash, it does not license joining clauses: when the second half is a full thought, a full stop beats a colon and two sentences beat one compound. Reference prose in `docs/` needs this most, and a parenthetical list reads better promoted behind a colon than left in brackets. Keep bold for a whole labelled item, never for emphasis mid-sentence.
+Use ":" instead of em dashes for inline elaboration or appositive clauses. That substitutes for the dash. It does not license joining clauses: when the second half is a full thought, a full stop beats a colon and two sentences beat one compound. Reference prose in `docs/` needs this most, and a parenthetical list reads better promoted behind a colon than left in brackets. Keep bold for a whole labelled item, never for emphasis mid-sentence.
 
 ## Name every file and URL by its full address
 
