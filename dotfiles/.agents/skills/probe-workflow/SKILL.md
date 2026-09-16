@@ -18,7 +18,7 @@ Do not reach for one when a local test, a container run on the development machi
 
 ## Invocation
 
-The loop commits and pushes on every iteration. Get the user's explicit go-ahead for autonomous commit/push/run/cancel cycles before starting, or run under `--dangerously-skip-permissions` in a trusted checkout. Confirm which branch to push to: these repositories key workflow concurrency on the ref, so pushing to the default branch supersedes cleanly while a side branch queues alongside it.
+The loop commits and pushes on every iteration. Get the user's explicit go-ahead for autonomous commit/push/run/cancel cycles before starting, or run under `--dangerously-skip-permissions` in a trusted checkout. Confirm which branch to push to: these repositories key workflow concurrency on the ref, so pushing to the default branch supersedes cleanly while a side branch queues alongside it. A probe living on a side branch cannot be started with `gh workflow run`, which only dispatches a workflow file present on the default branch (`HTTP 404: workflow ... not found on the default branch`): give it a `push` trigger on its own branch instead, and let each push start it.
 
 ## Ground rules
 
