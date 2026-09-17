@@ -46,6 +46,7 @@ Measured on hosted `ubuntu-26.04` runners and `alpine:edge` containers, 2026-08.
 - `uv sync` venvs ship no `pip`: the venv python shadowing `PATH` breaks anything probing `python -m pip`.
 - JavaScript actions (`actions/checkout`, `astral-sh/setup-uv`) are glibc-linked and die in musl containers: inside Alpine, fetch the exact SHA with `git clone` + `git fetch origin "$GITHUB_SHA"` and install tooling with `apk add`.
 - Container base images ship no package index: run the package manager's index refresh before any search or install can see the catalog.
+- Hosted `macos-26`, measured 2026-09-17: `tell application X to quit` launches an app that is not running, so a probe relaunching an app quits it only `if application X is running` and polls `pgrep -x X` before the next `open`. The screen comes up `1024` wide, and macOS hides the status items that do not fit beside the front app's menus, so raise the display (`CGConfigureDisplayWithDisplayMode`) before measuring the menu bar.
 
 ## The iteration loop
 
