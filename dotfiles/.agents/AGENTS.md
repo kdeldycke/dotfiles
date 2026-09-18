@@ -24,15 +24,19 @@ So a `lint-repo` complaint about a missing top-level `permissions` key is a sign
 
 ### Bumping the repomatic pin
 
-Regenerate rather than search-and-replace, so codegen changes (new job permissions, reshaped triggers) arrive with the version bump instead of a release behind it:
+The `sync-repomatic` job bumps the pin: once a newer release clears `minimum-release-age`, it opens an `Upgrade repomatic to vX.Y.Z` pull request. That pull request moves the pin and every managed file together, and lists the breaking changes it crosses. After the merge, run the `/repomatic-upgrade` command it gives, to review what the release lets the repository adopt, reuse or drop.
+
+To adopt a release before it clears the cooldown, bump by hand. Regenerate rather than search-and-replace, so codegen changes (new job permissions, reshaped triggers) arrive with the version bump instead of a release behind it:
 
 ```shell-session
-$ uvx --no-progress 'repomatic==X.Y.Z' init workflows/autofix.yaml workflows/lint.yaml
+$ uvx --no-progress 'repomatic==X.Y.Z' init --no-cooldown workflows/autofix.yaml workflows/lint.yaml
 ```
+
+`--no-cooldown` moves the pin. Without it, `init` holds the pin back while the release is inside the window, and leaves the workflows as they are. `init --upgrade` cannot do this job: it skips a release inside the window, and it takes no components.
 
 Name the components explicitly. A bare `repomatic init` also materializes whatever else is in scope for the repository (labels config, a changelog), and an unqualified `workflows` selector bypasses scope gating.
 
-Read the release notes for breaking changes needing a manual follow-up. A renamed autofix job is the recurring one: its old PR branch stays open, attached to a job that no longer exists.
+Then run `/repomatic-upgrade`, which `init` prints as its last next step. A renamed autofix job is the recurring manual follow-up: its old PR branch stays open, attached to a job that no longer exists.
 
 ### Tools called from workflows are version-pinned
 
