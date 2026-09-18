@@ -154,9 +154,9 @@ Follow this template structure:
 
 Badge format follows shields.io conventions: `![GitHub](https://img.shields.io/github/<metric>/<owner>/<repo>?label=%20&style=flat-square)` for compact badges with no label text.
 
-Star history chart: render it locally, never as a third-party embed. GitHub restricted its stargazer endpoints to a repository's own admins in June 2026, so `api.star-history.com` and every equivalent service now answer with an error card, and no export can be obtained for a repository the visitor does not own. `repomatic sample-metrics` accrues the counts into a committed CSV and draws them as a themeable SVG: declare the projects in `[tool.repomatic.metrics] subjects`, declare a chart in `[tool.repomatic.metrics] charts`, and reference that chart's `output` path from this section. A comparison spanning projects of very different sizes wants `scale = "logarithmic"`, and one comparing trajectories rather than dates wants `mode = "relative"`.
+Star history chart: render it locally, never as a third-party embed. GitHub restricted its stargazer endpoints to a repository's own admins in June 2026, which left every third-party star chart rendering an error card. It reopened an anonymous star-history endpoint in September 2026. A history committed to the repository cannot be revoked upstream, whatever GitHub changes next. `repomatic sample-metrics` records the counts into a committed CSV and draws them as a themeable SVG: declare the projects in `[tool.repomatic.metrics] subjects`, declare a chart in `[tool.repomatic.metrics] charts`, and reference that chart's `output` path from this section. A comparison spanning projects of very different sizes wants `scale = "logarithmic"`, and one comparing trajectories rather than dates wants `mode = "relative"`.
 
-Peers sampled from today carry only two points, their creation date and the first reading, so a chart drawn early states a straight line between them. That is worth saying in a sentence under the chart rather than hiding, since the history accrues weekly and cannot be backdated.
+A GitHub peer gets its whole curve, rebuilt from that endpoint back to its first star. That curve counts only the stars the repository still holds, so it understates every past week by the stars withdrawn since. A peer on any other forge is sampled forward, one reading per run, and that history cannot be backdated: it carries only two points at first, its creation date and the first reading, so a chart drawn early states a straight line between them. Both are worth a sentence under the chart rather than hiding.
 
 ### Auditing an existing benchmark (`audit`)
 
@@ -197,7 +197,7 @@ Verify the GitHub `owner/repo` in badge URLs matches the current canonical locat
 
 #### 6. Star history chart
 
-Check the chart is a locally rendered asset rather than a third-party embed, which has served an error card since GitHub restricted stargazer access in June 2026. Then check `[tool.repomatic.metrics] subjects` lists every project the page still compares and none it has excluded, since that one list feeds both the chart and the weekly sampler.
+Check the chart is a locally rendered asset rather than a third-party embed: every such embed served an error card once GitHub restricted stargazer access in June 2026, and a committed history cannot be revoked that way. Then check `[tool.repomatic.metrics] subjects` lists every project the page still compares and none it has excluded, since that one list feeds both the chart and the weekly sampler.
 
 ### Adding a project (`add`)
 
@@ -205,7 +205,7 @@ Check the chart is a locally rendered asset rather than a third-party embed, whi
 2. Determine the correct column position per the ordering convention.
 3. Add it to **every** table (features, activity, popularity, distribution, metadata).
 4. Add a footnote with the project URL.
-5. Add it to the star history chart URL.
+5. Add it to `[tool.repomatic.metrics] subjects`, which feeds the star history chart.
 
 ### Output format
 

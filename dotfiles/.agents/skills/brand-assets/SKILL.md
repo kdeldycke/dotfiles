@@ -9,7 +9,7 @@ argument-hint: '[path/to/assets or SVG file]'
 
 Create, maintain, and export project logo and banner assets as SVGs with light/dark PNG variants.
 
-The Sphinx side of the convention (`html_logo`, `html_favicon`, `ogp_image` paths and the rules around them) lives in `.claude/agents/sphinx-docs.md` § `docs/conf.py` hygiene › Theme assets and OpenGraph. When this skill writes a new asset path into `docs/conf.py`, follow the canonical paths defined there: `assets/logo-square.svg`, `assets/favicon.svg`, `assets/banner-social-light.png`.
+The Sphinx side of the convention (the `light_logo`/`dark_logo` pair, `html_favicon`, `ogp_image` and the rules around them) lives in `.claude/agents/sphinx-docs.md` § `docs/conf.py` hygiene › Theme assets and OpenGraph. When this skill writes a new asset path into `docs/conf.py`, follow the canonical values defined there, as § Sphinx integration below spells them out: `logo-square-light.png` and `logo-square-dark.png` for the logo pair, `assets/favicon.svg` for the favicon, and `_static/banner-social-light.png` for `ogp_image`.
 
 ## Asset variants
 
@@ -17,7 +17,7 @@ Every project produces four SVG variants, each with light and dark PNG exports:
 
 1. **Favicon** (`favicon.svg`): The project icon only, no text, no margins. Tight-cropped to the icon's bounding box. Used as `html_favicon` in Sphinx and as the browser tab icon. Transparent background. Does not need PNG exports (browsers handle SVG favicons natively). If the mark itself is theme-invariant (flat, unoutlined — see "Isometric / faceted marks" below), the same source also serves any platform app-icon bundle (`.ico`, `.icns`, a build tool's icon input) with a single rendering: a browser tab and a dock are surfaces with no theme this script can query, and a mark with no outline needs no dark variant to stay legible on either.
 
-2. **Square logo** (`logo-square.svg`): The project icon with the project name centered below it. Used as the Sphinx sidebar logo (`html_logo`). Transparent background. The viewBox is taller than the icon to accommodate the text below.
+2. **Square logo** (`logo-square.svg`): The project icon with the project name centered below it. Its light and dark PNG exports are the Sphinx sidebar logo pair (`light_logo`/`dark_logo`). Transparent background. The viewBox is taller than the icon to accommodate the text below.
 
 3. **Banner** (`logo-banner.svg`): Horizontal layout with the icon on the left, project name and tagline to the right. Transparent background. Used in the GitHub readme.
 
@@ -172,16 +172,26 @@ If `rsvg-convert` is unavailable, fall back to `inkscape --export-type=png --exp
 Wire the assets into the Furo theme:
 
 ```python
-html_logo = "assets/logo-square.svg"
 html_favicon = "assets/favicon.svg"
 html_theme_options = {
+    "light_logo": "logo-square-light.png",
+    "dark_logo": "logo-square-dark.png",
     "sidebar_hide_name": True,
     # ...
 }
+ogp_image = "_static/banner-social-light.png"
+html_static_path = [
+    "_static",
+    "assets/banner-social-light.png",
+    "assets/logo-square-dark.png",
+    "assets/logo-square-light.png",
+]
 ```
 
-- `html_logo`: Points to the square logo (with project name baked in). Combined with `"sidebar_hide_name": True` to avoid a duplicate auto-generated name below the SVG.
+- `light_logo`/`dark_logo`: The two PNG exports of the square logo (with project name baked in), which Furo swaps with its own theme toggle. Never set `html_logo` beside them: Furo prefers it, skips the pair, and shows the light-only SVG on the dark theme. Combined with `"sidebar_hide_name": True` to avoid a duplicate auto-generated name below the logo.
 - `html_favicon`: Points to the icon-only favicon (no text, tight crop).
+- `ogp_image`: The light social banner, served by the site itself so social crawlers can fetch it.
+- `html_static_path`: Furo and `sphinxext.opengraph` resolve those three names against `_static/`, so each PNG needs its own entry. Listing `docs/assets/` whole would copy every screenshot along with them.
 
 ### Hiding the readme banner in Sphinx
 
@@ -196,10 +206,9 @@ article p[align="center"]:has(img[alt="Project Name"]) {
 }
 ```
 
-Wire it in `conf.py`:
+Wire it in `conf.py`, where `_static` already opens the `html_static_path` list above:
 
 ```python
-html_static_path = ["_static"]
 html_css_files = ["custom.css"]
 ```
 

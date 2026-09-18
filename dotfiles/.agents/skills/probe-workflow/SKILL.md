@@ -1,12 +1,12 @@
 ---
 name: probe-workflow
-description: Validate a claim about real-host behavior with a temporary GitHub Actions workflow. Measure the environment, iterate on hard assertion gates, then retire the workflow with its findings recorded in the retirement commit. Use when local tests and mocks cannot answer how a tool, platform, container or privilege boundary actually behaves.
+description: Validate a claim about real-host behavior with a temporary GitHub Actions workflow. Measure the environment, iterate on hard assertion gates, then move each finding where it belongs and retire the workflow. Use when local tests and mocks cannot answer how a tool, platform, container or privilege boundary actually behaves.
 compatibility: 'Designed for Claude Code. Recommended model: Opus.'
 ---
 
 # Probe real-host behavior with a temporary workflow
 
-A probe is a throwaway GitHub Actions workflow that answers one question about the real world: what a third-party CLI actually prints, how a privilege boundary actually behaves, what a container or another OS actually ships. It exists because a unit test asserts what you believe, while a probe measures what is true. The lifecycle is fixed: write, push, read, iterate, then **retire it in a commit whose body records what it proved**. A probe that lingers becomes CI cost with no question left to answer.
+A probe is a throwaway GitHub Actions workflow that answers one question about the real world: what a third-party CLI actually prints, how a privilege boundary actually behaves, what a container or another OS actually ships. It exists because a unit test asserts what you believe, while a probe measures what is true. The lifecycle is fixed: write, push, read, iterate, then move each finding where it belongs and delete the probe. A probe that lingers becomes CI cost with no question left to answer.
 
 Reach for one when:
 
@@ -30,7 +30,7 @@ The loop commits and pushes on every iteration. Get the user's explicit go-ahead
 
 ## Measure before asserting
 
-When an assertion fails and more than one theory explains it, do not fix the theory: add a measurement step and push again. Print the state the theories disagree about (`ls -la` the directory, run the raw command as each user, `cat` the config), read the numbers, then write the fix. Guessing costs a full runner round-trip per guess; measuring costs one round-trip total. Record each lesson as a comment beside the step that hit it, so the retirement commit can harvest them.
+When an assertion fails and more than one theory explains it, do not fix the theory: add a measurement step and push again. Print the state the theories disagree about (`ls -la` the directory, run the raw command as each user, `cat` the config), read the numbers, then write the fix. Guessing costs a full runner round-trip per guess; measuring costs one round-trip total. Record each lesson as a comment beside the step that hit it, so retirement can route every one to its lasting home.
 
 Two shell traps recur in measurement steps:
 
@@ -61,5 +61,5 @@ Measured on hosted `ubuntu-26.04` runners and `alpine:edge` containers, 2026-08.
 Delete the workflow the moment every gate is green:
 
 - Route each finding to its lasting home before the delete, and treat that placement as the durable record: a real-output fixture into the test corpus, an environment quirk into a comment beside the code that works around it, a measured number into the docstring whose claim rests on it, a user-facing fix into the changelog. The probe itself must hold nothing that still matters.
-- The retirement commit is then a subject line naming the question it answered, not a write-up. A finding that reaches only `git log` is lost to every reader who never runs it, and the commit-message rules cap a body at two lines regardless.
+- The retirement commit is then a subject line naming the question it answered, not a write-up. A finding that reaches only `git log` is lost to every reader who never runs it.
 - If a scenario deserves *permanent* coverage, that is a new decision with a cost: propose a schedule-only job to the user rather than quietly keeping the probe alive.

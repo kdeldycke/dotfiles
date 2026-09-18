@@ -51,7 +51,7 @@ The sections below name labels by their default (`🪫 AI slop`, `🚫 wont do/f
 
 ### Retiring a label is a migration, not a deletion
 
-`sync-labels` only creates and updates. Dropping a label from the configuration never removes it from the repository, it just stops managing it, so the label stays live on every issue and pull request still carrying it. A repository reorganizing its taxonomy (folding per-item labels into an ecosystem group, renaming a family) therefore silently accumulates orphans that no longer appear in any config and that only a maintainer can clear.
+`sync-labels` only creates and updates. Dropping a label from the configuration never removes it from the repository, it just stops managing it, so the label stays live on every issue and pull request still carrying it. A repository reorganizing its taxonomy (folding per-item labels into an ecosystem group, renaming a family) therefore accumulates orphans that no longer appear in any config and that only a maintainer can clear. `lint-repo` lists them in its `undeclared-labels` warning, which never fails the run.
 
 Prefer a rename to a create-and-delete, because GitHub keeps every issue and pull request attached across a rename while a deletion drops the association outright. `rename-from` is how that is declared, and it is strictly **one-to-one**: labelmaker renames only when the target does *not* exist and exactly one listed source does. Two live sources is an unconditional error, and a target that already exists falls to `on-rename-clash`, which `[defaults]` pins to `error` so the clash surfaces instead of passing silently.
 
