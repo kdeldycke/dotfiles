@@ -73,44 +73,10 @@ For repos with many results, also check PRs specifically:
 gh search prs --author {username} --repo {owner}/{repo} --limit 50
 ```
 
-For a maintainer active across many projects, sweep globally first and filter by repo afterwards: one search over everything they authored beats guessing the repo list, and surfaces upstreams nobody remembered.
-
-```
-gh search prs --author {username} --limit 1000 --json repository,number,title,state,url -- -user:{username}
-gh search issues --author {username} --limit 1000 --json repository,number,title,state,url -- -user:{username}
-```
-
-Three traps in that sweep:
-
-- The raw qualifier excluding their own repos (`-user:{username}`) must come after the `--` separator, and every flag before it: anything after `--` is read as a search term.
-- Results are best-match, so a `--limit` below the true total drops the oldest items silently. Treat a result count equal to the limit as truncated.
-- A URL cited in the codebase is not a contribution: authorship from these sweeps separates "we filed it" from "we cite someone else's issue as evidence". Both matter, but they land in different sections.
-
-When the maintainer runs several projects with upstream pages, dedupe against the sibling pages and give each item one canonical home: the project whose code consumes the dependency. Distribution packaging of the project itself belongs to its packaging docs, not this page.
-
 #### 4. Check status of each item
 
 For PRs: `gh pr view <url> --json state,mergedAt,title`
 For issues: `gh issue view <url> --json state,stateReason,title`
-
-To resolve many items at once, batch them into a single GraphQL call with aliased `issueOrPullRequest` nodes:
-
-```
-gh api graphql -F query=@states.graphql
-```
-
-```graphql
-query {
-  a1: repository(owner: "{owner}", name: "{repo}") { issueOrPullRequest(number: 123) { ...S } }
-  a2: repository(owner: "{owner}", name: "{repo}") { issueOrPullRequest(number: 456) { ...S } }
-}
-fragment S on IssueOrPullRequest {
-  ... on Issue { state stateReason title }
-  ... on PullRequest { state merged title }
-}
-```
-
-`stateReason` separates a completed issue from one closed as not planned, which decides its section.
 
 #### 5. Scan git history
 

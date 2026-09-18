@@ -1,12 +1,12 @@
 ---
 name: probe-workflow
-description: Validate a claim about real-host behavior with a temporary GitHub Actions workflow. Measure the environment, iterate on hard assertion gates, then move each finding where it belongs and retire the workflow. Use when local tests and mocks cannot answer how a tool, platform, container or privilege boundary actually behaves.
+description: Validate a claim about real-host behavior with a temporary GitHub Actions workflow. Measure the environment, iterate on hard assertion gates, then retire the workflow with its findings recorded in the retirement commit. Use when local tests and mocks cannot answer how a tool, platform, container or privilege boundary actually behaves.
 compatibility: 'Designed for Claude Code. Recommended model: Opus.'
 ---
 
 # Probe real-host behavior with a temporary workflow
 
-A probe is a throwaway GitHub Actions workflow that answers one question about the real world: what a third-party CLI actually prints, how a privilege boundary actually behaves, what a container or another OS actually ships. It exists because a unit test asserts what you believe, while a probe measures what is true. The lifecycle is fixed: write, push, read, iterate, then move each finding where it belongs and delete the probe. A probe that lingers becomes CI cost with no question left to answer.
+A probe is a throwaway GitHub Actions workflow that answers one question about the real world: what a third-party CLI actually prints, how a privilege boundary actually behaves, what a container or another OS actually ships. It exists because a unit test asserts what you believe, while a probe measures what is true. The lifecycle is fixed: write, push, read, iterate, then **retire it in a commit whose body records what it proved**. A probe that lingers becomes CI cost with no question left to answer.
 
 Reach for one when:
 
@@ -18,7 +18,7 @@ Do not reach for one when a local test, a container run on the development machi
 
 ## Invocation
 
-The loop commits and pushes on every iteration. Get the user's explicit go-ahead for autonomous commit/push/run/cancel cycles before starting, or run under `--dangerously-skip-permissions` in a trusted checkout. Confirm which branch to push to: these repositories key workflow concurrency on the ref, so pushing to the default branch supersedes cleanly while a side branch queues alongside it. A probe living on a side branch cannot be started with `gh workflow run`, which only dispatches a workflow file present on the default branch (`HTTP 404: workflow ... not found on the default branch`): give it a `push` trigger on its own branch instead, and let each push start it.
+The loop commits and pushes on every iteration. Get the user's explicit go-ahead for autonomous commit/push/run/cancel cycles before starting, or run under `--dangerously-skip-permissions` in a trusted checkout. Confirm which branch to push to: these repositories key workflow concurrency on the ref, so pushing to the default branch supersedes cleanly while a side branch queues alongside it.
 
 ## Ground rules
 
@@ -30,7 +30,7 @@ The loop commits and pushes on every iteration. Get the user's explicit go-ahead
 
 ## Measure before asserting
 
-When an assertion fails and more than one theory explains it, do not fix the theory: add a measurement step and push again. Print the state the theories disagree about (`ls -la` the directory, run the raw command as each user, `cat` the config), read the numbers, then write the fix. Guessing costs a full runner round-trip per guess; measuring costs one round-trip total. Record each lesson as a comment beside the step that hit it, so retirement can route every one to its lasting home.
+When an assertion fails and more than one theory explains it, do not fix the theory: add a measurement step and push again. Print the state the theories disagree about (`ls -la` the directory, run the raw command as each user, `cat` the config), read the numbers, then write the fix. Guessing costs a full runner round-trip per guess; measuring costs one round-trip total. Record each lesson as a comment beside the step that hit it, so the retirement commit can harvest them.
 
 Two shell traps recur in measurement steps:
 
@@ -46,7 +46,6 @@ Measured on hosted `ubuntu-26.04` runners and `alpine:edge` containers, 2026-08.
 - `uv sync` venvs ship no `pip`: the venv python shadowing `PATH` breaks anything probing `python -m pip`.
 - JavaScript actions (`actions/checkout`, `astral-sh/setup-uv`) are glibc-linked and die in musl containers: inside Alpine, fetch the exact SHA with `git clone` + `git fetch origin "$GITHUB_SHA"` and install tooling with `apk add`.
 - Container base images ship no package index: run the package manager's index refresh before any search or install can see the catalog.
-- Hosted `macos-26`, measured 2026-09-17: `tell application X to quit` launches an app that is not running, so a probe relaunching an app quits it only `if application X is running` and polls `pgrep -x X` before the next `open`. The screen comes up `1024` wide, and macOS hides the status items that do not fit beside the front app's menus, so raise the display (`CGConfigureDisplayWithDisplayMode`) before measuring the menu bar.
 
 ## The iteration loop
 
@@ -60,6 +59,6 @@ Measured on hosted `ubuntu-26.04` runners and `alpine:edge` containers, 2026-08.
 
 Delete the workflow the moment every gate is green:
 
-- Route each finding to its lasting home before the delete, and treat that placement as the durable record: a real-output fixture into the test corpus, an environment quirk into a comment beside the code that works around it, a measured number into the docstring whose claim rests on it, a user-facing fix into the changelog. The probe itself must hold nothing that still matters.
-- The retirement commit is then a subject line naming the question it answered, not a write-up. A finding that reaches only `git log` is lost to every reader who never runs it.
+- The retirement commit's body states what the probe proved, in one sentence per claim. This is the durable record: the workflow file is gone, and `git log` on it is where the findings live.
+- Route each finding to its lasting home before the delete: a real-output fixture into the test corpus, an environment quirk into a comment beside the code that works around it, a user-facing fix into the changelog. The probe itself must hold nothing that still matters.
 - If a scenario deserves *permanent* coverage, that is a new decision with a cost: propose a schedule-only job to the user rather than quietly keeping the probe alive.
