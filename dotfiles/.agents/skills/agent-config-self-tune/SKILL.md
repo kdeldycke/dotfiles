@@ -28,24 +28,24 @@ Detect which harnesses are present on the machine (`~/.claude` for Claude Code, 
 
 ### pi
 
-| Scope               | Path                                                   | Purpose                                             |
-| ------------------- | ------------------------------------------------------ | --------------------------------------------------- |
-| Global user         | `~/.pi/agent/settings.json`                            | Model defaults, tools, compaction, installed packages |
-| Project             | `<project>/.pi/settings.json`                          | Project overrides, loaded only for trusted folders  |
-| Trust decisions     | `~/.pi/agent/trust.json`                               | Per-folder project-trust record                     |
-| Global instructions | `~/.pi/agent/AGENTS.md`                                | Machine-wide behavioral instructions                |
-| Project instructions| `<project>/AGENTS.md`                                  | Project-level behavioral instructions               |
-| Extensions          | `~/.pi/agent/extensions/`, `<project>/.pi/extensions/` | TypeScript loaded at startup                        |
-| Skills              | `~/.pi/agent/skills/`, `<project>/.pi/skills/`         | On-demand capabilities                              |
-| Prompt templates    | `~/.pi/agent/prompts/`, `<project>/.pi/prompts/`       | `/name` command templates                           |
+| Scope                | Path                                                   | Purpose                                               |
+| -------------------- | ------------------------------------------------------ | ----------------------------------------------------- |
+| Global user          | `~/.pi/agent/settings.json`                            | Model defaults, tools, compaction, installed packages |
+| Project              | `<project>/.pi/settings.json`                          | Project overrides, loaded only for trusted folders    |
+| Trust decisions      | `~/.pi/agent/trust.json`                               | Per-folder project-trust record                       |
+| Global instructions  | `~/.pi/agent/AGENTS.md`                                | Machine-wide behavioral instructions                  |
+| Project instructions | `<project>/AGENTS.md`                                  | Project-level behavioral instructions                 |
+| Extensions           | `~/.pi/agent/extensions/`, `<project>/.pi/extensions/` | TypeScript loaded at startup                          |
+| Skills               | `~/.pi/agent/skills/`, `<project>/.pi/skills/`         | On-demand capabilities                                |
+| Prompt templates     | `~/.pi/agent/prompts/`, `<project>/.pi/prompts/`       | `/name` command templates                             |
 
 ### Shared by both
 
-| Path                                                                                     | Purpose                                                                |
-| ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| `~/.agents/skills/`, `<project>/.agents/skills/`                                         | Harness-neutral skill locations (pi reads them; any Agent Skills spec harness may) |
-| `<project>/.agents/AGENTS.md`                                                            | Harness-neutral project instructions                                   |
-| `@<path>` imports inside any instruction file                                            | Include chains that load extra directives                              |
+| Path                                             | Purpose                                                                            |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------- |
+| `~/.agents/skills/`, `<project>/.agents/skills/` | Harness-neutral skill locations (pi reads them; any Agent Skills spec harness may) |
+| `<project>/.agents/AGENTS.md`                    | Harness-neutral project instructions                                               |
+| `@<path>` imports inside any instruction file    | Include chains that load extra directives                                          |
 
 ## Argument handling
 
