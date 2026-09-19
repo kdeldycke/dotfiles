@@ -24,7 +24,7 @@ So a `lint-repo` complaint about a missing top-level `permissions` key is a sign
 
 ### Bumping the repomatic pin
 
-The `sync-repomatic` job bumps the pin: once a newer release clears `minimum-release-age`, it opens an `Upgrade repomatic to vX.Y.Z` pull request. That pull request moves the pin and every managed file together, and lists the breaking changes it crosses. After the merge, run the `/repomatic-upgrade` command it gives, to review what the release lets the repository adopt, reuse or drop.
+The `sync-repomatic` job bumps the pin: once a newer release clears `minimum-release-age`, it opens an `Upgrade repomatic to vX.Y.Z` pull request. That pull request moves the pin and every managed file together, and lists the breaking changes it crosses. After the merge, run the `/repomatic-upgrade` command it gives, to apply what the release lets the repository adopt, reuse or drop.
 
 To adopt a release before it clears the cooldown, bump by hand. Regenerate rather than search-and-replace, so codegen changes (new job permissions, reshaped triggers) arrive with the version bump instead of a release behind it:
 
