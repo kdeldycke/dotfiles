@@ -107,6 +107,11 @@ format.docstring-code-format = true
 #   on where the script runs.
 #   See: https://docs.astral.sh/ruff/rules/unspecified-encoding/
 lint.extend-select = [ "PLW1514" ]
+# D301: Use `r"""` if any backslashes in a docstring.
+#   A Click command's docstring is its `--help` text, and \b marks a paragraph
+#   Click must not rewrap. The raw prefix this rule asks for turns that
+#   backspace character into two printable ones, so the marker stops working.
+#   See: https://docs.astral.sh/ruff/rules/escape-sequence-in-docstring/
 # D400: First line should end with a period.
 #   Allows docstrings to end up with any punctuation, not just a period.
 #   See: https://github.com/astral-sh/ruff/issues/1858#issuecomment-1382640623
@@ -115,7 +120,7 @@ lint.extend-select = [ "PLW1514" ]
 #   See: https://docs.astral.sh/ruff/rules/#eradicate-era
 # LOG015: Root logger calls (logging.info(), etc.).
 #   See: https://docs.astral.sh/ruff/rules/root-logger-call/
-lint.ignore = [ "D400", "ERA001", "LOG015" ]
+lint.ignore = [ "D301", "D400", "ERA001", "LOG015" ]
 # Allow rules to add `from __future__ import annotations` in cases where
 # this would simplify a fix or enable a new diagnostic.
 # https://docs.astral.sh/ruff/settings/#lint_future-annotations
