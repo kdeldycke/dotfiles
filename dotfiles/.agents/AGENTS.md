@@ -16,6 +16,8 @@ Position alone does not settle ownership: a multi-job caller declares canonical 
 
 A fragment that is only comments and blank lines is still carried over, and deliberately does not count as a downstream job for the rule below.
 
+A workflow with no thin caller (`tests.yaml`) still has a managed part: the sync rewrites its header, everything above `jobs:`, triggers and `paths:` filters included. Change a filter through `[tool.repomatic]` instead: `workflow.extra-paths` appends to the `paths:` of every workflow, and `workflow.paths` replaces one workflow's list whole.
+
 ### The permissions contract is generated, not hand-written
 
 When a workflow file carries downstream-owned jobs, the sync emits a top-level `permissions: {}` **and** the scopes the reusable workflow needs on the managed caller job. Both halves ship together, and neither is written by hand: a top-level `{}` on its own starves the managed call, which GitHub aborts at startup the moment a nested job asks for a scope the caller never granted.
