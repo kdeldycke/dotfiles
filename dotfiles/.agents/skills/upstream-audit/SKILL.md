@@ -22,7 +22,7 @@ You create and maintain `docs/upstream.md`, which tracks the project's relations
 
 Fetch this file as reference when building or auditing an upstream page:
 
-- [`kdeldycke/click-extra/docs/upstream.md`](https://github.com/kdeldycke/click-extra/blob/main/docs/upstream.md): tracks ~35 merged PRs across Click, python-tabulate, Pygments, Furo, Cloup, and click-contrib projects, plus upstreamed workarounds, feature-area-grouped workarounds still in place, declined PRs, and open upstream issues.
+- [`kdeldycke/click-extra/docs/upstream.md`](https://github.com/kdeldycke/click-extra/blob/main/docs/upstream.md): tracks merged PRs across Click, python-tabulate, Pygments, Furo, Cloup, and click-contrib projects, plus upstreamed workarounds, feature-area-grouped workarounds still in place, declined PRs, and open upstream issues.
 
 ### Document structure
 

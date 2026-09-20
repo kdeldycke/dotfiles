@@ -79,7 +79,7 @@ That table is the only source read, and it badges an image `deprecated` when dep
 
 ### An image is stable once validated here, not once GitHub relabels it
 
-The Ubuntu 26.04 axes shipped as stable cells while still marked *preview* upstream. That label chiefly gates `-latest` alias eligibility, and no workflow here uses a floating alias, so it says nothing about whether the image runs the suite green.
+GitHub's *preview* label chiefly gates `-latest` alias eligibility, and no workflow here uses a floating alias, so it says nothing about whether the image runs the suite green.
 
 Never introduce a `-latest` alias to sidestep the question: GitHub repoints those with no commit to review, and `lint-repo` rejects them.
 

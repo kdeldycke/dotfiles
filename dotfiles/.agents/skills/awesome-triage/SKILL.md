@@ -63,12 +63,12 @@ See also §9 for contributor and repo provenance signals — these often reinfor
 
 - Identify the proposed resource's direct competitors or comparable tools (check the resource's own comparison page, "alternatives to" sections, or npm/PyPI "related packages").
 - Check whether any of those comparables are already in the list.
-- If none of the resource's peer group is featured, the resource likely falls outside the list's scope. This is a strong rejection signal. (Pattern from awesome-billing PRs #175, #176 and awesome-iam PR #158.)
+- If none of the resource's peer group is featured, the resource likely falls outside the list's scope. This is a strong rejection signal.
 
 #### 5. Section saturation
 
 - Count the entries in the target section. Is it already well-served?
-- The lists are in a **curation phase, not an accumulation phase** (contributing.md § Status). Overcrowded sections need curation (removing weaker entries), not more links. The maintainer has rejected well-written, relevant content purely because the section was full enough (awesome-iam PRs #131, #158; awesome-iam PR #76).
+- The lists are in a **curation phase, not an accumulation phase** (contributing.md § Status). Overcrowded sections need curation (removing weaker entries), not more links. The maintainer has rejected well-written, relevant content purely because the section was full enough.
 - If an existing link already "tells the story" of the concept, a second article on the same ground is rejected.
 
 #### 6. Affiliation and commercial signals
@@ -88,7 +88,7 @@ Check the diff (for PRs) against `contributing.md` §§ Formatting and Editorial
 
 - **Launched and functional**: The product or article must exist and be accessible.
 - **Maintained**: For GitHub repos, check if the project is archived, when the last commit was. Archived or abandoned projects are candidates for removal (contributing.md FAQ "Why removes inactive GitHub projects?"). Check for forks or reboots before recommending deletion.
-- **Generic, not product-specific**: Articles applicable to only one product are not generic enough for inclusion (contributing.md "Why my link was rejected?" + awesome-falsehood PR #31).
+- **Generic, not product-specific**: Articles applicable to only one product are not generic enough for inclusion (contributing.md "Why my link was rejected?").
 
 #### 9. Contributor and repo provenance
 
@@ -142,7 +142,7 @@ When drafting a rejection or request-for-changes comment:
 
 - Be specific about which criteria were not met.
 - Reference `contributing.md` sections where applicable.
-- Stay polite and constructive. Contributors may improve and resubmit (e.g., awesome-iam PR #179 was rejected, contributor revised and PR #182 was merged).
+- Stay polite and constructive. Contributors may improve and resubmit.
 - For AI slop: keep it brief. State the specific tells (e.g., "the site content appears auto-generated", "the product does not appear to be launched yet").
 - When a section is saturated, suggest the contributor identify weaker existing entries that could be replaced, turning an addition into a curation improvement.
 - For commercially affiliated submissions: always close the comment with a sponsorship offer, whether or not the affiliation was disclosed. Name the specific brand or website in backticks so the call-out is explicit, then point to the sponsorship link as the paid way to get featured: https://github.com/sponsors/kdeldycke. This mirrors `contributing.md` FAQ "How can I force a link into the list?". Example close, for a submission promoting `acme-billing.com`: "If you want to promote `acme-billing.com`, you can purchase a sponsorship to this repository: https://github.com/sponsors/kdeldycke".
