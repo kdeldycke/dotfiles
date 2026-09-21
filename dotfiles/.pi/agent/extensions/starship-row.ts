@@ -23,12 +23,15 @@
  * ## What pi's own footer showed and this one keeps
  *
  * Directory, git branch, model, thinking level, cost and context percentage come back through
- * starship modules. The cumulative token counts and the cache hit rate arrive as `PI_TOKENS` and
- * `PI_CACHE`, formatted the way pi formatted them: starship reports cache figures only for the
- * last call, where pi totalled them over the session. The context window size arrives as
- * `PI_CTXWINDOW`, since `claude_context` renders a percentage but never the window behind it.
- * The session name comes back through `CC_SESSION`, which the Claude Code row deliberately drops
- * because Claude Code prints it twice elsewhere; pi does not, so here it earns its place.
+ * starship modules. The session name comes back through `CC_SESSION` verbatim, prefix and all:
+ * the row is where the name gets copied from, and what a copy must match is the stored name the
+ * `/resume` picker lists. The Claude Code row drops the name entirely, because Claude Code
+ * prints it twice elsewhere; pi does not, so here it earns its place. `PI_CTXWINDOW` survives as
+ * the bare `?` that marks a known window whose percentage is not, the one thing
+ * `claude_context` cannot say: its gauge reads empty there, which reads as zero rather than as
+ * unknown. The cumulative token counts and the cache hit rate pi's footer printed are gone from
+ * the row: the cost already prices the session, and the counts only restated that price in
+ * tokens.
  *
  * ## What it cannot keep
  *
@@ -113,15 +116,6 @@ function resolveStatusline(): string | undefined {
 	return undefined;
 }
 
-/** Format a token count the way pi's footer did, so the row reads identically. */
-function formatTokens(count: number): string {
-	if (count < 1000) return count.toString();
-	if (count < 10000) return `${(count / 1000).toFixed(1)}k`;
-	if (count < 1000000) return `${Math.round(count / 1000)}k`;
-	if (count < 10000000) return `${(count / 1000000).toFixed(1)}M`;
-	return `${Math.round(count / 1000000)}M`;
-}
-
 interface Usage {
 	input: number;
 	output: number;
@@ -130,7 +124,9 @@ interface Usage {
 	cost?: { total?: number };
 }
 
-interface Totals extends Usage {
+interface Totals {
+	input: number;
+	output: number;
 	cost: { total: number };
 }
 
@@ -161,28 +157,20 @@ function entryUsage(entry: SessionEntry): { usage: Usage; assistant: boolean } |
 }
 
 function collectUsage(ctx: ExtensionContext): { totals: Totals; latest?: Usage } {
-	const totals: Totals = {
-		input: 0,
-		output: 0,
-		cacheRead: 0,
-		cacheWrite: 0,
-		cost: { total: 0 },
-	};
+	const totals: Totals = { input: 0, output: 0, cost: { total: 0 } };
 	let latest: Usage | undefined;
 	for (const entry of ctx.sessionManager.getEntries()) {
 		const found = entryUsage(entry);
 		if (!found) continue;
 		totals.input += found.usage.input ?? 0;
 		totals.output += found.usage.output ?? 0;
-		totals.cacheRead += found.usage.cacheRead ?? 0;
-		totals.cacheWrite += found.usage.cacheWrite ?? 0;
 		totals.cost.total += found.usage.cost?.total ?? 0;
 		if (found.assistant) latest = found.usage;
 	}
 	return { totals, latest };
 }
 
-const SHED = ["PI_CACHE", "provider", "session", "PI_TOKENS"] as const;
+const SHED = ["provider", "session"] as const;
 /**
  * What to drop, in order, when the rendered row is wider than the terminal.
  *
@@ -190,8 +178,8 @@ const SHED = ["PI_CACHE", "provider", "session", "PI_TOKENS"] as const;
  * `qwen/qwen3.8-max` behind an `(openrouter)` prefix, so the same terminal fits everything for
  * one model and overflows for another. The component measures what starship actually returned
  * and sheds one more item until it fits, which needs no calibration and follows a model switch
- * on its own. Least perishable first: a cache rate and a provider name repeat every turn, while
- * the token totals are the reading that changes.
+ * on its own. What is left to shed is the provider prefix, then the name: the name prints in
+ * full or not at all, since an elided one is no longer the string the picker lists.
  */
 
 type ShedItem = (typeof SHED)[number];
@@ -270,33 +258,16 @@ function buildPayload(
 }
 
 /** Values pi printed that no starship module reproduces, passed through the environment. */
-function buildEnvironment(
-	ctx: ExtensionContext,
-	shed: ReadonlySet<ShedItem>,
-): Record<string, string> {
-	const { totals, latest } = collectUsage(ctx);
+function buildEnvironment(ctx: ExtensionContext): Record<string, string> {
 	const environment: Record<string, string> = {};
 
-	const parts: string[] = [];
-	if (totals.input) parts.push(`↑${formatTokens(totals.input)}`);
-	if (totals.output) parts.push(`↓${formatTokens(totals.output)}`);
-	if (totals.cacheRead) parts.push(`R${formatTokens(totals.cacheRead)}`);
-	if (totals.cacheWrite) parts.push(`W${formatTokens(totals.cacheWrite)}`);
-	if (parts.length && !shed.has("PI_TOKENS")) environment.PI_TOKENS = parts.join(" ");
-
-	if (latest && !shed.has("PI_CACHE") && (totals.cacheRead > 0 || totals.cacheWrite > 0)) {
-		const prompt = (latest.input ?? 0) + (latest.cacheRead ?? 0) + (latest.cacheWrite ?? 0);
-		if (prompt > 0) {
-			environment.PI_CACHE = `CH${(((latest.cacheRead ?? 0) / prompt) * 100).toFixed(1)}%`;
-		}
-	}
-
 	const context = ctx.getContextUsage();
-	if (context?.contextWindow) {
-		// A trailing "?" marks a known window whose percentage is not: the gauge reads empty
-		// there, where pi printed "?" in place of the number.
-		const unknown = context.percent === null ? " ?" : "";
-		environment.PI_CTXWINDOW = `/${formatTokens(context.contextWindow)}${unknown}`;
+	if (context?.contextWindow && context.percent === null) {
+		// The gauge reads empty between a compaction and the next response, where the window is
+		// known and the percentage is not: the "?" says which of the two is missing. The window
+		// size itself earns no column, since it is constant per model and the gauge and the
+		// percentage already state the fill.
+		environment.PI_CTXWINDOW = "?";
 	}
 
 	if (ctx.model?.provider === "kimi-coding") environment.PI_SUB = "(sub)";
@@ -343,7 +314,7 @@ class StarshipRow {
 			this.shed = 0;
 		}
 		const shed = this.shedSet();
-		const inputs = [buildPayload(this.ctx, shed), buildEnvironment(this.ctx, shed)];
+		const inputs = [buildPayload(this.ctx, shed), buildEnvironment(this.ctx)];
 		const signature = `${width} ${this.shed} ${JSON.stringify(inputs)}`;
 		if (signature === this.signature && Date.now() - this.lastRun < STALE_MS) return;
 		this.signature = signature;
@@ -364,7 +335,7 @@ class StarshipRow {
 		// pi hands the component its exact usable width, so it is stated rather than left to the
 		// wrapper's COLUMNS reading, which subtracts a margin for the narrower box Claude Code draws.
 		const child = spawn(this.statusline, ["--profile", PROFILE, "--terminal-width", String(width)], {
-			env: { ...process.env, ...buildEnvironment(this.ctx, shed), COLUMNS: String(width) },
+			env: { ...process.env, ...buildEnvironment(this.ctx), COLUMNS: String(width) },
 			stdio: ["pipe", "pipe", "ignore"],
 		});
 

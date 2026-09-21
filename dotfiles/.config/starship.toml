@@ -69,8 +69,6 @@ ${env_var.CC_SESSION}\
 ${env_var.CC_WORKTREE}\
 ${env_var.CC_PR}\
 ${env_var.CC_FLAGS}\
-${env_var.PI_TOKENS}\
-${env_var.PI_CACHE}\
 $claude_context\
 ${env_var.PI_CTXWINDOW}\
 $claude_cost\
@@ -244,24 +242,11 @@ format = '[ $env_value ](bold red bg:color_bg1)'
 # each one the way pi did, so replacing the footer loses nothing.
 ###############################################################################
 
-# Cumulative session tokens: input, output, cache read and cache write. starship exposes totals
-# for input and output through `claude_context`, but the cache figures only for the last call,
-# where pi reported them for the whole session. One preformatted string is simpler than fighting
-# that mismatch, and it keeps pi's own k/M rounding.
-[env_var.PI_TOKENS]
-variable = "PI_TOKENS"
-format = '[$env_value ](fg:color_fg0 bg:color_bg1)'
-
-# Cache hit rate of the most recent call. starship holds the inputs but cannot divide them.
-[env_var.PI_CACHE]
-variable = "PI_CACHE"
-format = '[$env_value ](bold green bg:color_bg1)'
-
-# Context window size. `claude_context` renders the percentage and the gauge but never the window
-# it is a percentage of. A trailing `?` means the size is known and the percentage is not, which
-# happens between a compaction and the next response: the gauge reads empty there rather than
-# unknown, which is the one thing this row states loosely. pi's `(auto)` auto-compaction marker is
-# absent because `ExtensionContext` does not expose that flag at all.
+# The bare `?` marking a known context window whose percentage is not, which happens between a
+# compaction and the next response: the gauge reads empty there rather than unknown, and only
+# this segment says which of the two is missing. The window size itself earns no column: it is
+# constant per model, and the gauge and the percentage already state the fill. pi's `(auto)`
+# auto-compaction marker is absent because `ExtensionContext` does not expose that flag at all.
 [env_var.PI_CTXWINDOW]
 variable = "PI_CTXWINDOW"
 format = '[$env_value ](dimmed fg:color_fg0 bg:color_bg1)'

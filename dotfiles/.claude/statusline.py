@@ -35,13 +35,6 @@ import time
 
 STARSHIP_COMMAND = ["starship", "statusline", "claude-code"]
 
-SESSION_NAME_MAX_LENGTH = 24
-"""Longest session name to print before eliding the tail.
-
-A name comes from `--name`, from `/rename`, or from the title `session-title.py` generates, so
-nothing bounds its length. The status line shares one row with the directory and the git state.
-"""
-
 PR_REVIEW_GLYPHS = {
     "approved": "✓",
     "changes_requested": "✗",
@@ -206,14 +199,16 @@ def format_flags(session: dict) -> str | None:
 
 
 def format_session_name(session: dict) -> str | None:
-    """Return the session name, elided to `SESSION_NAME_MAX_LENGTH`."""
+    """Return the session name verbatim.
+
+    The row is where the name gets copied from, and what a copy must match is the stored name
+    the `/resume` picker lists: an elided tail pastes into no filter. A name comes from
+    `--name`, from `/rename`, or from the title `session-title.py` generates, so nothing bounds
+    its length; a terminal too narrow for it sheds whole segments first, see `SHED` in
+    `.pi/agent/extensions/starship-row.ts`.
+    """
     name = session.get("session_name")
-    if not name:
-        return None
-    name = str(name)
-    if len(name) <= SESSION_NAME_MAX_LENGTH:
-        return name
-    return name[: SESSION_NAME_MAX_LENGTH - 1] + "…"
+    return str(name) if name else None
 
 
 def format_worktree(session: dict) -> str | None:
