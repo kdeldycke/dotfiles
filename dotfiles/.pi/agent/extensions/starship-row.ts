@@ -68,7 +68,8 @@
  * right-hand block, where the context gauge and the cost live, and leaves a powerline glyph
  * dangling. One segment is sheddable and no more: the session name. Starship fills the rest
  * from its own modules, which no variable of `statusline.py` reaches, so a terminal narrower
- * than the row's floor of about 130 columns gets a cut row.
+ * than the row's floor, about 90 columns where the directory path is long and the tree is
+ * dirty, gets a cut row.
  *
  * ## Refresh
  *
@@ -203,7 +204,7 @@ const SHED = ["session"] as const;
  * name is the only field the row can lose and still say everything else, so it is the only shed
  * item: the model name prints in full or not at all, since an elided one names no model the
  * picker could list. A row still too wide after it is clamped by `render()`, which is what a
- * terminal narrower than the row's floor of about 130 columns gets.
+ * terminal narrower than the row's floor of about 90 columns gets.
  */
 
 type ShedItem = (typeof SHED)[number];

@@ -20,8 +20,10 @@ palette = 'gruvbox_dark'
 
 # Claude Code status line, rendered by `starship statusline claude-code`. The built-in profile
 # is `$claude_model$git_branch$claude_context$claude_cost`, with no separators and no directory.
-# This one mirrors the block grammar of `format` above, so both rows read the same way: an
-# identity block, the directory, the git state, the language, then a padded right edge.
+# This one follows the block grammar of `format` above, so an agent row reads like the shell
+# prompt: an identity block, the directory, the git state, then a padded right edge. The
+# language and package blocks stay in the shell prompt alone, which takes about 40 columns off
+# a row that pi throws on when it is wider than the terminal.
 #
 # Separators are literal glyphs, not something a module emits, so every one is spelled out here.
 # An empty module collapses its block to the two glyphs around it, the same as in `format`.
@@ -35,7 +37,6 @@ $claude_model\
 [](fg:prev_bg bg:color_yellow)\
 $directory\
 ([](fg:prev_bg bg:color_aqua)$git_branch$git_status$git_state)\
-([](fg:prev_bg bg:color_bg3)$python$package)\
 ([](fg:prev_bg bg:color_bg1)$git_metrics)\
 [](fg:prev_bg)\
 $fill\
@@ -59,7 +60,6 @@ $claude_model\
 [](fg:prev_bg bg:color_yellow)\
 $directory\
 ([](fg:prev_bg bg:color_aqua)$git_branch$git_status$git_state)\
-([](fg:prev_bg bg:color_bg3)$python$package)\
 ([](fg:prev_bg bg:color_bg1)$git_metrics)\
 [](fg:prev_bg)\
 $fill\
@@ -130,8 +130,6 @@ deleted_style = "fg:color_red bg:color_bg1"
 # outlives the counts, painting an orphan dark stub after the git block on a clean tree.
 format = '([ +$added]($added_style))([ -$deleted]($deleted_style))'
 
-# Muted where the preset paints blue: blue is the agent row's lead hue in this config, so a
-# second blue block mid-row would read as the lead repeating itself in both rows.
 [python]
 symbol = ""
 style = "bg:color_bg3"
@@ -165,8 +163,8 @@ style = 'fg:color_bg1'
 ###############################################################################
 # Claude Code status line
 #
-# Every module below renders only inside the `claude-code` profile, so their styling is free to
-# assume the blocks that profile draws. The `display` lists replace starship's defaults, whose
+# Every module below renders only inside the two agent profiles, so their styling is free to
+# assume the blocks those profiles draw. The `display` lists replace starship's defaults, whose
 # first entry is `hidden = true`: out of the box the gauge appears only past 30% and the cost
 # only past $1.00, which is most of a session spent showing nothing.
 ###############################################################################

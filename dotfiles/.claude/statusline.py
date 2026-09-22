@@ -77,12 +77,14 @@ between the last block and the right edge.
 WIDTH_BUDGET = ((120, ("CC_PR", "CC_WORKTREE")), (100, ("CC_FLAGS",)))
 """Variables to drop below each terminal width, widest threshold first.
 
-The blocks starship draws from its own modules cannot be dropped from here, so the row has a
-floor of roughly 113 columns with a git branch, a python version and a dirty worktree in it.
-Past that floor Claude Code wraps the row rather than truncating it, which costs a whole
-terminal line to show the same information worse. Shedding the segments that keep longest is
-the cheaper trade: an open pull request and a worktree name change on the order of days, while
-the context gauge and the cost move every turn.
+The blocks starship draws from its own modules cannot be dropped from here, and no config trick
+reaches them either: a conditional group renders when any variable inside it is non-empty, so an
+`env_var` gate cannot suppress a module that has content of its own, and `format = ''` on the
+gate takes the variable out of the group entirely. So the row has a floor of roughly 90 columns
+with a git branch and a dirty worktree in it. Past that floor Claude Code wraps the row rather
+than truncating it, which costs a whole terminal line to show the same information worse.
+Shedding the segments that keep longest is the cheaper trade: an open pull request and a
+worktree name change on the order of days, while the context gauge and the cost move every turn.
 """
 
 
