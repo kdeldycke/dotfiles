@@ -12,10 +12,13 @@
     "qwen/qwen3.8-27b",
     "deepseek/deepseek-v4-pro",
     "deepseek/deepseek-v4-flash",
-    "~anthropic/claude-opus-latest",
-    "~anthropic/claude-sonnet-latest",
+    "anthropic/claude-sonnet-5",
+    "anthropic/claude-opus-5",
+    "anthropic/claude-haiku-4-5",
+    "anthropic/claude-fable-5-1",
     "~openai/gpt-latest",
     "~google/gemini-pro-latest",
     "~moonshotai/kimi-latest"
-  ]
+  ],
+  "_enabledModelsRationale": "Of the Claude models, the scope lists only those included in this account's Claude Max subscription, reached directly through the anthropic provider (https://claude.com/pricing and https://support.claude.com/en/articles/15424964-claude-fable-models-on-your-plan, checked 2026-09-21): Sonnet 5, Opus 5 and Haiku 4.5 are standard parts of the plan; Fable 5.1 is included but draws at most 50% of the weekly limits. The OpenRouter-routed ~anthropic variants were removed as credit-billed duplicates of the direct models; the non-Claude OpenRouter entries stay as configured. The saved default (qwen3.8-max-0902) is inside the scope, so new sessions keep starting on it. pi appends to this list whenever a model is picked from the picker's all-scope; prune deliberately. When every anthropic model answers 400 'out of extra usage', the five-hour session limit is spent, not the model tier."
 }
