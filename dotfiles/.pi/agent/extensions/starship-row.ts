@@ -191,34 +191,33 @@ function collectUsage(ctx: ExtensionContext): { totals: Totals; latest?: Usage }
 	return { totals, latest };
 }
 
-const SHED = ["provider", "detail", "session"] as const;
+const SHED = ["detail", "session"] as const;
 /**
  * What to drop, in order, when the rendered row is wider than the terminal.
  *
- * Fixed width thresholds would not survive here: a pi model label runs from `opus` to
- * `qwen3.8-max-0902 (openrouter)`, so the same terminal fits everything for one model and
+ * Fixed width thresholds would not survive here: a pi model name runs from `opus` to
+ * `qwen3.8-max-0902`, so the same terminal fits everything for one model and
  * overflows for another. The component measures what starship actually returned and sheds one
  * more item until it fits, which needs no calibration and follows a model switch on its own.
  *
- * The order drops the least useful column first, and the name last: the name prints in full or
- * not at all, since an elided one is no longer the string the picker lists. Between the two sits
- * `detail`, which switches starship to the `pi-compact` profile and so gives up the language
- * version, the package version and the working-tree diff, the one block the wrapper cannot drop
- * through a variable of its own. A row still too wide after all three is clamped by `render()`.
+ * The order drops the detail block first and the session name last: the name prints in full or
+ * not at all, since an elided one is no longer the string the picker lists. `detail` switches
+ * starship to the `pi-compact` profile and so gives up the language version, the package
+ * version and the working-tree diff, the one block the wrapper cannot drop through a variable
+ * of its own. A row still too wide after both is clamped by `render()`.
  */
 
 type ShedItem = (typeof SHED)[number];
 
 /**
- * Name the model actor-first, the way `username` leads the shell row: the id bare, the provider
- * in parentheses after it, the grammar `[python]` gives its virtualenv. A family prefix before
- * a slash in the id only repeats the model's own name, as in `qwen/qwen3.8-max-0902`, so it goes.
+ * Name the model the way `username` names the human: the bare id, nothing else. A family prefix
+ * before a slash in the id only repeats the model's own name, as in `qwen/qwen3.8-max-0902`, so
+ * it goes, and the provider earns no column: the id already names where the model comes from.
  */
-function modelLabel(ctx: ExtensionContext, shed: ReadonlySet<ShedItem>): string {
+function modelLabel(ctx: ExtensionContext): string {
 	const model = ctx.model;
 	if (!model) return "no-model";
-	const name = model.id.slice(model.id.lastIndexOf("/") + 1);
-	return shed.has("provider") ? name : `${name} (${model.provider})`;
+	return model.id.slice(model.id.lastIndexOf("/") + 1);
 }
 
 /**
@@ -240,7 +239,7 @@ function buildPayload(
 
 	return {
 		hook_event_name: "Status",
-		model: { id: ctx.model?.id ?? "", display_name: modelLabel(ctx, shed) },
+		model: { id: ctx.model?.id ?? "", display_name: modelLabel(ctx) },
 		cwd,
 		workspace: { current_dir: cwd, project_dir: cwd },
 		session_name: sessionName || undefined,
