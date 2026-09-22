@@ -174,12 +174,12 @@ const SHED = ["provider", "session"] as const;
 /**
  * What to drop, in order, when the rendered row is wider than the terminal.
  *
- * Fixed width thresholds would not survive here: a pi model id runs from `opus` to
- * `qwen/qwen3.8-max` behind an `(openrouter)` prefix, so the same terminal fits everything for
- * one model and overflows for another. The component measures what starship actually returned
- * and sheds one more item until it fits, which needs no calibration and follows a model switch
- * on its own. What is left to shed is the provider prefix, then the name: the name prints in
- * full or not at all, since an elided one is no longer the string the picker lists.
+ * Fixed width thresholds would not survive here: a pi model label runs from `opus` to
+ * `qwen3.8-max-0902 (openrouter)`, so the same terminal fits everything for one model and
+ * overflows for another. The component measures what starship actually returned and sheds one
+ * more item until it fits, which needs no calibration and follows a model switch on its own.
+ * What is left to shed is the parenthesized provider, then the name: the name prints in full
+ * or not at all, since an elided one is no longer the string the picker lists.
  */
 
 type ShedItem = (typeof SHED)[number];
@@ -204,11 +204,16 @@ function visibleWidth(text: string): number {
 	return width;
 }
 
-/** Name the model the way pi's footer did, keeping the provider when there is room for it. */
+/**
+ * Name the model actor-first, the way `username` leads the shell row: the id bare, the provider
+ * in parentheses after it, the grammar `[python]` gives its virtualenv. A family prefix before
+ * a slash in the id only repeats the model's own name, as in `qwen/qwen3.8-max-0902`, so it goes.
+ */
 function modelLabel(ctx: ExtensionContext, shed: ReadonlySet<ShedItem>): string {
 	const model = ctx.model;
 	if (!model) return "no-model";
-	return shed.has("provider") ? model.id : `(${model.provider}) ${model.id}`;
+	const name = model.id.slice(model.id.lastIndexOf("/") + 1);
+	return shed.has("provider") ? name : `${name} (${model.provider})`;
 }
 
 /**

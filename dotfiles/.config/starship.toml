@@ -167,7 +167,8 @@ style = 'fg:color_bg1'
 # only past $1.00, which is most of a session spent showing nothing.
 ###############################################################################
 
-# Leads the row the way `username` leads the shell prompt, in the same orange. The aliases keep
+# Leads the row the way `username` leads the shell prompt, in purple where the shell leads in
+# orange: the hue is what tells an agent row from a human one at a glance. The aliases keep
 # the block short: an unaliased name renders in full, so a new model degrades to something long
 # rather than to nothing. Reasoning effort would belong here as $effort, but starship 1.26.0
 # does not parse it: `statusline.py` reports it through CC_FLAGS instead.
@@ -178,7 +179,7 @@ style = 'fg:color_bg1'
 # SauceCodeProNerdFont at advance 600, the same as `M` and as the powerline separators. Being
 # single width it takes its trailing space back, exactly like `` in `username`.
 symbol = "󰚩 "
-style = "fg:color_fg0 bg:color_orange"
+style = "fg:color_fg0 bg:color_purple"
 format = '[ $symbol$model ]($style)'
 model_aliases = { "Opus 5 (1M context)" = "Opus 5 1M", "Sonnet 5 (1M context)" = "Sonnet 5 1M" }
 
