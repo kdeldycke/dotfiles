@@ -6,7 +6,7 @@ $username\
 [](fg:prev_bg bg:color_yellow)\
 $directory\
 ([](fg:prev_bg bg:color_aqua)$git_branch$git_status$git_state)\
-([](fg:prev_bg bg:color_blue)$python$package)\
+([](fg:prev_bg bg:color_bg3)$python$package)\
 ([](fg:prev_bg bg:color_bg1)$git_metrics)\
 [](fg:prev_bg)\
 $fill\
@@ -35,7 +35,7 @@ $claude_model\
 [](fg:prev_bg bg:color_yellow)\
 $directory\
 ([](fg:prev_bg bg:color_aqua)$git_branch$git_status$git_state)\
-([](fg:prev_bg bg:color_blue)$python$package)\
+([](fg:prev_bg bg:color_bg3)$python$package)\
 ([](fg:prev_bg bg:color_bg1)$git_metrics)\
 [](fg:prev_bg)\
 $fill\
@@ -59,7 +59,7 @@ $claude_model\
 [](fg:prev_bg bg:color_yellow)\
 $directory\
 ([](fg:prev_bg bg:color_aqua)$git_branch$git_status$git_state)\
-([](fg:prev_bg bg:color_blue)$python$package)\
+([](fg:prev_bg bg:color_bg3)$python$package)\
 ([](fg:prev_bg bg:color_bg1)$git_metrics)\
 [](fg:prev_bg)\
 $fill\
@@ -128,14 +128,16 @@ added_style = "fg:color_green bg:color_bg1"
 deleted_style = "fg:color_red bg:color_bg1"
 format = '([ +$added]($added_style))([ -$deleted]($deleted_style))[ ](bg:color_bg1)'
 
+# Muted where the preset paints blue: blue is the agent row's lead hue in this config, so a
+# second blue block mid-row would read as the lead repeating itself in both rows.
 [python]
 symbol = ""
-style = "bg:color_blue"
-format = '[[ $symbol( $version)( $virtualenv) ](fg:color_fg0 bg:color_blue)]($style)'
+style = "bg:color_bg3"
+format = '[[ $symbol( $version)( $virtualenv) ](fg:color_fg0 bg:color_bg3)]($style)'
 generic_venv_names = ['.venv', 'venv']
 
 [package]
-format = '[$symbol$version](fg:color_fg0 bg:color_blue)'
+format = '[$symbol$version](fg:color_fg0 bg:color_bg3)'
 
 [cmd_duration]
 style = "bg:color_bg1"
@@ -167,7 +169,7 @@ style = 'fg:color_bg1'
 # only past $1.00, which is most of a session spent showing nothing.
 ###############################################################################
 
-# Leads the row the way `username` leads the shell prompt, in purple where the shell leads in
+# Leads the row the way `username` leads the shell prompt, in blue where the shell leads in
 # orange: the hue is what tells an agent row from a human one at a glance. The aliases keep
 # the block short: an unaliased name renders in full, so a new model degrades to something long
 # rather than to nothing. Reasoning effort would belong here as $effort, but starship 1.26.0
@@ -179,7 +181,7 @@ style = 'fg:color_bg1'
 # SauceCodeProNerdFont at advance 600, the same as `M` and as the powerline separators. Being
 # single width it takes its trailing space back, exactly like `` in `username`.
 symbol = "󰚩 "
-style = "fg:color_fg0 bg:color_purple"
+style = "fg:color_fg0 bg:color_blue"
 format = '[ $symbol$model ]($style)'
 model_aliases = { "Opus 5 (1M context)" = "Opus 5 1M", "Sonnet 5 (1M context)" = "Sonnet 5 1M" }
 
