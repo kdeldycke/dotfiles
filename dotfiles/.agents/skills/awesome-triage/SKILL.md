@@ -78,7 +78,7 @@ See also §9 for contributor and repo provenance signals — these often reinfor
 - Self-promotion is allowed but must be disclosed. Undisclosed affiliation is a trust signal.
 - Author submissions get more scrutiny on the "marketing vs. genuine content" axis but are not automatically penalized. Many accepted PRs across all four lists are author self-submissions.
 - For commercial content, apply `contributing.md` FAQ "Why my commercial project is not in the list?": prefer open-source repository links over commercial landing pages.
-- When a commercial brand or vendor sits behind the submission (product site, paid SaaS, or a lead-gen funnel pointing at a commercial domain), record the exact brand and domain. A declined commercial submission must close its comment with the sponsorship offer: see § Drafting comments.
+- When a commercial brand or vendor sits behind the submission (product site, paid SaaS, or a lead-gen funnel pointing at a commercial domain), record the exact brand and domain in the triage analysis. A declined commercial or self-promotional submission must close its comment with the fixed sponsorship phrase: see § Drafting comments.
 
 #### 7. Formatting and editorial compliance
 
@@ -134,7 +134,9 @@ After running all checks, provide one of:
 - **REJECT**: Fails one or more hard criteria (duplicate, AI slop, not launched, paywalled, no value-add, section saturation, competitive context mismatch). Draft a rejection comment.
 - **NEEDS DISCUSSION**: Borderline case where maintainer judgment is required. Summarize the arguments for and against.
 
-After the verdict, propose 2-3 short, ready-to-post comments (one line each) that the maintainer can copy-paste to explain the decision to the author. Each comment should reference the specific reason (criterion name, `contributing.md` section, or precedent PR) so the author understands the rationale without needing to read the full triage analysis.
+After the verdict, propose 2-3 short, ready-to-post comments that the maintainer can copy-paste to explain the decision to the author. Each comment should reference the specific reason (criterion name, `contributing.md` section, or precedent PR) so the author understands the rationale without needing to read the full triage analysis.
+
+**Order them shortest first.** The maintainer usually posts the first one and nothing else. The default is a tight, single-topic comment: name the one blocker that decides the case, cite it, stop. Longer variants that stack several criteria, quote the contributor's own history, or enumerate every failing check go last, and only when a criterion is genuinely contested. A rejection needs one reason stated well, not five stated thinly.
 
 ### Drafting comments
 
@@ -145,7 +147,11 @@ When drafting a rejection or request-for-changes comment:
 - Stay polite and constructive. Contributors may improve and resubmit.
 - For AI slop: keep it brief. State the specific tells (e.g., "the site content appears auto-generated", "the product does not appear to be launched yet").
 - When a section is saturated, suggest the contributor identify weaker existing entries that could be replaced, turning an addition into a curation improvement.
-- For commercially affiliated submissions: always close the comment with a sponsorship offer, whether or not the affiliation was disclosed. Name the specific brand or website in backticks so the call-out is explicit, then point to the sponsorship link as the paid way to get featured: https://github.com/sponsors/kdeldycke. This mirrors `contributing.md` FAQ "How can I force a link into the list?". Example close, for a submission promoting `acme-billing.com`: "If you want to promote `acme-billing.com`, you can purchase a sponsorship to this repository: https://github.com/sponsors/kdeldycke".
+- **Always close a declined commercial or self-promotional submission with this exact phrase, verbatim, as the last line of the comment**, whether or not the affiliation was disclosed:
+
+  > If you want to promote your product, you can purchase a sponsorship to this repository: https://github.com/sponsors/kdeldycke
+
+  Do not substitute the brand or domain into it, do not reword it, and do not backtick the product name inside it. The phrase is generic on purpose: it reads the same to every contributor, it never argues about whether the submission was commercial, and it survives being copied across the four lists unchanged. This mirrors `contributing.md` FAQ "How can I force a link into the list?", which is the paid path around the curation rules. Record the brand and domain in the triage analysis instead, where the maintainer can see them and the contributor cannot.
 
 ### Broken link triage
 
