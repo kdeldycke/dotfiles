@@ -59,13 +59,16 @@
  * pi throws and ends the session when a rendered line is wider than the width it handed the
  * component. That is its documented contract, and a deliberate one, so an extension author learns
  * their component overflowed rather than watching it wrap: the maintainer declined to soften it
- * in [earendil-works/pi#5773](https://github.com/earendil-works/pi/issues/5773). So the row sheds
- * whole segments first, and `render()` clamps every line to the width of the frame it draws.
- * Shedding covers a slightly narrow terminal, which keeps whole segments and loses nothing to a
- * cut. The clamp covers the rest: a terminal narrower than the row's floor, which is about 130
- * columns with a git branch, a python version and a package version in it, and every frame
- * between a resize and the starship run that answers it, which still holds the row measured for
- * the old, wider terminal.
+ * in [earendil-works/pi#5773](https://github.com/earendil-works/pi/issues/5773). So `render()`
+ * clamps every line to the width of the frame it draws, which also covers the frames between a
+ * resize and the starship run that answers it: those still hold the row measured for the old,
+ * wider terminal.
+ *
+ * Shedding whole segments first is what keeps the clamp rare, since a cut row loses its
+ * right-hand block, where the context gauge and the cost live, and leaves a powerline glyph
+ * dangling. One segment is sheddable and no more: the session name. Starship fills the rest
+ * from its own modules, which no variable of `statusline.py` reaches, so a terminal narrower
+ * than the row's floor of about 130 columns gets a cut row.
  *
  * ## Refresh
  *
@@ -100,8 +103,6 @@ interface RenderTarget {
 }
 
 const PROFILE = "pi";
-/** The same row without the blocks starship fills from its own modules. See `starship.toml`. */
-const COMPACT_PROFILE = "pi-compact";
 const WIDGET_KEY = "starship-row";
 
 const STALE_MS = 2000;
@@ -191,20 +192,18 @@ function collectUsage(ctx: ExtensionContext): { totals: Totals; latest?: Usage }
 	return { totals, latest };
 }
 
-const SHED = ["detail", "session"] as const;
+const SHED = ["session"] as const;
 /**
  * What to drop, in order, when the rendered row is wider than the terminal.
  *
  * Fixed width thresholds would not survive here: a pi model name runs from `opus` to
- * `qwen3.8-max-0902`, so the same terminal fits everything for one model and
- * overflows for another. The component measures what starship actually returned and sheds one
- * more item until it fits, which needs no calibration and follows a model switch on its own.
- *
- * The order drops the detail block first and the session name last: the name prints in full or
- * not at all, since an elided one is no longer the string the picker lists. `detail` switches
- * starship to the `pi-compact` profile and so gives up the language version, the package
- * version and the working-tree diff, the one block the wrapper cannot drop through a variable
- * of its own. A row still too wide after both is clamped by `render()`.
+ * `qwen3.8-max-0902`, so the same terminal fits everything for one model and overflows for
+ * another. The component measures what starship actually returned and sheds one more item
+ * until it fits, which needs no calibration and follows a model switch on its own. The session
+ * name is the only field the row can lose and still say everything else, so it is the only shed
+ * item: the model name prints in full or not at all, since an elided one names no model the
+ * picker could list. A row still too wide after it is clamped by `render()`, which is what a
+ * terminal narrower than the row's floor of about 130 columns gets.
  */
 
 type ShedItem = (typeof SHED)[number];
@@ -347,10 +346,9 @@ class StarshipRow {
 
 		const shed = this.shedSet();
 		const payload = buildPayload(this.ctx, shed);
-		const profile = shed.has("detail") ? COMPACT_PROFILE : PROFILE;
 		// pi hands the component its exact usable width, so it is stated rather than left to the
 		// wrapper's COLUMNS reading, which subtracts a margin for the narrower box Claude Code draws.
-		const child = spawn(this.statusline, ["--profile", profile, "--terminal-width", String(width)], {
+		const child = spawn(this.statusline, ["--profile", PROFILE, "--terminal-width", String(width)], {
 			env: { ...process.env, ...buildEnvironment(this.ctx), COLUMNS: String(width) },
 			stdio: ["pipe", "pipe", "ignore"],
 		});
