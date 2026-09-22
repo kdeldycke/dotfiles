@@ -149,7 +149,9 @@ format = '[[\($state( $progress_current/$progress_total)\) ](fg:color_red bg:col
 disabled = false
 added_style = "fg:color_green bg:color_bg1"
 deleted_style = "fg:color_red bg:color_bg1"
-format = '([ +$added]($added_style))([ -$deleted]($deleted_style))[ ](bg:color_bg1)'
+# No padding cell after the counts: the closing cap ends the block, and a literal space here
+# outlives the counts, painting an orphan dark stub after the git block on a clean tree.
+format = '([ +$added]($added_style))([ -$deleted]($deleted_style))'
 
 # Muted where the preset paints blue: blue is the agent row's lead hue in this config, so a
 # second blue block mid-row would read as the lead repeating itself in both rows.
