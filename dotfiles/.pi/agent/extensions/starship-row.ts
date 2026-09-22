@@ -54,6 +54,19 @@
  * prints, so any extension replacing the footer needs them to reach parity.
  * ```
  *
+ * ## Fitting the terminal
+ *
+ * pi throws and ends the session when a rendered line is wider than the width it handed the
+ * component. That is its documented contract, and a deliberate one, so an extension author learns
+ * their component overflowed rather than watching it wrap: the maintainer declined to soften it
+ * in [earendil-works/pi#5773](https://github.com/earendil-works/pi/issues/5773). So the row sheds
+ * whole segments first, and `render()` clamps every line to the width of the frame it draws.
+ * Shedding covers a slightly narrow terminal, which keeps whole segments and loses nothing to a
+ * cut. The clamp covers the rest: a terminal narrower than the row's floor, which is about 130
+ * columns with a git branch, a python version and a package version in it, and every frame
+ * between a resize and the starship run that answers it, which still holds the row measured for
+ * the old, wider terminal.
+ *
  * ## Refresh
  *
  * `render()` runs on every frame, and starship is a subprocess, so rendering cannot wait for it.
@@ -68,6 +81,12 @@ import { homedir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+// pi's own measures, not a local copy of them: the renderer compares against these two, so a
+// component that measures differently can pass its own check and still be thrown out. Its
+// extension loader resolves the specifier to the bundled TUI, which is why the package needs no
+// install beside the extension.
+import { truncateToWidth, visibleWidth } from "@earendil-works/pi-tui";
+
 import type {
 	ExtensionAPI,
 	ExtensionContext,
@@ -81,6 +100,8 @@ interface RenderTarget {
 }
 
 const PROFILE = "pi";
+/** The same row without the blocks starship fills from its own modules. See `starship.toml`. */
+const COMPACT_PROFILE = "pi-compact";
 const WIDGET_KEY = "starship-row";
 
 const STALE_MS = 2000;
@@ -170,7 +191,7 @@ function collectUsage(ctx: ExtensionContext): { totals: Totals; latest?: Usage }
 	return { totals, latest };
 }
 
-const SHED = ["provider", "session"] as const;
+const SHED = ["provider", "detail", "session"] as const;
 /**
  * What to drop, in order, when the rendered row is wider than the terminal.
  *
@@ -178,31 +199,15 @@ const SHED = ["provider", "session"] as const;
  * `qwen3.8-max-0902 (openrouter)`, so the same terminal fits everything for one model and
  * overflows for another. The component measures what starship actually returned and sheds one
  * more item until it fits, which needs no calibration and follows a model switch on its own.
- * What is left to shed is the parenthesized provider, then the name: the name prints in full
- * or not at all, since an elided one is no longer the string the picker lists.
+ *
+ * The order drops the least useful column first, and the name last: the name prints in full or
+ * not at all, since an elided one is no longer the string the picker lists. Between the two sits
+ * `detail`, which switches starship to the `pi-compact` profile and so gives up the language
+ * version, the package version and the working-tree diff, the one block the wrapper cannot drop
+ * through a variable of its own. A row still too wide after all three is clamped by `render()`.
  */
 
 type ShedItem = (typeof SHED)[number];
-
-/** Visible width of a rendered row, ignoring colour and counting wide glyphs as two columns. */
-function visibleWidth(text: string): number {
-	let width = 0;
-	for (const char of text.replace(/\x1b\[[0-9;]*m/g, "")) {
-		const code = char.codePointAt(0) ?? 0;
-		const wide =
-			(code >= 0x1100 && code <= 0x115f) ||
-			(code >= 0x2e80 && code <= 0xa4cf) ||
-			(code >= 0xac00 && code <= 0xd7a3) ||
-			(code >= 0xf900 && code <= 0xfaff) ||
-			(code >= 0xfe30 && code <= 0xfe6f) ||
-			(code >= 0xff00 && code <= 0xff60) ||
-			(code >= 0xffe0 && code <= 0xffe6) ||
-			(code >= 0x1f300 && code <= 0x1f64f) ||
-			(code >= 0x1f900 && code <= 0x1f9ff);
-		width += wide ? 2 : 1;
-	}
-	return width;
-}
 
 /**
  * Name the model actor-first, the way `username` leads the shell row: the id bare, the provider
@@ -304,7 +309,13 @@ class StarshipRow {
 	render(width: number): string[] {
 		this.maybeRefresh(width);
 
-		return this.lines.length > 0 ? [...this.lines] : [];
+		// Clamped per frame rather than stored clamped: the same row fits one terminal and not the
+		// next, and the rows held here were measured for the width the last starship run was given.
+		// No ellipsis, because a cut on this row lands inside a powerline block, where three dots
+		// read as content rather than as a missing tail.
+		return this.lines.map((line) =>
+			visibleWidth(line) > width ? truncateToWidth(line, width, "") : line,
+		);
 	}
 
 	dispose(): void {
@@ -337,9 +348,10 @@ class StarshipRow {
 
 		const shed = this.shedSet();
 		const payload = buildPayload(this.ctx, shed);
+		const profile = shed.has("detail") ? COMPACT_PROFILE : PROFILE;
 		// pi hands the component its exact usable width, so it is stated rather than left to the
 		// wrapper's COLUMNS reading, which subtracts a margin for the narrower box Claude Code draws.
-		const child = spawn(this.statusline, ["--profile", PROFILE, "--terminal-width", String(width)], {
+		const child = spawn(this.statusline, ["--profile", profile, "--terminal-width", String(width)], {
 			env: { ...process.env, ...buildEnvironment(this.ctx), COLUMNS: String(width) },
 			stdio: ["pipe", "pipe", "ignore"],
 		});
@@ -357,8 +369,9 @@ class StarshipRow {
 			if (this.disposed) return;
 			const lines = output.replace(/\n+$/, "").split("\n");
 
-			// Measure what came back instead of predicting it. Overflowing means pi truncates the row,
-			// so drop the next item and render again. The retry is bounded by SHED's length.
+			// Measure what came back instead of predicting it. An overflowing row is worth one more
+			// attempt with the next item dropped, bounded by SHED's length, since a whole segment
+			// reads better than a cut one. Past the last item `render()` clamps what is left.
 			if (lines.some((line) => visibleWidth(line) > width) && this.shed < SHED.length) {
 				this.shed += 1;
 				this.signature = "";
@@ -398,14 +411,20 @@ class ExtensionStatusFooter {
 		this.footerData = footerData;
 	}
 
-	render(_width: number): string[] {
+	render(width: number): string[] {
 		const statuses = this.footerData.getExtensionStatuses();
 		if (statuses.size === 0) return [];
+		// Joined without a bound, so the clamp is what keeps the sum of every extension's status
+		// inside the width pi handed the footer. Same contract as the row above.
 		return [
-			Array.from(statuses.entries())
-				.sort(([a], [b]) => a.localeCompare(b))
-				.map(([, text]) => text.replace(/[\r\n\t]/g, " ").replace(/ +/g, " ").trim())
-				.join(" "),
+			truncateToWidth(
+				Array.from(statuses.entries())
+					.sort(([a], [b]) => a.localeCompare(b))
+					.map(([, text]) => text.replace(/[\r\n\t]/g, " ").replace(/ +/g, " ").trim())
+					.join(" "),
+				width,
+				"",
+			),
 		];
 	}
 }

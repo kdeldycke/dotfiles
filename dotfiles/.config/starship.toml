@@ -74,6 +74,29 @@ ${env_var.PI_CTXWINDOW}\
 $claude_cost\
 ${env_var.PI_SUB}"""
 
+# `pi` without the two blocks starship fills from its own modules, which `statusline.py`
+# cannot drop through a variable: the language and package versions, and the working-tree
+# diff. pi's row widget switches to it when the full row does not fit the terminal, and
+# clamps what is left when this one does not fit either. Keep it in step with `pi`: the same
+# block grammar in the same order, with those two groups absent.
+pi-compact = """
+$claude_model\
+[](fg:prev_bg bg:color_yellow)\
+$directory\
+([](fg:prev_bg bg:color_aqua)$git_branch$git_status$git_state)\
+[](fg:prev_bg)\
+$fill\
+[](fg:color_bg1)\
+[ ](bg:color_bg1)\
+${env_var.CC_SESSION}\
+${env_var.CC_WORKTREE}\
+${env_var.CC_PR}\
+${env_var.CC_FLAGS}\
+$claude_context\
+${env_var.PI_CTXWINDOW}\
+$claude_cost\
+${env_var.PI_SUB}"""
+
 [palettes.gruvbox_dark]
 color_fg0 = '#fbf1c7'
 color_bg1 = '#3c3836'
