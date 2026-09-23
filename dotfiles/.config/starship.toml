@@ -1,11 +1,14 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
-# One space of padding per block, carried on its leading edge in the shell prompt and on its
-# trailing edge in the agent rows. The last block of a row drops it: a trailing cell would
-# outlive the conditional content it pads, painting an orphan stub whenever a module hides.
-# A `` cap therefore sits flush against the block it opens, and the one closing the clock
-# run carries that run's pad itself, since the clock and the session name pad on the leading
-# edge like the prompt does.
+# Pads are selection armour, not decoration. The blocks whose text gets copied by hand, the
+# identity, the directory, the git state and the session name, carry a space on every edge a
+# mouse selection may cross, so an imprecise drag ends on a space rather than on the powerline
+# cap beside the text, which would otherwise join the copy. Blocks nobody selects end flush at
+# their last glyph: the versions and the metrics on the left chain. The right-hand vitals pad on
+# the trailing edge, since no cap separates them from each other and the pad is their only
+# separator. A pad is safe wherever the whole block hides with its content; the metrics block is
+# the one module that renders without its variables, so it carries none, which is what keeps a
+# clean tree from painting an orphan stub.
 format = """
 $sudo\
 $username\
@@ -66,10 +69,8 @@ $directory\
 ([](fg:prev_bg bg:color_bg1)$git_metrics)\
 [](fg:prev_bg)\
 $fill\
-[](fg:color_bg1)\
-$time\
-${env_var.CC_SESSION}\
-[ ](fg:color_bg3 bg:prev_bg)\
+([](fg:color_bg1)$time${env_var.CC_SESSION})\
+[](fg:color_bg3 bg:prev_bg)\
 ${env_var.CC_WORKTREE}\
 ${env_var.CC_PR}\
 ${env_var.CC_FLAGS}\
@@ -94,34 +95,34 @@ color_yellow = '#d79921'
 disabled = false
 symbol = ' '
 style = 'bg:color_red fg:color_fg0'
-format = '[ $symbol]($style)[](fg:prev_bg bg:color_orange)'
+format = '[$symbol ]($style)[](fg:prev_bg bg:color_orange)'
 
 [username]
 show_always = true
 style_user = "fg:color_fg0"
 style_root = "fg:color_fg0"
-format = '[  $user]($style bg:color_orange)'
+format = '[ $user ]($style bg:color_orange)'
 
 [directory]
 style = "fg:color_fg0 bg:color_yellow"
-format = "[ $path]($style)[$read_only]($read_only_style)"
+format = "[ $path ]($style)[$read_only]($read_only_style)"
 fish_style_pwd_dir_length = 1
 truncate_to_repo = false
 
 [git_branch]
 symbol = ""
 style = "bg:color_aqua"
-format = '[[ $symbol $branch](fg:color_fg0 bg:color_aqua)]($style)'
+format = '[[ $symbol $branch ](fg:color_fg0 bg:color_aqua)]($style)'
 
 [git_status]
 style = "bg:color_aqua"
-format = '[[( $all_status$ahead_behind)](fg:color_fg0 bg:color_aqua)]($style)'
+format = '[[($all_status$ahead_behind )](fg:color_fg0 bg:color_aqua)]($style)'
 
 # Without this the default "bold yellow" prints on the terminal background, tearing a hole in
 # the aqua block mid-rebase.
 [git_state]
 style = "bg:color_aqua"
-format = '[[\($state( $progress_current/$progress_total)\)](fg:color_red bg:color_aqua)]($style)'
+format = '[[\($state( $progress_current/$progress_total)\) ](fg:color_red bg:color_aqua)]($style)'
 
 # Working-tree lines against HEAD, which is what a session has changed on disk. starship ships
 # this module disabled. `claude_cost` counts the same thing per session, as $lines_added and
@@ -141,10 +142,9 @@ generic_venv_names = ['.venv', 'venv']
 [package]
 format = '[$symbol$version](fg:color_fg0 bg:color_bg3)'
 
-# The clock pi's own footer carried, back on the row's right edge. Only the `pi` profile draws
-# it: the shell prompt dates nothing, and the Claude Code row keeps its name-less grammar. The
-# clock and the session name sit on `bg1`, the metrics block's tone, so the left chain's tail
-# runs on across the fill; the session's vitals behind them keep `bg3`, apart by one cap.
+# The clock pi's own footer carried, drawn by the `pi` profile alone inside the session name's
+# cap-bracketed group and on the same `bg1`. Neither the shell prompt nor the Claude Code row
+# dates anything.
 [time]
 disabled = false
 time_format = "%m-%d@%H:%M"
@@ -194,15 +194,18 @@ style = 'fg:color_bg3'
 # single width it takes its trailing space back, exactly like `` in `username`.
 symbol = "󰚩 "
 style = "fg:color_fg0 bg:color_blue"
-format = '[ $symbol$model]($style)'
+format = '[$symbol$model ]($style)'
 model_aliases = { "Opus 5 (1M context)" = "Opus 5 1M", "Sonnet 5 (1M context)" = "Sonnet 5 1M" }
 
-# Not in the profile: the session name is already in the terminal tab title, set by
-# `.claude/hooks/session-title.py`, and in Claude Code's own badge above the input box. A third
-# copy costs 20 columns. Add `${env_var.CC_SESSION}` back to the profile to restore it.
+# Drawn by the `pi` profile alone. Out of the Claude Code row because the name is already in the
+# terminal tab title, set by `.claude/hooks/session-title.py`, and in Claude Code's own badge
+# above the input box: a third copy costs 20 columns. Add `${env_var.CC_SESSION}` back to that
+# profile to restore it. It sits on `bg1`, the metrics block's tone, so the left chain's tail
+# runs on across the fill; the vitals behind it keep `bg3`, apart by one cap. The pad on each
+# edge fills the run its two caps bracket, and goes with it when the row sheds the name.
 [env_var.CC_SESSION]
 variable = "CC_SESSION"
-format = '[ $env_value](dimmed fg:color_fg0 bg:color_bg1)'
+format = '[ $env_value ](dimmed fg:color_fg0 bg:color_bg1)'
 
 [claude_context]
 format = '[$gauge $percentage ]($style)'
