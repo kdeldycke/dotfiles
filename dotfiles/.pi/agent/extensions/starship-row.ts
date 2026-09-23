@@ -224,6 +224,9 @@ function modelLabel(ctx: ExtensionContext): string {
 	return `${model.provider}:${name}`;
 }
 
+/** pi's fallback name for a session nobody renamed: its creation time, which would read as a clock. */
+const DEFAULT_SESSION_NAME = /^\d{2}-\d{2}@\d{2}:\d{2}$/;
+
 /**
  * Build the payload in the shape Claude Code sends, so `statusline.py` needs no pi-specific code.
  *
@@ -239,7 +242,12 @@ function buildPayload(
 	const context = ctx.getContextUsage();
 	const reasoning = (ctx.model as { reasoning?: unknown } | undefined)?.reasoning;
 	const thinking = ctx.thinkingLevel;
-	const sessionName = shed.has("session") ? undefined : ctx.sessionManager.getSessionName();
+	// pi names an unrenamed session after its creation time, and a frozen timestamp on the row
+	// reads as a clock that stalls while the session ages. No row draws a clock, so the stored
+	// name earns its column only once a human has renamed the session.
+	const stored = ctx.sessionManager.getSessionName();
+	const sessionName =
+		shed.has("session") || !stored || DEFAULT_SESSION_NAME.test(stored) ? undefined : stored;
 
 	return {
 		hook_event_name: "Status",
