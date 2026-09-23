@@ -735,6 +735,8 @@ Never use `$()` command substitutions inside `gh` (or any other) Bash calls. The
 
 Never hand `git clean` a directory. Name each path to delete, even when most of the directory is going: `git clean -f -- docs/assets/` removes *every* untracked file there, including ones renamed into place seconds earlier and about to be committed. It bypasses the Trash, so they are unrecoverable. Keeping a subset means naming the discards one by one, or moving the keepers out first.
 
+Verify each path in a hand-built `rm` list before running it: a cleanup list names its entries from memory, and one mistyped absolute path in it destroys something recoverable — a cleanup of synthetic `~/.Trash` test entries deleted the real trashed session's directory instead. Print each candidate's identity first (its content, as two colliding `wrapup-session-nudge.last` markers were told apart), and confirm what `rm` is about to take.
+
 Never `cd` in Bash calls: pass absolute paths to the tool instead. Claude Code creates a `.claude/.cc-writes/` atomic-write staging directory in the session's tracked working directory, and that directory follows every `cd`. So a single `cd` into a source tree, a `.venv`, or a document folder leaves a permanent empty `.claude/` behind. No setting disables this. For the same reason, launch `claude` from a repo root rather than from a deep subdirectory or a data folder. Run `claude-sweep` to clear the strays.
 
 `git mv` stages the rename only: unstaged content edits on the moved file stay unstaged, and the commit records a 100%-similarity rename without them. Read an `RM` status as "rename staged, content not" and `git add` the file before committing.
