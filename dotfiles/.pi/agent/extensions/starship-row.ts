@@ -197,10 +197,11 @@ const SHED = ["session"] as const;
 /**
  * What to drop, in order, when the rendered row is wider than the terminal.
  *
- * Fixed width thresholds would not survive here: a pi model name runs from `opus` to
- * `qwen3.8-max-0902`, so the same terminal fits everything for one model and overflows for
- * another. The component measures what starship actually returned and sheds one more item
- * until it fits, which needs no calibration and follows a model switch on its own. The session
+ * Fixed width thresholds would not survive here: a pi model label runs from `anthropic:opus` to
+ * `openrouter:qwen3.8-max-0902`, so the same terminal fits everything for one model and
+ * overflows for another. The component measures what starship actually returned and sheds one
+ * more item until it fits, which needs no calibration and follows a model switch on its own.
+ * The session
  * name is the only field the row can lose and still say everything else, so it is the only shed
  * item: the model name prints in full or not at all, since an elided one names no model the
  * picker could list. A row still too wide after it is clamped by `render()`, which is what a
@@ -210,14 +211,17 @@ const SHED = ["session"] as const;
 type ShedItem = (typeof SHED)[number];
 
 /**
- * Name the model the way `username` names the human: the bare id, nothing else. A family prefix
- * before a slash in the id only repeats the model's own name, as in `qwen/qwen3.8-max-0902`, so
- * it goes, and the provider earns no column: the id already names where the model comes from.
+ * Name the model under its provider's full name: `openrouter:qwen3.8-max-0902`. The prefix says
+ * where the model is consumed from, in the grammar of a fully qualified image or coordinate, and
+ * costs nine columns over the bare id, which a row this wide sheds the session name before it
+ * ever truncates. A family prefix before a slash in the id still goes, since it only repeats the
+ * model's own name.
  */
 function modelLabel(ctx: ExtensionContext): string {
 	const model = ctx.model;
 	if (!model) return "no-model";
-	return model.id.slice(model.id.lastIndexOf("/") + 1);
+	const name = model.id.slice(model.id.lastIndexOf("/") + 1);
+	return `${model.provider}:${name}`;
 }
 
 /**
