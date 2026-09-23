@@ -69,7 +69,7 @@ $directory\
 ([](fg:prev_bg bg:color_bg1)$git_metrics)\
 [](fg:prev_bg)\
 $fill\
-([](fg:color_bg1)$time${env_var.CC_SESSION})\
+([](fg:color_bg1)${env_var.CC_SESSION})\
 [](fg:color_bg3 bg:prev_bg)\
 ${env_var.CC_WORKTREE}\
 ${env_var.CC_PR}\
@@ -142,15 +142,6 @@ generic_venv_names = ['.venv', 'venv']
 [package]
 format = '[$symbol$version](fg:color_fg0 bg:color_bg3)'
 
-# The clock pi's own footer carried, drawn by the `pi` profile alone inside the session name's
-# cap-bracketed group and on the same `bg1`. Neither the shell prompt nor the Claude Code row
-# dates anything.
-[time]
-disabled = false
-time_format = "%m-%d@%H:%M"
-style = "dimmed fg:color_fg0 bg:color_bg1"
-format = '[ $time]($style)'
-
 [cmd_duration]
 style = "bg:color_bg3"
 format = '[[  $duration](fg:color_fg0 bg:color_bg3)]($style)'
@@ -204,7 +195,9 @@ model_aliases = { "Opus 5 (1M context)" = "Opus 5 1M", "Sonnet 5 (1M context)" =
 # above the input box: a third copy costs 20 columns. Add `${env_var.CC_SESSION}` back to that
 # profile to restore it. It sits on `bg1`, the metrics block's tone, so the left chain's tail
 # runs on across the fill; the vitals behind it keep `bg3`, apart by one cap. The pad on each
-# edge fills the run its two caps bracket, and goes with it when the row sheds the name.
+# edge fills the run its two caps bracket, and goes with it when the row sheds the name. No row
+# draws a clock: a live time beside the session name reads as a second, competing timestamp,
+# which is exactly the confusion that put the name segment under a pattern below.
 [env_var.CC_SESSION]
 variable = "CC_SESSION"
 format = '[ $env_value ](dimmed fg:color_fg0 bg:color_bg1)'
