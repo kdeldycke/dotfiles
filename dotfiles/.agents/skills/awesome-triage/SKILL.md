@@ -89,6 +89,8 @@ Check the diff (for PRs) against `contributing.md` §§ Formatting and Editorial
 - **Launched and functional**: The product or article must exist and be accessible.
 - **Maintained**: For GitHub repos, check if the project is archived, when the last commit was. Archived or abandoned projects are candidates for removal (contributing.md FAQ "Why removes inactive GitHub projects?"). Check for forks or reboots before recommending deletion.
 - **Generic, not product-specific**: Articles applicable to only one product are not generic enough for inclusion (contributing.md "Why my link was rejected?").
+- **Original, not a rehash of its own sources**: Trace the candidate to its primary source before scoring it. Look for a republication notice ("Originally published at ..."), then diff the body against whatever it links under "further reading" or references. A page that paraphrases Wikipedia row by row without citing it adds an unstable hop and no data: prefer the primary source, and write the software framing into the description yourself, which `contributing.md` section Formatting licenses as "smart editorializing". Same test picks the canonical URL: the author's own domain beats a syndication, an aggregator or a mirror.
+- **Verify every row of a small factual table, not one**: A spot-check that passes says nothing about the rows beside it. Eight rows cost one fetch of the source to check in full, and one stale row can invalidate the system-impact claim built on it. A triage that scored this check PASS on a single verified row missed both a stale postal-code claim and that the whole table was unattributed Wikipedia paraphrase. Observed 2026-09-22.
 
 #### 9. Contributor and repo provenance
 
@@ -157,7 +159,7 @@ When drafting a rejection or request-for-changes comment:
 
 For issues reporting broken links (typically automated by the lychee link checker):
 
-- **403 from Medium/Substack**: Bot-blocking responses, not genuine dead links. Ignore unless the content is confirmed gone.
+- **403 from Medium/Substack**: Bot-blocking responses, not genuine dead links. Ignore unless the content is confirmed gone. Reader reachability outranks crawler reachability: a page that opens fine in a browser stays as-is, and the fix for the CI noise is a `[tool.lychee] exclude` entry, not a rewritten URL. Do not treat a 403 listed in the repo's own `broken-links` issue as a fix target on that basis alone: that issue reports what the crawler saw, and the maintainer has already declined archiving these. Only a 404, which is dead for readers too, earns a replacement. Observed 2026-09-22: two bare `medium.com` links were archived on the strength of that issue's error list and the commit was dropped.
 - **404 confirmed dead**: Replace with archive.org/archive.ph/sci-hub.st per `contributing.md` § URL. Replacing a broken URL is maintenance; removing the entry is a curation decision.
 - **Archived GitHub repos**: Check for forks or reboots. If none exist and the section has other entries covering the same ground, the entry can be removed. Leave the door open for re-inclusion if the project revives.
 
