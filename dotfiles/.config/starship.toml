@@ -9,6 +9,12 @@
 # separator. A pad is safe wherever the whole block hides with its content; the metrics block is
 # the one module that renders without its variables, so it carries none, which is what keeps a
 # clean tree from painting an orphan stub.
+# Double-click cannot be made to select a whole multi-word block under Apple Terminal: probes
+# on 2026-09-23 found no blank that joins two words there, nbsp, braille blank and figure space
+# all break the selection, and a click on a symbol pulls in no neighbouring word. The pads
+# therefore armour drags only, and a per-block double-click stays one word. A terminal with a
+# configurable word set, kitty's `select_by_word_characters`, is where this trick lives if the
+# terminal ever changes.
 format = """
 $sudo\
 $username\
