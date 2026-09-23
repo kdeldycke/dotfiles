@@ -1,5 +1,11 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
+# One space of padding per block, carried on its leading edge in the shell prompt and on its
+# trailing edge in the agent rows. The last block of a row drops it: a trailing cell would
+# outlive the conditional content it pads, painting an orphan stub whenever a module hides.
+# A `` cap therefore sits flush against the block it opens, and the one closing the clock
+# run carries that run's pad itself, since the clock and the session name pad on the leading
+# edge like the prompt does.
 format = """
 $sudo\
 $username\
@@ -10,7 +16,7 @@ $directory\
 ([](fg:prev_bg bg:color_bg1)$git_metrics)\
 [](fg:prev_bg)\
 $fill\
-[](fg:color_bg1)\
+[](fg:color_bg3)\
 $cmd_duration\
 $status\
 $line_break\
@@ -40,8 +46,7 @@ $directory\
 ([](fg:prev_bg bg:color_bg1)$git_metrics)\
 [](fg:prev_bg)\
 $fill\
-[](fg:color_bg1)\
-[ ](bg:color_bg1)\
+[](fg:color_bg3)\
 ${env_var.CC_WORKTREE}\
 ${env_var.CC_PR}\
 ${env_var.CC_FLAGS}\
@@ -64,8 +69,9 @@ $directory\
 [](fg:prev_bg)\
 $fill\
 [](fg:color_bg1)\
-[ ](bg:color_bg1)\
+$time\
 ${env_var.CC_SESSION}\
+[ ](fg:color_bg3 bg:prev_bg)\
 ${env_var.CC_WORKTREE}\
 ${env_var.CC_PR}\
 ${env_var.CC_FLAGS}\
@@ -90,34 +96,34 @@ color_yellow = '#d79921'
 disabled = false
 symbol = ' '
 style = 'bg:color_red fg:color_fg0'
-format = '[ $symbol ]($style)[](fg:prev_bg bg:color_orange)'
+format = '[ $symbol]($style)[](fg:prev_bg bg:color_orange)'
 
 [username]
 show_always = true
 style_user = "fg:color_fg0"
 style_root = "fg:color_fg0"
-format = '[  $user ]($style bg:color_orange)'
+format = '[  $user]($style bg:color_orange)'
 
 [directory]
 style = "fg:color_fg0 bg:color_yellow"
-format = "[ $path ]($style)[$read_only]($read_only_style)"
+format = "[ $path]($style)[$read_only]($read_only_style)"
 fish_style_pwd_dir_length = 1
 truncate_to_repo = false
 
 [git_branch]
 symbol = ""
 style = "bg:color_aqua"
-format = '[[ $symbol $branch ](fg:color_fg0 bg:color_aqua)]($style)'
+format = '[[ $symbol $branch](fg:color_fg0 bg:color_aqua)]($style)'
 
 [git_status]
 style = "bg:color_aqua"
-format = '[[($all_status$ahead_behind )](fg:color_fg0 bg:color_aqua)]($style)'
+format = '[[( $all_status$ahead_behind)](fg:color_fg0 bg:color_aqua)]($style)'
 
 # Without this the default "bold yellow" prints on the terminal background, tearing a hole in
 # the aqua block mid-rebase.
 [git_state]
 style = "bg:color_aqua"
-format = '[[\($state( $progress_current/$progress_total)\) ](fg:color_red bg:color_aqua)]($style)'
+format = '[[\($state( $progress_current/$progress_total)\)](fg:color_red bg:color_aqua)]($style)'
 
 # Working-tree lines against HEAD, which is what a session has changed on disk. starship ships
 # this module disabled. `claude_cost` counts the same thing per session, as $lines_added and
@@ -126,22 +132,30 @@ format = '[[\($state( $progress_current/$progress_total)\) ](fg:color_red bg:col
 disabled = false
 added_style = "fg:color_green bg:color_bg1"
 deleted_style = "fg:color_red bg:color_bg1"
-# No padding cell after the counts: the closing cap ends the block, and a literal space here
-# outlives the counts, painting an orphan dark stub after the git block on a clean tree.
 format = '([ +$added]($added_style))([ -$deleted]($deleted_style))'
 
 [python]
 symbol = ""
 style = "bg:color_bg3"
-format = '[[ $symbol( $version)( $virtualenv) ](fg:color_fg0 bg:color_bg3)]($style)'
+format = '[[ $symbol( $version)( $virtualenv)](fg:color_fg0 bg:color_bg3)]($style)'
 generic_venv_names = ['.venv', 'venv']
 
 [package]
 format = '[$symbol$version](fg:color_fg0 bg:color_bg3)'
 
+# The clock pi's own footer carried, back on the row's right edge. Only the `pi` profile draws
+# it: the shell prompt dates nothing, and the Claude Code row keeps its name-less grammar. The
+# clock and the session name sit on `bg1`, the metrics block's tone, so the left chain's tail
+# runs on across the fill; the session's vitals behind them keep `bg3`, apart by one cap.
+[time]
+disabled = false
+time_format = "%m-%d@%H:%M"
+style = "dimmed fg:color_fg0 bg:color_bg1"
+format = '[ $time]($style)'
+
 [cmd_duration]
-style = "bg:color_bg1"
-format = '[[  $duration ](fg:color_fg0 bg:color_bg1)]($style)'
+style = "bg:color_bg3"
+format = '[[  $duration](fg:color_fg0 bg:color_bg3)]($style)'
 min_time = 50
 show_milliseconds = true
 
@@ -149,16 +163,16 @@ show_milliseconds = true
 disabled = false
 symbol = "\\(╯°□°）╯︵ ┻━┻ "
 style = "bg:color_red fg:color_fg0"
-format = "[](bg:prev_bg fg:color_red)[$status $symbol]($style)"
+format = "[](bg:prev_bg fg:color_red)[ $status $symbol]($style)"
 
 # Explicit colour, not `fg:prev_fg`. The segment before the fill is the closing cap, which takes
 # the colour of whichever block ended the run, and the conditional groups above mean that block
 # varies: the dark tail in a repo, the yellow directory outside one. Inheriting it painted the
-# rule yellow whenever git, python and the metrics were all absent. `color_bg1` also matches the
+# rule yellow whenever git, python and the metrics were all absent. `color_bg3` also matches the
 # block the fill runs into on the right.
 [fill]
 symbol = '─'
-style = 'fg:color_bg1'
+style = 'fg:color_bg3'
 
 ###############################################################################
 # Claude Code status line
@@ -182,7 +196,7 @@ style = 'fg:color_bg1'
 # single width it takes its trailing space back, exactly like `` in `username`.
 symbol = "󰚩 "
 style = "fg:color_fg0 bg:color_blue"
-format = '[ $symbol$model ]($style)'
+format = '[ $symbol$model]($style)'
 model_aliases = { "Opus 5 (1M context)" = "Opus 5 1M", "Sonnet 5 (1M context)" = "Sonnet 5 1M" }
 
 # Not in the profile: the session name is already in the terminal tab title, set by
@@ -190,53 +204,53 @@ model_aliases = { "Opus 5 (1M context)" = "Opus 5 1M", "Sonnet 5 (1M context)" =
 # copy costs 20 columns. Add `${env_var.CC_SESSION}` back to the profile to restore it.
 [env_var.CC_SESSION]
 variable = "CC_SESSION"
-format = '[$env_value ](dimmed fg:color_fg0 bg:color_bg1)'
+format = '[ $env_value](dimmed fg:color_fg0 bg:color_bg1)'
 
 [claude_context]
 format = '[$gauge $percentage ]($style)'
 display = [
-  { threshold = 0, style = "bold green bg:color_bg1" },
-  { threshold = 60, style = "bold yellow bg:color_bg1" },
-  { threshold = 80, style = "bold red bg:color_bg1" },
+  { threshold = 0, style = "bold green bg:color_bg3" },
+  { threshold = 60, style = "bold yellow bg:color_bg3" },
+  { threshold = 80, style = "bold red bg:color_bg3" },
 ]
 
 [claude_cost]
-format = '[$symbol\$$cost ]($style)'
+format = '[$symbol\$$cost]($style)'
 display = [
-  { threshold = 0, style = "bold green bg:color_bg1" },
-  { threshold = 1, style = "bold yellow bg:color_bg1" },
-  { threshold = 5, style = "bold red bg:color_bg1" },
+  { threshold = 0, style = "bold green bg:color_bg3" },
+  { threshold = 1, style = "bold yellow bg:color_bg3" },
+  { threshold = 5, style = "bold red bg:color_bg3" },
 ]
 
 # Fields with no starship module, exported by `statusline.py` from the session JSON. Each one
 # hides itself when its variable is unset, which is what an absent field leaves behind.
 [env_var.CC_WORKTREE]
 variable = "CC_WORKTREE"
-format = '[$env_value ](bold purple bg:color_bg1)'
+format = '[$env_value ](bold purple bg:color_bg3)'
 
 [env_var.CC_PR]
 variable = "CC_PR"
-format = '[ $env_value ](bold green bg:color_bg1)'
+format = '[$env_value ](bold green bg:color_bg3)'
 
 # Reasoning level: Claude Code's effort, pi's thinking level. Same slot, same meaning.
 [env_var.CC_FLAGS]
 variable = "CC_FLAGS"
-format = '[󰧑 $env_value ](bold cyan bg:color_bg1)'
+format = '[󰧑 $env_value ](bold cyan bg:color_bg3)'
 
 # `` is `fa-hourglass`, the glyph `cmd_duration` already uses; `⏳` is absent from the font.
 # One tier per severity, because `env_var` carries a single style and cannot colour by threshold
 # the way `claude_context` does. `statusline.py` sets exactly one of the three.
 [env_var.CC_RATE_OK]
 variable = "CC_RATE_OK"
-format = '[ $env_value ](bold green bg:color_bg1)'
+format = '[ $env_value ](bold green bg:color_bg3)'
 
 [env_var.CC_RATE_WARN]
 variable = "CC_RATE_WARN"
-format = '[ $env_value ](bold yellow bg:color_bg1)'
+format = '[ $env_value ](bold yellow bg:color_bg3)'
 
 [env_var.CC_RATE_CRIT]
 variable = "CC_RATE_CRIT"
-format = '[ $env_value ](bold red bg:color_bg1)'
+format = '[ $env_value ](bold red bg:color_bg3)'
 
 ###############################################################################
 # pi footer only
@@ -252,12 +266,15 @@ format = '[ $env_value ](bold red bg:color_bg1)'
 # auto-compaction marker is absent because `ExtensionContext` does not expose that flag at all.
 [env_var.PI_CTXWINDOW]
 variable = "PI_CTXWINDOW"
-format = '[$env_value ](dimmed fg:color_fg0 bg:color_bg1)'
+format = '[$env_value ](dimmed fg:color_fg0 bg:color_bg3)'
 
-# Marks a cost as covered by a subscription rather than billed per token. Only pi's hardcoded
+# Marks a cost as covered by a subscription rather than billed per token. It pads on the
+# leading edge, the one exception to the trailing-pad rule: it follows the cost, which ends
+# the row when the subscription is absent and so carries no pad of its own.
+# Only pi's hardcoded
 # `kimi-coding` provider sets it: the general test is `ModelRuntime.isUsingSubscription()`, and an
 # extension is handed `modelRegistry` instead, whose `AuthStatus` never names a subscription.
 [env_var.PI_SUB]
 variable = "PI_SUB"
-format = '[$env_value ](dimmed fg:color_fg0 bg:color_bg1)'
+format = '[ $env_value](dimmed fg:color_fg0 bg:color_bg3)'
 
