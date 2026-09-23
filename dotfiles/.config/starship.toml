@@ -16,9 +16,7 @@ $directory\
 ([](fg:prev_bg bg:color_bg1)$git_metrics)\
 [](fg:prev_bg)\
 $fill\
-[](fg:color_bg3)\
-$cmd_duration\
-$status\
+([](fg:color_bg3)$cmd_duration$status)\
 $line_break\
 $character"""
 
