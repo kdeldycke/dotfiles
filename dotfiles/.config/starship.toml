@@ -216,6 +216,7 @@ display = [
 ]
 
 [claude_cost]
+symbol = "💸 "
 format = '[$symbol\$$cost]($style)'
 display = [
   { threshold = 0, style = "bold green bg:color_bg3" },
