@@ -8,15 +8,28 @@ argument-hint: "[focus]"
 
 This is the last turn of the session: the harness may quit as soon as it settles. Do not ask questions. State assumptions and finish. When arguments are passed, treat them as the focus of the pass.
 
-## 1. Loose ends
+## 1. Repeat invocation
+
+Check the conversation for a closing report from an earlier invocation of this skill: the labelled to-do list (`Commit:` …, `Push:` …) is its signature. If one is there, this is a repeat call, and the session must end clean this time instead of deferring again.
+
+On a repeat call, do not re-list the leftovers. Finish them:
+
+- Execute every remaining item in the working tree: apply the deferred fix, write the code or the docs entry, draft the upstream report, delete the scratch files, run the verifications. Re-verify each item first, per § 2: work finished by hand since the last report is done, not to do.
+- The repeat invocation is the user's go-ahead to commit: stage and commit the finished work locally, one commit per strand, following the commit-message rules. A first invocation never commits; a repeat one does.
+- Pushing to a remote and posting to an external service still need the user's own hand. If only such items remain, say the tree is clean and name them.
+- Then run the lessons pass (§ 3) and close with the same two lists (§ 4), near-empty by design.
+
+## 2. Loose ends
 
 Collect what this session leaves behind:
 
 - Promises made in the conversation but not delivered: deferred fixes, "later" items, questions parked with a workaround.
-- Working-tree changes this session created or touched, still uncommitted. Check `git status` and name only what this session produced. Never commit, push, or post anywhere.
+- Working-tree changes this session created or touched, still uncommitted. Check `git status` and name only what this session produced. Never push or post anywhere; committing is reserved for the repeat invocation (§ 1).
 - Background jobs or processes started here and still running.
 
-## 2. Lessons worth persisting
+**Verify every candidate against the current state before listing it.** The user often fixes, commits, or cleans items by hand between the last prompt and this wrap-up, and a stale item tells them to redo work already done. For each candidate, re-check the evidence: re-run `git status` and `git log` rather than trusting an earlier snapshot, read the file a fix would touch, check whether a deferred report or upstream comment already exists. Drop every item that is already resolved. When an item is only partially done, list only the remainder.
+
+## 3. Lessons worth persisting
 
 A candidate lesson is a correction the user gave, a surprise that cost time, or a rule stated nowhere. Skip anything the code, git history, or existing docs already record.
 
@@ -35,6 +48,20 @@ Guards:
 - Read the target file first and dedupe: update an existing rule in place instead of appending a near-duplicate.
 - Apply small, safe edits directly, in the working tree only. Anything larger becomes a one-line proposal in the report.
 
-## 3. Closing report
+## 4. Closing report
 
 End with two short lists, a few words per item: left to do, and persisted or proposed. Write "none" where a list is empty. Keep the whole report under about 15 lines.
+
+Prefix each "left to do" item with an action label naming the verb the item needs, so the list is scannable at a glance. Pick the narrowest label that fits:
+
+- `Commit:` — uncommitted changes to stage and commit in this repository.
+- `Push:` — commits already made but not on the remote.
+- `Fix:` — a defect or broken state to repair.
+- `Implement:` — new code or a feature to write, in this repo or a sibling checkout (name the checkout).
+- `Document:` — a docs page, comment, or changelog entry to write.
+- `Report:` — an issue or comment to file upstream (name the project).
+- `Review:` — something the user must read or decide on, e.g. a draft awaiting approval.
+- `Verify:` — a check to run, e.g. a test suite or CI run to watch.
+- `Delete:` / `Clean:` — leftover scratch files or processes to remove.
+
+Reuse these forms; invent a new label only when none fits, and keep it a single verb capitalized with a colon.
