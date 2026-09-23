@@ -46,22 +46,20 @@ Guards:
 
 - An empty result is the normal outcome. Most sessions teach nothing new: report "nothing to persist" and never invent a lesson to fill the section.
 - Read the target file first and dedupe: update an existing rule in place instead of appending a near-duplicate.
-- Apply small, safe edits directly, in the working tree only. Anything larger becomes a one-line proposal in the report.
+- Apply small, safe edits directly, in the working tree only. Anything larger becomes a one-line proposal, reported as a `Review:` item in the closing report (§ 4).
 
 ## 4. Closing report
 
-End with two short lists, a few words per item: left to do, and persisted or proposed. Write "none" where a list is empty. Keep the whole report under about 15 lines.
+End with two short lists, a few words per item: **Done** first, then **Left to do**. Write "none" where a list is empty. Keep the whole report under about 15 lines.
 
-Prefix each "left to do" item with an action label naming the verb the item needs, so the list is scannable at a glance. Pick the narrowest label that fits:
+**Done** holds what this session finished: lessons persisted and where, plus any tree work completed this turn. A lesson deliberately capped at a suggestion is not done: it moves to **Left to do** as a `Review:` item instead, so every decision the user owes lives in one list. A lesson examined and skipped because the code, history, or docs already record it appears here as one line: `Skipped: …`, naming where it already lives. The report is exactly these two lists and nothing else.
+
+**Left to do** holds every remaining action. Order it so it can be executed top to bottom: create-and-fix work first, then documentation, then `Commit:`, then `Push:`/`Report:`. Name each item's target in full: the path, the SHA, the checkout, the upstream project. Prefix each item with an action label naming the verb it needs, so the list is scannable at a glance. Pick the narrowest label that fits:
 
 - `Commit:` — uncommitted changes to stage and commit in this repository.
 - `Push:` — commits already made but not on the remote.
-- `Fix:` — a defect or broken state to repair.
 - `Implement:` — new code or a feature to write, in this repo or a sibling checkout (name the checkout).
-- `Document:` — a docs page, comment, or changelog entry to write.
 - `Report:` — an issue or comment to file upstream (name the project).
-- `Review:` — something the user must read or decide on, e.g. a draft awaiting approval.
-- `Verify:` — a check to run, e.g. a test suite or CI run to watch.
-- `Delete:` / `Clean:` — leftover scratch files or processes to remove.
+- `Review:` — something the user must read or decide on: a draft awaiting approval, a proposal from the lessons pass.
 
-Reuse these forms; invent a new label only when none fits, and keep it a single verb capitalized with a colon.
+These five are the whole vocabulary: do not coin new labels. An item that fits none of them is a plain bullet whose first word is the verb, e.g. "Fix the …", "Clean /private/tmp/…".
