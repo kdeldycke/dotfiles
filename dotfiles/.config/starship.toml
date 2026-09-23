@@ -95,13 +95,13 @@ color_yellow = '#d79921'
 disabled = false
 symbol = ' '
 style = 'bg:color_red fg:color_fg0'
-format = '[$symbol ]($style)[](fg:prev_bg bg:color_orange)'
+format = '[ $symbol ]($style)[](fg:prev_bg bg:color_orange)'
 
 [username]
 show_always = true
 style_user = "fg:color_fg0"
 style_root = "fg:color_fg0"
-format = '[ $user ]($style bg:color_orange)'
+format = '[  $user ]($style bg:color_orange)'
 
 [directory]
 style = "fg:color_fg0 bg:color_yellow"
@@ -194,7 +194,7 @@ style = 'fg:color_bg3'
 # single width it takes its trailing space back, exactly like `` in `username`.
 symbol = "󰚩 "
 style = "fg:color_fg0 bg:color_blue"
-format = '[$symbol$model ]($style)'
+format = '[ $symbol$model ]($style)'
 model_aliases = { "Opus 5 (1M context)" = "Opus 5 1M", "Sonnet 5 (1M context)" = "Sonnet 5 1M" }
 
 # Drawn by the `pi` profile alone. Out of the Claude Code row because the name is already in the
