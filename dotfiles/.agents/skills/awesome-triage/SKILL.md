@@ -78,7 +78,7 @@ See also §9 for contributor and repo provenance signals — these often reinfor
 - Self-promotion is allowed but must be disclosed. Undisclosed affiliation is a trust signal.
 - Author submissions get more scrutiny on the "marketing vs. genuine content" axis but are not automatically penalized. Many accepted PRs across all four lists are author self-submissions.
 - For commercial content, apply `contributing.md` FAQ "Why my commercial project is not in the list?": prefer open-source repository links over commercial landing pages.
-- When a commercial brand or vendor sits behind the submission (product site, paid SaaS, or a lead-gen funnel pointing at a commercial domain), record the exact brand and domain in the triage analysis. A declined commercial or self-promotional submission must close its comment with the fixed sponsorship phrase: see § Drafting comments.
+- When a commercial brand or vendor sits behind the submission (product site, paid SaaS, or a lead-gen funnel pointing at a commercial domain), record the exact brand and domain. A declined commercial submission must close its comment with the sponsorship offer: see § Drafting comments.
 
 #### 7. Formatting and editorial compliance
 
@@ -89,8 +89,6 @@ Check the diff (for PRs) against `contributing.md` §§ Formatting and Editorial
 - **Launched and functional**: The product or article must exist and be accessible.
 - **Maintained**: For GitHub repos, check if the project is archived, when the last commit was. Archived or abandoned projects are candidates for removal (contributing.md FAQ "Why removes inactive GitHub projects?"). Check for forks or reboots before recommending deletion.
 - **Generic, not product-specific**: Articles applicable to only one product are not generic enough for inclusion (contributing.md "Why my link was rejected?").
-- **Original, not a rehash of its own sources**: Trace the candidate to its primary source before scoring it. Look for a republication notice ("Originally published at ..."), then diff the body against whatever it links under "further reading" or references. A page that paraphrases Wikipedia row by row without citing it adds an unstable hop and no data: prefer the primary source, and write the software framing into the description yourself, which `contributing.md` section Formatting licenses as "smart editorializing". Same test picks the canonical URL: the author's own domain beats a syndication, an aggregator or a mirror.
-- **Verify every row of a small factual table, not one**: A spot-check that passes says nothing about the rows beside it. Eight rows cost one fetch of the source to check in full, and one stale row can invalidate the system-impact claim built on it. A triage that scored this check PASS on a single verified row missed both a stale postal-code claim and that the whole table was unattributed Wikipedia paraphrase. Observed 2026-09-22.
 
 #### 9. Contributor and repo provenance
 
@@ -136,9 +134,7 @@ After running all checks, provide one of:
 - **REJECT**: Fails one or more hard criteria (duplicate, AI slop, not launched, paywalled, no value-add, section saturation, competitive context mismatch). Draft a rejection comment.
 - **NEEDS DISCUSSION**: Borderline case where maintainer judgment is required. Summarize the arguments for and against.
 
-After the verdict, propose 2-3 short, ready-to-post comments that the maintainer can copy-paste to explain the decision to the author. Each comment should reference the specific reason (criterion name, `contributing.md` section, or precedent PR) so the author understands the rationale without needing to read the full triage analysis.
-
-**Order them shortest first.** The maintainer usually posts the first one and nothing else. The default is a tight, single-topic comment: name the one blocker that decides the case, cite it, stop. Longer variants that stack several criteria, quote the contributor's own history, or enumerate every failing check go last, and only when a criterion is genuinely contested. A rejection needs one reason stated well, not five stated thinly.
+After the verdict, propose 2-3 short, ready-to-post comments (one line each) that the maintainer can copy-paste to explain the decision to the author. Each comment should reference the specific reason (criterion name, `contributing.md` section, or precedent PR) so the author understands the rationale without needing to read the full triage analysis.
 
 ### Drafting comments
 
@@ -149,17 +145,13 @@ When drafting a rejection or request-for-changes comment:
 - Stay polite and constructive. Contributors may improve and resubmit.
 - For AI slop: keep it brief. State the specific tells (e.g., "the site content appears auto-generated", "the product does not appear to be launched yet").
 - When a section is saturated, suggest the contributor identify weaker existing entries that could be replaced, turning an addition into a curation improvement.
-- **Always close a declined commercial or self-promotional submission with this exact phrase, verbatim, as the last line of the comment**, whether or not the affiliation was disclosed:
-
-  > If you want to promote your product, you can purchase a sponsorship to this repository: https://github.com/sponsors/kdeldycke
-
-  Do not substitute the brand or domain into it, do not reword it, and do not backtick the product name inside it. The phrase is generic on purpose: it reads the same to every contributor, it never argues about whether the submission was commercial, and it survives being copied across the four lists unchanged. This mirrors `contributing.md` FAQ "How can I force a link into the list?", which is the paid path around the curation rules. Record the brand and domain in the triage analysis instead, where the maintainer can see them and the contributor cannot.
+- For commercially affiliated submissions: always close the comment with a sponsorship offer, whether or not the affiliation was disclosed. Name the specific brand or website in backticks so the call-out is explicit, then point to the sponsorship link as the paid way to get featured: https://github.com/sponsors/kdeldycke. This mirrors `contributing.md` FAQ "How can I force a link into the list?". Example close, for a submission promoting `acme-billing.com`: "If you want to promote `acme-billing.com`, you can purchase a sponsorship to this repository: https://github.com/sponsors/kdeldycke".
 
 ### Broken link triage
 
 For issues reporting broken links (typically automated by the lychee link checker):
 
-- **403 from Medium/Substack**: Bot-blocking responses, not genuine dead links. Ignore unless the content is confirmed gone. Reader reachability outranks crawler reachability: a page that opens fine in a browser stays as-is, and the fix for the CI noise is a `[tool.lychee] exclude` entry, not a rewritten URL. Do not treat a 403 listed in the repo's own `broken-links` issue as a fix target on that basis alone: that issue reports what the crawler saw, and the maintainer has already declined archiving these. Only a 404, which is dead for readers too, earns a replacement. Observed 2026-09-22: two bare `medium.com` links were archived on the strength of that issue's error list and the commit was dropped.
+- **403 from Medium/Substack**: Bot-blocking responses, not genuine dead links. Ignore unless the content is confirmed gone.
 - **404 confirmed dead**: Replace with archive.org/archive.ph/sci-hub.st per `contributing.md` § URL. Replacing a broken URL is maintenance; removing the entry is a curation decision.
 - **Archived GitHub repos**: Check for forks or reboots. If none exist and the section has other entries covering the same ground, the entry can be removed. Leave the door open for re-inclusion if the project revives.
 
