@@ -1,0 +1,88 @@
+! Title: kdeldycke's AdGuard exceptions
+! Description: Public domains AdGuard for Mac must not block, filter or apply Stealth Mode to. Personal exceptions stay in the User rules screen.
+! Homepage: https://github.com/kdeldycke/dotfiles
+! Expires: 1 day
+!
+! ---------------------------------------------------------------------------
+! How this file reaches AdGuard
+! ---------------------------------------------------------------------------
+! AdGuard keeps its User rules inside a SQLite database, not in a file:
+!   ~/Library/Group Containers/TC3Q7MAJXF.com.adguard.mac/Library/
+!     Application Support/com.adguard.mac.adguard/filters/agflm_standard.db
+! So `install.sh` cannot symlink this list into place the way it does the rest
+! of the dotfiles. Subscribe to it as a custom filter list instead, and every
+! push to `main` then deploys it on the next refresh:
+!
+!   AdGuard -> Settings -> Filters -> Custom -> + -> paste
+!   https://raw.githubusercontent.com/kdeldycke/dotfiles/main/adguard-user-rules.txt
+!
+! Do NOT paste this file into the User rules screen. That import replaces the
+! whole list, and the two lists have different jobs.
+!
+! The User rules screen holds the private half, and nothing backs it up. It
+! fills itself during ordinary browsing: the Safari AdGuard extension writes an
+! entry there on every site I switch AdGuard off for. A macOS reinstall starts
+! it empty and rebuilds it site by site, which costs a few sessions and nothing
+! else. This file carries only the rules worth moving between machines, and only
+! the ones safe to publish.
+!
+! No `! Version:` line: nothing bumps it, and a stale version is worse than none.
+!
+! ---------------------------------------------------------------------------
+! Modifiers used below
+! ---------------------------------------------------------------------------
+! $important  Makes the exception beat a blocking rule that itself carries
+!             $important. A plain `@@` exception already beats a plain block, so
+!             this only matters against the aggressive rules of a subscribed list.
+! $document   Drops all filtering on the page itself: cosmetic rules, scriptlets
+!             and injected JavaScript. Scoped to the document request only.
+! $stealth    Turns Stealth Mode off for the domain. Stealth Mode also drops QUIC,
+!             so a host advertising `alpn=h3` in its HTTPS DNS record stalls on
+!             UDP 443 until Safari gives up and retries over TCP. Safari can turn
+!             a long enough stall into its "does not support connecting securely
+!             over HTTPS" page. $important does not cover Stealth Mode.
+!
+! A domain often needs two rules. `$important` alone covers every request to the
+! domain, including one made from another site. `$important,document` covers the
+! page loaded from it. Neither implies the other.
+!
+! `||domain^` already matches every subdomain, so no rule names one separately.
+!
+! Verify any change in AdGuard -> Filtering log: filter on the domain, reload the
+! page, and check that no row stays red.
+
+! ===========================================================================
+! Sites that break under filtering
+! ===========================================================================
+@@||account.apple.com^$important,document
+
+! ===========================================================================
+! Claude in Chrome talking to Claude Desktop
+! ===========================================================================
+! Domain list from Anthropic, "Claude in Chrome admin controls", network
+! controls section.
+
+! The extension-to-desktop bridge runs over a WebSocket, so it needs the
+! request-wide exception rather than the document one.
+@@||claudeusercontent.com^$important
+@@||claudeusercontent.com^$stealth
+
+! Chat traffic endpoints.
+@@||claude.ai^$important
+@@||claude.ai^$important,document
+@@||claude.ai^$stealth
+@@||api.anthropic.com^$important
+@@||api.anthropic.com^$stealth
+@@||platform.claude.com^$important
+@@||platform.claude.com^$important,document
+@@||platform.claude.com^$stealth
+
+! ===========================================================================
+! My own documentation sites
+! ===========================================================================
+! Both sit on Cloudflare and advertise `alpn=h3,h2`, so Safari tries QUIC first
+! and Stealth Mode drops it. The `$stealth` rule is what stops that.
+@@||mpm.run^$important,document
+@@||mpm.run^$stealth
+@@||repomatic.net^$important,document
+@@||repomatic.net^$stealth

@@ -169,6 +169,14 @@ filter lists:
 
 ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/adguard-filter-lists-subscription.png)
 
+That first pass is the only manual one. The six custom lists the registry does not offer subscribe themselves: `macos-config.sh` opens an `abp://subscribe` URL for each, which are the only steps of that script asking for a click. They are [`adguard-user-rules.txt`](adguard-user-rules.txt), the AdGuard Annoyances and DNS filters, and the three [`i5heu/ublock-hide-yt-shorts`](https://github.com/i5heu/ublock-hide-yt-shorts) lists stripping YouTube shorts, comments and playables. Each one already subscribed is skipped, so re-running the script asks only for the dialogs that were missed.
+
+AdGuard keeps its filter state in a SQLite database rather than a file, so `install.sh` cannot symlink `adguard-user-rules.txt` the way it does every other dotfile, and a subscription is the only path that updates itself: a push to `main` deploys each later edit on the next refresh. Never paste the file into the `User rules` screen: that import replaces the whole list, and the two lists have different jobs.
+
+The `User rules` screen holds the private half, and this repository carries none of it. It fills itself during ordinary browsing: the Safari AdGuard extension writes an entry there each time I switch AdGuard off for a site. So the list is disposable. A macOS reinstall starts it empty and rebuilds it site by site over a few sessions, which is why nothing here backs it up. `adguard-user-rules.txt` carries only the rules worth moving between machines, and only the ones safe to publish.
+
+Stealth Mode drops QUIC, because AdGuard cannot rewrite the SNI of a handshake it does not proxy. A host advertising `alpn=h3` in its HTTPS DNS record then stalls on UDP 443 until the browser retries over TCP, and Safari can report that stall as `This website does not support connecting securely over HTTPS`. Exempt such a host with a `$stealth` rule: an allowlist entry alone never reaches Stealth Mode. `Filtering log` names the cause, showing `Stealth mode` in the `Filter` column of a red `quic://` row.
+
 ### Claude Code
 
 `~/.claude/settings.json` is symlinked to this repo and committed. There is no global `settings.local.json`: `~/.claude/settings.local.json` is [not a supported file](https://github.com/anthropics/claude-code/issues/35703#issuecomment-4138622633).

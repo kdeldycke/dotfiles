@@ -2164,11 +2164,58 @@ defaults write com.adguard.mac.adguard HideMenubarIcon -bool false
 # Enable filters
 defaults write com.adguard.mac.adguard FilteringEnabled -bool true
 
-# TODO: activate all filters
-# Seems to be saved at: ~/Library/Group Containers/XXXXXXXX.com.adguard.mac/Library/Application Support/com.adguard.mac.adguard/adguard.db
+# TODO: activate all filters. Both the subscribed lists and the User rules live
+# in the SQLite database named below, and every row of its `filter` table carries
+# an `integrity_signature`, so neither `defaults write` nor a hand-written UPDATE
+# reaches them. Ticking the registry filters stays manual: see ./readme.md.
+ADGUARD_FILTER_DB="${HOME}/Library/Group Containers/TC3Q7MAJXF.com.adguard.mac/Library/Application Support/com.adguard.mac.adguard/filters/agflm_standard.db"
+
+# Custom filter lists, the ones the app's own registry does not offer. The `abp:`
+# URL scheme is the single scripted path into that database, and each call opens a
+# confirmation dialog: these are the only steps of this script needing a click.
+#
+# No `title=` parameter. AdGuard reads the `! Title:` header of each list, which
+# keeps the displayed name in sync with upstream instead of freezing a copy here.
+#
+# A fresh install asks once per list. Re-run this script if a dialog was missed:
+# the guard skips whatever already landed, so only the gaps come back.
+ADGUARD_CUSTOM_FILTERS=(
+    # This repository's public exception rules. See ./adguard-user-rules.txt.
+    "https://raw.githubusercontent.com/kdeldycke/dotfiles/main/adguard-user-rules.txt"
+    # Cookie notices, third-party widgets and other annoyances.
+    "https://filters.adtidy.org/mac_v2/filters/14.txt"
+    # Ad and tracking servers, blocked at the hostname level.
+    "https://filters.adtidy.org/mac_v2/filters/15.txt"
+    # https://github.com/i5heu/ublock-hide-yt-shorts strips YouTube shorts,
+    # comments and playables. One list each.
+    "https://raw.githubusercontent.com/i5heu/ublock-hide-yt-shorts/master/list.txt"
+    "https://raw.githubusercontent.com/i5heu/ublock-hide-yt-shorts/master/comments.txt"
+    "https://raw.githubusercontent.com/i5heu/ublock-hide-yt-shorts/master/playables.txt"
+)
+for ADGUARD_FILTER_URL in "${ADGUARD_CUSTOM_FILTERS[@]}"; do
+    # A list added by the URL scheme records a `subscription_url`; one added by
+    # hand through the `+` button records only a `download_url`. Match either, so
+    # a list already there by either route is left alone. A missing database means
+    # AdGuard has never started, which leaves nothing to match and makes the
+    # dialog the right answer.
+    if [[ -e "${ADGUARD_FILTER_DB}" ]] && [[ -n "$(sqlite3 -readonly "${ADGUARD_FILTER_DB}" "SELECT 1 FROM filter WHERE subscription_url = '${ADGUARD_FILTER_URL}' OR download_url = '${ADGUARD_FILTER_URL}' LIMIT 1;" 2>/dev/null)" ]]; then
+        continue
+    fi
+    open "abp://subscribe?location=${ADGUARD_FILTER_URL}"
+done
+
+# DNS protection. The server choice stays local: it lives in a binary
+# NSKeyedArchiver blob (DnsProxyCustomProviders) keyed by a machine-specific UUID.
+defaults write com.adguard.mac.adguard DnsProxyEnabled -bool true
+
+# Send anonymized app usage data
+defaults write com.adguard.mac.adguard SendTelemetry -bool false
 
 # Advanced tracking protection
 defaults write com.adguard.mac.adguard StealthEnabled -bool true
+
+# Block trackers and analytics systems
+defaults write com.adguard.mac.adguard StealthBlockTrackers -bool true
 
 # Hide your search queries
 defaults write com.adguard.mac.adguard StealthHideSearchQueries -bool true
@@ -2211,6 +2258,14 @@ defaults write com.adguard.mac.adguard StealthHideUserAgent -bool true
 
 # Mask your IP address
 defaults write com.adguard.mac.adguard StealthHideIp -bool true
+
+# Hide your TLS SNI. AdGuard cannot rewrite the SNI of a QUIC handshake it does
+# not proxy, so it drops UDP 443 instead. A host advertising `alpn=h3` in its
+# HTTPS DNS record then stalls until the browser retries over TCP, and Safari
+# can turn a long enough stall into its "does not support connecting securely
+# over HTTPS" page. Exempt such a host with a `$stealth` rule in
+# ./adguard-user-rules.txt: an allowlist entry alone never reaches Stealth Mode.
+defaults write com.adguard.mac.adguard StealthHideTlsSni -bool true
 
 # Remove X-Client-Data header
 defaults write com.adguard.mac.adguard StealthRemoveXClientDataHeader -bool true
