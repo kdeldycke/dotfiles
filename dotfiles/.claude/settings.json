@@ -193,9 +193,7 @@
         "~/Library/Caches/repomatic",
         "~/Library/Logs/pipx"
       ],
-      "denyRead": [
-        "~/.ssh"
-      ],
+      "denyRead": ["~/.ssh"],
       "allowRead": [
         "~/.ssh/id_ed25519.pub",
         "~/.ssh/ssh-keygen-secretive",
