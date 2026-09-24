@@ -145,10 +145,15 @@ After the verdict, propose 2-3 short, ready-to-post comments that the maintainer
 When drafting a rejection or request-for-changes comment:
 
 - Be specific about which criteria were not met.
+
 - Reference `contributing.md` sections where applicable.
+
 - Stay polite and constructive. Contributors may improve and resubmit.
+
 - For AI slop: keep it brief. State the specific tells (e.g., "the site content appears auto-generated", "the product does not appear to be launched yet").
+
 - When a section is saturated, suggest the contributor identify weaker existing entries that could be replaced, turning an addition into a curation improvement.
+
 - **Always close a declined commercial or self-promotional submission with this exact phrase, verbatim, as the last line of the comment**, whether or not the affiliation was disclosed:
 
   > If you want to promote your product, you can purchase a sponsorship to this repository: https://github.com/sponsors/kdeldycke
