@@ -125,14 +125,22 @@ while true; do sleep 60; sudo --non-interactive true; kill -0 "$$" || exit; done
 # Symlink dotfiles in user's home.
 stage_links() {
     # Collect all entries within the "dotfiles" sub-folder, but the "Library",
-    # ".config", ".pi", ".claude" and ".agents".
+    # ".config", ".pi", ".claude", ".agents" and ".gnupg".
     #
     # ".claude" and ".agents" are excluded for the same reason as LaunchAgents
     # below: ~/.claude is a real directory Claude Code writes its own runtime
     # state into (sessions, history.jsonl, projects, telemetry). Linking the
     # folder would move all of that aside into a backup and drop the live state
     # inside this git repository, so its contents are linked entry by entry.
-    DOT_FILES=$($FIND_CLI dotfiles -depth 1 -not -name '\.DS_Store' -not -name 'Library' -not -name '.config' -not -name '.pi' -not -name '.claude' -not -name '.agents')
+    #
+    # ".gnupg" is excluded for the same reason, and the stakes are higher: gpg
+    # writes private keys into ~/.gnupg/private-keys-v1.d and opens its agent
+    # sockets there. Linking the folder puts secret key material inside this
+    # git working tree, where only the "*.key" ignore rule stands between it
+    # and a commit. An earlier revision did link it, which is why untracked
+    # 2022 keys and stale sockets still sit in dotfiles/.gnupg. Only the two
+    # config files are linked, by name, below.
+    DOT_FILES=$($FIND_CLI dotfiles -depth 1 -not -name '\.DS_Store' -not -name 'Library' -not -name '.config' -not -name '.pi' -not -name '.claude' -not -name '.agents' -not -name '.gnupg')
     # Collect all ".config" content .
     DOT_FILES+="
 $($FIND_CLI dotfiles/.config -depth 1 -not -name '\.DS_Store')"
@@ -171,7 +179,9 @@ dotfiles/.agents/skills
 dotfiles/.claude/agents
 dotfiles/.claude/output-styles
 dotfiles/.claude/settings.json
-dotfiles/.claude/tropes.md"
+dotfiles/.claude/tropes.md
+dotfiles/.gnupg/dirmngr.conf
+dotfiles/.gnupg/gpg-agent.conf"
 
     echo "Collected dotfiles:"
     echo "${DOT_FILES}" | sort
@@ -207,6 +217,12 @@ dotfiles/.claude/tropes.md"
             ln -sf "${DESTINATION}" "${LINK_FOLDER}"
         fi
     done
+
+    # On a machine with no ~/.gnupg yet, the loop above creates it with the
+    # default umask while linking the two config files into it. gpg then warns
+    # on every run that the home directory is readable by others, so tighten it
+    # here rather than leaving each new machine to be fixed by hand.
+    chmod 700 "${HOME}/.gnupg"
 }
 
 
@@ -253,9 +269,15 @@ stage_packages() {
 
     # Add taps.
     brew tap smudge/smudge
+    brew tap jorgelbg/tap
 
     # Trust the specific third-party formulae I install from untrusted taps.
     brew trust --formula smudge/smudge/nightlight
+    # pinentry-touchid is not in homebrew-core: it clears the notability bar on
+    # stars but not the "actively maintained upstream" one, its last release
+    # being v0.0.3 in 2022. It is what releases the GPG passphrase behind Touch
+    # ID, so signing falls back to typing it by hand without this.
+    brew trust --formula jorgelbg/tap/pinentry-touchid
 
     brew install "python@3.14"
 

@@ -985,6 +985,16 @@ defaults write com.apple.screencapture disable-shadow -bool true
 
 
 ###############################################################################
+# GnuPG                                                                       #
+###############################################################################
+
+# pinentry-touchid owns the Keychain entry holding the GPG passphrase. Leaving
+# pinentry-mac's own "Save in Keychain" enabled makes the two write competing
+# entries, and the Touch ID prompt then stops finding the one it wrote.
+defaults write org.gpgtools.common DisableKeychain -bool yes
+
+
+###############################################################################
 # Nightlight                                                                  #
 ###############################################################################
 
