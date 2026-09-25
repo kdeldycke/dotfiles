@@ -62,6 +62,11 @@ gitignore.extra-content = '''
 .claude/settings.local.json
 **/.claude/.cc-writes/
 
+# Skills Claude Code downloads from the account into the user skills dir,
+# which is symlinked here. Bucketed per org and user, and re-fetched on its
+# own, so a deleted copy comes back.
+**/.agents/skills/synced/
+
 # Host keys of the local UTM guests, rewritten whenever a guest is rebuilt.
 # The glob also covers the `.old` backup `ssh-keygen -R` leaves behind.
 **/.ssh/known_hosts_utm*
