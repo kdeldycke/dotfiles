@@ -214,7 +214,6 @@
   "skillOverrides": {
     "built-in-browser": "off",
     "chrome-browser": "off",
-    "computer-use": "off",
-    "deep-research": "user-invocable-only"
+    "computer-use": "off"
   }
 }
