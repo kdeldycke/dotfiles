@@ -850,8 +850,11 @@ $RECYCLE.BIN/
 
 # Skills Claude Code downloads from the account into the user skills dir,
 # which is symlinked here. Bucketed per org and user, and re-fetched on its
-# own, so a deleted copy comes back.
+# own, so a deleted copy comes back. `.trash` and `.staging` are the sync's
+# two other reserved names, siblings of `synced` rather than children.
 **/.agents/skills/synced/
+**/.agents/skills/.trash/
+**/.agents/skills/.staging/
 
 # Host keys of the local UTM guests, rewritten whenever a guest is rebuilt.
 # The glob also covers the `.old` backup `ssh-keygen -R` leaves behind.
