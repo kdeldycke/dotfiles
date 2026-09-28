@@ -39,13 +39,7 @@ import { appendFileSync, existsSync, statSync, unlinkSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
-import { complete, registerBuiltInApiProviders } from "@earendil-works/pi-ai/compat";
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
-
-// The compat module this import resolves to is not pi core's bundled instance, so its
-// api-registry starts empty and every complete() call errors with "no provider". Registration
-// is idempotent and never clobbers existing entries, per its own doc comment.
-registerBuiltInApiProviders();
 
 const DEBUG_LOG = join(homedir(), ".pi", "agent", "session-title.log");
 
@@ -155,15 +149,10 @@ export default function (pi: ExtensionAPI) {
 			debugLog("skip: no model");
 			return;
 		}
-		let auth: Awaited<ReturnType<typeof ctx.modelRegistry.getApiKeyAndHeaders>>;
-		try {
-			auth = await ctx.modelRegistry.getApiKeyAndHeaders(model);
-		} catch (error) {
-			debugLog(`skip: auth lookup threw: ${error}`);
-			return;
-		}
-		if (!auth.ok || !auth.apiKey) {
-			debugLog(`skip: auth not usable (ok=${auth.ok})`);
+		// Cheap early exit only: the registry resolves auth per request, and a provider it
+		// cannot resolve throws into the catch around the call below.
+		if (!ctx.modelRegistry.hasConfiguredAuth(model)) {
+			debugLog("skip: no configured auth for the session model");
 			return;
 		}
 
@@ -174,7 +163,7 @@ export default function (pi: ExtensionAPI) {
 		const request = `<transcript>\n${transcript}\n</transcript>\n\nReply with only the session title for the transcript above: 3 to 7 words, maximum 50 characters, sentence case, no quotes.`;
 
 		try {
-			const response = await complete(
+			const response = await ctx.modelRegistry.complete(
 				model,
 				{
 					systemPrompt: SUMMARY_SYSTEM_PROMPT,
@@ -187,9 +176,6 @@ export default function (pi: ExtensionAPI) {
 					],
 				},
 				{
-					apiKey: auth.apiKey,
-					headers: auth.headers,
-					env: auth.env,
 					cacheRetention: "none",
 					signal: AbortSignal.timeout(SUMMARY_TIMEOUT_MS),
 					// Room for a thinking model's reasoning preamble plus the one-line title.
