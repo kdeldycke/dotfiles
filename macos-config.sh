@@ -783,22 +783,24 @@ sudo defaults write /Library/Preferences/com.apple.timezone.auto.plist Active -b
 # belongs in this repo instead of the reverse-engineered plists below:
 #   https://github.com/AprilNEA/OpenLogi
 #
-# Blocked on three upstream gaps, as of 2026-08-11. Re-evaluate when they close:
-#   - Device not detected at all, this exact model on Unifying:
-#     https://github.com/AprilNEA/OpenLogi/issues/367
-#   - Wheel tilt left/right (CIDs 0x5b/0x5d) not bindable, so both Desktop
-#     switches have nowhere to go. Two competing open PRs, one diverting at the
-#     HID++ layer (verified on an MX Ergo), one hooking horizontal scroll:
-#     https://github.com/AprilNEA/OpenLogi/pull/357
-#     https://github.com/AprilNEA/OpenLogi/pull/359
+# Blocked on two upstream gaps, as of 2026-09-28 against `v0.8.9`. Re-evaluate
+# when they close:
 #   - No Smart zoom action, and no keystroke can stand in for it, so page-up
-#     has no equivalent. Request closed as duplicate, folded into a zoom
-#     gesture feature:
-#     https://github.com/AprilNEA/OpenLogi/issues/428
-#     https://github.com/AprilNEA/OpenLogi/issues/360
+#     has no equivalent. `SmartZoom` is only an HID++ task ID (0x9F) in
+#     `crates/openlogi-hidpp/src/feature/reprog_controls/task_ids.rs`, with no
+#     entry in `binding/action.rs`. Four competing open PRs, one binding the
+#     button to a native macOS gesture, three adding thumb-wheel zoom:
+#     https://github.com/AprilNEA/OpenLogi/pull/1119
+#     https://github.com/AprilNEA/OpenLogi/pull/1354
+#     https://github.com/AprilNEA/OpenLogi/pull/1546
+#     https://github.com/AprilNEA/OpenLogi/pull/1590
+#   - Device not detected, this exact model on Unifying. `LogiMgrDaemon` holds
+#     the HID++ channel, so the gap stays unverifiable until Logi Options goes:
+#     https://github.com/AprilNEA/OpenLogi/issues/367
 #
-# The other four assignments map cleanly today: wheel click to MissionControl,
-# and the two keystroke buttons to CustomShortcut entries.
+# The other five assignments map today: wheel click to MissionControl, wheel
+# tilt left/right to PreviousDesktop/NextDesktop, and the two keystroke buttons
+# to CustomShortcut entries.
 #
 # Two domains are in play. `ffff` is app-global: mouse feel, update and
 # telemetry behaviour, and no button assignments at all. The button map lives
