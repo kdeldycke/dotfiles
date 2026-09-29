@@ -25,7 +25,6 @@
     "./dotfiles/.agents/skills/fill-web-form",
     "./dotfiles/.agents/skills/pr-triage",
     "./dotfiles/.agents/skills/rename-with-dates",
-    "./dotfiles/.agents/skills/semantic-compression",
     "./dotfiles/.agents/skills/session-title",
     "./dotfiles/.agents/skills/wrapup-session"
   ],
