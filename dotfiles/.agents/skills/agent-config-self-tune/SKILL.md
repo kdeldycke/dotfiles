@@ -167,3 +167,4 @@ For every proposed removal, state what the entry prevents and why removing it is
 - Measure size in tokens, never words or line counts, before flagging a file as bloated or a change as worthwhile.
 - Skip marginal changes: a fix that saves nothing the user would notice is churn, not tuning.
 - A copy that a sync writes, like a bundled skill deployed from its upstream, is fixed at its source. Byte-identical copies get one verdict.
+- Run the Markdown formatter of the repository, in write mode, on each Markdown file the pass wrote, then read `git diff`. The formatter removes the padding inside a code span and pads each table again: never align a table by hand, and say such padding in words.
