@@ -192,7 +192,7 @@ Add each in the Claude Desktop app under **Settings** → **Customize** → **Pl
 
 ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/claude-skills-by-plugin.png)
 
-This repository's own plugin declares its seven skills by path, and its root is the repository itself, so an install carries every other file here too: 122 of them, assets and workflows included. Scoping that payload would mean moving the plugin root down to `dotfiles/.agents`, where `skills/` sits at the location the spec scans and all 26 skills would likely be discovered, including the repomatic ones this catalog must not republish. The wasted files are the cheaper of the two.
+This repository's own plugin declares its seven skills by path, and its root is the repository itself, so an install carries every other file here too: more than 100 of them, assets and workflows included. Scoping that payload would mean moving the plugin root down to `dotfiles/.agents`, where `skills/` sits at the location the spec scans and all 26 skills would likely be discovered, including the repomatic ones this catalog must not republish. The wasted files are the cheaper of the two.
 
 Adding a public catalog and installing from it needs no GitHub App. Keeping it current on every push does, and that app grants read and write on code, workflows, issues and pull requests, so it is worth a thought before installing. Without it a plugin still updates on request, and the app polls every 20 minutes anyway.
 
