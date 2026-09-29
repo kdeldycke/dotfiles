@@ -94,6 +94,11 @@
     ],
     "defaultMode": "auto"
   },
+  "skillOverrides": {
+    "built-in-browser": "off",
+    "chrome-browser": "off",
+    "computer-use": "off"
+  },
   "hooks": {
     "PostToolUse": [
       {
@@ -206,14 +211,15 @@
   },
   "alwaysThinkingEnabled": true,
   "effortLevel": "high",
+  "modelSettings": {
+    "claude-opus-5": {
+      "effortLevel": "medium"
+    }
+  },
   "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
   "skipWorkflowUsageWarning": true,
   "agentPushNotifEnabled": true,
   "skipAutoPermissionPrompt": true,
-  "skillOverrides": {
-    "built-in-browser": "off",
-    "chrome-browser": "off",
-    "computer-use": "off"
-  }
+  "model": "claude-fable-5-1"
 }
