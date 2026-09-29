@@ -33,26 +33,28 @@ Collect what this session leaves behind:
 
 A candidate lesson is a correction the user gave, a surprise that cost time, or a rule stated nowhere. Skip anything the code, git history, or existing docs already record.
 
-Route each keeper to its one home:
+Route each keeper to the narrowest home that owns it. The global instructions file loads into every session of every project, so it is the last resort, not the default:
 
-- A cross-project habit or correction: the global agent instructions file (the `CLAUDE.md` or `AGENTS.md` loaded from the home directory). Resolve symlinks and edit the target file inside its repository, never through the `$HOME` path: a replace-then-rename write forks the symlink.
-- A rule specific to this project: the project's own `CLAUDE.md` or `AGENTS.md`.
-- A repeatable procedure: a new or updated skill. This wrap-up skill is itself a valid target: an improvement here compounds across every later session.
-- A fact about this machine or the user: persistent memory, when the harness provides one.
+- A rule specific to one project: the project's own `CLAUDE.md` or `AGENTS.md`. A lesson about maintaining a tool belongs to that tool's repository, even when the session ran elsewhere.
+- A step of a repeatable procedure: the skill that performs it, new or updated. This wrap-up skill is itself a valid target: an improvement here compounds across every later session.
 - A decision tied to one spot in the code: a comment or docstring at that spot.
+- A fact about this machine or the user: persistent memory, when the harness provides one.
 - A rule a machine can check: propose a test or lint. Mechanical enforcement beats prose.
+- A habit or correction that holds across projects and tools: the global agent instructions file (the `CLAUDE.md` or `AGENTS.md` loaded from the home directory). Resolve symlinks and edit the target file inside its repository, never through the `$HOME` path: a replace-then-rename write forks the symlink.
 
 Guards:
 
 - An empty result is the normal outcome. Most sessions teach nothing new: report "nothing to persist" and never invent a lesson to fill the section.
 - Read the target file first and dedupe: update an existing rule in place instead of appending a near-duplicate.
+- Write a lesson for the global file as its rule and its fix, in two sentences at most. Leave the story out: no dates, durations, counts or account of what happened, and a version stamp only on a claim about the harness itself. Keep an exact error string when it is how the situation announces itself.
+- Measure the global file before and after the pass (`wc -c`): each lesson adds about 400 characters at most. More means a story stayed in or a narrower home was skipped, so cut until it fits. When the harness warns that the instruction files exceed its size limit, remove at least as much as the pass adds.
 - Apply small, safe edits directly, in the working tree only. Anything larger becomes a one-line proposal, reported as a `Review:` item in the closing report (§ 4).
 
 ## 4. Closing report
 
 End with two short lists, a few words per item: **Done** first, then **Left to do**. Write "none" where a list is empty. Keep the whole report under about 15 lines.
 
-**Done** holds what this session finished: lessons persisted and where, plus any tree work completed this turn. A lesson deliberately capped at a suggestion is not done: it moves to **Left to do** as a `Review:` item instead, so every decision the user owes lives in one list. A lesson examined and skipped because the code, history, or docs already record it appears here as one line: `Skipped: …`, naming where it already lives. The report is exactly these two lists and nothing else.
+**Done** holds what this session finished: lessons persisted and where (with the global file's size before and after, when the pass touched it), plus any tree work completed this turn. A lesson deliberately capped at a suggestion is not done: it moves to **Left to do** as a `Review:` item instead, so every decision the user owes lives in one list. A lesson examined and skipped because the code, history, or docs already record it appears here as one line: `Skipped: …`, naming where it already lives. The report is exactly these two lists and nothing else.
 
 **Left to do** holds every remaining action. Order it so it can be executed top to bottom: create-and-fix work first, then documentation, then `Commit:`, then `Push:`/`Report:`. Name each item's target in full: the path, the SHA, the checkout, the upstream project. Prefix each item with an action label naming the verb it needs, so the list is scannable at a glance. Pick the narrowest label that fits:
 
