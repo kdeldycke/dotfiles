@@ -169,9 +169,14 @@ $($FIND_CLI 'dotfiles/Library/Application Support' -depth 1 -not -name '\.DS_Sto
     # source: ~/.claude/CLAUDE.md (pointing at .agents/AGENTS.md, a rename) and
     # ~/.claude/skills (a second link to .agents/skills, already linked into
     # ~/.agents/skills below).
+    #
+    # .pi/agent/APPEND_SYSTEM.md is a link inside this repository, to
+    # .claude/tropes.md. pi expands no "@" import in AGENTS.md, so the tropes
+    # reach it as an appended system prompt instead.
     DOT_FILES+="
 dotfiles/Library/Application Support/Code/User/settings.json
 dotfiles/Library/LaunchAgents/com.kdeldycke.clamdscan.plist
+dotfiles/.pi/agent/APPEND_SYSTEM.md
 dotfiles/.pi/agent/models.json
 dotfiles/.pi/agent/settings.json
 dotfiles/.pi/agent/extensions
