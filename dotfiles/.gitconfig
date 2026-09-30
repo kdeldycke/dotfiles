@@ -141,3 +141,14 @@
 [url "git@gist.github.com:"]
     insteadOf = "gst:"
     insteadOf = "gist:"
+
+[credential "https://github.com"]
+    # Drop Homebrew's osxkeychain helper and use gh's token. gh reads it through
+    # Apple's /usr/bin/security, so a git upgrade does not trigger a keychain prompt.
+    # Absolute path: GUI apps like Fork run git without Homebrew on PATH.
+    helper =
+    helper = !/opt/homebrew/bin/gh auth git-credential
+
+[credential "https://gist.github.com"]
+    helper =
+    helper = !/opt/homebrew/bin/gh auth git-credential
