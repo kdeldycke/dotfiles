@@ -13,7 +13,9 @@ Keep re-runs incremental: record the last-scanned `mtime` and size per session f
 
 pi prompts interactively and keeps no allow/deny rules, so denial mining applies to Claude Code sessions only. Search transcripts for these markers in `message.content[*].content` and `toolUseResult` fields:
 
-- `Permission to use <Tool> with command <X> has been denied.`: user pressed "deny" on a permission prompt.
+- `Permission to use <Tool> with command <X> has been denied.`: a `deny` rule matched the call.
+- `Permission for this action was denied by the Claude Code auto mode classifier. Reason: <reason>`: the auto-mode classifier refused the call.
+- `The user doesn't want to proceed with this tool use`: the user rejected a permission prompt.
 - `requires approval`, `requires permission`: tool call paused on the allowlist gate.
 - `Operation not permitted`, `sandbox`, `dangerouslyDisableSandbox`: sandbox filesystem or network denial.
 - `EACCES`, `EPERM`: surfaced when a sandboxed command hits a denied path.
@@ -30,6 +32,10 @@ For each denial, extract:
 - The session date and project, so I can tell recurring denials apart from one-offs.
 
 Group denials by rule shape and count occurrences across sessions and projects.
+
+Count each call once. A resumed or forked session replays earlier entries into its own transcript, so key every call on its `tool_use` id across all files.
+
+A denied command can sit anywhere in a compound command: search the whole command for the denied head, not its first word alone.
 
 ## Classifying denials
 

@@ -96,6 +96,8 @@ Every other verdict waits. Present the ledger and ask the user which actions to 
 5. Do NOT modify machine-local overrides without explicit user confirmation: Claude Code `settings.local.json` files and pi project `.pi/settings.json` files may carry machine-specific state.
 6. For session-derived rules: only apply allow/deny entries the user explicitly approves from the session denials table. Never auto-approve sandbox-disabling escapes.
 
+In auto mode, the classifier can refuse an edit that widens the agent's own reach: a new `allow` rule, a removed hook, a system-prompt file (Claude Code `2.1.284`). Never route around that refusal: give the user the exact diff or command to apply.
+
 Never commit. The user commits.
 
 ## Verification

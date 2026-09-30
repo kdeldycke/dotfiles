@@ -12,6 +12,8 @@ Read every settings file of the scope. For each, check:
 - **Missing deny rules**: projects that override permissions without inheriting the global deny list.
 - **Hook inconsistencies**: hooks defined locally that duplicate or conflict with global hooks.
 - **Env var conflicts**: environment variables set locally that contradict global values.
+- **Dead sandbox paths**: probe each `denyRead`, `allowRead` and `denyWrite` entry from a sandboxed command, through the spelling in the rule and through the resolved path. `os.access()` answers without reading content. A rule that names a symlink guards the link alone, and a socket needs `allowUnixSockets`, never `allowRead`.
+- **Dead hooks**: a hook that reads an environment variable the harness never sets does nothing. Search the harness binary for the name, then look for the hook's side effect after a matching tool call.
 
 ## pi settings files (~/.pi/agent/settings.json, .pi/settings.json, trust.json)
 
