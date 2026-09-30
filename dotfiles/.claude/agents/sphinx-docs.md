@@ -585,7 +585,7 @@ User-facing pages, and when a project carries one:
 
 Agent tooling toctree, in this order. Drop the whole block when the project ships none of them. Name each page for what it is portable to: skills follow a cross-vendor specification, subagents follow the component that ships them, and only the plugin, which no vendor-neutral format covers, keeps a Claude Code name.
 
-1. `agent-skills` — Only when the project ships Agent Skills (see § Recipes › skills and subagents pages below).
+1. `agent-skills` — Only when the project ships Agent Skills (see "Skills and subagents pages" below).
 2. `subagents` — Only when the project ships subagent definitions.
 3. `claude-code-plugin` — Only when those skills and subagents are also published as an installable Claude Code plugin. Both distribution paths coexist, so the page covers the marketplace install, what the archive ships, and how to wire it into a repository.
 

@@ -130,7 +130,7 @@ Read the full `pyproject.toml`. `lint-deps` already reports the specifier style,
 Comments and changelogs can lie; the codebase is the source of truth. For each dependency with a weak or suspicious comment, verify the floor against actual usage:
 
 1. **Grep for imports.** Search the source tree for all imports from the package. List the specific APIs used (functions, classes, constants).
-2. **Determine the oldest version providing those APIs.** Check when the API was introduced — changelogs, release notes, or `pip index versions <pkg>` to see what exists on PyPI.
+2. **Determine the oldest version providing those APIs.** Check when the API was introduced — changelogs, release notes, or `pip index versions <pkg>` to see what exists on PyPI. A floor that rests on a behavior (comments kept, output formatting) needs a bisect instead, since a changelog can credit it to a later release than the one that shipped it. Run one probe per release with `uv run --no-project --exclude-newer '1 week' --with '<pkg>==<version>' python probe.py`, and compare each output byte for byte with the locked release.
 3. **Lower the floor** when it exceeds the oldest compatible version. Prefer conservative minimums (the major version that introduced the API) over aggressive ones. Update both the version specifier and the comment.
 4. **Run `uv lock`** after any floor change to verify the lock still resolves.
 
@@ -289,7 +289,7 @@ Common false-positive patterns to reject early:
 
    - A new helper that replaces hand-rolled logic.
    - A bug fix that lets us delete a workaround — search comments for the package name, `work around`, `TODO`, and version-guarded branches.
-   - A deprecation we still call, which must move to the replacement before the dependency removes it.
+   - A deprecation we still call, which must move to the replacement before the dependency removes it. The test suite's warnings summary names each deprecated call the tests reach, with its file and line.
 
 4. **Apply one dependency at a time.** Make the edits for a single package, keeping each behavior-preserving. If adopting an API needs a higher floor, raise it and rewrite the comment per [Floor bumps to adopt new APIs](#floor-bumps-to-adopt-new-apis), then run `uv lock`.
 
