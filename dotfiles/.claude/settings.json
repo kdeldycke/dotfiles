@@ -58,6 +58,7 @@
       "Bash(xxd:*)",
       "Read(//tmp/**)",
       "WebSearch",
+      "WebFetch(domain:*.blob.core.windows.net)",
       "WebFetch(domain:api.github.com)",
       "WebFetch(domain:docs.astral.sh)",
       "WebFetch(domain:docs.github.com)",
@@ -73,6 +74,13 @@
       "WebFetch(domain:peps.python.org)",
       "WebFetch(domain:pypi.org)",
       "WebFetch(domain:raw.githubusercontent.com)"
+    ],
+    "ask": [
+      "Bash(gh issue comment *)",
+      "Bash(gh issue create *)",
+      "Bash(gh pr comment *)",
+      "Bash(gh pr create *)",
+      "Bash(gh pr review *)"
     ],
     "deny": [
       "Bash(rm *)",
@@ -100,17 +108,6 @@
     "computer-use": "off"
   },
   "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Edit|Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "case \"$CLAUDE_FILE_PATH\" in *.py) python3 -m py_compile \"$CLAUDE_FILE_PATH\" 2>&1 || true ;; esac"
-          }
-        ]
-      }
-    ],
     "SessionEnd": [
       {
         "hooks": [
@@ -169,6 +166,7 @@
       }
     }
   },
+  "syncClaudeAiPlugins": false,
   "outputStyle": "Terse",
   "sandbox": {
     "enabled": true,
@@ -200,6 +198,9 @@
         "~/Library/Caches/mdedup",
         "~/Library/Caches/repomatic",
         "~/Library/Logs/pipx"
+      ],
+      "denyWrite": [
+        "~/code/dotfiles/dotfiles"
       ],
       "denyRead": [
         "~/.ssh"
