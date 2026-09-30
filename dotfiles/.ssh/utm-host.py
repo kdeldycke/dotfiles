@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 """Resolve a UTM virtual machine to its current IP address, by MAC address.
 
 A UTM guest takes its address from DHCP, whether it sits on the host's shared
@@ -9,6 +9,11 @@ address.
 
 That indirection keeps addresses out of `~/.ssh/config`, which is a public
 file. It also survives a move to a different network.
+
+The script runs under Apple's own `/usr/bin/python3`, and stays compatible with
+its Python 3.9. Under a Homebrew or uv Python 3.14, every `arp -an` the script
+spawns printed no entry at all on macOS 27.0.1, so every lookup failed with "no
+address", while the same command answered with the whole table under Apple's.
 
 Usage:
     utm-host.py list                     Show every virtual machine and address.
@@ -139,7 +144,9 @@ def local_networks() -> list[ipaddress.IPv4Network]:
     ):
         if address.startswith(UNSWEEPABLE_PREFIXES):
             continue
-        prefix = max(int(netmask, 16).bit_count(), WIDEST_SWEEPABLE_PREFIX)
+        # Count the set bits through `bin()`: `int.bit_count()` needs Python 3.10.
+        bits = bin(int(netmask, 16)).count("1")  # noqa: FURB161
+        prefix = max(bits, WIDEST_SWEEPABLE_PREFIX)
         network = ipaddress.IPv4Network(f"{address}/{prefix}", strict=False)
         if network not in networks:
             networks.append(network)
