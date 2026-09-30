@@ -125,7 +125,7 @@ while true; do sleep 60; sudo --non-interactive true; kill -0 "$$" || exit; done
 # Symlink dotfiles in user's home.
 stage_links() {
     # Collect all entries within the "dotfiles" sub-folder, but the "Library",
-    # ".config", ".pi", ".claude", ".agents" and ".gnupg".
+    # ".config", ".pi", ".claude", ".agents", ".gnupg" and ".ssh".
     #
     # ".claude" and ".agents" are excluded for the same reason as LaunchAgents
     # below: ~/.claude is a real directory Claude Code writes its own runtime
@@ -133,14 +133,15 @@ stage_links() {
     # folder would move all of that aside into a backup and drop the live state
     # inside this git repository, so its contents are linked entry by entry.
     #
-    # ".gnupg" is excluded for the same reason, and the stakes are higher: gpg
-    # writes private keys into ~/.gnupg/private-keys-v1.d and opens its agent
-    # sockets there. Linking the folder puts secret key material inside this
-    # git working tree, where only the "*.key" ignore rule stands between it
-    # and a commit. An earlier revision did link it, which is why untracked
-    # 2022 keys and stale sockets still sit in dotfiles/.gnupg. Only the two
-    # config files are linked, by name, below.
-    DOT_FILES=$($FIND_CLI dotfiles -depth 1 -not -name '\.DS_Store' -not -name 'Library' -not -name '.config' -not -name '.pi' -not -name '.claude' -not -name '.agents' -not -name '.gnupg')
+    # ".gnupg" and ".ssh" are excluded for the same reason, and the stakes are
+    # higher: both hold private keys. gpg writes its keys into
+    # ~/.gnupg/private-keys-v1.d and opens its agent sockets there, and ssh
+    # keeps its id_* keys, known_hosts files and agent sockets in ~/.ssh.
+    # Linking either folder puts that material inside this git working tree,
+    # where only ignore rules keep it out of a commit, and where an agent
+    # sandbox that opens ~/code can read and overwrite it. Only their tracked
+    # files are linked, by name, below.
+    DOT_FILES=$($FIND_CLI dotfiles -depth 1 -not -name '\.DS_Store' -not -name 'Library' -not -name '.config' -not -name '.pi' -not -name '.claude' -not -name '.agents' -not -name '.gnupg' -not -name '.ssh')
     # Collect all ".config" content .
     DOT_FILES+="
 $($FIND_CLI dotfiles/.config -depth 1 -not -name '\.DS_Store')"
@@ -159,7 +160,7 @@ $($FIND_CLI dotfiles/Library/Preferences -depth 1 -not -name '\.DS_Store')"
     # Collect all "Application Support" subfolders but "Code" folder.
     DOT_FILES+="
 $($FIND_CLI 'dotfiles/Library/Application Support' -depth 1 -not -name '\.DS_Store' -not -name 'Code')"
-    # Manually add Code, Pi, LaunchAgents and agent-tooling files.
+    # Manually add Code, Pi, LaunchAgents, agent-tooling, GnuPG and SSH files.
     #
     # The ".claude" and ".agents" entries are what keeps ~/.claude a real
     # directory: each lands beside the state Claude Code owns instead of
@@ -181,7 +182,11 @@ dotfiles/.claude/output-styles
 dotfiles/.claude/settings.json
 dotfiles/.claude/tropes.md
 dotfiles/.gnupg/dirmngr.conf
-dotfiles/.gnupg/gpg-agent.conf"
+dotfiles/.gnupg/gpg-agent.conf
+dotfiles/.ssh/allowed_signers
+dotfiles/.ssh/config
+dotfiles/.ssh/ssh-keygen-secretive
+dotfiles/.ssh/utm-host.py"
 
     echo "Collected dotfiles:"
     echo "${DOT_FILES}" | sort
@@ -191,6 +196,14 @@ dotfiles/.gnupg/gpg-agent.conf"
         LINK="${HOME}/${FILEPATH#*/}"
         CURRENT_LINK="$(readlink "${LINK}" || true)"
         if [[ "${CURRENT_LINK}" != "${DESTINATION}" ]]; then
+            # When the parent folder links into this repository, ${LINK} is
+            # the source file itself: the backup below would move it aside and
+            # ln would link it onto itself. Stop instead of converting the
+            # folder here, since it can hold private keys to move by hand.
+            if [[ "${LINK:h:A}" == "${DESTINATION:h:A}" ]]; then
+                echo "${LINK:h} links into this repository: replace it with a real directory holding its untracked files, then re-run." >&2
+                exit 1
+            fi
             # Something (a link, a file, a directory...) already exists. Back it up.
             if [[ -e "${LINK}" ]]; then
                 EXT=".dotfiles.bak"
@@ -218,11 +231,12 @@ dotfiles/.gnupg/gpg-agent.conf"
         fi
     done
 
-    # On a machine with no ~/.gnupg yet, the loop above creates it with the
-    # default umask while linking the two config files into it. gpg then warns
-    # on every run that the home directory is readable by others, so tighten it
-    # here rather than leaving each new machine to be fixed by hand.
-    chmod 700 "${HOME}/.gnupg"
+    # On a machine with no ~/.gnupg or ~/.ssh yet, the loop above creates them
+    # with the default umask while linking files into them. gpg then
+    # warns on every run that its home directory is readable by others, and
+    # both hold private keys, so tighten them here rather than leaving each new
+    # machine to be fixed by hand.
+    chmod 700 "${HOME}/.gnupg" "${HOME}/.ssh"
 }
 
 

@@ -181,6 +181,9 @@
         "*.pypi.org",
         "files.pythonhosted.org",
         "*.blob.core.windows.net"
+      ],
+      "allowUnixSockets": [
+        "~/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh"
       ]
     },
     "filesystem": {
@@ -202,6 +205,7 @@
         "~/.ssh"
       ],
       "allowRead": [
+        "~/.ssh/allowed_signers",
         "~/.ssh/id_ed25519.pub",
         "~/.ssh/ssh-keygen-secretive",
         "~/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh"
