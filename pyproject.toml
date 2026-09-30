@@ -187,7 +187,7 @@ exclude = [
 ]
 
 [tool.typos]
-# Correct capitalization for proper nouns referenced in claude.md, plus "PATCHed"
+# Correct capitalization for proper nouns, plus "PATCHed"
 # and "PNGs": typos cuts an all-caps run before its trailing lowercase letters,
 # so "PNGs" is checked as "PN" + "Gs" and rewritten to "ONGs", and "PATCHed" as
 # "PATC" + "Hed" and rewritten to "PATCHead". Only an identifier accept

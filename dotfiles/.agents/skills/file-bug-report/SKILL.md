@@ -157,6 +157,8 @@ Search with multiple keyword variations (error messages, function names, symptom
 
 If a matching open issue exists, report it to the user and stop. If a matching closed issue exists, mention it in the report with a link and explain why this is a new occurrence (different version, different context, regression).
 
+A matching issue closed for lack of a reproducer is not a dead end: cite it, because that closure is part of the record, and supply what it lacked.
+
 ### 3. Gather evidence
 
 Collect the actual error output, environment details, and reproduction steps from the current conversation context, CI logs, or local files. Always include:
@@ -177,6 +179,29 @@ Maintainers can diagnose faster when they can see the original context themselve
 - **PR or commit diffs**: if the bug surfaced after a specific change, link to the PR's file diff (e.g., `https://github.com/owner/repo/pull/123/changes#diff-<hash>`) or the commit, not just the PR landing page. The reader should see the relevant change immediately on click.
 
 Ask yourself: "Can the maintainer click a link and immediately see what I'm describing?" If yes, include the link. If the context is private, quote the relevant snippet inline instead.
+
+#### Observations, not conclusions
+
+The maintainer of the code is the authority on it. Hand over observations they can verify in one click, and leave the diagnosis to them:
+
+- **Link every factual claim to the exact line that proves it.** A claim drawn from a CI log links the log line (see § GitHub Actions log anchors below); a claim that exists only in an uploaded artifact links the artifact, since no log line proves it.
+- **Check a claim about the upstream tool against its source or manual before writing it.** Memory is not a source. Where a code comment in the tool says it better, quote the comment verbatim and link it.
+- **Date a behavior by the commit that added it, not by the release note that announced it.** Release notes list what is worth reading about now, not what shipped now: `git tag --contains {sha} | sort -V | head -1` names the first release that carried the commit.
+- **Report what varied, where, and the link to it, then stop.** Leave the diagnosis, its implications for CI or users, and the next step to the maintainer, who reaches them faster from the facts than from a summary of them.
+- **Give every failing reproducer a passing control beside it.** Without a near-identical case that passes, red cannot be told apart from a broken harness, a missing dependency or a mistake in the reproducer. Assert the control too, and have the job report the test as void when the control breaks.
+- **Freeze the reproducer's vocabulary once the prose quotes it.** Renaming a log line, an artifact or a path that the report quotes forces a rerun, then a repoint of every link and quoted phrase.
+- **Re-read the draft before handing anyone steps to reproduce.** Give only the steps the draft records as reproducible, and flag a symptom seen only once as a one-off.
+
+#### GitHub Actions log anchors
+
+A `…/actions/runs/{run}/job/{job}#step:{N}:{line}` link follows non-obvious numbering, verified against live runs:
+
+- **Fetch the raw log** with `gh api repos/{owner}/{repo}/actions/jobs/{id}/logs --allow-escape-sequences`. Without the flag, `gh` refuses the escape sequences and writes an empty file. The job's numeric ID is `id` in `gh api repos/{owner}/{repo}/actions/runs/{run}/jobs`, and `databaseId` in `gh run view {run} --json jobs`, which has no `id` field: reading `.id` there returns `null`.
+- **The step number counts "Set up job" as 1**, so a workflow's sixth step is `step:7`.
+- **Read that number from the API, never by counting log sections.** The raw log omits a skipped step while the fragment still counts it, so one `if:`-guarded step shifts every anchor below it by one, and only on the runs where it was skipped. `gh api repos/{owner}/{repo}/actions/jobs/{id}` returns `steps[].number` and `steps[].conclusion`: line the non-skipped steps up against the log's `##[group]Run ` markers in order, then take the number off the step. Its `name` is also the cheapest check that an anchor landed where intended.
+- **The line number starts at the step's `##[group]Run …` marker**, which is line 1, and includes the echoed script plus the `shell:`/`env:` preamble before any output.
+- **Strip the leading timestamp** (`^\S+Z `) from each raw line before counting or matching.
+- **Anchors rot on every rerun.** Any change in a job's output shifts every line below it, and a tool printing one extra banner line moves anchors nobody touched. After a rerun, repoint every anchor programmatically and re-resolve each one against the new logs to confirm it still lands on the intended line; never trust the arithmetic.
 
 ### 4. Select the right template
 
@@ -227,6 +252,7 @@ What happens instead, with exact error output in code blocks.
 - Use first-person singular ("I", "my") per user conventions.
 - Include exact error messages in code blocks, not paraphrases.
 - If multiple distinct failures exist, group them under numbered sub-sections but keep them in one report if they share a root cause. File separate issues if root causes differ.
+- File a second finding as its own issue, cross-referenced, never by broadening the first one's title. The title must still name the fix that closes it.
 - Keep reproduction steps minimal: strip everything not needed to trigger the bug.
 - Link to CI runs or logs when available.
 - Do not speculate about fixes unless the root cause is clear from the evidence.

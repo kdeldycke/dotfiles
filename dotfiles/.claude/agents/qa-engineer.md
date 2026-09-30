@@ -42,6 +42,7 @@ Question overly verbose prose in `CLAUDE.md` and `.claude/agents/*.md`:
 - Redundant examples or restated rules — cut them
 - **Discoverable content** — cut it. Structural inventories, code examples copied from source files, and general programming knowledge do not belong in `CLAUDE.md`.
 - **Misplaced knowledge** — move it to the audience that owns it. Lengthy "why" explanations in YAML workflows belong in Python docstrings; YAML gets a brief "what" + pointer. End-user setup details belong in `setup-guide.md`, not `readme.md`.
+- **Code-anchored rules** — move them beside the code. A rule in `CLAUDE.md` whose subject is one function, test, workflow, setting or page belongs in that docstring or comment, where it cannot drift unseen. Compare the two first: delete the rule when the code already states it, and read the code when they disagree. `CLAUDE.md` keeps a one-line pointer.
 
 Prefer mechanical enforcement over prose. If a rule can be a test, autofix job, or lint check — implement it instead of writing it down.
 

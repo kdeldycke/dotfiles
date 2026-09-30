@@ -267,6 +267,7 @@ Cross-references that survive renames:
 
 - Always cross-reference external projects through `intersphinx_mapping` and a `{role}` ref, not a bare URL. A renamed function in click-extra surfaces as a Sphinx build error; a bare URL silently 404s in the rendered HTML.
 - For headings, prefer the auto-generated docutils anchor (e.g., `### option.name` → `option-name`). Add an explicit `(my-anchor)=` only when the natural anchor isn't unique or the target isn't a heading.
+- **Qualify a reference that sits in a base-class docstring.** autodoc repeats the docstring of a base-class attribute on each subclass that overrides the attribute. A short `` {attr}`name` `` then resolves against the subclass, and fails for a member the subclass does not define itself. Write the full dotted target.
 
 ## Inline syntax highlighting in prose
 
@@ -590,7 +591,7 @@ Agent tooling toctree, in this order. Drop the whole block when the project ship
 
 Maintainer-facing pages, and when a project carries one:
 
-01. `contributing` — Setup, dev loop, code-style pointers (or `{include} ../contributing.md` if the root file already exists).
+01. `contributing` — Setup, dev loop, code-style pointers (or `{include} ../contributing.md` if the root file already exists). The one home of developer setup: `readme.md` and `claude.md` link to it.
 02. `commit-messages` — Only when automation reads or writes the project's commit subjects, which makes the subject a shared namespace rather than free text: the reserved-prefix rules, who else parses a message, and how to write a subject and body.
 03. `upstream-development` — Project-internal release process. Mark `(upstream maintainers only)` in the page heading so readers know this is not for consumers.
 04. `operation-contracts` — Optional, for projects with formal automated-operation contracts.
@@ -762,6 +763,8 @@ Default-pruning rule:
 - If you keep a setting that *looks* default for documentation purposes, add a one-line comment explaining why ("explicit so future readers see we considered it").
 - On every Sphinx or extension upgrade, run `sphinx-build -W -b html docs docs/_build/html`. Treat every `RemovedInSphinxX.YWarning`, `DeprecationWarning`, and `application.ExtensionError` as cleanup work, not noise. Fix them in the same PR as the upgrade.
 - **Match the deployed builder, which is not always `html`.** `[tool.repomatic] sphinx.builder` is what the Docs workflow passes to `sphinx-build -b`, and a project serving extension-less URLs sets it to `dirhtml` (`page/index.html` instead of `page.html`). Read it before assuming a local `-b html` reproduces CI. The builder is chosen on the command line, so it is the one Sphinx setting `conf.py` cannot carry: never "fix" its absence there.
+- **A warning count only covers the pages that build re-read.** Sphinx reuses cached doctrees, so an incremental rebuild reports the warnings of the changed pages alone, and reading that number against a cold build's count shows a drop nothing caused. A `conf.py` edit invalidates the whole cache, which is why the build right after one reports many more. Build into a clean `_build/` before comparing two counts.
+- **Compare two builds only when both hold the same dependency groups.** autodoc imports each module it documents. A build that lacks one group fails those imports, like the test group for a `tests` API page, and each reference into such a module then reports as unresolved. Build the baseline from an export of `HEAD` and the candidate from the working tree, both with `uv run --isolated --frozen --all-extras --all-groups`: neither touches the shared virtual environment.
 - Periodically diff against a fresh `sphinx-quickstart` output in a tmpdir to spot defaults that have shifted under you.
 - Drop conditional import shims once the project's minimum Python no longer needs them. The `try: import tomllib / except: import tomli` pattern is dead code on `requires-python = ">=3.11"`. Same for any `if sys.version_info < (3, X):` branch where `X` is now below the floor. The deps group should lose the corresponding fallback dependency in the same PR.
 - Always pass `encoding="utf-8"` to `Path.read_text()` calls in `conf.py`. Bare `read_text()` picks up the locale, which on minimal CI runners has bitten many projects.
@@ -856,7 +859,7 @@ When you receive a new "rule" about how to write or maintain docs, ask where it 
 - A pattern only the upstream package itself uses (e.g., `docs/docs_update.py` internals, release-only artifacts) → `docs/upstream-development.md`.
 - A pattern downstream Sphinx repos benefit from → this agent definition.
 
-Don't restate `claude.md` rules here. Reference the section instead.
+State a rule that belongs here inline, never as a pointer to a `claude.md` section. This file ships to repositories that do not receive repomatic's `claude.md`.
 
 When a user-driven instruction explicitly conflicts with a `claude.md` or global tropes rule (e.g., the install.md compatibility-matrix range labels use a `→` arrow, which conflicts with the global `Unicode Decoration` anti-pattern), the explicit instruction takes precedence. Note the conflict in your reply so the user can confirm or override, but apply the instruction.
 
@@ -881,7 +884,7 @@ Watch for these every pass:
 - A `{toctree}` that outgrew the ~12-entry threshold and is still flat, or a captioned section left holding a single entry after pages moved around it. See § Grouping pages into sidebar sections.
 - An `automodule` block on a narrative page, repeating what the module's own API page already documents. Every such pair costs a duplicate object description per member and buries the guide's message; see § Guide pages carry the prose, API pages carry the API.
 - Stale `.rst` files in `docs/` left over from package renames or earlier `sphinx-apidoc` runs that reference modules or packages no longer in the source tree. They build silently (autodoc skips missing modules with a warning, not an error) but pollute search results and the modindex. Sweep with `git status` after `update-docs`; delete orphans in the same PR.
-- A `## Development` section in `readme.md` that should have been removed when the project added a `claude.md`. Once `claude.md` exists, the developer-facing setup goes there; keeping a duplicated section in the readme creates two places to update.
+- Developer setup held in `readme.md` (a `## Development` section) or in `claude.md`. Setup, dev loop and test commands belong on the `contributing` page of the roster, where a contributor looks for them. `claude.md` loads into every agent session, so it keeps conventions and links to that page. A second copy creates two places to update.
 - A `dependencies.md` page whose embedded Mermaid graph hasn't been regenerated since the last `uv lock` change. The graph stays in sync only if `repomatic update-dep-graph` is wired into a workflow job; manual regeneration drifts. Upstream that job lives in `_release-engine.yaml` and fires on release commits only, so a graph lagging `pyproject.toml` mid-cycle is expected rather than drift.
 - `pyproject.toml` declaring a docs dependency that's no longer imported by `conf.py` (or vice-versa: importing one not declared). The mismatch passes Sphinx but trips a fresh `uv sync --group docs` run on a CI runner.
 - `click_extra.sphinx.myst_docstrings` listed in `extensions` without `click-extra[sphinx]` declared in `[dependency-groups] docs`. Builds work on the maintainer's machine if the package is installed globally, then break in CI.
