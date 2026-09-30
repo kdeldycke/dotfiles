@@ -474,6 +474,8 @@ GitHub Actions workflows face race conditions, eventual consistency, and partial
 
 **Advisory findings never fail a scheduled audit job.** A scheduled audit separates advisory findings from gating checks: opportunities and upstream changes are reported into `$GITHUB_STEP_SUMMARY` while the job stays green, and only drift against pinned or committed state fails it — a red run for an advisory finding teaches people to ignore that workflow's red runs, which then hides real failures. A batch job accumulates a per-item row in the summary and exits non-zero once at the end, rather than aborting on the first failure.
 
+**A degraded publish still ends red.** When a job drops part of its output so the rest can publish (a file over a host's size limit, a page that fails to render), publish first, then fail the job: a green run with a warning hides a dead link in production.
+
 ### Idempotency by default
 
 Workflows and CLI commands must be safe to re-run: the same command twice with the same inputs produces the same result, with no errant side effects (duplicate tags or PR comments, redundant file writes). Use `--skip-existing` or equivalent guards when creating resources; check for existing state before writing (skip an admonition already present, skip a PR that already exists for the branch); prefer upsert over create-only; make file-modifying operations convergent (re-applying is a no-op).
