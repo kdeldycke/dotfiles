@@ -1,5 +1,6 @@
 {
   "cleanupPeriodDays": 3650,
+  "syncClaudeAiPlugins": false,
   "env": {
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
     "CLAUDE_CODE_SUPPRESS_SESSION_ATTRIBUTION": "1",
@@ -75,13 +76,6 @@
       "WebFetch(domain:pypi.org)",
       "WebFetch(domain:raw.githubusercontent.com)"
     ],
-    "ask": [
-      "Bash(gh issue comment *)",
-      "Bash(gh issue create *)",
-      "Bash(gh pr comment *)",
-      "Bash(gh pr create *)",
-      "Bash(gh pr review *)"
-    ],
     "deny": [
       "Bash(rm *)",
       "Bash(sudo *)",
@@ -100,8 +94,16 @@
       "Bash(gh release delete *)",
       "Bash(cd *)"
     ],
+    "ask": [
+      "Bash(gh issue comment *)",
+      "Bash(gh issue create *)",
+      "Bash(gh pr comment *)",
+      "Bash(gh pr create *)",
+      "Bash(gh pr review *)"
+    ],
     "defaultMode": "auto"
   },
+  "model": "opus",
   "skillOverrides": {
     "built-in-browser": "off",
     "chrome-browser": "off",
@@ -166,7 +168,6 @@
       }
     }
   },
-  "syncClaudeAiPlugins": false,
   "outputStyle": "Terse",
   "sandbox": {
     "enabled": true,
@@ -225,6 +226,5 @@
   "skipDangerousModePermissionPrompt": true,
   "skipWorkflowUsageWarning": true,
   "agentPushNotifEnabled": true,
-  "skipAutoPermissionPrompt": true,
-  "model": "claude-fable-5-1"
+  "skipAutoPermissionPrompt": true
 }
