@@ -12,6 +12,21 @@
       },
       "models" : [
         {
+          "contextWindow" : 1048576,
+          "cost" : {
+            "cacheRead" : 0,
+            "cacheWrite" : 0,
+            "input" : 0,
+            "output" : 0
+          },
+          "id" : "deepseek-ai/DeepSeek-V4-Flash",
+          "input" : [
+            "text"
+          ],
+          "name" : "DeepSeek-V4-Flash",
+          "reasoning" : false
+        },
+        {
           "contextWindow" : 262144,
           "cost" : {
             "cacheRead" : 0,
@@ -24,22 +39,6 @@
             "text"
           ],
           "name" : "Qwen3-30B-A3B-Instruct-2507-4bit",
-          "reasoning" : true
-        },
-        {
-          "contextWindow" : 262144,
-          "cost" : {
-            "cacheRead" : 0,
-            "cacheWrite" : 0,
-            "input" : 0,
-            "output" : 0
-          },
-          "id" : "Qwen/Qwen3.5-9B",
-          "input" : [
-            "text",
-            "image"
-          ],
-          "name" : "Qwen3.5-9B",
           "reasoning" : true
         },
         {
