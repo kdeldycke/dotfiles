@@ -114,7 +114,7 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
 
    **Poll in-process; never detach a monitor.** Block on `gh run watch <RUN_ID>` or loop the polls within your own turn. A detached background monitor (a standalone process, a `run_in_background: true` Bash poller that re-invokes you when it exits, or a `Monitor`-tool stream that returns control on each tick) makes a parent-resumed run spawn *another* monitor per tick instead of driving to a terminal state; worse, a spawned sub-agent that detaches this way orphans the poll from its caller the moment it returns. Hold the turn until the run completes: starting a poller and handing back "to be notified" is the early return this loop must never make.
 
-   **Every wait between polls must be a `sleep`, never a busy-wait.** A poll loop with no delay (`until gh run view ...; do true; done`) fires thousands of requests per minute and exhausts the REST quota (5,000/hour) within minutes. The harness blocking a bare foreground `sleep` is not a reason to drop the delay: put the `sleep 60` *inside* the loop command itself, which runs fine in both foreground and background. Exhaustion does not just blind your own polling — workflows authenticating with the same PAT start failing server-side with misleading errors (see [§ GitHub API rate-limit exhaustion](#github-api-rate-limit-exhaustion)).
+   **Every wait between polls must be a `sleep`, never a busy-wait.** A poll loop with no delay (`until gh run view ...; do true; done`) fires thousands of requests per minute and exhausts the REST quota (5,000/hour) within minutes. The harness blocking a bare foreground `sleep` is not a reason to drop the delay: put the `sleep 60` *inside* the loop command itself, which runs fine in both foreground and background. Exhaustion does not just blind your own polling — workflows authenticating with the same PAT start failing server-side with misleading errors (see [§ GitHub API rate-limit exhaustion](references/failure-patterns.md#github-api-rate-limit-exhaustion)).
 
 4. **On any CI failure**, cancel the branch's remaining runs to free runners:
 
@@ -136,9 +136,9 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
 
    The first filter negates the unstable glyph rather than matching a `✅` prefix, mirroring `JobStatus.required`. `tests.yaml` runs four required jobs whose names carry no `✅` at all (`🧬 Project metadata`, `1️⃣ Run-once tests`, `📦 Package install`, `🖥️ Validate …`), and the release engine prefixes the workflow ahead of the glyph, so a prefix test silently drops a real failure from the batch.
 
-   Fetch each failed job's log (`gh api repos/<OWNER>/<REPO>/actions/jobs/<JOB_ID>/logs --allow-escape-sequences`) and fix them as one batch: different sources surface different issues, and logs survive cancellation. Batch only what has *already failed*, never what might still fail. Once every harvested failure is root-caused and fixed, push immediately rather than waiting for undrained cells to surface more: the fresh run supersedes the stale one, and serially waiting out each full matrix is the slow path. Analyze following the [error triage discipline](#error-triage-discipline): stable-job `FAILED`/`AssertionError` lines only.
+   Fetch each failed job's log (`gh api repos/<OWNER>/<REPO>/actions/jobs/<JOB_ID>/logs --allow-escape-sequences`) and fix them as one batch: different sources surface different issues, and logs survive cancellation. Batch only what has *already failed*, never what might still fail. Once every harvested failure is root-caused and fixed, push immediately rather than waiting for undrained cells to surface more: the fresh run supersedes the stale one, and serially waiting out each full matrix is the slow path. Analyze following the [error triage discipline](#error-triage-discipline): stable-job `FAILED`/`AssertionError` lines only. Then match each failure against `references/failure-patterns.md` before fixing anything.
 
-   `gh run view --log-failed` writes its log cache under `~/.cache/gh`, which the harness sandbox denies: the resulting `failed to get run log: creating cache entry ... operation not permitted` masquerades as a `gh` bug. Disable the sandbox for that read, exactly like the signing calls in step 7.
+   `gh run view --log-failed` writes its log cache under `~/.cache/gh`. A sandbox that denies that path answers `failed to get run log: creating cache entry ... operation not permitted`, which masquerades as a `gh` bug. Run the read in the sandbox first, and disable the sandbox for it only when that error appears.
 
    **A completed job's log is readable while the rest of the run drains, but only with `--allow-escape-sequences`.** The run-scoped reads *are* gated on the whole run going terminal (`gh run view --log-failed` answers `run <id> is still in progress; logs will be available when it is complete`), while the job-scoped `gh api repos/<OWNER>/<REPO>/actions/jobs/<JOB_ID>/logs` answers a failed cell immediately, twenty minutes into its slowest sibling's build. What makes it look otherwise is a `gh` guard rather than the API: CI logs carry ANSI colour, so `gh` refuses to emit them and prints `the response contains terminal escape sequences; pass --allow-escape-sequences to output it anyway` — one line where a log was expected, indistinguishable from an empty body if the output went to a file. Pass the flag and strip the codes:
 
@@ -149,7 +149,7 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
 
    So the diagnosis is minutes away, not an hour: harvest every failed cell as it lands and keep the run alive for the cells still to report. Cancelling to read logs is never the reason — logs survive cancellation, but they never needed it. **Make the run terminal only when you have a fix**, per the batch-and-push rule above: the stale run has no verification value left once superseded.
 
-5. **Fix the root cause** using the combined picture from CI logs and local results. Fix the codebase, not the tests, unless the tests are genuinely wrong. Address mypy and ruff failures together (see [§ mypy/ruff fix oscillation](#mypy-ruff-fix-oscillation)).
+5. **Fix the root cause** using the combined picture from CI logs and local results. Fix the codebase, not the tests, unless the tests are genuinely wrong. Address mypy and ruff failures together (see [§ mypy/ruff fix oscillation](references/failure-patterns.md#mypy-ruff-fix-oscillation)).
 
    If the root cause is in a third-party dependency, check whether a change *this cycle* exposed it before treating it as upstream: `git log <last-release-tag>..HEAD` for a runner/image swap, a dependency bump, or a config change that put the dependency in a context it cannot satisfy (a Rust-built package forced to compile from an sdist on an architecture with no published wheel, say). When a cycle change is the trigger, revert or adjust *that* change; only a failure independent of everything the cycle touched warrants `/file-bug-report` for an upstream report.
 
@@ -173,7 +173,7 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
    $ gh pr list --state=open --json number,title,headRefName,url
    ```
 
-   If any open autofix PR already contains your fix — a `format-python` branch (ruff's own autofixes), a `sync-repomatic`/`sync-workflow-pins` branch (a bumped workflow pin, or a spliced-in `--exclude-newer-package` cooldown exemption carrying no version bump at all — that one is the whole fix when the `metadata` job cannot resolve its own pin), or another `sync-*`/`fix-*` branch — prefer merging it over authoring your own commit: GitHub signs the merge commit server-side, so this sidesteps a local hardware-key signing prompt entirely. If it resolves the failure, merge it (`gh pr merge <n> --squash --delete-branch`), pull, and rebase your fix before pushing — or skip your own commit if the merge is the whole fix. If `gh pr merge` is denied outright (a standing `permissions.deny` on the verb, not a retryable prompt), see [§ PR-merge permission wall](#pr-merge-permission-wall).
+   If any open autofix PR already contains your fix — a `format-python` branch (ruff's own autofixes), a `sync-repomatic`/`sync-workflow-pins` branch (a bumped workflow pin, or a spliced-in `--exclude-newer-package repomatic=P0D` cooldown exemption carrying no version bump at all — that one is the whole fix when the `metadata` job cannot resolve its own pin), or another `sync-*`/`fix-*` branch — prefer merging it over authoring your own commit: GitHub signs the merge commit server-side, so this sidesteps a local hardware-key signing prompt entirely. If it resolves the failure, merge it (`gh pr merge <n> --squash --delete-branch`), pull, and rebase your fix before pushing — or skip your own commit if the merge is the whole fix. If `gh pr merge` is denied outright (a standing `permissions.deny` on the verb, not a retryable prompt), see [§ PR-merge permission wall](references/failure-patterns.md#pr-merge-permission-wall).
 
 7. **Commit the fix** with a clear message describing what changed and why, then `git push`.
 
@@ -181,7 +181,7 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
 
    **Time each push by what its diff rebuilds.** A source-affecting fix (`repomatic/**`, `tests/**`, `pyproject.toml`, `uv.lock`: whatever the repo's test and binary `paths:` filters name) pushes the moment it clears step 5: the runs it supersedes were verifying an obsolete tree, and its own run rebuilds everything it cancels. A commit those filters skip (changelog-only, docs-only, cosmetic prose) is the opposite case on a binaries-enabled project: `release.yaml` runs on *every* push in a per-branch cancel-in-progress group, so pushed mid-drain such a commit cancels the in-flight binary matrix while its own run skips the rebuild (`Metadata.skip_binary_build`), and the lost verification costs a full re-dispatch. That cost scales with what is actually in flight: an ordinary push builds only the `[tool.repomatic] nuitka.dev-targets` canary subset, and no push cancels a full fleet at all, since release commits, `schedule` and `workflow_dispatch` runs each sit in their own concurrency group. Hold it until the heavy matrices on the current HEAD are terminal, or bundle it into the next source-affecting push; with binaries disabled, only a canary build in flight, or nothing heavy in flight, push freely.
 
-   **If commit signing fails, do not loop on it.** The sandbox can block the SSH key or socket under `~/.ssh/*` (`Operation not permitted`): fix with `dangerouslyDisableSandbox: true` for the `git commit` and `git push` calls only. A hardware-backed key (Secretive, YubiKey, TPM) then prompts the maintainer per signature, and a refused or missed prompt surfaces as `agent refused operation?`, indistinguishable from a real failure. Retry once at most after disabling the sandbox; if it still refuses, hand off cleanly: stage the specific files you fixed (never `git add -A`), return the exact commit message and `git push` command verbatim, and exit the loop. The fix is done — only the signature is missing. If the block is instead a structural permission deny on `gh pr merge` (not a signing refusal), the escalation differs — a maintainer's in-chat approval cannot clear a deny rule: see [§ PR-merge permission wall](#pr-merge-permission-wall).
+   **If commit signing fails, do not loop on it.** The sandbox can block the SSH key or socket under `~/.ssh/*` (`Operation not permitted`): fix with `dangerouslyDisableSandbox: true` for the `git commit` and `git push` calls only. A hardware-backed key (Secretive, YubiKey, TPM) then prompts the maintainer per signature, and a refused or missed prompt surfaces as `agent refused operation?`, indistinguishable from a real failure. Retry once at most after disabling the sandbox; if it still refuses, hand off cleanly: stage the specific files you fixed (never `git add -A`), return the exact commit message and `git push` command verbatim, and exit the loop. The fix is done — only the signature is missing. If the block is instead a structural permission deny on `gh pr merge` (not a signing refusal), the escalation differs — a maintainer's in-chat approval cannot clear a deny rule: see [§ PR-merge permission wall](references/failure-patterns.md#pr-merge-permission-wall).
 
 8. **Repeat from step 2** until the monitored workflows are green: `tests.yaml` with all stable (✅) jobs passing, `lint.yaml` with no mypy failures (test and docs files included). **Stop after 5 iterations without progress** (the set of distinct failing stable jobs did not shrink): report what was fixed and what remains, and ask for guidance rather than churning. Productive iterations never trip the cap: a release paying down a long test-debt tail legitimately takes more than five pushes.
 
@@ -237,99 +237,19 @@ Read the exact error messages before forming a hypothesis. The most common diagn
 1. **Filter first.** Gating and loop cadence read stable (✅) jobs only: an unstable (⁉️) failure never blocks the loop, never sets its tempo, and never queue-jumps a stable red. When an orchestrator like `/repomatic-ship` spawned this loop for a release, ⁉️ reds are still work owed under its genuinely-green goal: once no stable red is outstanding, read their logs and fix what is repo-fixable (a crash converted to a clean availability-gated skip, a flaky live install folded into a tolerated-exit set), leaving only genuine dev-interpreter breakage unfixed and named in the final report. Human-invoked runs keep the strict filter: discard ⁉️ logs entirely unless asked.
 2. **Quote the error.** Before proposing a fix, quote the exact failing line(s) from the log. If you cannot quote a specific error, you have not diagnosed the problem.
 3. **One cause at a time.** Multiple failing jobs often share a root cause: identify the common thread before treating each job as independent.
-4. **Distinguish test failures from lint failures.** A pytest `AssertionError` and a mypy `error:` have different fixes, but always analyze mypy and ruff failures together before fixing either (see [§ mypy/ruff fix oscillation](#mypy-ruff-fix-oscillation)).
+4. **Distinguish test failures from lint failures.** A pytest `AssertionError` and a mypy `error:` have different fixes, but always analyze mypy and ruff failures together before fixing either (see [§ mypy/ruff fix oscillation](references/failure-patterns.md#mypy-ruff-fix-oscillation)).
 5. **Do not fix warnings.** Deprecation and informational messages are not failures; ignore them unless they cause a stable job to fail.
 
 ## Common failure patterns
 
-<a id="mypy-ruff-fix-oscillation"></a>
+When a job fails, read `references/failure-patterns.md` before fixing anything. It names the failures that are not code bugs, and what each one needs:
 
-### mypy/ruff fix oscillation
+- mypy/ruff fix oscillation, and the mypy scope mismatch between a local run and CI.
+- Platform-specific test skips, and cross-platform divergence.
+- Workflow and infrastructure failures, and GitHub API rate-limit exhaustion.
+- The PR-merge permission wall.
+- Nuitka binary build failures, and autofix job failures.
 
-mypy and ruff can enter a fix loop where each tool's fix breaks the other. Common triggers:
+## End-of-loop retrospective
 
-- **Unused import**: ruff removes an import (`F401`), mypy then complains about a missing name; re-adding triggers ruff again.
-- **Type annotation style**: mypy requires an explicit annotation, ruff considers it redundant or wants a different form.
-- **`noqa` vs `type: ignore`**: `# noqa` silences ruff but not mypy; `# type: ignore` silences mypy but ruff flags the unused directive.
-
-When the same lines toggle between fixes across iterations, stop and apply a combined resolution: a `# type: ignore[code]` with a matching `# noqa: XXXX` on the same line, or a restructuring that satisfies both at once.
-
-### mypy scope mismatch (local vs CI)
-
-The classic false green: mypy passes locally over a subset of directories while CI checks **every tracked Python file** (`tests/` and `docs/` included). Run it as a bare `repomatic run mypy` and the runner resolves that same list, so an error in a test or docs file surfaces before the push rather than after it. A directory list is what reintroduces the gap.
-
-### Platform-specific test skips
-
-Some tests are skipped on certain platforms (`windows-11-arm` has no Python 3.10 ARM64 build). Before investigating missing results, check the matrix `exclude` section in `tests.yaml` and the `skip_platforms` entries in the binary self-test plan (`tests/cli-test-suite.toml`): individual cases can opt out of platforms without affecting the CI matrix.
-
-### Cross-platform divergence
-
-When a test passes locally but fails in CI, check platform differences before changing logic:
-
-- **Path lengths**: `~/.config/...` is shorter on Linux than macOS/Windows equivalents, affecting text-wrapping assertions.
-- **Terminal width**: CI runners may default differently than local dev machines.
-- **Encoding**: Windows defaults to `cp1252`, not `utf-8`.
-- **Line endings**: `\r\n` vs `\n` breaks exact-match assertions.
-- **Untracked files**: tests that enumerate files (`python_files`, `doc_files` metadata) see untracked local files that CI's clean checkout lacks. When updating expected file lists, include only tracked files; run `git status` to spot the divergence.
-
-### Workflow and infrastructure failures
-
-Not all CI failures are code bugs:
-
-- **Runner timeouts or OOM kills**: the log ends abruptly or shows `The runner has received a shutdown signal`. Re-run; do not change code.
-- **A runner that died mid-step**: the step runs far past its baseline, and a cancel does not stop it. A live runner kills a cancelled step within ten seconds and keeps its partial log. A cancel does not apply to a job whose `if:` holds `always()`, so read that condition first. Any other job still `in_progress` a minute after the cancel has lost its runner: the server closes it at the five-minute [cancellation timeout](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-cancellation), and no log survives, neither at the job's log endpoint (`BlobNotFound`) nor in the run's log archive. A 404 from a job that is still running proves nothing, since every running job returns one. Re-run with `--failed`: there is nothing to diagnose.
-- **Action version mismatches**: `Unable to resolve action`, deprecated-runtime errors. Fix the workflow YAML, not the Python.
-- **Network/registry flakiness**: `uv`/`pip` timeouts, PyPI 503s, `ConnectionResetError`. Re-run.
-- **A wall-clock budget assertion** (`assert elapsed_ms < N`) failing on a shared runner: infrastructure is the *trigger*, but the defect is the test, which took one sample and so measured that runner's worst moment rather than the code. A re-run only re-rolls the dice, and the tell that it has been re-rolled before is a budget already ratcheted upward in an earlier cycle for the same runner class. Assert on the fastest of several samples instead: a real regression slows every sample, a scheduling stall slows one. Raising the budget again is the fix that stops working.
-- **Permission errors**: `Resource not accessible by integration`, 403s. Check `gh api rate_limit` first ([§ GitHub API rate-limit exhaustion](#github-api-rate-limit-exhaustion)), then token permissions; never code.
-- **A whole workflow red with nothing executed**, every job reporting failure and the `metadata` job unable to resolve its own toolkit pin: the inline `uvx 'repomatic==X.Y.Z'` command is missing `--exclude-newer-package repomatic=P0D`, so the workflow-wide `UV_EXCLUDE_NEWER` refuses a pin naming a release younger than the window, and each `needs: metadata` job dies with it. Splice the flag onto that command line — `uvx` reads no project configuration, so there is nowhere else the bypass can live — or merge the `sync-workflow-pins` PR that backfills it. `lint-repo`'s fatal `self-pin-cooldown-exemption` check names the offending files. Re-running changes nothing.
-
-For infrastructure, re-run the failed jobs (`gh run rerun <RUN_ID> --failed`) and continue polling; never modify code to work around transient infra. **A release run is the exception**: when an orchestrator like `/repomatic-ship` spawned this loop, a flake surfaced here is debt owed under that skill's genuinely-green goal, so a red whose defect lives in the repository (the wall-clock budget above, a tolerated-exit set that needs widening) gets fixed at the source instead. "Transient infra" then names the trigger, not the remedy. A red with no repo-side defect at all, like a runner OOM or a PyPI 503, is still a re-run.
-
-**`--failed` also re-runs the jobs skipped behind a failure.** Each failed or cancelled job re-runs with every job that `needs:` it, skipped ones included. So one rerun restores the whole chain: never re-run the whole workflow to reach a skipped dependent.
-
-<a id="github-api-rate-limit-exhaustion"></a>
-
-### GitHub API rate-limit exhaustion
-
-Heavy polling from this loop spends the same REST quota (5,000 requests/hour) as every workflow authenticating as the same user (`REPOMATIC_PAT`). Exhaustion produces two failure shapes that look unrelated to quotas:
-
-- Local `gh` calls fail with `HTTP 403: API rate limit exceeded`.
-- Workflows fail with *permission-shaped* errors: `lint-repo` reports the PAT lacks `Contents`/`Dependabot`/`Workflows` scopes, or a `Sync pull request` step (`repomatic pr-sync`) stalls on the GitHub API until its `timeout-minutes` or the concurrency group kills the run.
-
-Diagnose with `gh api rate_limit` **before** touching token settings: `remaining: 0` on the `core` bucket confirms it. Recovery: wait for the printed `reset` epoch, then re-run the failed workflows unchanged (`gh run rerun <RUN_ID> --failed`); they go green with no commit. While waiting, degrade to the channels that stay live: the GraphQL bucket is metered separately (`gh api graphql` for a commit's check suites, refs, and releases; `gh pr list` / `gh pr view`), and `git fetch` over SSH covers branch and commit verification.
-
-<a id="pr-merge-permission-wall"></a>
-
-### PR-merge permission wall
-
-`gh pr merge` — and other write-heavy verbs (force-push, `reset --hard`, repo or release delete) — is commonly hard-denied in the operator's own Claude Code `settings.json` as a standing guard against irreversible actions, independent of any conversation. This deny is structural, not a per-call prompt: it fires identically whether or not a maintainer just authorized the exact command in chat, because it blocks the tool call itself rather than asking. Signs you have hit it, not a normal prompt: the denial is immediate with nothing to answer, and it recurs identically after a fresh, explicit, real-time go-ahead. Do not retry it, and do not read a maintainer's chat-level "yes, merge it" as actionable — a deny rule cannot be cleared from inside the session. Report the wall once and ask the maintainer to run the merge themselves, fully outside this session (their terminal, or the GitHub web UI): that is the only path this deny shape leaves open. The same holds when a hardware-key signing refusal blocks a direct commit (step 7): with both remedies walled, the release advances only by a human acting outside the tool.
-
-### Nuitka binary build failures (release.yaml)
-
-This section only applies to projects that build binaries (`[tool.repomatic] nuitka.enabled` with a CLI entry point); on a Nuitka-disabled project the per-platform jobs skip on every push and there is no matrix to fail. When enabled, the engine runs Nuitka across a 6-way OS/arch matrix on release commits, on the weekly `schedule` and on `workflow_dispatch`, narrowing an ordinary push to the `[tool.repomatic] nuitka.dev-targets` canary subset (job names are templated per platform, like `✅ {os}, {sha} build`); catching a break while the version is still `.dev0` avoids shipping a release with missing or broken binaries, which the immutable-release wall makes unrecoverable. Triage by category:
-
-- **Infrastructure** (runner OOM, shutdown signal, macOS runner crash, registry timeout): re-run the failed job (`gh run rerun <RELEASE_RUN_ID> --failed`); binary builds are resource-heavy and macOS runners crash more than most.
-- **Nuitka configuration** (`Error, unsupported ...`, an unknown `--flag`, a missing data file): fix `[tool.nuitka]` in `pyproject.toml`, not the Python source; verify each key maps to a current Nuitka option.
-- **Real compile or runtime errors** (the binary builds but its smoke test fails, a `ModuleNotFoundError` at runtime): fix the code or the `include-package`/`include-data-files` configuration, then push and re-monitor.
-
-The matrix is slow: let `tests.yaml` and `lint.yaml` set the loop cadence, but act on a red build cell the moment it lands, like any stable failure (every faster channel has already reported by then): fix, push, supersede. Never idle out the rest of a matrix you already know is doomed.
-
-**A *cancelled* canary cell is a coverage gap, not a failure, and `--failed` closes it cheaply.** Supersession routinely kills the canary mid-build (an automation PR merges, the concurrency group cancels it), and the pushes behind it often skip the matrix outright, so the binary signal for the last code-affecting tree is simply missing with nothing in flight to supply it. Reach for `gh run rerun <cancelled-run-id> --failed` rather than `gh workflow run release.yaml`: the rerun rebuilds only the cancelled cell and its dependents, leaving every skipped job skipped, where a dispatch compiles the whole platform fleet. The precondition is that the cancelled run's binary-affecting tree still matches `HEAD`, since the rerun rebuilds that run's commit and not the current one: check with `git diff --name-only <that run's headSha>..HEAD` and confirm nothing in it touches `Metadata.binary_affecting_paths`.
-
-**On a release run, a red build cell means that version ships short, permanently.** When the run's head commit is a `[changelog] Release vX.Y.Z` push, `publish-release` sits at the end of that same run and flips the draft to published once the asset jobs settle, locking the asset list. Whatever the matrix failed to produce by then is missing from that version forever: no re-run, no later upload.
-
-**This is by design, so do not try to stop it.** Publishing a release short beats holding it, and the recovery is the next version, not a draft the maintainer has to babysit. Keep doing exactly what you do for any stable red: fix the cause, push, and let the fix ride the next release. The one addition is reporting: name the platforms that version lost, so the maintainer knows the gap exists and can note it in the release. A short ship also leaves the changelog section, the release body and `docs/install.md` still advertising binaries that are not there (the `repomatic-ship` skill's § Repairing a short ship covers the cleanup); flag it rather than fixing it silently mid-loop.
-
-### Autofix job failures (autofix.yaml)
-
-`autofix.yaml`'s jobs normally commit their fixes; a job that *crashes* turns the workflow red without producing one. Fetch the failed log (`gh run view <AUTOFIX_RUN_ID> --log-failed`) and triage:
-
-- **Tool-runner checksum mismatch** (`ValueError: SHA-256 mismatch for https://...`): the pinned binary's hash no longer matches the published artifact, usually an upstream re-publish. Regenerate with `repomatic update-checksums`, then confirm with `repomatic run <tool>`.
-- **External-tool output parse error** (a `RuntimeError`/`KeyError` in a parser, like `fix-vulnerable-deps` reading `uv audit` JSON): the tool's output schema drifted. Fix the parser and update the test fixture encoding the old shape.
-- **Dependency fails to build on the runner** (`Failed to build <pkg>`, a `maturin`/`cargo`/native-compiler error during install): usually self-inflicted, not upstream: a `runs-on` change *this cycle* moved the job to an architecture with no published wheel, forcing a doomed source build. Check `git log <last-tag>..HEAD` for the runner swap and revert it; a genuinely broken upstream artifact (failing on *every* platform) is the rarer case.
-- **Genuine content the job fixes** (real typos, an actual vulnerability): the job commits the fix and goes green on its own; nothing to do.
-
-### End-of-loop retrospective
-
-After the loop converges (or hits the iteration cap), review whether any finding is worth feeding back: a failure pattern that recurred across iterations, or a diagnosis needing non-obvious knowledge, belongs in [§ Common failure patterns](#common-failure-patterns). Propose the addition; do not push it unreviewed.
+After the loop converges (or hits the iteration cap), review whether any finding is worth feeding back: a failure pattern that recurred across iterations, or a diagnosis needing non-obvious knowledge, belongs in [`references/failure-patterns.md`](references/failure-patterns.md). Propose the addition; do not push it unreviewed.
