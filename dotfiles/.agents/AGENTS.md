@@ -544,6 +544,7 @@ Core rules:
 - **No nominalizations.** Use the verb: "decide" not "make a decision", "configure" not "perform the configuration".
 - **Short, simple noun phrases.** Break "the version of the package published to the registry" into steps or a list if it grows.
 - **Use vertical lists for procedures and multi-item rules**, one step or item per line, starting with a verb for procedures.
+- **Put form values in a table.** When the reader fills in a form, list its fields in a two-column table: one row per field, named with the form's own label.
 - **Be explicit, not clever.** Cut idioms, metaphors, humor, rhetorical flourishes and rhetorical questions. State the fact, the reason, and the action directly.
 - **Caveats are inline, not closing footers.** State a caveat where it is relevant, without preamble, and do not save it for the end of the message.
 - **Use "you" only for instructions.** Statements of fact need no actor; the "I/my" voice rule below still applies to prose written on behalf of the user.
@@ -555,6 +556,14 @@ Where STE conflicts with another rule, the other rule wins for its own concerns 
 ### Cut before rewriting
 
 A request to make text shorter or simpler asks for deletion first and paraphrase second. Cut the ideas a nearby structure already carries: a table, a linked page, a column of the same report. Then simplify what remains. A rewrite-only pass keeps every idea and changes only the words, so the text stays as long as before.
+
+### Drop statements of what is not needed
+
+Cut every sentence or clause that tells the reader what they need not do, what is not required, or what happens without them: "No other secret is needed", "No action is required", "you don't need to re-specify it", "This issue will close automatically". Keep a negative statement only when it changes what the reader does:
+
+- A warning against a wrong action: "Do not squash-merge", "Closing this pull request does not decline it".
+- The consequence of skipping a step: "Without the key, releases skip the scan".
+- In reference docs, a fact about how a mechanism works: "Cloudflare never builds the site".
 
 ## Answer shape
 
