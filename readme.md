@@ -206,6 +206,8 @@ Diagnose any of this from `~/Library/Logs/Claude/main.log`, never the dialog, wh
 
 `~/.pi/agent/settings.json` is symlinked to this repo and committed. Session logs, auth tokens and model caches stay local to the machine.
 
+pi has no permission layer, so the [`shell-deny.ts` extension](dotfiles/.pi/agent/extensions/shell-deny.ts) applies the `Bash(...)` deny rules of the Claude Code `settings.json` to pi's `bash` tool. One list then stops both agents.
+
 `/bye` (from the [`bye.ts` extension](dotfiles/.pi/agent/extensions/bye.ts)) runs the shared [`wrapup-session` skill](dotfiles/.agents/skills/wrapup-session/SKILL.md) as a final turn, then quits once it settles. A plain `/quit` or Ctrl+D prints a one-line reminder instead.
 
 ### Logi Options

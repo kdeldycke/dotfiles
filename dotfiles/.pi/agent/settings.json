@@ -6,20 +6,30 @@
   "defaultThinkingLevel": "high",
   "enableInstallTelemetry": false,
   "enableAnalytics": false,
+  "defaultTools": [
+    "+codemode"
+  ],
+  "_defaultToolsRationale": "codemode stays next to read, bash, edit and write, so scripts can run tool calls in parallel and filter large output before the model reads it. A script calls bash through ctx.executeTool(), which fires the same tool_call event as a direct call, so extensions/shell-deny.ts applies the deny rules there too: keep that extension loaded while codemode is on.",
+  "extensions": [
+    "-builtin:llama.cpp"
+  ],
+  "_extensionsRationale": "The built-in llama.cpp extension is off because no llama.cpp router runs here: the local models come from the nativ provider in models.json, on the port that extension takes for its own default.",
   "enabledModels": [
     "z-ai/glm-5.3",
     "qwen/qwen3.8-max-0902",
-    "qwen/qwen3.8-27b",
+    "openrouter/qwen/qwen3.8-27b",
     "deepseek/deepseek-v4-pro",
     "deepseek/deepseek-v4-flash",
     "anthropic/claude-sonnet-5",
+    "anthropic/claude-sonnet-5-5",
     "anthropic/claude-opus-5",
     "anthropic/claude-opus-5-5",
     "anthropic/claude-haiku-4-5",
     "anthropic/claude-fable-5-1",
     "~openai/gpt-astra-latest",
+    "~openai/gpt-sol-latest",
     "~google/gemini-pro-latest",
     "~moonshotai/kimi-latest"
   ],
-  "_enabledModelsRationale": "Of the Claude models, the scope lists only those included in this account's Claude Max subscription, reached directly through the anthropic provider (https://claude.com/pricing and https://support.claude.com/en/articles/15424964-claude-fable-models-on-your-plan, checked 2026-09-21): Sonnet 5, Opus 5 and Haiku 4.5 are standard parts of the plan; Fable 5.1 is included but draws at most 50% of the weekly limits. Opus 5.5 reached the catalog on 2026-09-22, after that check, so its plan coverage is unconfirmed: drop it from the scope if it answers that the plan does not include it. The OpenRouter-routed ~anthropic variants were removed as credit-billed duplicates of the direct models; the non-Claude OpenRouter entries stay as configured, except that OpenRouter retired the ~openai/gpt-latest alias and ~openai/gpt-astra-latest replaces it. The saved default (qwen3.8-max-0902) is inside the scope, so new sessions keep starting on it. pi appends to this list whenever a model is picked from the picker's all-scope; prune deliberately. A retired alias costs a warning, not an error: `pi --list-models` resolves this same scope and prints `Warning: No models match pattern` on stderr while still exiting 0, so run it after a catalog refresh. When every anthropic model answers 400 'out of extra usage', the five-hour session limit is spent, not the model tier."
+  "_enabledModelsRationale": "The Claude entries are the models this account's Claude Max subscription covers. They go directly through the anthropic provider and never through OpenRouter, which bills the same models to credits. Each of the six answered a one-word prompt sent with `pi --print --model anthropic/{id}` through the plan login on 2026-10-01: run the same probe before a new Claude model enters the scope, and drop a model that answers that the plan does not include it. Fable 5.1 draws at most 50% of the weekly limits (https://support.claude.com/en/articles/15424964-claude-fable-models-on-your-plan, read 2026-10-01). When every anthropic model answers 400 'out of extra usage', the five-hour session limit is spent, not the model tier. The other entries are OpenRouter models billed to credits. An entry that starts with ~ and ends in -latest is an OpenRouter alias that follows the newest release of one model line. qwen3.8-27b carries the openrouter/ prefix because the nativ provider lists the same id in another letter case: a bare id that two providers share is ambiguous, and pi then takes a fuzzy match, here the :free variant. The saved default (qwen3.8-max-0902) is inside the scope, so new sessions start on it. pi adds an entry to this list when a model outside the scope is saved as the default with Ctrl+S in /model: prune deliberately. A retired alias costs a warning, not an error: `pi --list-models` resolves this same scope and prints `Warning: No models match pattern` on stderr while still exiting 0, so run it after `pi update --models`. Every claim about pi in this note holds for pi 0.99.1, checked 2026-10-01."
 }
