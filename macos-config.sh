@@ -2472,6 +2472,23 @@ defaults write com.ranchero.NetNewsWire-Evergreen windowState -dict-add readArti
 
 
 ###############################################################################
+# UTM                                                                         #
+###############################################################################
+
+# Send the sound of QEMU guests to CoreAudio, which is output only. With the
+# default SPICE backend, UTM opens the host microphone whenever a guest opens
+# its capture device. UTM reads the key each time it starts a guest, so a
+# guest already running keeps its old backend until it restarts.
+#
+# Values, as defined in
+# https://github.com/utmapp/UTM/blob/v4.7.5/Services/UTMQemuSystemBackends.h:
+#   0   default, which resolves to SPICE
+#   1   SPICE with GStreamer, for input and output
+#   2   CoreAudio, for output only
+defaults write com.utmapp.UTM QEMUSoundBackend -int 2
+
+
+###############################################################################
 # ClamAV                                                                      #
 ###############################################################################
 
