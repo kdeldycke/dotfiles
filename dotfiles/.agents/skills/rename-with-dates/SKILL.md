@@ -129,7 +129,7 @@ This skill depends on third-party CLI tools. At the start of execution, check if
 | `pdftotext` | `poppler`    | Extracting text per page for language detection in large PDFs                              |
 | `exiftool`  | `exiftool`   | Reading PDF metadata (CreationDate, ModDate) as date fallback                              |
 
-`mdls` (macOS built-in) can also be used for metadata and does not need installation.
+`mdls` (macOS built-in) can also be used for metadata.
 
 If a missing tool is needed for the current run, propose the install command and ask the user before proceeding. If the tool is not needed (e.g., no multi-language PDFs detected, so `qpdf` is not required), skip silently.
 

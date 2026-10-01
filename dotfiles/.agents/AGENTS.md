@@ -459,7 +459,7 @@ A skill is a plain folder of static files, copied verbatim to wherever it runs, 
 
 ### Linting and formatting
 
-[Linting](https://repomatic.net/workflows#github-workflows-lint-yaml-jobs) and [formatting](https://repomatic.net/workflows#github-workflows-autofix-yaml-jobs) are automated via GitHub workflows. Developers needn't run them manually; pushing triggers the workflows, which catch issues and handle the nitpicking.
+[Linting](https://repomatic.net/workflows#github-workflows-lint-yaml-jobs) and [formatting](https://repomatic.net/workflows#github-workflows-autofix-yaml-jobs) are automated via GitHub workflows.
 
 ### Keep logic in Python, not workflow YAML
 
