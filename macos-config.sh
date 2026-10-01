@@ -2475,6 +2475,11 @@ defaults write com.ranchero.NetNewsWire-Evergreen windowState -dict-add readArti
 # UTM                                                                         #
 ###############################################################################
 
+# Quit UTM, or close the window of a running guest, without confirmation. On
+# quit, this also skips the suspend snapshot UTM otherwise saves of each
+# running guest: the guests stop at once, without a clean shutdown.
+defaults write com.utmapp.UTM NoQuitConfirmation -bool true
+
 # Send the sound of QEMU guests to CoreAudio, which is output only. With the
 # default SPICE backend, UTM opens the host microphone whenever a guest opens
 # its capture device. UTM reads the key each time it starts a guest, so a
@@ -2486,6 +2491,11 @@ defaults write com.ranchero.NetNewsWire-Evergreen windowState -dict-add readArti
 #   1   SPICE with GStreamer, for input and output
 #   2   CoreAudio, for output only
 defaults write com.utmapp.UTM QEMUSoundBackend -int 2
+
+# Give a clone new MAC addresses. A clone otherwise keeps the MAC of its
+# source, so the two cannot run at the same time, and `~/.ssh/utm-host.py`,
+# which finds a guest by its MAC, cannot tell them apart.
+defaults write com.utmapp.UTM IsRegenerateMACOnClone -bool true
 
 
 ###############################################################################
