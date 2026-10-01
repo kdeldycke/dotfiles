@@ -1,140 +1,119 @@
 {
-  "providers" : {
-    "nativ" : {
-      "api" : "openai-completions",
-      "apiKey" : "nativ",
-      "baseUrl" : "http://127.0.0.1:8080/v1",
-      "compat" : {
-        "supportsDeveloperRole" : false,
-        "supportsFinishReason" : false,
-        "supportsReasoningEffort" : false,
-        "supportsUsageInStreaming" : true
+  "providers": {
+    "nativ": {
+      "api": "openai-completions",
+      "apiKey": "nativ",
+      "baseUrl": "http://127.0.0.1:8080/v1",
+      "compat": {
+        "supportsDeveloperRole": false,
+        "supportsFinishReason": false,
+        "supportsReasoningEffort": false,
+        "supportsUsageInStreaming": true
       },
-      "models" : [
+      "models": [
         {
-          "contextWindow" : 131072,
-          "cost" : {
-            "cacheRead" : 0,
-            "cacheWrite" : 0,
-            "input" : 0,
-            "output" : 0
+          "contextWindow": 131072,
+          "cost": {
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "input": 0,
+            "output": 0
           },
-          "id" : "SirSahOl/DeepSeek-R1-Distill-Qwen-7B-chat-mlx-16bit",
-          "input" : [
-            "text"
-          ],
-          "name" : "DeepSeek-R1-Distill-Qwen-7B-chat-mlx-16bit",
-          "reasoning" : true
+          "id": "SirSahOl/DeepSeek-R1-Distill-Qwen-7B-chat-mlx-16bit",
+          "input": ["text"],
+          "name": "DeepSeek-R1-Distill-Qwen-7B-chat-mlx-16bit",
+          "reasoning": true
         },
         {
-          "contextWindow" : 1048576,
-          "cost" : {
-            "cacheRead" : 0,
-            "cacheWrite" : 0,
-            "input" : 0,
-            "output" : 0
+          "contextWindow": 1048576,
+          "cost": {
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "input": 0,
+            "output": 0
           },
-          "id" : "deepseek-ai/DeepSeek-V4-Flash-0731",
-          "input" : [
-            "text"
-          ],
-          "name" : "DeepSeek-V4-Flash-0731",
-          "reasoning" : false
+          "id": "deepseek-ai/DeepSeek-V4-Flash-0731",
+          "input": ["text"],
+          "name": "DeepSeek-V4-Flash-0731",
+          "reasoning": false
         },
         {
-          "contextWindow" : 1048576,
-          "cost" : {
-            "cacheRead" : 0,
-            "cacheWrite" : 0,
-            "input" : 0,
-            "output" : 0
+          "contextWindow": 1048576,
+          "cost": {
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "input": 0,
+            "output": 0
           },
-          "id" : "RadixArk/Kimi-K3-DSpark",
-          "input" : [
-            "text"
-          ],
-          "name" : "Kimi-K3-DSpark",
-          "reasoning" : false
+          "id": "RadixArk/Kimi-K3-DSpark",
+          "input": ["text"],
+          "name": "Kimi-K3-DSpark",
+          "reasoning": false
         },
         {
-          "contextWindow" : 262144,
-          "cost" : {
-            "cacheRead" : 0,
-            "cacheWrite" : 0,
-            "input" : 0,
-            "output" : 0
+          "contextWindow": 262144,
+          "cost": {
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "input": 0,
+            "output": 0
           },
-          "id" : "Qwen/Qwen3.8-27B",
-          "input" : [
-            "text",
-            "image"
-          ],
-          "name" : "Qwen3.8-27B",
-          "reasoning" : true
+          "id": "Qwen/Qwen3.8-27B",
+          "input": ["text", "image"],
+          "name": "Qwen3.8-27B",
+          "reasoning": true
         },
         {
-          "contextWindow" : 262144,
-          "cost" : {
-            "cacheRead" : 0,
-            "cacheWrite" : 0,
-            "input" : 0,
-            "output" : 0
+          "contextWindow": 262144,
+          "cost": {
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "input": 0,
+            "output": 0
           },
-          "id" : "mlx-community/Qwen3.8-27B-4bit",
-          "input" : [
-            "text",
-            "image"
-          ],
-          "name" : "Qwen3.8-27B-4bit",
-          "reasoning" : true
+          "id": "mlx-community/Qwen3.8-27B-4bit",
+          "input": ["text", "image"],
+          "name": "Qwen3.8-27B-4bit",
+          "reasoning": true
         },
         {
-          "contextWindow" : 262144,
-          "cost" : {
-            "cacheRead" : 0,
-            "cacheWrite" : 0,
-            "input" : 0,
-            "output" : 0
+          "contextWindow": 262144,
+          "cost": {
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "input": 0,
+            "output": 0
           },
-          "id" : "mlx-community/Qwen3.8-27B-8bit",
-          "input" : [
-            "text",
-            "image"
-          ],
-          "name" : "Qwen3.8-27B-8bit",
-          "reasoning" : true
+          "id": "mlx-community/Qwen3.8-27B-8bit",
+          "input": ["text", "image"],
+          "name": "Qwen3.8-27B-8bit",
+          "reasoning": true
         },
         {
-          "contextWindow" : 262144,
-          "cost" : {
-            "cacheRead" : 0,
-            "cacheWrite" : 0,
-            "input" : 0,
-            "output" : 0
+          "contextWindow": 262144,
+          "cost": {
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "input": 0,
+            "output": 0
           },
-          "id" : "aquaduck/Qwen3.8-27B-MLX",
-          "input" : [
-            "text",
-            "image"
-          ],
-          "name" : "Qwen3.8-27B-MLX",
-          "reasoning" : true
+          "id": "aquaduck/Qwen3.8-27B-MLX",
+          "input": ["text", "image"],
+          "name": "Qwen3.8-27B-MLX",
+          "reasoning": true
         },
         {
-          "contextWindow" : 262144,
-          "cost" : {
-            "cacheRead" : 0,
-            "cacheWrite" : 0,
-            "input" : 0,
-            "output" : 0
+          "contextWindow": 262144,
+          "cost": {
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "input": 0,
+            "output": 0
           },
-          "id" : "mlx-community/Qwen3.8-27B-OptiQ-4bit",
-          "input" : [
-            "text",
-            "image"
-          ],
-          "name" : "Qwen3.8-27B-OptiQ-4bit",
-          "reasoning" : true
+          "id": "mlx-community/Qwen3.8-27B-OptiQ-4bit",
+          "input": ["text", "image"],
+          "name": "Qwen3.8-27B-OptiQ-4bit",
+          "reasoning": true
         }
       ]
     }

@@ -6,13 +6,9 @@
   "defaultThinkingLevel": "high",
   "enableInstallTelemetry": false,
   "enableAnalytics": false,
-  "defaultTools": [
-    "+codemode"
-  ],
+  "defaultTools": ["+codemode"],
   "_defaultToolsRationale": "codemode stays next to read, bash, edit and write, so scripts can run tool calls in parallel and filter large output before the model reads it. A script calls bash through ctx.executeTool(), which fires the same tool_call event as a direct call, so extensions/shell-deny.ts applies the deny rules there too: keep that extension loaded while codemode is on.",
-  "extensions": [
-    "-builtin:llama.cpp"
-  ],
+  "extensions": ["-builtin:llama.cpp"],
   "_extensionsRationale": "The built-in llama.cpp extension is off because no llama.cpp router runs here: the local models come from the nativ provider in models.json, on the port that extension takes for its own default.",
   "enabledModels": [
     "z-ai/glm-5.3",
