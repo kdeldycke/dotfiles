@@ -687,3 +687,5 @@ When producing matplotlib figures, follow the design system at https://github.co
 The markdown no-hard-wrap rule above is not merely a ceiling to stay under: each sentence or logical clause flows as a single long line and the renderer handles wrapping. Never reflow a paragraph to a column width, in any markdown file.
 
 Sentence-case titles, natural heading anchors and the `[owner/repo#N]` link form are stated above and need no restating here: see [§ Comments and docstrings](#comments-and-docstrings) and [§ Linking to external repositories in Markdown](#linking-to-external-repositories-in-markdown). One case those do not reach: in plain GFM, where MyST's `(my-anchor)=` is unavailable, the explicit anchor form is `<a id="…"></a>`.
+
+GitHub renders an alert (`> [!NOTE]`, `> [!WARNING]`) only at the top level: nested in `<details>`, a list item or a blockquote, it shows its marker as plain text. There, write an emoji-labelled quote instead, like `> ⚠️ **Warning**: …`.
