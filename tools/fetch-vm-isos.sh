@@ -6,19 +6,24 @@
 #
 # Each entry prefers an arm64 image: an arm64 guest runs at native speed on
 # Apple Silicon, where an x86_64 guest is emulated and slow. Speed wins over
-# size here, so a larger arm64 image beats a small emulated one. Two projects
-# publish no arm64 image at all, and fall back to x86_64.
+# size here, so a larger arm64 image beats a small emulated one. Several
+# projects publish no arm64 image at all, and fall back to x86_64.
 #
 # Versions are read from each project's own pointer file or index wherever one
 # exists, so this script keeps working after a release.
 #
 # Usage:
-#   fetch-vm-isos.sh [--dry-run] [--only {manager}] [destination]
+#   fetch-vm-isos.sh [--dry-run] [--only {managers}] [destination]
 #
 # Options:
-#   --dry-run       Resolve and print every URL, download nothing.
-#   --only {name}   Act on one package manager only, such as `dnf`.
-#   -h, --help      Print this help.
+#   --dry-run          Resolve and print every URL, download nothing.
+#   --only {managers}  Act on these package managers only, comma-separated,
+#                      such as `dnf,xbps`, even when UTM already holds them.
+#   -h, --help         Print this help.
+#
+# A guest that UTM already holds is skipped, since its image only served to
+# install it. The match uses the alias ~/.ssh/utm-host.py gives each virtual
+# machine.
 #
 # The destination defaults to ~/Downloads/mpm-isos. Downloads resume, and an
 # image already complete is left alone, so re-running costs nothing.
@@ -111,9 +116,11 @@ resolve_gentoo() {
 	printf '%s/%s\n' "${base}" "${path}"
 }
 
-# guix. Release 1.5.0 was the first to ship an arm64 image.
+# guix. Release 1.5.0 was the first to ship an arm64 image. ftp.gnu.org and the
+# ftpmirror.gnu.org redirector reset the connection, so this reads kernel.org's
+# copy of the GNU tree instead.
 resolve_guix() {
-	local base=https://ftp.gnu.org/gnu/guix
+	local base=https://mirrors.kernel.org/gnu/guix
 	local file
 	file=$(curl "${curl_meta[@]}" "${base}/" |
 		grep -oE 'guix-system-install-[0-9.]+\.aarch64-linux\.iso' |
@@ -124,6 +131,8 @@ resolve_guix() {
 
 # eopkg. Solus publishes x86_64 only, and only as desktop editions. Xfce is the
 # smallest of the four, and the guest runs emulated whichever one is picked.
+# It also hosts protonplus: Solus packages Steam, Lutris and Heroic, three of
+# the launchers ProtonPlus manages, and ProtonPlus installs from Flathub.
 resolve_solus() {
 	printf '%s\n' https://downloads.getsol.us/isos/latest/Solus-Latest-Xfce.iso
 }
@@ -134,15 +143,80 @@ resolve_slitaz() {
 	printf '%s\n' http://mirror.slitaz.org/iso/rolling/slitaz-rolling-core64.iso
 }
 
-# Package manager, image, architecture, resolver.
+# rpm-ostree. Every rpm-ostree verb refuses a package-based host like the dnf
+# guest, so this one boots Fedora IoT: an ostree image with no desktop, listed in
+# the same release index as the Server image. Name the guest "Fedora IoT" in
+# UTM: its whole-name alias, fedora-iot, is what marks it as installed, since
+# fedora is the dnf guest.
+resolve_fedora_iot() {
+	curl "${curl_meta[@]}" https://fedoraproject.org/releases.json |
+		grep -oE 'https://[^"]+Fedora-IoT-ostree-[0-9]+-[0-9.]+\.aarch64\.iso' |
+		sort --version-sort | tail -1
+}
+
+# slackpkg. The all-in-one installer carries the whole package set, so the guest
+# installs offline, then upgrades with slackpkg itself. Slackware ARM builds it
+# to boot inside a virtual machine, under one name for every build of -current,
+# which is why it is saved under a name of its own.
+resolve_slackware() {
+	printf '%s\n' https://slackware.uk/slackwarearm/platform/aarch64/bootware/installer-aio/slackwareaarch64-current/efi_generic.iso
+}
+
+# cards. NuTyX offers x86_64 only, as three desktop editions hosted on
+# SourceForge, and Xfce is the lightest of them. The downloads.sourceforge.net
+# form of the link ends on the file name: the page's own "/download" links would
+# save every image as "download".
+resolve_nutyx() {
+	local file
+	file=$(curl "${curl_meta[@]}" https://nutyx.org/en/downloads |
+		grep -oE 'NuTyX_x86_64-[0-9.]+-XFCE4\.iso' | sort -u --version-sort | tail -1)
+	[ -n "${file}" ] || return 1
+	printf 'https://downloads.sourceforge.net/project/nutyx/ISOs/%s\n' "${file}"
+}
+
+# netpkg. Zenwalk publishes x86_64 only. Its web site refuses scripted clients,
+# but its download server lists every dated build.
+resolve_zenwalk() {
+	local base=https://download.zenwalk.org/x86_64/current
+	local file
+	file=$(curl "${curl_meta[@]}" "${base}/" |
+		grep -oE 'zenwalk-current-[0-9]{6}\.iso' | sort -u | tail -1)
+	[ -n "${file}" ] || return 1
+	printf '%s/%s\n' "${base}" "${file}"
+}
+
+# upkg. paldo publishes x86_64 only, as a live image under one name per branch.
+# It is a UEFI disk image rather than an ISO: attach it to the guest as a drive.
+resolve_paldo() {
+	printf '%s\n' https://www.paldo.org/paldo-live-x86_64-stable.img
+}
+
+# pkgman. Haiku publishes x86 only. Its download page names the current release,
+# whose name is part of the CDN path.
+resolve_haiku() {
+	curl "${curl_meta[@]}" https://www.haiku-os.org/get-haiku/ |
+		grep -oE 'https://haiku-release\.cdn\.haiku-os\.org/[^/]+/haiku-[^/]+-x86_64-anyboot\.iso' |
+		sort -u | tail -1
+}
+
+# Package managers, image, architecture, resolver, the utm-host.py alias of the
+# guest, and an optional file name for an image whose own name does not say
+# what it holds. A guest serving several package managers lists them
+# comma-separated.
 guests=(
-	"dnf|Fedora Server netinst|arm64|resolve_fedora"
-	"xbps|Void Linux base|x86_64|resolve_void"
-	"nix|NixOS minimal|arm64|resolve_nixos"
-	"emerge|Gentoo minimal|arm64|resolve_gentoo"
-	"guix|Guix System|arm64|resolve_guix"
-	"eopkg|Solus Xfce|x86_64|resolve_solus"
-	"tazpkg|SliTaz core64|x86_64|resolve_slitaz"
+	"dnf|Fedora Server netinst|arm64|resolve_fedora|fedora"
+	"xbps|Void Linux base|x86_64|resolve_void|void"
+	"nix|NixOS minimal|arm64|resolve_nixos|nixos"
+	"emerge|Gentoo minimal|arm64|resolve_gentoo|gentoo"
+	"guix|Guix System|arm64|resolve_guix|guix"
+	"eopkg,protonplus|Solus Xfce|x86_64|resolve_solus|solus"
+	"tazpkg|SliTaz core64|x86_64|resolve_slitaz|slitaz"
+	"rpm-ostree|Fedora IoT|arm64|resolve_fedora_iot|fedora-iot"
+	"slackpkg|Slackware AArch64 all-in-one|arm64|resolve_slackware|slackware|slackwareaarch64-current-aio.iso"
+	"cards|NuTyX Xfce|x86_64|resolve_nutyx|nutyx"
+	"netpkg|Zenwalk|x86_64|resolve_zenwalk|zenwalk"
+	"upkg|paldo live|x86_64|resolve_paldo|paldo"
+	"pkgman|Haiku|x86_64|resolve_haiku|haiku"
 )
 
 # Read the size the server reports, so a complete image is never fetched twice.
@@ -157,25 +231,59 @@ human_size() {
 	awk -v bytes="$1" 'BEGIN { printf "%.0f MB", bytes / 1048576 }'
 }
 
+# Print every alias ~/.ssh/utm-host.py can give a UTM virtual machine, one per
+# line: the first word of its name, and its whole name, which the helper falls
+# back to when two machines share a first word. Both are printed for every
+# machine, so the match does not depend on which of two such machines the helper
+# reads first.
+utm_aliases() {
+	local plist name
+	for plist in "${HOME}"/Library/Containers/com.utmapp.UTM/Data/Documents/*.utm/config.plist; do
+		[ -f "${plist}" ] || continue
+		name=$(plutil -extract Information.Name raw -o - "${plist}" 2>/dev/null) ||
+			name=$(basename "$(dirname "${plist}")" .utm)
+		name=$(printf '%s' "${name}" | tr '[:upper:]' '[:lower:]')
+		printf '%s\n' "${name%% *}" | tr -cd 'a-z0-9\n'
+		printf '%s\n' "${name}" | sed -E 's/[^a-z0-9]+/-/g; s/^-+//; s/-+$//'
+	done
+}
+
+# Succeed when a package manager of the comma-separated list $2 appears in the
+# comma-separated list $1.
+names_overlap() {
+	local name names
+	IFS=, read -ra names <<<"$2"
+	for name in "${names[@]}"; do
+		[[ ",$1," == *",${name},"* ]] && return 0
+	done
+	return 1
+}
+
 "${dry_run}" || mkdir -p "${destination}"
+
+installed=$(utm_aliases)
 
 total_bytes=0
 handled=0
 failed=()
 
 for guest in "${guests[@]}"; do
-	IFS='|' read -r manager image arch resolver <<<"${guest}"
+	IFS='|' read -r managers image arch resolver alias name <<<"${guest}"
 
-	if [ -n "${only}" ] && [ "${only}" != "${manager}" ]; then
+	if [ -n "${only}" ]; then
+		names_overlap "${managers}" "${only}" || continue
+	elif grep -qxF "${alias}" <<<"${installed}"; then
+		printf '\n=== %s (%s): installed in UTM as %s, skipped ===\n' \
+			"${image}" "${managers//,/ and }" "${alias}"
 		continue
 	fi
 	handled=$((handled + 1))
 
-	printf '\n=== %s (%s, %s) ===\n' "${image}" "${manager}" "${arch}"
+	printf '\n=== %s (%s, %s) ===\n' "${image}" "${managers//,/ and }" "${arch}"
 
 	if ! url=$("${resolver}"); then
 		printf '    could not resolve a URL\n' >&2
-		failed+=("${manager}")
+		failed+=("${managers}")
 		continue
 	fi
 	printf '    %s\n' "${url}"
@@ -186,7 +294,7 @@ for guest in "${guests[@]}"; do
 
 	"${dry_run}" && continue
 
-	output="${destination}/${url##*/}"
+	output="${destination}/${name:-${url##*/}}"
 	if [ -f "${output}" ] && [ "$(wc -c <"${output}" | tr -d ' ')" = "${size}" ]; then
 		printf '    already complete\n'
 		continue
@@ -194,11 +302,11 @@ for guest in "${guests[@]}"; do
 
 	if ! curl "${curl_get[@]}" --output "${output}" "${url}"; then
 		printf '    download failed\n' >&2
-		failed+=("${manager}")
+		failed+=("${managers}")
 	fi
 done
 
-if [ "${handled}" -eq 0 ]; then
+if [ -n "${only}" ] && [ "${handled}" -eq 0 ]; then
 	printf 'No package manager matches --only %s\n' "${only}" >&2
 	exit 2
 fi
