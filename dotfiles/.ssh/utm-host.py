@@ -10,10 +10,19 @@ address.
 That indirection keeps addresses out of `~/.ssh/config`, which is a public
 file. It also survives a move to a different network.
 
-The script runs under Apple's own `/usr/bin/python3`, and stays compatible with
-its Python 3.9. Under a Homebrew or uv Python 3.14, every `arp -an` the script
-spawns printed no entry at all on macOS 27.0.1, so every lookup failed with "no
-address", while the same command answered with the whole table under Apple's.
+macOS hides the ARP table, and the MAC addresses `netstat` prints, from any
+process with an ad-hoc signed binary among its ancestors: under a Homebrew or
+uv Python 3.14, or under Homebrew's `ssh` running this script as its
+`ProxyCommand`, `arp -an` prints nothing, measured on macOS 27. So the script
+runs under Apple's own `/usr/bin/python3`, and stays compatible with its Python
+3.9, and it has two more sources:
+
+- The leases file of macOS's own DHCP server, which any process can read. It
+  covers every guest on UTM's shared network.
+- The host key `~/.ssh/known_hosts_utm` holds for the alias, matched against
+  what each host answering on the port presents. It covers a bridged guest,
+  and since ssh checks that key anyway, it cannot land on another machine. The
+  last address found this way is cached, so the scan stays rare.
 
 Usage:
     utm-host.py list                     Show every virtual machine and address.
@@ -27,12 +36,14 @@ An alias is the first word of the virtual machine name, in lower case:
 from __future__ import annotations
 
 import ipaddress
+import json
 import os
 import plistlib
 import re
 import socket
 import subprocess
 import sys
+import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
@@ -41,6 +52,15 @@ if TYPE_CHECKING:
     from typing import NoReturn
 
 UTM_DOCUMENTS = Path.home() / "Library/Containers/com.utmapp.UTM/Data/Documents"
+
+# Written by macOS's DHCP server for its shared networks, readable by anyone.
+DHCP_LEASES = Path("/var/db/dhcpd_leases")
+
+# Where the ssh configuration keeps the host keys of these guests.
+KNOWN_HOSTS = Path.home() / ".ssh/known_hosts_utm"
+
+# The last address each alias answered at.
+ADDRESS_CACHE = Path.home() / ".cache/utm-host.json"
 
 # macOS `arp` prints each octet without its leading zero, so both sides of a
 # comparison must be reduced to that form before they can match.
@@ -124,6 +144,31 @@ def arp_table() -> dict[str, list[str]]:
     return table
 
 
+def dhcp_leases() -> dict[str, list[str]]:
+    """Map each MAC address to the addresses macOS's DHCP server leased it.
+
+    An expired lease is left out, so a guest that moved to a bridged network
+    costs no connection attempt at its old address. The newest lease comes
+    first.
+    """
+    try:
+        text = DHCP_LEASES.read_text(encoding="UTF-8")
+    except OSError:
+        return {}
+    leases = []
+    for block in re.findall(r"\{(.*?)\}", text, re.DOTALL):
+        fields = dict(re.findall(r"^\s*(\w+)=(.*)$", block, re.MULTILINE))
+        address = fields.get("ip_address")
+        hardware = fields.get("hw_address", "")
+        expiry = int(fields.get("lease", "0x0"), 16)
+        if address and "," in hardware and expiry > time.time():
+            leases.append((expiry, normalize_mac(hardware.split(",", 1)[1]), address))
+    table: dict[str, list[str]] = {}
+    for _, mac, address in sorted(leases, reverse=True):
+        table.setdefault(mac, []).append(address)
+    return table
+
+
 def port_answers(address: str, port: int, timeout: float = 2.0) -> bool:
     """Tell whether a TCP port accepts a connection."""
     try:
@@ -173,6 +218,83 @@ def populate_arp_table() -> None:
         )
 
 
+def known_host_keys(alias: str) -> set[str]:
+    """The host keys recorded for an alias, each as `type base64`."""
+    found = subprocess.run(
+        ["ssh-keygen", "-F", alias, "-f", str(KNOWN_HOSTS)],
+        capture_output=True,
+        text=True,
+        encoding="UTF-8",
+        check=False,
+    ).stdout
+    keys = set()
+    for line in found.splitlines():
+        fields = line.split()
+        if len(fields) >= 3 and not line.startswith("#"):
+            keys.add(f"{fields[1]} {fields[2]}")
+    return keys
+
+
+def presents_key(address: str, port: int, keys: set[str]) -> bool:
+    """Tell whether the SSH server at an address presents one of `keys`."""
+    scan = subprocess.run(
+        ["ssh-keyscan", "-T", "3", "-p", str(port), address],
+        capture_output=True,
+        text=True,
+        encoding="UTF-8",
+        check=False,
+    ).stdout
+    for line in scan.splitlines():
+        fields = line.split()
+        if len(fields) >= 3 and f"{fields[1]} {fields[2]}" in keys:
+            return True
+    return False
+
+
+def cached_addresses() -> dict[str, str]:
+    """The last address each alias answered at."""
+    try:
+        return json.loads(ADDRESS_CACHE.read_text(encoding="UTF-8"))
+    except (OSError, ValueError):
+        return {}
+
+
+def remember(alias: str, address: str) -> None:
+    """Cache the address an alias answered at, for `find_by_host_key` to try
+    first."""
+    cache = cached_addresses()
+    if cache.get(alias) == address:
+        return
+    cache[alias] = address
+    try:
+        ADDRESS_CACHE.parent.mkdir(parents=True, exist_ok=True)
+        ADDRESS_CACHE.write_text(json.dumps(cache, indent=2) + "\n", encoding="UTF-8")
+    except OSError:
+        pass
+
+
+def find_by_host_key(alias: str, port: int) -> str | None:
+    """Find the address presenting the host key recorded for an alias.
+
+    Tries the cached address, then every host of the local networks that
+    answers on the port.
+    """
+    keys = known_host_keys(alias)
+    if not keys:
+        return None
+    cached = cached_addresses().get(alias)
+    if cached and port_answers(cached, port) and presents_key(cached, port, keys):
+        return cached
+    targets = [str(host) for network in local_networks() for host in network.hosts()]
+    with ThreadPoolExecutor(max_workers=256) as pool:
+        answers = list(pool.map(lambda ip: port_answers(ip, port, 0.5), targets))
+    for address, answered in zip(targets, answers):
+        if answered and address != cached and presents_key(address, port, keys):
+            remember(alias, address)
+            return address
+    return None
+
+
 def resolve(alias: str, port: int = 22) -> str:
     """Return the IP address of the virtual machine known under an alias.
 
@@ -189,10 +311,28 @@ def resolve(alias: str, port: int = 22) -> str:
     for sweep_first in (False, True):
         if sweep_first:
             populate_arp_table()
-        seen = arp_table().get(mac, [])
+        arp = arp_table()
+        seen = list(dict.fromkeys(arp.get(mac, []) + dhcp_leases().get(mac, [])))
         for address in seen:
             if port_answers(address, port):
+                remember(alias, address)
                 return address
+        # A hidden table stays hidden: a sweep cannot help.
+        if not arp:
+            break
+
+    if not arp:
+        address = find_by_host_key(alias, port)
+        if address:
+            return address
+        fail(
+            f"utm-host: no address for {alias!r} ({mac}). macOS hides the ARP "
+            "table from this process, as it does under an ad-hoc signed ssh "
+            "like Homebrew's, and no local host on port "
+            f"{port} presents the host key known for {alias!r}. Is the virtual "
+            "machine started? A rebuilt guest has a new key: connect once "
+            "with /usr/bin/ssh to record it."
+        )
 
     if seen:
         fail(
@@ -213,7 +353,9 @@ def main() -> None:
 
     if command == "list":
         populate_arp_table()
-        table = arp_table()
+        table = dhcp_leases()
+        for mac, addresses in arp_table().items():
+            table[mac] = list(dict.fromkeys(addresses + table.get(mac, [])))
         for alias, machine in sorted(virtual_machines().items()):
             addresses = table.get(machine["mac"], [])
             reachable = [a for a in addresses if port_answers(a, 22, timeout=1.0)]
