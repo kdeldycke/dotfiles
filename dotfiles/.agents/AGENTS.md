@@ -557,14 +557,6 @@ Where STE conflicts with another rule, the other rule wins for its own concerns 
 
 A request to make text shorter or simpler asks for deletion first and paraphrase second. Cut the ideas a nearby structure already carries: a table, a linked page, a column of the same report. Then simplify what remains. A rewrite-only pass keeps every idea and changes only the words, so the text stays as long as before.
 
-### Drop statements of what is not needed
-
-Cut every sentence or clause that tells the reader what they need not do, what is not required, or what happens without them: "No other secret is needed", "No action is required", "you don't need to re-specify it", "This issue will close automatically". Keep a negative statement only when it changes what the reader does:
-
-- A warning against a wrong action: "Do not squash-merge", "Closing this pull request does not decline it".
-- The consequence of skipping a step: "Without the key, releases skip the scan".
-- In reference docs, a fact about how a mechanism works: "Cloudflare never builds the site".
-
 ## Answer shape
 
 The first line is the answer or the next action. A command, a path, or a snippet comes before any prose that explains it.

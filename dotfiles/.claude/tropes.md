@@ -352,6 +352,17 @@ The pedagogical voice that assumes the reader needs hand-holding. AI defaults to
 - "Let's explore this idea further."
 - "A deep-dive into the scheduler" or "let me unpack that", as standalone synonyms for "look at" and "explain".
 
+### "No Action Required"
+
+Reassurance about what the reader does not have to do. The model closes a step or a section by naming what is not needed, not required, or will happen without the reader, answering a worry nobody raised. The reader acts on what is there, so a list of things to skip costs reading time and buys nothing. Also includes the pitch variant, a benefit listed as absences: "no manual setup, no dotfile sprawl". Keep a negative statement only when it changes what the reader does: a warning against a wrong action ("Do not squash-merge"), the consequence of skipping a step ("Without the key, releases skip the scan"), or, in reference docs, a fact about how a mechanism works ("Cloudflare never builds the site").
+
+**Avoid patterns like:**
+
+- "No other secret is needed: the account is derived from the token."
+- "No action is required. This issue will close automatically."
+- "Concurrency is already configured: you don't need to re-specify it."
+- "It installs each tool at a pinned version: no manual setup, no dotfile sprawl."
+
 ### Vague Attributions
 
 Attributing claims to unnamed authorities instead of being specific. AI loves to invoke "experts", "observers", "industry reports", and "several publications" without naming anyone. It also inflates the quantity of sources -- presenting what one person said as a widely held view, or writing "several publications have cited" when it means two. If you can't name the expert, you don't have a source.
