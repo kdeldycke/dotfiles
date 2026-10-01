@@ -624,7 +624,7 @@ Never shop for a proxy submitter. Several distributions refuse a package submitt
 
 ## Shell commands
 
-In Claude Code, permission rules deny `cd`, `rm`, `curl`, `wget`, `chmod`, `chown` and `sudo`. A call that holds one of them fails whole, a compound command included, so never write one. Use `git -C` or an absolute path in place of `cd`. Use `git rm` or `git clean -f -- {path}` in place of `rm`. Use WebFetch, `gh api` or a Python script in place of `curl`. Use `uv run --script` in place of `chmod +x`.
+In Claude Code, permission rules deny `cd`, `rm`, `curl`, `wget`, `chmod`, `chown` and `sudo`. A call that holds one of them fails whole, a compound command included, so never write one. Use `git -C` or an absolute path in place of `cd`. Use `git rm` or `git clean -f -- {path}` in place of `rm`, and `/usr/bin/trash` for a path outside a repository, which keeps it recoverable. Use WebFetch, `gh api` or a Python script in place of `curl`. Use `uv run --script` in place of `chmod +x`.
 
 Never use `$()` command substitutions inside `gh` (or any other) Bash calls: the sandbox flags `$()` as a separate security check that fires regardless of permission allow rules. Run the inner command as its own Bash call first, then use its result in the next one, so both match the allow rules and auto-approve.
 
