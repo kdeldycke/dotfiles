@@ -545,6 +545,8 @@ Core rules:
 - **Short, simple noun phrases.** Break "the version of the package published to the registry" into steps or a list if it grows.
 - **Use vertical lists for procedures and multi-item rules**, one step or item per line, starting with a verb for procedures.
 - **Put form values in a table.** When the reader fills in a form, list its fields in a two-column table: one row per field, named with the form's own label.
+- **Number only what runs in order.** A condition that replaces a step goes first, inside the step it replaces.
+- **Check each claim against what it describes.** Read the command, the API or the form before stating its scope or effect.
 - **Be explicit, not clever.** Cut idioms, metaphors, humor, rhetorical flourishes and rhetorical questions. State the fact, the reason, and the action directly.
 - **Caveats are inline, not closing footers.** State a caveat where it is relevant, without preamble, and do not save it for the end of the message.
 - **Use "you" only for instructions.** Statements of fact need no actor; the "I/my" voice rule below still applies to prose written on behalf of the user.

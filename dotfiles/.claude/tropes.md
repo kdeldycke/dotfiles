@@ -470,6 +470,16 @@ Making a single argument and restating it in 10 different ways across thousands 
 - "The same point, restated eight ways across 4000 words."
 - "Each section rephrases the thesis with a different metaphor but adds nothing new"
 
+### Every Route at Once
+
+Listing every way to do a thing where the reader needs one. A step that should hold one command grows "or run this, or use the dashboard, or the other form works too", each route with its own caveat, so the reader compares routes before acting. Give the route to take, plus at most one fallback, and leave the others to the reference docs.
+
+**Avoid patterns like:**
+
+- "Or `wrangler pages project create`, or the dashboard: Workers & Pages → Direct Upload."
+- "The generic account token form works too, where that permission reads…"
+- "Pick `all_external_contributors` instead to require it for every outside PR."
+
 ### Content Duplication
 
 Repeating entire sections or paragraphs verbatim within the same piece. This happens when the model loses track of what it has already written, especially in longer pieces. A dead giveaway of unedited AI output. Less common nowadays.
