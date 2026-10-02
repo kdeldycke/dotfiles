@@ -672,6 +672,7 @@ Non-obvious facts about this machine that have caused hard-to-diagnose failures:
 - **A Secretive signing refusal is transient.** `Couldn't sign message (signer): agent refused operation?`, `communication with agent failed?` or a commit that hangs means the Secure Enclave approval prompt went unanswered: retry at most twice, then look at Secretive's window, where pending requests from every app holding the key queue up, a Fork fetch included: hours-old `git-upload-pack` processes are the tell. Signing and `%G?` both work inside the sandbox (Claude Code `2.1.284`), which allows the Secretive socket and `~/.ssh/allowed_signers`: keep it on for `git commit`. Its network proxy still breaks an SSH `git push` (`ssh_dispatch_run_fatal: Connection to UNKNOWN port 65535: Broken pipe`): push with it off.
 - **A Fork fetch autostashes the working tree, which reads as lost work.** It does not always pop the stash back: look in `git stash list` for `Fork autostash <date>` before redoing the work, and compare each stashed file against `HEAD` before dropping it.
 - **A scratch git repo inherits the global `commit.gpgsign`.** Pass `-c commit.gpgsign=false` to every commit in a repo nothing will push, or each one waits on the Secretive prompt.
+- **`uv lock` copies this machine's `repomatic` cooldown exemption into the lockfile.** It lands as `[options.exclude-newer-package]` in `uv.lock`, which no CI run produces: relock with `XDG_CONFIG_HOME` pointed at an empty directory.
 
 ## Code generation preferences
 
