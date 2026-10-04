@@ -14,7 +14,7 @@ Check the conversation for a closing report from an earlier invocation of this s
 
 On a repeat call, do not re-list the leftovers. Finish them:
 
-- Execute every remaining item in the working tree: apply the deferred fix, write the code or the docs entry, draft the upstream report, delete the scratch files, run the verifications. Re-verify each item first, per § 2: work finished by hand since the last report is done, not to do.
+- Execute every remaining item in the working tree: apply the deferred fix, write the code or the docs entry, draft the upstream report, delete the scratch files left in a checkout, run the verifications. Re-verify each item first, per § 2: work finished by hand since the last report is done, not to do.
 - The repeat invocation is the user's go-ahead to commit: stage and commit the finished work locally, one commit per strand, following the commit-message rules. A first invocation never commits; a repeat one does.
 - Pushing to a remote and posting to an external service still need the user's own hand. If only such items remain, say the tree is clean and name them.
 - Then run the lessons pass (§ 3) and close with the same two lists (§ 4), near-empty by design.
@@ -28,6 +28,8 @@ Collect what this session leaves behind:
 - Background jobs or processes started here and still running.
 
 **Verify every candidate against the current state before listing it.** The user often fixes, commits, or cleans items by hand between the last prompt and this wrap-up, and a stale item tells them to redo work already done. For each candidate, re-check the evidence: re-run `git status` and `git log` rather than trusting an earlier snapshot, read the file a fix would touch, check whether a deferred report or upstream comment already exists. Drop every item that is already resolved. When an item is only partially done, list only the remainder.
+
+**Never list the cleanup of temporary files that the next reboot deletes.** macOS empties `/private/tmp` at each boot, so a scratchpad or a build tree left there needs no item. Apply the same test to the temporary directory of any other machine or virtual machine. A scratch file left in a checkout stays a loose end. A draft or a result the user still needs keeps its own item, whatever directory holds it.
 
 ## 3. Lessons worth persisting
 
@@ -64,4 +66,4 @@ End with two short lists, a few words per item: **Done** first, then **Left to d
 - `Report:` — an issue or comment to file upstream (name the project).
 - `Review:` — something the user must read or decide on: a draft awaiting approval, a proposal from the lessons pass.
 
-These five are the whole vocabulary: do not coin new labels. An item that fits none of them is a plain bullet whose first word is the verb, e.g. "Fix the …", "Clean /private/tmp/…".
+These five are the whole vocabulary: do not coin new labels. An item that fits none of them is a plain bullet whose first word is the verb, like "Fix the …" or "Stop the …".
