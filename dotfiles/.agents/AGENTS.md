@@ -108,7 +108,7 @@ An exemption is an install that deliberately bypasses the window, declared in th
 
 Any other exemption is a bug until proven otherwise. Anything claiming one carries a comment naming what breaks without it, and the narrowest scope that still works: a package, not a job; a job, not a workflow.
 
-A consuming repo runs the same rule against its own, which is usually empty. One category recurs and is worth naming, because it reads like a violation and is not: a dependency the same maintainer publishes. The window guards against a compromised upstream, and here the publisher and the consumer are the same person, so it buys nothing while holding each release back a week from the only repository that consumes it. Exempt it per-package, with a zero span rather than a fixed date so the next release is picked up without editing the file, and put the reasoning beside it:
+A consuming repo runs the same rule against its own, which is usually empty. One category recurs and is worth naming, because it reads like a violation and is not: a dependency the same maintainer publishes. The window guards against a compromised upstream, and here the publisher and the consumer are the same person, so it buys nothing while holding each release back a week from the only repository that consumes it. Exempt it per-package, with a zero span, and put the reasoning beside it:
 
 ```toml
 [tool.uv]
@@ -117,6 +117,8 @@ A consuming repo runs the same rule against its own, which is usually empty. One
 # holds each release back a week from the one repository that consumes it.
 exclude-newer-package = { apricot = "0 days" }
 ```
+
+The entry admits one release only: `sync-uv-lock` rewrites the zero span as a fixed date that holds the locked release, then removes the entry once that release clears the window. Add it again for the next release that must not wait. A git or path source has no release date to freeze, so it alone keeps its span.
 
 Declaring it in `pyproject.toml` rather than in a machine's `~/.config/uv/uv.toml` is what makes a fresh clone resolve the same way, and keeps the exemption reviewable in a diff. It stays a bypass and not a hole: the transitive tree that release pulls in is still gated, and that tree is the part the maintainer did not publish.
 
