@@ -42,6 +42,22 @@
           "reasoning" : false
         },
         {
+          "contextWindow" : 262144,
+          "cost" : {
+            "cacheRead" : 0,
+            "cacheWrite" : 0,
+            "input" : 0,
+            "output" : 0
+          },
+          "id" : "mlx-community/DeepSeek-V4-Pro-Qwen3.5-9B-bf16",
+          "input" : [
+            "text",
+            "image"
+          ],
+          "name" : "DeepSeek-V4-Pro-Qwen3.5-9B-bf16",
+          "reasoning" : true
+        },
+        {
           "contextWindow" : 1048576,
           "cost" : {
             "cacheRead" : 0,
@@ -54,6 +70,21 @@
             "text"
           ],
           "name" : "Kimi-K3-DSpark",
+          "reasoning" : false
+        },
+        {
+          "contextWindow" : 131072,
+          "cost" : {
+            "cacheRead" : 0,
+            "cacheWrite" : 0,
+            "input" : 0,
+            "output" : 0
+          },
+          "id" : "ssweens/Kimi-VL-A3B-Thinking-2506-mlx-4bit",
+          "input" : [
+            "text"
+          ],
+          "name" : "Kimi-VL-A3B-Thinking-2506-mlx-4bit",
           "reasoning" : false
         },
         {
@@ -118,6 +149,22 @@
             "image"
           ],
           "name" : "Qwen3.8-27B-MLX",
+          "reasoning" : true
+        },
+        {
+          "contextWindow" : 262144,
+          "cost" : {
+            "cacheRead" : 0,
+            "cacheWrite" : 0,
+            "input" : 0,
+            "output" : 0
+          },
+          "id" : "nvidia/Qwen3.8-27B-NVFP4",
+          "input" : [
+            "text",
+            "image"
+          ],
+          "name" : "Qwen3.8-27B-NVFP4",
           "reasoning" : true
         },
         {
