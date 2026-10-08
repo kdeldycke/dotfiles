@@ -650,7 +650,7 @@ Never `cd` in Bash calls: pass absolute paths to the tool instead. Claude Code's
 
 The tool shell is zsh with `nomatch` on: quote every glob meant for the program (`--include='*.swift'`), every argument that starts with `=`, and every `gh api` path that holds a `?`. Otherwise zsh aborts the command before it runs: an unmatched glob dies with `no matches found`, and `echo ======` dies with `===== not found`, because zsh expands `=name` to the path of a command.
 
-zsh also reads a colon and a letter after a variable as a modifier of the expansion: `git show $c:path` runs with the first letter of the path gone. Write `${c}:path`.
+zsh also reads a colon and a letter after a variable as a modifier of the expansion, when the letter names one, like `c`, `h` or `t`: `git show $sha:content/x.md` loses its `:c` and asks git for `{sha}ontent/x.md`. Write `${sha}:content/x.md`.
 
 `ruff` falls back to the current directory's configuration when the target project defines none. Pass `--no-fix` to read findings without changing files, and compare before and after in one invocation: `git show HEAD:{path} | ruff check --no-fix --stdin-filename {path} -`, then the same command fed the working copy. A repository consuming repomatic with no `[tool.ruff]` of its own takes its CI baseline from `--config ~/code/repomatic/repomatic/data/ruff.toml`, run with the pinned `ruff`, not a system one.
 
