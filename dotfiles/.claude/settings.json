@@ -199,12 +199,8 @@
         "~/Library/Caches/repomatic",
         "~/Library/Logs/pipx"
       ],
-      "denyWrite": [
-        "~/code/dotfiles/dotfiles"
-      ],
-      "denyRead": [
-        "~/.ssh"
-      ],
+      "denyWrite": ["~/code/dotfiles/dotfiles"],
+      "denyRead": ["~/.ssh"],
       "allowRead": [
         "~/.ssh/allowed_signers",
         "~/.ssh/id_ed25519.pub",
@@ -213,9 +209,7 @@
       ]
     },
     "enableWeakerNetworkIsolation": true,
-    "excludedCommands": [
-      "open *"
-    ]
+    "excludedCommands": ["open *"]
   },
   "alwaysThinkingEnabled": true,
   "effortLevel": "high",
