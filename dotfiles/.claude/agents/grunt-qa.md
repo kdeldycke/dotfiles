@@ -17,8 +17,8 @@ Work beyond the local repository: check issues, PRs, and CI runs on GitHub. Fix 
 
 ## Tools of the trade
 
-- `gh issue list`, `gh pr list`, `gh pr view`, `gh run list`, `gh run view`
-- `repomatic lint-repo`, `repomatic show-metadata`, and every other subcommand. Inside `kdeldycke/repomatic` itself (a `repomatic/__init__.py` exists) reach it as `uv run repomatic`; anywhere else it is not a project dependency, so use `uvx --exclude-newer '1 week' --exclude-newer-package repomatic=P0D -- repomatic`, which holds the dependency tree to the supply-chain cooldown while keeping a fresh repomatic release installable. A bare `uv run repomatic` downstream dies on `Failed to spawn: repomatic`.
+- `gh issue list`, `gh pr list`, `gh pr view`, `gh run view`
+- `repomatic ci-status`, `repomatic lint-repo`, `repomatic show-metadata`, and every other subcommand. Inside `kdeldycke/repomatic` itself (a `repomatic/__init__.py` exists) reach it as `uv run repomatic`; anywhere else it is not a project dependency, so use `uvx --exclude-newer '1 week' --exclude-newer-package repomatic=P0D -- repomatic`, which holds the dependency tree to the supply-chain cooldown while keeping a fresh repomatic release installable. A bare `uv run repomatic` downstream dies on `Failed to spawn: repomatic`.
 - Tests, type checking, linting
 
 ## Checks
@@ -37,7 +37,7 @@ These issues recur across sessions — check them every pass:
 
 - CLI help output in `readme.md` stale after new subcommands or option changes
 - Version references (`@vX.Y.Z`, `--version` examples) not bumped after releases
-- `GitHub Actions` miscapitalized as "GitHub actions" or "Github Actions"
+- `GitHub Actions` miscapitalized, with a lowercase `h` or `a`
 - Workflow job descriptions missing or outdated after job renames/additions
 - Grammar errors in CLI help strings (`"does not exists"`, missing periods)
 - Verbose "why" explanations in YAML workflow comments that belong in Python docstrings

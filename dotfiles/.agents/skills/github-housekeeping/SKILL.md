@@ -83,7 +83,7 @@ Hybrid pipeline, cheapest signal first:
 
 1. **Already labeled** items need nothing: record them as settled.
 2. **Keyword heuristics** derived from each label's own description. Score title hits heavily (a title match with no rival label is high confidence) and cap body-match contributions so long bodies cannot fake a signal. This confidently resolves roughly half of a typical backlog for free.
-3. **Agent batches** for the residual: parallel subagents, ~70 items each, given the taxonomy with calibration examples, item titles plus bodies truncated to ~500 chars, and the heuristic's best guess as a hint. Demand strict machine-parseable output (`number|label|confidence|rationale`, one line per item, every item exactly once) and validate on merge: unknown labels, missing items, and unparseable lines get retried or fall through.
+3. **Agent batches** for the residual: parallel subagents, ~70 items each, given the taxonomy with calibration examples, item titles plus bodies truncated to ~500 chars, and the heuristic's best guess as a hint. Demand strict machine-parseable output (`number|label|confidence|rationale`, one line per item, every item exactly once) and validate on merge: unknown labels, missing items, and unparsable lines get retried or fall through.
 4. **Fallback**: anything dropped by an agent gets classified by hand so coverage stays total.
 
 Review gates before applying: all low-confidence calls, plus every proposed `🪫 AI slop`/`🚫 wont do/fix`, go in a "needs review first" section of the plan, open items sorted first. Offer to open candidate batches in the browser (`xargs open < urls.txt`) so the maintainer can eyeball them quickly.

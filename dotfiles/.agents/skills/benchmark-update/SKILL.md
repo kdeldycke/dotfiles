@@ -64,7 +64,7 @@ For each included project, research its feature set by reading its documentation
 - **Distribution**: package registry badges (PyPI, crates.io, npm, Homebrew, etc.) as applicable.
 - **Metadata**: license, main language, latest version, benchmark date.
 
-Use ✅ for a supported feature, 🟡 for partial or opt-in support, ❌ for a feature the project lacks or rejects, and `N/A` where the row does not apply. Link every cell to its evidence: the documentation or a source line for ✅ and 🟡, and for ❌ a maintainer statement, a request closed as not planned or left open, or a documented limit. Absence of the feature is not evidence: with no citable source, leave the cell blank.
+Use `✓` for supported features, `~` for basic/partial support, empty for unsupported, `N/A` where not applicable.
 
 #### 4. Gap analysis
 
@@ -176,8 +176,6 @@ Stale or abandoned projects should be moved to the "Excluded projects" section w
 #### 2. Feature matrix accuracy
 
 For each feature row, spot-check 2-3 projects against their current documentation or changelog. Flag cells that look wrong (features added or removed since the benchmark was written).
-
-To audit the blank cells, research one project per subagent, and have it return the URL and the verbatim quote for each finding. Read every quote back from its source through the API before you fill a cell, and keep a cell blank when the finding contradicts a row that grades the same feature.
 
 #### 3. Gap analysis freshness
 

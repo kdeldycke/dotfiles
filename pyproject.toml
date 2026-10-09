@@ -198,14 +198,17 @@ default.extend-identifiers = { Github = "GitHub", IOS = "iOS", Javascript = "Jav
 default.extend-words = { astroid = "astroid", oject = "oject", sur = "sur", Sur = "Sur" }
 # Skip content between <!-- typos:off --> and <!-- typos:on --> markers.
 default.extend-ignore-re = [ "(?s)<!-- typos:off -->.*?<!-- typos:on -->" ]
-# Skip the content of SVG files. A terminal capture renders each run of
-# same-styled characters as one <text> element, so a word cut at a run boundary
-# leaves a fragment the checker reads as a misspelling. Correcting it in place
-# adds a letter to a run of fixed width, while the next run still carries the
-# rest of the word, so the picture gains a doubled letter. typos ships an "svg"
-# file type, so no glob is needed here. Filenames stay checked.
-type.svg.check-file = false
+# Check hidden files and directories too, which typos skips by default: the
+# `.github/` workflows and the `.claude/` agents and skills live there.
+files.ignore-hidden = false
+# Hidden files bring in paths typos must never rewrite. `.git` holds the
+# repository internals. `sync-gitignore` regenerates `.gitignore`, which also
+# carries globs like `[Ii]nclude` that typos reads as a typo it cannot fix.
+# `.mailmap` lists contributor names, where a fix renames a person.
 files.extend-exclude = [
+    ".git",
+    ".gitignore",
+    ".mailmap",
     # Terminal config.
     "assets/Monokai Soda.terminal",
     # Every key is an upstream package ID, not prose. `mpm restore` looks each
@@ -214,6 +217,13 @@ files.extend-exclude = [
     # The Homebrew cask `nativ` is the first name typos flagged.
     "packages.toml",
 ]
+# Skip the content of SVG files. A terminal capture renders each run of
+# same-styled characters as one <text> element, so a word cut at a run boundary
+# leaves a fragment the checker reads as a misspelling. Correcting it in place
+# adds a letter to a run of fixed width, while the next run still carries the
+# rest of the word, so the picture gains a doubled letter. typos ships an "svg"
+# file type, so no glob is needed here. Filenames stay checked.
+type.svg.check-file = false
 
 [tool.mypy]
 # Warn about unused '[mypy-*]' config sections.
