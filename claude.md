@@ -13,7 +13,7 @@ This file holds only the rules specific to this repository. The generic conventi
 
 ## pi models
 
-- **Nativ's Configure for Pi drops three hand-added `compat` keys from `dotfiles/.pi/agent/models.json`: `supportsFinishReason`, `maxTokensField` and `thinkingFormat`.** After a Configure, read `git diff -- dotfiles/.pi/agent/models.json`, keep the new model list and restore each key the diff shows as removed.
+- **Native's Configure for Pi drops three hand-added `compat` keys from `dotfiles/.pi/agent/models.json`: `supportsFinishReason`, `maxTokensField` and `thinkingFormat`.** After a Configure, read `git diff -- dotfiles/.pi/agent/models.json`, keep the new model list and restore each key the diff shows as removed.
 
 ## Skills
 
