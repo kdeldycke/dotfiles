@@ -202,7 +202,7 @@ claude() {
 # "pi-nativ --foo" would strand --foo after the subshell's closing paren.
 pi-nativ() {
     (cd ~/code/dotfiles && \
-        command pi --provider nativ --model Qwen/Qwen3.5-9B "$@")
+        command pi --provider nativ --model mlx-community/Qwen3.8-27B-4bit "$@")
 }
 
 # Date-prefix and retitle documents (PDFs, images, screenshots) in the directory
