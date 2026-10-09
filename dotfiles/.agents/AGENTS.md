@@ -130,17 +130,9 @@ Consuming a dependency from a git branch, a fork, a local path or a private inde
 
 ## A floor comment justifies one version
 
-Every version floor carries a comment above it saying what breaks below that version and where the project would notice. That comment documents **the floor as it stands**, in one short paragraph. It is not a log of how the floor got there.
+Every version floor carries a comment above it saying what breaks below that version and where the project would notice. That comment documents **the floor as it stands**, in one short paragraph. It is not a log of how the floor got there. When you raise a floor, **rewrite the comment, don't extend it**: the `repomatic-deps` skill says what to keep, what to delete and what to move out.
 
-The failure mode is additive and slow. A floor bump arrives, whoever writes it appends a paragraph about the new version, and nobody deletes the paragraph about the old one, since deleting text that reads as informative feels like losing something. Repeat over a few years and the comment is a private changelog of the dependency, with the declared version buried under the floors it replaced.
-
-So when you raise a floor, **rewrite the comment, don't extend it**:
-
-- **Keep** what the newly required version buys, named concretely enough to check: the API, the fix, the `requires-python` alignment, plus the call site or module that consumes it. A CVE identifier or upstream issue reference is part of that claim, not history.
-- **Delete** every superseded floor. A version no longer declared cannot break anything for a reader running the declared one, and `git log -- pyproject.toml` and `git blame` hold that story for whoever wants it.
-- **Move out** anything that is not about *this* floor: how the dependency is used across the codebase belongs in the module that uses it, and a comparison against an alternative package belongs in `docs/` or an `XXX` pointer to the upstream ticket.
-
-`lint-deps` warns (without failing) on any floor comment over `[tool.repomatic] lint-deps.comment-word-threshold` words, 40 by default: the same ceiling as a changelog bullet, for the same reason. Both are read by someone who came for one fact. A comment past that ceiling is either narrating history (cut it) or documenting two things (one of them belongs elsewhere).
+`lint-deps` warns (without failing) on any floor comment over `[tool.repomatic] lint-deps.comment-word-threshold` words, 40 by default.
 
 ## Documentation requirements
 
@@ -159,10 +151,10 @@ So when you raise a floor, **rewrite the comment, don't extend it**:
 
 Always update documentation when making changes:
 
-- **`changelog.md`**: One bullet per user-facing change, describing **what** changed (features, fixes, behavior changes), not **how** it was built or **why**. See [§ Changelog entry length](#changelog-entry-length); rationale belongs in `docs/`, code comments, the commit message, or the PR body, never the changelog.
+- **`changelog.md`**: One bullet per user-facing change: one sentence of ~10-25 words that describes **what** changed (features, fixes, behavior changes), not **how** it was built or **why**. A second sentence only flags a breaking change or a migration step. Rationale belongs in `docs/`, code comments, the commit message, or the PR body, never the changelog.
 - **`docs/`**: When this repo has a `docs/` tree, update the relevant page when adding or modifying workflow jobs, CLI commands, or configuration options.
 
-**Never ship an empty release section.** When a cycle's net diff since the last tag is entirely mechanical — a dependency-pin bump, a generated-file regen, a docs-only or CI-only fix — and nothing qualifies as user-facing, add one bullet naming what actually moved rather than leaving the section blank under a heading that still gets tagged and published. A blank section reads as unexplained or broken to anyone scanning release notes for that version. Assert the absence of functional impact only when it is verified (a green, behavior-preserving cycle); otherwise just name the mechanical change: "Sync CI tooling, workflow pins and dependency floors with the latest repomatic release."
+**Never ship an empty release section.** When a cycle's net diff since the last tag is entirely mechanical, add one bullet naming what actually moved. Assert the absence of functional impact only when it is verified (a green, behavior-preserving cycle).
 
 **Order within a release section:** `**Breaking:**` entries first, then `**Deprecated:**` entries, then new features, other changes, bug fixes and docs (a reader scans for breaking changes first).
 
@@ -172,23 +164,9 @@ Use `**Breaking:**` when a surface the reader actually consumes is gone and thei
 
 To back a `**Deprecated:**` change in code, keep the old name importable for one cycle instead of deleting it: resolve it through an alias registry in a PEP 562 module `__getattr__` hook that emits the `DeprecationWarning` and redirects to the replacement, then remove it in the release the entry named. Reserve a hard `**Breaking:**` removal for a surface that genuinely cannot keep working. The `_deprecated.py` modules in `click-extra` and `extra-platforms` are reference implementations.
 
-#### Changelog entry length
-
-A changelog entry is a **release note**, not a commit message or PR description. The reader scans to decide: does this affect me, and must I do anything? Write the shortest bullet that answers both.
-
-- **One sentence by default**, ~10-25 words. Add a second sentence only to flag a breaking change or migration step. A bullet past ~40 words is a smell: it smuggles in implementation detail (cut it) or covers two changes (split it).
-- **Keep the user-facing surface:** the public name (CLI command, option, config key, or exported function/class where the project is imported), what it does for the user, plus the migration when it breaks something. Lead with the change, not the mechanism.
-- **Cut what the user cannot see or act on**, and move it: *mechanism* (the module/function/job implementing it) to the commit, PR, or code comment; *rationale* (why this approach, which edge case) to a code/docstring comment or `docs/`; *archaeology* (dependency floors chased mid-cycle, root cause, CI trivia) to the commit or PR.
-- **Name, don't narrate.** "Add `--cooldown` to skip packages newer than a given age" beats three sentences naming the environment variable each backend uses.
+The `repomatic-changelog` skill holds the rest: what to leave out of an entry, how to consolidate a section and how to validate it. Load it before you rework a section.
 
 `lint-changelog` warns (without failing) on any unreleased bullet over `[tool.repomatic] changelog.bullet-word-threshold` words. Released sections are immutable.
-
-**Do not mention in the changelog:**
-
-- **Internal refactors behind an unchanged user surface**, in a project nobody imports. A module regrouped, a helper moved between modules, an enum merged or dropped, a signature reworked: none of it reaches a user whose CLI commands, config keys, workflow inputs and metadata keys all still resolve. Omit the bullet rather than demoting it out of `**Breaking:**`; the commit and PR already record the move.
-- **Test work of any kind.** Fixtures, snapshots, parametrize cases and assertions adjusted to match a change, and equally the structural work: a new harness or fixture mechanism, switching `unittest.TestCase` to functions, parametrizing a whole module. None of it reaches a user, and `git log` already records it for contributors.
-- **Short-shelf-life workarounds.** `tool.uv.exclude-newer-package` cooldown bypasses, dev pins for transient upstream bugs, `xfail` markers, commented-out lines: reverted within days. Drop unless load-bearing beyond a release cycle.
-- **Upstream issue commentary.** Prose about a ticket's state (open/closed/not planned, "mirrors the upstream fix in…"). It rots in days and duplicates what `git blame` and the linked thread show. A bare upstream link is fine for a direct backport (`fix … from upstream PR x/y#NNN`); anything longer belongs in a code comment, docstring, or PR. Strip the prose during `consolidate`.
 
 ### Knowledge placement
 
