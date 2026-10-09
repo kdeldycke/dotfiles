@@ -103,7 +103,6 @@
     ],
     "defaultMode": "auto"
   },
-  "model": "opus",
   "skillOverrides": {
     "built-in-browser": "off",
     "chrome-browser": "off",
@@ -213,7 +212,10 @@
         "~/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh"
       ]
     },
-    "enableWeakerNetworkIsolation": true
+    "enableWeakerNetworkIsolation": true,
+    "excludedCommands": [
+      "open *"
+    ]
   },
   "alwaysThinkingEnabled": true,
   "effortLevel": "high",
