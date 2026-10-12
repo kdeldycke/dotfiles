@@ -1,6 +1,7 @@
 {
   "lastChangelogVersion": "0.87.1",
   "theme": "gruvbox",
+  "tuiMode": "regular",
   "defaultProvider": "openrouter",
   "defaultModel": "qwen/qwen3.8-max-0902",
   "defaultThinkingLevel": "high",
