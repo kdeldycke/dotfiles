@@ -655,6 +655,7 @@ Non-obvious facts about this machine that have caused hard-to-diagnose failures:
 - **A Fork fetch autostashes the working tree, which reads as lost work.** It does not always pop the stash back: look in `git stash list` for `Fork autostash <date>` before redoing the work, and compare each stashed file against `HEAD` before dropping it.
 - **A scratch git repo inherits the global `commit.gpgsign`.** Pass `-c commit.gpgsign=false` to every commit in a repo nothing will push, or each one waits on the Secretive prompt.
 - **`uv lock` copies this machine's `repomatic` cooldown exemption into the lockfile.** It lands as `[options.exclude-newer-package]` in `uv.lock`, which no CI run produces: relock with `XDG_CONFIG_HOME` pointed at an empty directory.
+- **A `uv` install from a git source can fail inside the Bash sandbox** (Claude Code `2.1.284`). The clone behind `uv sync` or `uv run` ends with `RPC failed; curl 18 Transferred a partial file` or hangs with no output, while `uv lock` on the same source works: run the install with the sandbox off.
 
 ## Code generation preferences
 
