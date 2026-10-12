@@ -4,7 +4,7 @@
  * ## Why an extension
  *
  * pi has no permission layer: it runs every tool call the model issues and never asks first (its
- * `docs/security.md`, pi `0.99.1`). The deny rules in `~/.claude/settings.json` stop Claude Code
+ * `docs/security.md`, pi `1.1.0`). The deny rules in `~/.claude/settings.json` stop Claude Code
  * and nothing else, so in pi the same list was an instruction the model was free to ignore. A
  * `tool_call` handler runs before the tool and can block it. A blocked call runs no part of its
  * command, which is how Claude Code treats a denied compound command too.
