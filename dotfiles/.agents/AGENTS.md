@@ -585,6 +585,8 @@ A documentation outline is a structure too: before moving sections across a page
 
 Never run `git commit`, `git push`, `gh pr create`, or any other command that creates a commit, pushes to a remote, or opens a pull request unless I have explicitly authorized that specific action in the current conversation. Staging changes, drafting commit messages, and showing diffs are fine; the actual commit, push, or PR creation requires my explicit go-ahead each time. A prior authorization does not carry over to later actions.
 
+**A bare "commit" covers this session's repository alone.** For work in a sibling checkout too, ask before you stage there: the harness denies that commit as `[Unrequested Commit in a Connected App]` (Claude Code `2.1.284`).
+
 **Check `git log origin/<branch>..HEAD` before rewriting any commit, and rewrite only what it lists.** A commit already on the remote is mine to rewrite, not yours, whatever the improvement on offer: re-signing an unsigned one, correcting a message, splitting a bundle. Report it and let me decide. I push mid-session without announcing it, so a commit you made minutes ago may already be upstream, and "I only just wrote it" is not evidence that it is local. The recovery, when you have already rewritten one, is `git reset --mixed origin/<branch>`, which restores my history and keeps your later work in the tree; never force-push to make the remote match instead.
 
 `git commit --amend` rewrites `HEAD` and nothing else. Name the commit you mean and confirm `HEAD` is it, since an amend aimed at an older commit silently folds the current staged diff into the wrong message.
