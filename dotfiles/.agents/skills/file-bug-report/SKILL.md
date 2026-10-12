@@ -83,6 +83,8 @@ $ gh api repos/<owner/repo>/contents/.github/CODE_OF_CONDUCT.md --jq '.download_
 $ gh api repos/<owner/repo>/community/code_of_conduct --jq '.body'
 ```
 
+Read each file to its end. When the repository file only points to a code of conduct hosted elsewhere, fetch that page and read it too.
+
 #### 1d. Issue templates and forms
 
 List all issue templates. Repos may use classic markdown templates, YAML issue forms, or both:
@@ -189,6 +191,7 @@ The maintainer of the code is the authority on it. Hand over observations they c
 - **Date a behavior by the commit that added it, not by the release note that announced it.** Release notes list what is worth reading about now, not what shipped now: `git tag --contains {sha} | sort -V | head -1` names the first release that carried the commit.
 - **Report what varied, where, and the link to it, then stop.** Leave the diagnosis, its implications for CI or users, and the next step to the maintainer, who reaches them faster from the facts than from a summary of them.
 - **Give every failing reproducer a passing control beside it.** Without a near-identical case that passes, red cannot be told apart from a broken harness, a missing dependency or a mistake in the reproducer. Assert the control too, and have the job report the test as void when the control breaks.
+- **Run the reproducer in a second implementation before naming one.** When the target implements a shared standard (a browser engine, an interpreter, a compiler), the same result elsewhere moves the report to the standard, or to the code under test.
 - **Freeze the reproducer's vocabulary once the prose quotes it.** Renaming a log line, an artifact or a path that the report quotes forces a rerun, then a repoint of every link and quoted phrase.
 - **Re-read the draft before handing anyone steps to reproduce.** Give only the steps the draft records as reproducible, and flag a symptom seen only once as a one-off.
 
