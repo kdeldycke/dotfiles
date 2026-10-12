@@ -58,7 +58,7 @@ End with two short lists, a few words per item: **Done** first, then **Left to d
 
 **Done** holds what this session finished: lessons persisted and where (with the global file's size before and after, when the pass touched it), plus any tree work completed this turn. A lesson deliberately capped at a suggestion is not done: it moves to **Left to do** as a `Review:` item instead, so every decision the user owes lives in one list. A lesson examined and skipped because the code, history, or docs already record it appears here as one line: `Skipped: …`, naming where it already lives. The report is exactly these two lists and nothing else.
 
-**Left to do** holds every remaining action. Order it so it can be executed top to bottom: create-and-fix work first, then documentation, then `Commit:`, then `Push:`/`Report:`. Name each item's target in full: the path, the SHA, the checkout, the upstream project. Prefix each item with an action label naming the verb it needs, so the list is scannable at a glance. Pick the narrowest label that fits:
+**Left to do** holds every remaining action. Order it so it can be executed top to bottom: create-and-fix work first, then documentation, then `Commit:`, then `Push:`/`Report:`. Name each item's target in full: the path, the SHA, the checkout, the upstream project. Say what an item waits on when this session cannot run it: a credential it does not hold, a release not yet published. Prefix each item with an action label naming the verb it needs, so the list is scannable at a glance. Pick the narrowest label that fits:
 
 - `Commit:` — uncommitted changes to stage and commit in this repository.
 - `Push:` — commits already made but not on the remote.
