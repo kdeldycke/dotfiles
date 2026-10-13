@@ -82,8 +82,7 @@ jobs:
           rm /usr/local/bin/aws_completer
           brew untap aws/tap
       - name: Install Zsh
-        run: |
-          brew install zsh
+        run: brew install zsh
       - name: Force default shell
         # GitHub macOS images forces bash as default:
         # https://github.com/actions/virtual-environments/blob/0d93dd2/images/macos/provision/configuration/shell-change.sh#L3-L5
@@ -99,8 +98,7 @@ jobs:
         env:
           SURVEY: 1
           SURVEY_LOG: ${{ runner.temp }}/dotfiles-survey.log
-        run: |
-          zsh ./install.sh
+        run: zsh ./install.sh
 
       # The menu bar audit asks what macOS kept of what the script declared,
       # which only means something on a machine the script has configured. A
