@@ -1,49 +1,43 @@
 {
-  "providers" : {
-    "nativ" : {
-      "api" : "openai-completions",
-      "apiKey" : "nativ",
-      "baseUrl" : "http://127.0.0.1:8080/v1",
-      "compat" : {
-        "maxTokensField" : "max_tokens",
-        "supportsDeveloperRole" : false,
-        "supportsFinishReason" : false,
-        "supportsReasoningEffort" : false,
-        "supportsUsageInStreaming" : true,
-        "thinkingFormat" : "qwen"
+  "providers": {
+    "nativ": {
+      "api": "openai-completions",
+      "apiKey": "nativ",
+      "baseUrl": "http://127.0.0.1:8080/v1",
+      "compat": {
+        "maxTokensField": "max_tokens",
+        "supportsDeveloperRole": false,
+        "supportsFinishReason": false,
+        "supportsReasoningEffort": false,
+        "supportsUsageInStreaming": true,
+        "thinkingFormat": "qwen"
       },
-      "models" : [
+      "models": [
         {
-          "contextWindow" : 262144,
-          "cost" : {
-            "cacheRead" : 0,
-            "cacheWrite" : 0,
-            "input" : 0,
-            "output" : 0
+          "contextWindow": 262144,
+          "cost": {
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "input": 0,
+            "output": 0
           },
-          "id" : "mlx-community/Qwen3.8-27B-4bit",
-          "input" : [
-            "text",
-            "image"
-          ],
-          "name" : "Qwen3.8-27B-4bit",
-          "reasoning" : true
+          "id": "mlx-community/Qwen3.8-27B-4bit",
+          "input": ["text", "image"],
+          "name": "Qwen3.8-27B-4bit",
+          "reasoning": true
         },
         {
-          "contextWindow" : 262144,
-          "cost" : {
-            "cacheRead" : 0,
-            "cacheWrite" : 0,
-            "input" : 0,
-            "output" : 0
+          "contextWindow": 262144,
+          "cost": {
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "input": 0,
+            "output": 0
           },
-          "id" : "mlx-community/Qwen3.8-27B-OptiQ-4bit",
-          "input" : [
-            "text",
-            "image"
-          ],
-          "name" : "Qwen3.8-27B-OptiQ-4bit",
-          "reasoning" : true
+          "id": "mlx-community/Qwen3.8-27B-OptiQ-4bit",
+          "input": ["text", "image"],
+          "name": "Qwen3.8-27B-OptiQ-4bit",
+          "reasoning": true
         }
       ]
     }
