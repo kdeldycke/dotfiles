@@ -36,7 +36,7 @@ $ uvx --no-progress 'repomatic==X.Y.Z' init --no-cooldown workflows/autofix.yaml
 
 `--no-cooldown` moves the pin. Without it, `init` holds the pin back while the release is inside the window, and leaves the workflows as they are. `init --upgrade` cannot do this job: it skips a release inside the window, and it takes no components.
 
-Name the components explicitly. A bare `repomatic init` also materializes whatever else is in scope for the repository (labels config, a changelog), and an unqualified `workflows` selector bypasses scope gating.
+Name the components explicitly. A bare `repomatic init` also materializes whatever else is in scope for the repository (labels config, a changelog), and an unqualified `workflows` selector bypasses scope gating. Name each re-synced tool config too, like `typos`: workflows alone leave those sections one release behind.
 
 Then run `/repomatic-upgrade`, which `init` prints as its last next step. A renamed autofix job is the recurring manual follow-up: its old PR branch stays open, attached to a job that no longer exists.
 
