@@ -146,6 +146,23 @@ extend-exclude = [
 indentStyle = "space"
 indentWidth = 2
 
+[tool.biome.files]
+# The application that owns each file excluded below rewrites it in its own
+# layout. That layout differs from Biome's: a one-item array on three lines, a
+# space before each colon, no final newline. A formatted copy lasts until the
+# next write, so `format-json` proposes the same rewrite on every run.
+#
+# Each pattern starts with `**/`. repomatic gives this table to Biome in a
+# temporary config file, and a pattern anchored at the repository root matches
+# nothing from there.
+includes = [
+    "**",
+    "!**/dotfiles/.claude/settings.json",
+    "!**/dotfiles/.pi/agent/models.json",
+    "!**/dotfiles/.pi/agent/settings.json",
+    "!**/dotfiles/Library/Application Support/Code/User/settings.json",
+]
+
 [tool.gitleaks.extend]
 # Keep the rules built into gitleaks. repomatic writes this table to a
 # temporary `.gitleaks.toml`, and a config file without this key replaces the
