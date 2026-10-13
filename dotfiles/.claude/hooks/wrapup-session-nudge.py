@@ -238,7 +238,7 @@ def main() -> None:
     try:
         payload = json.load(sys.stdin)
     except ValueError:
-        log("unparseable stdin payload")
+        log("unparsable stdin payload")
         return
     nudge, why = decide(payload)
     if not nudge:
