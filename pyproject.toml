@@ -146,6 +146,12 @@ extend-exclude = [
 indentStyle = "space"
 indentWidth = 2
 
+[tool.gitleaks.extend]
+# Keep the rules built into gitleaks. repomatic writes this table to a
+# temporary `.gitleaks.toml`, and a config file without this key replaces the
+# built-in rules with its own. With an allowlist alone, that leaves no rule.
+useDefault = true
+
 [tool.gitleaks.allowlist]
 description = "False positives"
 commits = [
@@ -158,6 +164,11 @@ commits = [
     # Dummy API_KEY="abcdef123456" example in BitBar plugin.
     # https://github.com/kdeldycke/dotfiles/commit/49d09fd0f65b7a7a6c382272fc6819f0ead2a76c
     "49d09fd0f65b7a7a6c382272fc6819f0ead2a76c",
+]
+# The dummy value the comment above quotes. A commit list cannot cover it: each
+# commit that adds or moves that comment line adds the value again.
+regexes = [
+    "abcdef123456",
 ]
 
 [tool.lychee]
