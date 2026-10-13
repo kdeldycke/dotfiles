@@ -29,7 +29,7 @@ Fetch this file as reference when building or auditing an upstream page:
 The page uses five sections:
 
 1. **Code contributed upstream** - PRs authored by the maintainer and merged into upstream projects. Organized by project, optionally grouped by theme within large projects.
-2. **Upstreamed from this project** - Issues the project solved with local workarounds first, then the fix was contributed upstream and the workaround removed locally.
+2. **Upstreamed from this project** - Issues the maintainer reported that upstream then fixed. Where the project carried a workaround meanwhile, the entry names it and says when it went away.
 3. **Addressed by this project** - Issues that remain open or unfixed upstream; this project provides the solution. Grouped by feature area.
 4. **Declined by upstream** - PRs or issues rejected by upstream maintainers; this project provides the functionality regardless.
 5. **Open upstream** - PRs and issues still pending upstream.
@@ -86,7 +86,12 @@ Three traps in that sweep:
 - Results are best-match, so a `--limit` below the true total drops the oldest items silently. Treat a result count equal to the limit as truncated.
 - A URL cited in the codebase is not a contribution: authorship from these sweeps separates "we filed it" from "we cite someone else's issue as evidence". Both matter, but they land in different sections.
 
-When the maintainer runs several projects with upstream pages, dedupe against the sibling pages and give each item one canonical home: the project whose code consumes the dependency. Distribution packaging of the project itself belongs to its packaging docs, not this page.
+When the maintainer runs several projects with upstream pages, dedupe against the sibling pages and give each item one canonical home. Pick it in this order:
+
+1. The project whose activity produced the item: the first of the maintainer's repositories that references it in a commit, issue or pull request. Read the item's `CROSS_REFERENCED_EVENT` and `REFERENCED_EVENT` timeline items through GraphQL to find those references. With no reference, judge by date and topic.
+2. When that repository has no upstream page, or the item predates the project: the project with authority over the tooling or workflow concerned.
+
+Move an item found on the wrong sibling page to its home, and delete it from the old page in the same pass. Distribution packaging of the project itself belongs to its packaging docs, not this page.
 
 #### 4. Check status of each item
 
@@ -130,15 +135,17 @@ Also check `docs/` and any changelog for upstream references.
 
 #### 6. Categorize each item
 
-| Item type | Status                                                  | Section                      |
-| --------- | ------------------------------------------------------- | ---------------------------- |
-| PR        | merged                                                  | Code contributed upstream    |
-| PR        | closed, not merged                                      | Declined by upstream         |
-| PR        | open                                                    | Open upstream                |
-| Issue     | closed, this project had workaround, workaround removed | Upstreamed from this project |
-| Issue     | open or closed, this project provides workaround        | Addressed by this project    |
-| Issue     | closed as not planned                                   | Declined by upstream         |
-| Issue     | open, no local workaround                               | Open upstream                |
+| Item type | Status                                                   | Section                      |
+| --------- | -------------------------------------------------------- | ---------------------------- |
+| PR        | merged                                                   | Code contributed upstream    |
+| PR        | closed, not merged                                       | Declined by upstream         |
+| PR        | open                                                     | Open upstream                |
+| Issue     | open or closed, this project still provides a workaround | Addressed by this project    |
+| Issue     | closed as completed                                      | Upstreamed from this project |
+| Issue     | closed as not planned                                    | Declined by upstream         |
+| Issue     | open, no local workaround                                | Open upstream                |
+
+The first matching row wins. List every issue the maintainer reported, even one closed with no local workaround ever needed. Skip a closed PR that its author withdrew, or that a later merged PR replaced: nobody declined it.
 
 To determine whether the project has a workaround for an issue, search the codebase for references to that issue URL or number.
 
@@ -146,10 +153,14 @@ To determine whether the project has a workaround for an issue, search the codeb
 
 Write the document following the five-section structure. Within "Code contributed upstream", group PRs by upstream project and optionally by theme (for projects with many PRs). Within "Addressed by this project", group by feature area rather than by upstream project.
 
+Give a project its own heading in one section only when `docs/conf.py` loads `sphinx.ext.autosectionlabel`: a repeated heading raises a duplicate-label warning. Elsewhere, write `project#N` in the item's link text.
+
+Wrap an item whose title quotes a misspelling in `<!-- typos:off -->` and `<!-- typos:on -->` lines, or the `fix-typos` job rewrites the title.
+
 Use the `{octicon}` title format if sphinx-design is available (check `docs/conf.py` for the extension):
 
 ```markdown
-# {octicon}`git-pull-request` Upstream
+# {octicon}`cross-reference` Upstream
 ```
 
 ### Auditing an existing page (`audit`)

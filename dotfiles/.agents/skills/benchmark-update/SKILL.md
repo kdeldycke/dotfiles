@@ -179,6 +179,10 @@ For each feature row, spot-check 2-3 projects against their current documentatio
 
 To audit the blank cells, research one project per subagent, and have it return the URL and the verbatim quote for each finding. Read every quote back from its source through the API before you fill a cell, and keep a cell blank when the finding contradicts a row that grades the same feature.
 
+A row added since the last pass gets every competitor cell assessed, not a sample: its cells start unassessed, and a blank cell reads as "no citable source".
+
+Re-anchor the version-pinned evidence links of a competitor that shipped a new release. A link pinned to a tag or a commit with a line range (`blob/v17.12.2/src/steps.rs#L120-L140`) keeps pointing at the old release. Find the same snippet in the new release by its content, never by the old line numbers, then repoint the link to the new tag and range. A snippet that is gone means the cell needs a fresh assessment.
+
 #### 3. Gap analysis freshness
 
 For each item in "Gaps and opportunities", check whether the linked upstream issues have changed status:

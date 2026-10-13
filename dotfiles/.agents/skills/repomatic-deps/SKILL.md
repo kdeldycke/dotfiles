@@ -38,7 +38,9 @@ You help users understand and maintain their project's dependencies. This skill 
 
 ### Mechanical layer
 
-The `_release-engine.yaml` workflow's `update-dep-graph` job regenerates the dependency graph on release commits only, to avoid noise from transitive dependency changes. This mode is useful for **interactive analysis** — understanding the graph, spotting concerns, or generating it before pushing.
+The `autofix.yaml` workflow's `update-dep-graph` job regenerates the dependency graph on every push, for packages and uv virtual projects alike. This mode is useful for **interactive analysis** — understanding the graph, spotting concerns, or generating it before pushing.
+
+With `[tool.repomatic] dependency-graph.update = false`, the `update-dep-graph` command exits without writing a graph, and the job opens no pull request. Tell the user so, and skip this mode.
 
 ### Argument handling
 
@@ -77,21 +79,27 @@ These conventions are derived from the `pyproject.toml` files across all `kdeldy
 1. **Use `>=` (not `~=` or `==`).** Relaxed lower bounds give packagers freedom to release security hotfixes without waiting for an upstream bump. Upper bounds are forbidden per [https://iscinumpy.dev/post/bound-version-constraints/](https://iscinumpy.dev/post/bound-version-constraints/).
 2. **Every version bound needs a comment tying the floor to a concrete code dependency.** The comment goes on the line above the dependency and states which feature, method, or API from that version the project actually uses. Prefer referencing the call site or module that depends on it:
    ```toml
-   # wcmatch 10.0 changed globbing semantics; our sync_gitignore() relies on
-   # the new symlink-aware matching behavior.
-   "wcmatch>=10",
+   dependencies = [
+     # wcmatch 10.0 changed globbing semantics; our sync_gitignore() relies on
+     # the new symlink-aware matching behavior.
+     "wcmatch>=10",
+   ]
    ```
    A good floor comment answers: "if someone installed an older version, what would break and where?" If you cannot point to a concrete usage, the floor may be unnecessarily high.
    **A floor comment documents the floor as it stands, in one short paragraph.** It is not a record of how the floor got there. Left alone it drifts that way on its own: each bump appends a paragraph about the newly required version, nothing is deleted, and the comment becomes a private changelog of the dependency with the declared version buried under the floors it replaced. When raising a floor, **rewrite the comment rather than extending it**: keep what the new version buys (API, fix, `requires-python` alignment, the call site consuming it, a CVE or upstream issue identifier), delete every superseded floor (`git log -- pyproject.toml` keeps that history), and move out what is not about this floor (usage detail belongs in the module using it, a comparison against an alternative package in an `XXX` pointer to the upstream ticket). `lint-deps` warns past 40 words, which is the ceiling to write to even where it is not run.
    **Security fixes are also a valid floor bump reason.** A CVE or advisory in an older version justifies raising the floor even when the API is unchanged. The comment should cite the CVE or advisory:
    ```toml
-   # requests 2.32.0 fixes CVE-2024-35195 (session credential leak on redirects).
-   "requests>=2.32",
+   dependencies = [
+     # requests 2.32.0 fixes CVE-2024-35195 (session credential leak on redirects).
+     "requests>=2.32",
+   ]
    ```
-3. **Python version support is not a valid reason to bump a floor.** The dependency resolver already picks the right version via `requires-python` metadata. If `boltons>=20` works and boltons 25 merely adds Python 3.13 support, keep `>=20` — the resolver handles it. **Exception:** when a dependency *drops* a Python version your project still supports (or your project drops one, aligning minimum `requires-python`), that alignment is a valid floor bump reason. The comment should state the version range alignment, not the Python support:
+3. **Python version support is not a valid reason to bump a floor.** The dependency resolver already picks the right version via `requires-python` metadata. If `mango>=2` works and mango 5 merely adds Python 3.13 support, keep `>=2` — the resolver handles it. **Exception:** when a dependency *drops* a Python version your project still supports (or your project drops one, aligning minimum `requires-python`), that alignment is a valid floor bump reason. The comment should state the version range alignment, not the Python support:
    ```toml
-   # boltons 25.0.0 dropped Python 3.9, matching our requires-python >= 3.10.
-   "boltons>=25",
+   dependencies = [
+     # coverage 7.11.0 dropped Python 3.9, matching our requires-python >= 3.10.
+     "coverage>=7.11",
+   ]
    ```
 4. **Use conditional markers for Python-version-gated deps.** Example: `"tomli>=2; python_version<'3.11'"`. When a dep has a version marker, the floor rationale must make sense for the Python versions where the dep is actually installed — not for versions excluded by the marker.
 5. **Alphabetical order** within the list.
@@ -120,6 +128,7 @@ Read the full `pyproject.toml`. `lint-deps` already reports the specifier style,
 | Stale comment             | Comment references a reason that no longer applies (the cited method was replaced, or the Python version left the support matrix)                               |
 | Accreted comment          | Comment narrates superseded floors beside the declared one. Rewrite it around the version in force; `lint-deps` catches only the long ones                      |
 | Inflated floor            | Floor higher than the oldest version providing the APIs actually used (see [floor verification](#floor-verification) below)                                     |
+| Understated floor         | Floor lower than the oldest version the code runs on (see [lowest-version check](#lowest-version-check) below)                                                  |
 | Marker/rationale mismatch | Floor rationale contradicts the conditional marker (e.g., "Python 3.14 wheels" on a dep gated by `python_version<'3.11'` — that dep is never installed on 3.14) |
 | Section style             | `[project.optional-dependencies]` used where `[dependency-groups]` would be appropriate                                                                         |
 | Conditional markers       | Missing Python version marker for backport packages                                                                                                             |
@@ -132,7 +141,19 @@ Comments and changelogs can lie; the codebase is the source of truth. For each d
 1. **Grep for imports.** Search the source tree for all imports from the package. List the specific APIs used (functions, classes, constants).
 2. **Determine the oldest version providing those APIs.** Check when the API was introduced — changelogs, release notes, or `pip index versions <pkg>` to see what exists on PyPI. A floor that rests on a behavior (comments kept, output formatting) needs a bisect instead, since a changelog can credit it to a later release than the one that shipped it. Run one probe per release with `uv run --no-project --exclude-newer '1 week' --with '<pkg>==<version>' python probe.py`, and compare each output byte for byte with the locked release.
 3. **Lower the floor** when it exceeds the oldest compatible version. Prefer conservative minimums (the major version that introduced the API) over aggressive ones. Update both the version specifier and the comment.
-4. **Run `uv lock`** after any floor change to verify the lock still resolves.
+4. **Run `uv lock`** after any floor change to verify the lock still resolves. Run it with the uv version the workflows pin on their `setup-uv` steps, like `uvx --exclude-newer '1 week' --from 'uv==X.Y.Z' uv lock`: a newer local uv rewrites the lockfile `revision` and adds tables that CI never writes. After a floor raised in one dependency group only, add `--upgrade-package <pkg>`: a group with its own `requires-python` resolves as a separate fork, and a plain `uv lock` keeps the old pin in the other one.
+
+#### Lowest-version check
+
+A floor can also be too low: the code calls an API that the declared version lacks. The lockfile holds the newest release of each dependency, so no ordinary test run shows it, and the first to see it is a user on an old environment.
+
+1. **Resolve every direct dependency at its floor.** Run `uv pip compile pyproject.toml --resolution lowest-direct --exclude-newer '1 week' --python-version <floor>`, with the lowest Python the project supports. It prints the set and installs nothing.
+2. **Compare the output with the declared floors.** A package resolved above its floor is held there by another requirement, so no install can reach the declared version. Report it as **Info**, with the requirement that holds it.
+3. **Run the suite on the lowest set.** In a throwaway `git worktree`, `uv sync --resolution lowest-direct --all-extras --group test` installs it and `uv run --frozen -- pytest` tests it. The sync rewrites `uv.lock`, so keep it out of the main checkout. When the test matrix carries a `lowest-direct` cell, read its last CI result instead.
+4. **Probe what the suite cannot see.** Two cases pass the suite and still break a user. The test tooling can hold a dependency above its floor, as pytest does for `packaging`. A mocked client hides the library behind it. For each one, write a script that makes the call the code makes, and run it against the floor: `uv run --no-project --exclude-newer '1 week' --with '<pkg>==<floor>' python probe.py`.
+5. **Raise a floor that fails**, to the first release that passes. Name the failing call in the comment.
+
+To test one floor alone, build an environment from the lockfile and swap that package in with `uv pip install --exclude-newer '1 week' --no-deps '<pkg>==<floor>'`. `uv run --with` resolves the package's own dependencies again, so a failure there can come from another package.
 
 #### Special cases
 
@@ -165,12 +186,12 @@ These comment patterns typically signal a floor set at adoption or auto-bump tim
 
 The `[tool.uv]` section may contain `exclude-newer-package` entries that exempt specific packages from the global `exclude-newer` cooldown window. They arrive from two places: written by hand (the package is published by the same maintainer, or is developed in-repo), or written by `audit --fix`, which reaches a CVE fix still inside the window through an entry rather than lifting `exclude-newer` for the whole tree.
 
-**Expiry is mechanical, so do not audit for it.** `sync-uv-lock` owns the lifecycle of every entry and reports each move in its PR body: it rewrites a relative span (`"0 day"`) into a fixed cutoff pinned to the locked version's upload time, which *holds* the package instead of letting it track latest, then prunes the entry outright once that held version ages past the global cooldown and the package rejoins normal resolution. A live fixed cutoff is therefore a freeze doing its job, not a leftover: proposing its deletion un-holds a package the freeze was deliberately pinning. A surviving relative span means the freeze has not run yet, not that a span is the steady state.
+**Expiry is mechanical, so do not audit for it.** `sync-uv-lock` owns the lifecycle of every entry and reports each move in its PR body: it rewrites a relative span (`"0 day"`) into a fixed cutoff pinned to the locked version's upload time, which *holds* the package instead of letting it track latest, then prunes the entry outright once that held version ages past the global cooldown and the package rejoins normal resolution. A live fixed cutoff is therefore a freeze doing its job, not a leftover: proposing its deletion un-holds a package the freeze was deliberately pinning. A surviving relative span means the freeze has not run yet, except on a package with no upload time in the lockfile: one consumed from a git or path source, or one the lockfile does not hold. That span stays as written.
 
 What is left for this audit is the part no schedule settles:
 
-1. **Is the package still a dependency?** If it was removed from `[project].dependencies` and all `[dependency-groups]`, the entry is dead weight that no prune will ever reach, since pruning keys off the locked version's age and the package is no longer in the lock.
-2. **Is a hand-written exemption still justified?** A same-maintainer or in-repo package keeps its span indefinitely and correctly. An external package exempted during a migration that has since finished no longer needs one.
+1. **Is the package still a dependency?** If it was removed from `[project].dependencies` and all `[dependency-groups]`, a relative span on it is dead weight that no prune will ever reach. A fixed cutoff needs no audit there: `sync-uv-lock` prunes it once the cooldown window has passed the cutoff itself.
+2. **Is a hand-written exemption still justified?** A package consumed from a git or path source keeps its span indefinitely and correctly. A same-maintainer package on an index does not: its entry admits one release, and is written again for the next one that must not wait. An external package exempted during a migration that has since finished no longer needs one.
 3. **Does the comment explain the reason?** Like version floors, a hand-written exemption should carry a comment naming why the cooldown does not apply to it.
 
 Flag those as warnings. Never flag an entry merely for existing or for looking old.
@@ -188,10 +209,10 @@ Produce:
 
 1. **Policy compliance summary**: A table with one row per dependency: name, specifier, has comment (yes/no), issues found.
 2. **Grouped findings** by severity:
-   - **Errors**: Wrong specifier style, missing version, upper bounds.
+   - **Errors**: Wrong specifier style, missing version, upper bounds, understated floors.
    - **Warnings**: Missing or stale comments, ordering issues, inflated floors, marker/rationale mismatches.
-   - **Info**: Suggestions for floor adjustments based on API verification or cross-repo data.
-3. **Suggested fixes**: For each error/warning, show the current line and the recommended replacement. For inflated floors, include the verified API minimum and a rewritten comment.
+   - **Info**: Suggestions for floor adjustments based on API verification or cross-repo data, and floors that no install can reach.
+3. **Suggested fixes**: For each error/warning, show the current line and the recommended replacement. For inflated floors, include the verified API minimum and a rewritten comment. For understated floors, include the failing call and the first release that passes.
 
 ---
 
@@ -279,7 +300,7 @@ Common false-positive patterns to reject early:
 
 1. **Find the version deltas.** Determine which dependencies changed, and from and to which version, cheapest source first:
 
-   - The most recent `sync-uv-lock` PR — its body lists every bump with its old and new version and a changelog or compare link per package. Find it with `gh pr list --search 'head:sync-uv-lock' --state all --limit 1`, then `gh pr view <number> --json body`.
+   - The most recent `sync-uv-lock` PR — its body lists every bump with its old and new version and a changelog or compare link per package. Find it with `gh pr list --search 'head:sync-uv-lock' --state all --limit 1`, then `gh pr view <number> --json body`. That body covers one sync only: when several merged since the last release tag, diff the lockfile against the tag to get the whole range.
    - Failing that, find the last release tag (`git tag --sort=-v:refname | head -1`) and diff the lockfile against it (`git diff <tag> -- uv.lock`), reading the version pairs.
    - For a single named package, read its locked version and the `pyproject.toml` floor.
 

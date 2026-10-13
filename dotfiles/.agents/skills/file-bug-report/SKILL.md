@@ -157,9 +157,18 @@ $ gh issue list --repo <owner/repo> --state all --json title,url,state
 
 Search with multiple keyword variations (error messages, function names, symptoms). Check both open and closed issues: the bug may have been reported and closed as "won't fix", or fixed in a version the user hasn't upgraded to.
 
-If a matching open issue exists, report it to the user and stop. If a matching closed issue exists, mention it in the report with a link and explain why this is a new occurrence (different version, different context, regression).
+If a matching open issue exists, report it to the user and stop. Do not offer a comment on an issue that a maintainer has already answered as in progress, unless the user asks for one. If a matching closed issue exists, mention it in the report with a link and explain why this is a new occurrence (different version, different context, regression).
 
 A matching issue closed for lack of a reproducer is not a dead end: cite it, because that closure is part of the record, and supply what it lacked.
+
+A keyword search over issues is not enough. Run these four checks too before you report the result to the user:
+
+- **Pull requests.** Run the same keywords through `gh search prs`: a fix under review answers the report before it is filed.
+- **Everything since the behavior appeared.** List the issues and pull requests created since the commit that introduced it, and read every title. A body search is noisy, because pasted logs hold the tool's own vocabulary.
+- **Branches and release notes.** Read the development branches and the release notes for a fix in progress, and for the maintainer's own words on the topic.
+- **Overlap.** Name the threads that share the theme without being duplicates. Cross-reference in the report the ones a reader can confuse with it.
+
+Tell the user which checks ran, and what each one could not reach: a deleted issue, a truncated search, a chat server.
 
 ### 3. Gather evidence
 

@@ -53,6 +53,7 @@ For each bullet outside the skip bin, find what it touches here. Grep the source
 - **A changed job.** Before you report it as adopted, call the released code on this repository's real inputs. An open pull request from that job shows only what its last run did, and that run can predate the adopted pin. A job that reads a file from another project also stops working when that file moves.
 - **A synced skill or subagent.** `repomatic init` rewrites every bundled copy verbatim, so the upgrade also reverts each local commit made to one since the last sync. Take every copy under `skills.location` and `subagents.location` as it stood before the upgrade. That is `HEAD` while the upgrade is uncommitted, and the upgrade commit's parent once it landed. Compare it with upstream's `.claude/skills/{name}/SKILL.md` or `.claude/agents/{name}.md` at `vOLD`. Read those paths, not `repomatic/data/skills/`: its entries are symlinks, and `git show` returns their target path. A copy that matches neither `vOLD` nor any upstream commit between the two tags carries local edits. The upgrade drops them, so report them as a `breaking` row.
 - **A new `lint-repo` check.** Run `<cmd> lint-repo --repo {owner}/{repo}` and read its line: a check that passes here offers nothing. Without `--repo`, a local run has no `$GITHUB_REPOSITORY`, so every API-backed check drops out of the output.
+- **A seeded tool config that lacks a bundled template entry.** `init` writes `[tool.ruff]`, `[tool.pytest]`, `[tool.coverage]`, `[tool.mypy]` and `[tool.mdformat]` once, and `lint-repo` names each entry such a section lacks. Copy the entry when it applies here. Record one that the repository leaves out on purpose under `[tool.repomatic] lint-repo.declined`, with the reason its instructions or comments give. The key is the tool, then the path of the entry in its section, like `mypy.warn_unreachable = "{reason}"`. For one member of a list, add the member as `lint-repo` prints it, like `pytest.addopts."--numprocesses=auto" = "{reason}"`. Ask the user when no reason is stated. Never copy an entry only to silence the warning.
 
 Keep the two axes apart, as `/repomatic-audit` does: what the release offers is this skill, what the repository drifted from is that one. A local deviation the release does not touch belongs to the audit, not here.
 
@@ -66,13 +67,13 @@ Produce one table: changelog entry, bin (`breaking`, `adopt`, `drop`, `simplify`
 2. **Keep the local edits a synced copy carries.** Restore the file as it stood before the upgrade when upstream left it unchanged between the two tags. Otherwise re-apply the local commits onto the new copy: `git apply -C1` gets past a context line upstream reworded. Then port the edits upstream, as step 4 describes, or the next sync reverts them again.
 3. **Run the local checks after each row.** The project's tests, `mypy` and `ruff`, plus `<cmd> lint-repo --repo {owner}/{repo}` when the row touched `.github/` or `pyproject.toml`. A failing check vetoes the row: revert it and note it in the report. Never loosen a test to pass.
 4. **Send generator problems upstream, as edits in the sibling checkout.** When a row needs a change in `repomatic` itself (a generator writing something unwanted, a missing knob, a docs gap, a lesson a synced copy carries) and the context shows `SIBLING_CHECKOUT`, implement it in `../repomatic`: the code, the tests it breaks, and a changelog bullet. Verify it there. `repomatic run typos` and `mdformat` rewrite files in place and print no findings, so judge them by `git diff`. Another session may share that checkout: edit only the files the row needs, and name them in the report so they can be committed by pathspec. Leave every change uncommitted. Without a sibling checkout, describe the change in the report instead.
-5. **Never commit, push, or open an issue or pull request.** The user reviews the working tree and decides, so the skill needs no report-only mode.
+5. **Never commit, push, or open an issue or pull request.** The user reviews the working tree and decides.
 6. **Report.** What was applied, per row. What sits uncommitted in `../repomatic`. What was skipped, and why.
 
 ### What not to touch
 
 - **An adoption that needs a token, a service or a new external setup.** List it with a recommendation and leave it to the user. Apply the `adopt` rows that need only configuration.
-- **A deviation `[tool.repomatic] exclude` or `include` records.** Those are decisions.
+- **A deviation `[tool.repomatic] exclude`, `include` or `lint-repo.declined` records.** Those are decisions.
 - **A major-version migration that needs broad rework.** Report it and stop.
 
 ### Next steps

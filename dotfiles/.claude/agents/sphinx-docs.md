@@ -187,7 +187,7 @@ The reader's eye lands on line 7 of the Python and line 2 of the captured table 
 
 ### Emitting raw HTML from `{python:render}`
 
-`{python:render}` parses captured stdout as MyST, and MyST passes block-level raw HTML straight through to the rendered page. So a generator that produces HTML can just `print(html)` — no `{raw} html` wrap, no extra plumbing:
+`{python:render}` parses captured stdout as MyST, and MyST passes block-level raw HTML straight through to the rendered page. So a generator that produces HTML can just `print(html)` — no `{raw} html` wrap:
 
 ````markdown
 ```{python:render}
@@ -221,7 +221,7 @@ Conversion lifecycle:
 
 - Authors write **MyST** in `*.py` docstrings (`` {role}`target` ``, `[text](url)`, single-backtick inline code, ```` ```{directive} ```` admonitions).
 - The `click_extra.sphinx.myst_docstrings` Sphinx extension hooks `autodoc-process-docstring` at priority 400 and converts MyST to reST at build time, before `sphinx_autodoc_typehints` runs. So the rendered HTML is the same as if the docstrings were always reST, while the source files stay editable in MyST.
-- Run `uvx click-extra convert-to-myst` (or `click-extra convert-to-myst path/to/pkg/`) to migrate an existing reST codebase. The converter is idempotent — already-MyST docstrings are a no-op.
+- Run `uvx --exclude-newer '1 week' click-extra convert-to-myst` (or `click-extra convert-to-myst path/to/pkg/`) to migrate an existing reST codebase. The converter is idempotent — already-MyST docstrings are a no-op.
 
 Extension load order (the rule, with the rationale):
 
@@ -428,10 +428,10 @@ def _link(kind, target):
 for path in Path(".").rglob("*"):
     if path.suffix not in {".md", ".rst", ".py"} or not path.is_file():
         continue
-    text = path.read_text(encoding="utf-8")
+    text = path.read_text(encoding="UTF-8")
     for pattern, replacement in PATTERNS:
         text = pattern.sub(replacement, text)
-    path.write_text(text, encoding="utf-8")
+    path.write_text(text, encoding="UTF-8")
 ```
 
 For Python source files (where the role appeared inside docstrings or comments), the replacement keeps the same `[#N](url)` form since `click_extra.sphinx.myst_docstrings` recognizes Markdown links inside docstrings; `:issue:` in a `# comment` was never rendered anyway and becomes a plain link.
@@ -765,9 +765,10 @@ Default-pruning rule:
 - **Match the deployed builder, which is not always `html`.** `[tool.repomatic] sphinx.builder` is what the Docs workflow passes to `sphinx-build -b`, and a project serving extension-less URLs sets it to `dirhtml` (`page/index.html` instead of `page.html`). Read it before assuming a local `-b html` reproduces CI. The builder is chosen on the command line, so it is the one Sphinx setting `conf.py` cannot carry: never "fix" its absence there.
 - **A warning count only covers the pages that build re-read.** Sphinx reuses cached doctrees, so an incremental rebuild reports the warnings of the changed pages alone, and reading that number against a cold build's count shows a drop nothing caused. A `conf.py` edit invalidates the whole cache, which is why the build right after one reports many more. Build into a clean `_build/` before comparing two counts.
 - **Compare two builds only when both hold the same dependency groups.** autodoc imports each module it documents. A build that lacks one group fails those imports, like the test group for a `tests` API page, and each reference into such a module then reports as unresolved. Build the baseline from an export of `HEAD` and the candidate from the working tree, both with `uv run --isolated --frozen --all-extras --all-groups`: neither touches the shared virtual environment.
+- **Run `sphinx-build` with the command sandbox off.** Inside the Claude Code sandbox (`2.1.284`, macOS, 2026-10-02), `sphinx_sitemap` aborts the build at `builder-inited` with `PermissionError: [Errno 1] Operation not permitted`. Intersphinx also fails to fetch its inventories there. Neither failure says anything about the docs.
 - Periodically diff against a fresh `sphinx-quickstart` output in a tmpdir to spot defaults that have shifted under you.
 - Drop conditional import shims once the project's minimum Python no longer needs them. The `try: import tomllib / except: import tomli` pattern is dead code on `requires-python = ">=3.11"`. Same for any `if sys.version_info < (3, X):` branch where `X` is now below the floor. The deps group should lose the corresponding fallback dependency in the same PR.
-- Always pass `encoding="utf-8"` to `Path.read_text()` calls in `conf.py`. Bare `read_text()` picks up the locale, which on minimal CI runners has bitten many projects.
+- Always pass `encoding="UTF-8"` to `Path.read_text()` calls in `conf.py`. Bare `read_text()` picks up the locale, which on minimal CI runners has bitten many projects.
 - `exclude_patterns = ["_build", "_linkcheck", "html", "Thumbs.db", ".DS_Store"]` is the canonical set: `_build` and `_linkcheck` are the build and linkcheck output directories (both also gitignored), and `html` catches stray in-tree builds left by ad-hoc `sphinx-build` invocations.
 - Publish content, not build scaffolding. `html_copy_source = False` and `html_show_sourcelink = False` together drop the `_sources/` copy of every document, which no page in this lineage links to and only a hand-typed URL could reach. Name both: they gate different halves of the feature, and a theme reading only the second offers a link to files that are no longer there. Sphinx still creates the (now empty) directory and writes `.buildinfo` from an unconditional finish task, so a `build-finished` hook removing `.buildinfo`, `.buildinfo.bak` and the empty `_sources/` is what actually keeps them out of the deployed tree.
 - `sphinx_sitemap` earns its place on any site big enough that a crawler would have to walk the whole link graph to find the API pages. It needs `html_baseurl`, and **that value must end in a slash**: sphinx-sitemap concatenates it with each page link (its own normalization line computes the slash-terminated form and discards the result), so a slash-less base emits `https://example.netinstall.html`. Derive it once from `project.urls.Documentation` with `.rstrip("/") + "/"`, feed both `html_baseurl` and `ogp_site_url` from it, and set `sitemap_url_scheme = "{link}"`: the default `{lang}{version}{link}` layout is for sites publishing translations or versions side by side, and yields 404s anywhere else. Pair it with a self-contained `404.html` in `html_extra_path`: when none is present, Cloudflare Pages answers an unmatched route with the home page and a `200`, which tells a crawler every misspelled URL is real. A site on its own host also gets a `robots.txt` there that names the sitemap. A GitHub Pages project site under `{user}.github.io/{project}/` gets none, because crawlers read `robots.txt` only at the host root. The links in its `404.html` start from `/{project}/`, because the page can answer at any depth.
@@ -806,8 +807,9 @@ Linkcheck and intersphinx:
 
 Strictness flags:
 
-- `nitpicky = True` is the default in this lineage. Missing references fail the build instead of producing a half-rendered page. Don't disable it; fix the missing target.
-- `autosectionlabel_prefix_document = True` avoids duplicate-label warnings when two pages have the same heading. Pair with `autosectionlabel = True` in extensions.
+- `nitpicky = True` is the default in this lineage. Each missing reference then logs a warning, which fails a build run with `-W`. Don't disable it; fix the missing target.
+- `click_extra_fail_on_warnings = ["myst.xref_missing"]` fails the build on a `[text](#anchor)` or `[text](page.md#anchor)` link that lands nowhere. myst-parser only logs that warning, and ships the link as written. Set it on a build that logs too many warnings to run with `-W`. The setting needs click-extra `9.4.0`: an older release ignores it, and the build passes. A `page.md#anchor` link to an ID that autodoc generates reports the same warning, though the ID exists: write it as a `{role}` cross-reference.
+- `autosectionlabel_prefix_document = True` avoids duplicate-label warnings when two pages have the same heading. Pair with `"sphinx.ext.autosectionlabel"` in `extensions`.
 
 `suppress_warnings` governance:
 
@@ -816,11 +818,11 @@ Strictness flags:
 - Canonical entries observed across sibling repos:
   - `sphinx_autodoc_typehints.forward_reference` — pytest decorators dynamically generated at import time; pytest's `Mark` type is unavailable during the docs build. Cosmetic.
   - `myst.directive` — empty mermaid directives produced by automated diagram generators with sparse data.
-  - `myst.xref_missing` — MyST validates anchors before autodoc generates them; false positives only.
   - `myst.domains` — upstream limitation in `click_extra.sphinx` (no `resolve_any_xref` method on the click domain).
   - `myst.strikethrough` — `~~text~~` marks deprecated/incorrect spellings in docstrings; the project ships HTML only.
   - `myst.header` — `readme.md` starts at `## ` because GitHub supplies the H1 from the repo name; intentional.
   - `docutils` — code examples in docstrings whose indentation trips reST parsing; usually in test fixtures.
+- Never list `myst.xref_missing` here: it reports a fragment link that lands nowhere, and `click_extra_fail_on_warnings` skips a suppressed type. See § Strictness flags.
 - On every Sphinx or extension upgrade, sweep `suppress_warnings` and re-run a clean build with the entry removed. If the warning no longer fires, drop the entry in the same PR.
 
 `nitpick_ignore` governance:
@@ -885,7 +887,7 @@ Watch for these every pass:
 - An `automodule` block on a narrative page, repeating what the module's own API page already documents. Every such pair costs a duplicate object description per member and buries the guide's message; see § Guide pages carry the prose, API pages carry the API.
 - Stale `.rst` files in `docs/` left over from package renames or earlier `sphinx-apidoc` runs that reference modules or packages no longer in the source tree. They build silently (autodoc skips missing modules with a warning, not an error) but pollute search results and the modindex. Sweep with `git status` after `update-docs`; delete orphans in the same PR.
 - Developer setup held in `readme.md` (a `## Development` section) or in `claude.md`. Setup, dev loop and test commands belong on the `contributing` page of the roster, where a contributor looks for them. `claude.md` loads into every agent session, so it keeps conventions and links to that page. A second copy creates two places to update.
-- A `dependencies.md` page whose embedded Mermaid graph hasn't been regenerated since the last `uv lock` change. The graph stays in sync only if `repomatic update-dep-graph` is wired into a workflow job; manual regeneration drifts. Upstream that job lives in `_release-engine.yaml` and fires on release commits only, so a graph lagging `pyproject.toml` mid-cycle is expected rather than drift.
+- A `packaging.md` page whose embedded Mermaid graph hasn't been regenerated since the last `uv lock` change. The graph stays in sync only if `repomatic update-dep-graph` is wired into a workflow job; manual regeneration drifts. Upstream that job lives in `autofix.yaml` and runs on every push, so a graph lagging `pyproject.toml` means its pull request is still open, not drift. With `[tool.repomatic] dependency-graph.update = false`, the command writes no graph and the job opens no pull request.
 - `pyproject.toml` declaring a docs dependency that's no longer imported by `conf.py` (or vice-versa: importing one not declared). The mismatch passes Sphinx but trips a fresh `uv sync --group docs` run on a CI runner.
 - `click_extra.sphinx.myst_docstrings` listed in `extensions` without `click-extra[sphinx]` declared in `[dependency-groups] docs`. Builds work on the maintainer's machine if the package is installed globally, then break in CI.
 - `click_extra.sphinx` listed in `extensions` without `click_extra_enable_exec_directives = True` in `conf.py`. Since click-extra `v7.15.0` the directives are off by default; without the flag, every `{click:run}` / `{click:source}` / `{python:*}` reference logs an "Unknown directive" warning and the page renders without the live block.

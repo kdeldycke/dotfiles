@@ -81,6 +81,9 @@ skills.location = "./dotfiles/.agents/skills/"
 # .agents/ while the subagents are still a Claude Code layout.
 subagents.location = "./dotfiles/.claude/agents/"
 
+[tool.repomatic.lint-repo.declined]
+mypy.overrides = "No Python file here imports Sphinx, so mypy reports the override as an unused section."
+
 [tool.repomatic.workflow.paths]
 "docs.yaml" = [
     ".github/workflows/docs.yaml",
@@ -194,10 +197,68 @@ exclude = [
 # suppresses either, since the checker never sees the whole word. Any acronym
 # carrying a lowercase suffix needs its own entry here.
 default.extend-identifiers = { Github = "GitHub", IOS = "iOS", Javascript = "JavaScript", MacOS = "macOS", PATCHed = "PATCHed", PNGs = "PNGs", PyPi = "PyPI", Typescript = "TypeScript", automaticEmojiSubstitutionEnablediMessage = "automaticEmojiSubstitutionEnablediMessage", AirplayRecieverEnabled = "AirplayRecieverEnabled" }
-# False positives: "astroid" is a Python AST library (not "asteroid"); "oject" appears when "pyproject.toml" is split across line breaks in CLI help output; "sur" is macOS 11 Big Sur and Homebrew's big_sur bottle tag (not "sure").
-default.extend-words = { astroid = "astroid", oject = "oject", sur = "sur", Sur = "Sur" }
+# False positives: "astroid" is a Python AST library (not "asteroid"); "certifi" is the CA bundle package a dependency graph lists under requests (not "certify"); "oject" appears when "pyproject.toml" is split across line breaks in CLI help output; "sur" is macOS 11 Big Sur and Homebrew's big_sur bottle tag (not "sure").
+default.extend-words = { astroid = "astroid", certifi = "certifi", oject = "oject", sur = "sur", Sur = "Sur" }
 # Skip content between <!-- typos:off --> and <!-- typos:on --> markers.
 default.extend-ignore-re = [ "(?s)<!-- typos:off -->.*?<!-- typos:on -->" ]
+default.extend-ignore-identifiers-re = [
+  # error: `alikes` should be `alike`, `likes`
+  #     ╭▸ ./dotfiles/.agents/AGENTS.md:401:400
+  #     │
+  # 401 │ …Literal blank look-alikes flatten the same way: an nbsp, braille blank…
+  #     ╰╴                    ━━━━━━
+  # The second half of "look-alikes". typos checks each side of a hyphen alone.
+  "^alikes$",
+  # error: `mis` should be `miss`, `mist`
+  #     ╭▸ ./dotfiles/.agents/AGENTS.md:399:38
+  #     │
+  # 399 │ - **A regex that stops at whitespace mis-parses paths on macOS.**…
+  #     ╰╴                                     ━━━
+  # The prefix of "mis-parses". typos checks each side of a hyphen alone.
+  "^mis$",
+  # error: `nativ` should be `native`
+  #   ╭▸ ./dotfiles/.pi/agent/models.json:3:6
+  #   │
+  # 3 │     "nativ" : {
+  #   ╰╴     ━━━━━
+  # Nativ is the name of the local model server. It is also the provider key
+  # in the pi config and part of the `pi-nativ` function in `.zshrc`, where a
+  # correction breaks the lookup.
+  "^[Nn]ativ$",
+  # error: `Pn` should be `On`
+  #     ╭▸ ./dotfiles/.zshrc:260:31
+  #     │
+  # 260 │ __tab_title_precmd() { print -Pn '\e]1;zsh — %~\a' }
+  #     ╰╴                              ━━
+  # Two flags of the zsh `print` builtin.
+  "^Pn$",
+  # error: `WHT` should be `WHAT`
+  #    ╭▸ ./dotfiles/.agents/skills/rename-with-dates/SKILL.md:70:80
+  #    │
+  # 70 │ …(like `Gorenje WHT923E5XUK - Cooker hood manual`); vendor doc codes…
+  #    ╰╴                ━━━
+  # The model number of a cooker hood. typos reads its first letters as a word.
+  "^WHT923E5XUK$",
+]
+# Check hidden files and directories too, which typos skips by default: the
+# `.github/` workflows and the `.claude/` agents and skills live there.
+files.ignore-hidden = false
+# Hidden files bring in paths typos must never rewrite. `.git` holds the
+# repository internals. `sync-gitignore` regenerates `.gitignore`, which also
+# carries globs like `[Ii]nclude` that typos reads as a typo it cannot fix.
+# `.mailmap` lists contributor names, where a fix renames a person.
+files.extend-exclude = [
+  ".git",
+  ".gitignore",
+  ".mailmap",
+  # Terminal config.
+  "assets/Monokai Soda.terminal",
+  # Every key is an upstream package ID, not prose. `mpm restore` looks each
+  # name up verbatim, so a spelling correction here drops the package on a
+  # fresh machine. `mpm snapshot --update-version` never repairs the name.
+  # The Homebrew cask `nativ` is the first name typos flagged.
+  "packages.toml",
+]
 # Skip the content of SVG files. A terminal capture renders each run of
 # same-styled characters as one <text> element, so a word cut at a run boundary
 # leaves a fragment the checker reads as a misspelling. Correcting it in place
@@ -205,17 +266,10 @@ default.extend-ignore-re = [ "(?s)<!-- typos:off -->.*?<!-- typos:on -->" ]
 # rest of the word, so the picture gains a doubled letter. typos ships an "svg"
 # file type, so no glob is needed here. Filenames stay checked.
 type.svg.check-file = false
-files.extend-exclude = [
-    # Terminal config.
-    "assets/Monokai Soda.terminal",
-    # Every key is an upstream package ID, not prose. `mpm restore` looks each
-    # name up verbatim, so a spelling correction here drops the package on a
-    # fresh machine. `mpm snapshot --update-version` never repairs the name.
-    # The Homebrew cask `nativ` is the first name typos flagged.
-    "packages.toml",
-]
 
 [tool.mypy]
+# Type-check the interior of functions that carry no type annotation.
+check_untyped_defs = true
 # Warn about unused '[mypy-*]' config sections.
 warn_unused_configs = true
 # Warn about casts that do nothing.

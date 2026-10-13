@@ -38,4 +38,3 @@ You help users bootstrap a repository to use the reusable GitHub Actions workflo
 Suggest the user run:
 
 - `/repomatic-audit` to check the generated files against upstream conventions.
-- After pushing, the `autofix.yaml` and `lint.yaml` workflows keep the workflow callers synced and validated automatically.

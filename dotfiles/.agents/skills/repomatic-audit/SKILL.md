@@ -25,8 +25,9 @@ You perform a comprehensive audit of a downstream repository against the upstrea
 Before flagging an issue, verify that the gap isn't **deliberate** or covered by a runtime mechanism. Common false positives:
 
 - **`[tool.repomatic] exclude` is authoritative.** Files listed there (like `workflows/changelog.yaml` or `labels`) are intentionally absent on disk. Do **not** report them as MISSING.
+- **`[tool.repomatic] lint-repo.declined` records a decision.** Each entry names one bundled template entry that a `[tool.X]` section leaves out, with the reason. Do **not** report that entry as DRIFT. Report the record itself when `lint-repo` says it declines nothing.
 - **Bundled defaults applied at runtime.** Some config is materialized from the bundled template at runtime when the file is absent, so no on-disk copy is needed. **Absence of these files is not a problem**: it is the intended state when the user is happy with the bundled policy. Only flag DRIFT if the user wants to deviate from it. Exactly five tools carry such a fallback, the ones whose `ToolSpec` sets `default_config` in `repomatic/tooling/tool_registry.py`: `actionlint`, `mdformat`, `ruff`, `yamllint` and `zizmor`.
-- **A `[tool.X]` section is never a candidate for deletion.** The inverse of the rule above, and the more expensive mistake. Every other tool has no `default_config`, so its resolution chain has no level 3 to fall back on: `lychee`, `typos`, `mypy`, `pytest`, `coverage`, `bumpversion` and `uv` are *deployed* into `pyproject.toml` by `repomatic init`, and that section is the only config the tool will ever see. Deleting it does not restore inheritance from a bundled default, it drops the tool to level 4 and runs it bare, silently discarding every rule the section held. Read the tool's `default_config` before proposing a section be dropped "to inherit upstream updates". Re-running `repomatic init` fixes a stale section only for the components marked `SyncMode.ONGOING` in `repomatic/registry.py` (`lychee`, `typos`, `bumpversion`, `uv`). It never revisits a `mypy`, `pytest` or `coverage` section after the first write: `lint-repo` warns on each bundled template entry such a section lacks, to copy by hand or decline on purpose.
+- **A `[tool.X]` section is never a candidate for deletion.** The inverse of the rule above, and the more expensive mistake. Every other tool has no `default_config`, so its resolution chain has no level 3 to fall back on: `lychee`, `typos`, `mypy`, `pytest`, `coverage`, `bumpversion` and `uv` are *deployed* into `pyproject.toml` by `repomatic init`, and that section is the only config the tool will ever see. Deleting it does not restore inheritance from a bundled default, it drops the tool to level 4 and runs it bare, silently discarding every rule the section held. Read the tool's `default_config` before proposing a section be dropped "to inherit upstream updates". Re-running `repomatic init` fixes a stale section only for the components marked `SyncMode.ONGOING` in `repomatic/registry.py` (`lychee`, `typos`, `bumpversion`, `uv`). It never revisits a `mypy`, `pytest` or `coverage` section after the first write: `lint-repo` warns on each bundled template entry such a section lacks, to copy by hand or to decline with a reason under `[tool.repomatic] lint-repo.declined`.
 - **Generator artifacts vs user error.** When local thin-callers diverge from upstream (e.g., extra `workflow_dispatch:`, missing `paths:`), the cause may be the **upstream generator**, not downstream tampering. Inspect `repomatic/github/workflow_sync.py` (`generate_thin_caller`, `_adapt_trigger_paths`, `generate_workflow_header`) before recommending the user re-run `repomatic init` to "fix" something `init` itself produced.
 - **Project-level `claude.md` may live under a sub-directory.** `[tool.repomatic] subagents.location` and `skills.location` indicate a project where `.claude/` is not at the root (e.g., dotfiles repos with `dotfiles/.claude/CLAUDE.md`). Search the configured location, not just `./CLAUDE.md`.
 
@@ -56,6 +57,21 @@ Keep the two axes apart in the report, because only one of them is actionable:
 - **Only on `main`** is unreleased and belongs in neither list. The changelog's top section is headed with a `.devN` version and a "not released yet" warning; anything described there is not yet available to any downstream repo.
 
 ### 1. Workflow audit (`workflows`)
+
+#### Ask the generator first
+
+Before you compare a managed file by hand, run the adopted release's generator on a throwaway copy of `HEAD`:
+
+```shell-session
+$ git worktree add --detach {scratch}/audit HEAD
+$ uvx --no-progress --exclude-newer '1 week' --exclude-newer-package repomatic=P0D --directory {scratch}/audit 'repomatic==X.Y.Z' init
+$ git -C {scratch}/audit diff
+$ git worktree remove --force {scratch}/audit
+```
+
+An empty diff means every thin caller, each header-only workflow header and each ongoing-sync `[tool.X]` section equals what that release generates. Any hunk is DRIFT that the sync would rewrite. Keep `--directory`: `--output-dir` alone writes into the copy but reads `[tool.repomatic]` from the directory the command started in.
+
+The generator does not read hand-owned jobs, the comment beside a synced key, or an entry only the local file carries. Compare those yourself, in the sections below.
 
 #### Thin-caller workflows
 
@@ -106,7 +122,7 @@ Compare these files against the upstream reference. **Before flagging absence as
 | `.gitignore`                          | Must be a real file: git skips an in-tree `.gitignore` reached via symlink; otherwise content vs upstream         | Auto-generated by repomatic; drift means the user should re-run sync.                                                                                    |
 | `pyproject.toml` `[tool.lychee]`      | Note differences (usually project-specific, just flag for review); a root `lychee.toml` wins as native config     | Project doesn't run lychee.                                                                                                                              |
 
-**Skip** files that are intentionally excluded via `exclude` in `[tool.repomatic]`. Cross-check `[tool.ruff] extend-exclude` and similar before flagging "missing" entries.
+**Skip** files that are intentionally excluded via `exclude` in `[tool.repomatic]`, and settings declined under `lint-repo.declined`. Cross-check `[tool.ruff] extend-exclude` and similar before flagging "missing" entries.
 
 ### 3. Upstream contribution opportunities (`upstream`)
 
