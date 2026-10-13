@@ -149,8 +149,9 @@ def model_rates(provider: str, model_id: str) -> dict | None:
         return None
     for api_models in payload.values():
         model = api_models.get(model_id) if isinstance(api_models, dict) else None
-        if isinstance(model, dict) and isinstance(model.get("cost"), dict):
-            return model["cost"]
+        cost = model.get("cost") if isinstance(model, dict) else None
+        if isinstance(cost, dict):
+            return cost
     return None
 
 
@@ -381,7 +382,7 @@ def convert(rows: list[dict]) -> tuple[list[dict], dict]:
 
     def emit_result(row: dict, result: dict, position: int) -> None:
         """Write one tool result entry."""
-        name = tool_names.get(result.get("tool_use_id"), "unknown")
+        name = tool_names.get(result.get("tool_use_id") or "", "unknown")
         report["tools"][name] = report["tools"].get(name, 0) + 1
         writer.append_message(
             row["timestamp"],
@@ -465,7 +466,7 @@ def convert(rows: list[dict]) -> tuple[list[dict], dict]:
             "usage": build_usage(
                 last["message"].get("usage") or {}, rates_cache[model_id]
             ),
-            "stopReason": STOP_REASON_MAP.get(stop_reason, "stop"),
+            "stopReason": STOP_REASON_MAP.get(stop_reason or "", "stop"),
             "timestamp": parse_timestamp(last["timestamp"]),
         }
         if last.get("effort"):

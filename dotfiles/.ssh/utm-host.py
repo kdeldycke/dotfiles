@@ -254,9 +254,10 @@ def presents_key(address: str, port: int, keys: set[str]) -> bool:
 def cached_addresses() -> dict[str, str]:
     """The last address each alias answered at."""
     try:
-        return json.loads(ADDRESS_CACHE.read_text(encoding="UTF-8"))
+        cache: dict[str, str] = json.loads(ADDRESS_CACHE.read_text(encoding="UTF-8"))
     except (OSError, ValueError):
         return {}
+    return cache
 
 
 def remember(alias: str, address: str) -> None:
@@ -322,9 +323,9 @@ def resolve(alias: str, port: int = 22) -> str:
             break
 
     if not arp:
-        address = find_by_host_key(alias, port)
-        if address:
-            return address
+        found = find_by_host_key(alias, port)
+        if found:
+            return found
         fail(
             f"utm-host: no address for {alias!r} ({mac}). macOS hides the ARP "
             "table from this process, as it does under an ad-hoc signed ssh "
