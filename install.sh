@@ -16,16 +16,30 @@ set -Eeuxo pipefail
 # at the end returns non-zero while any failure was recorded, and the run stays
 # red. Off by default, since a real install must still stop at the first sign
 # of trouble rather than plough on through a broken state.
+# Record the file and line of the command that just failed, given the `LINENO`
+# the trap read. That number restarts at 1 inside a function, and every stage
+# is a function, so it is added to the line where the function starts.
+# `funcsourcetrace` holds that start as `file:line`, and as `file:0` for a
+# sourced file, which keeps a failure in macos-config.sh on its own line there.
+# Entry 1 is this function, so entry 2 is the code that failed.
+survey_record() {
+    local frame="${funcsourcetrace[2]:-}"
+    # A file, not an array: the trap fires inside loops and command
+    # substitutions, and a subshell's array append dies with the subshell.
+    if [[ -n "${frame}" ]]; then
+        print -r -- "${frame%:*}:$(( ${frame##*:} + $1 ))" >> "${SURVEY_LOG}"
+    else
+        # No calling frame: the command is at the top level of this script.
+        print -r -- "${(%):-%x}:$1" >> "${SURVEY_LOG}"
+    fi
+}
+
 if (( ${SURVEY:-0} )); then
     set +e
     : ${SURVEY_LOG:="${TMPDIR:-/tmp}/dotfiles-survey.log"}
     export SURVEY_LOG
     : > "${SURVEY_LOG}"
-    # A file, not an array: the trap fires inside loops and command
-    # substitutions, and a subshell's array append dies with the subshell.
-    # `%x` names the file being read, so a failure in the sourced
-    # macos-config.sh is attributed there instead of to this script.
-    trap 'print -r -- "${(%):-%x}:${LINENO}" >> "${SURVEY_LOG}"' ERR
+    trap 'survey_record "${LINENO}"' ERR
 fi
 
 # Print every command the survey caught, then fail if there was any.
