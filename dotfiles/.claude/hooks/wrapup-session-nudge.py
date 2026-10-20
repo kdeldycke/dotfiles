@@ -175,8 +175,6 @@ def find_terminal() -> str | None:
     pid = os.getppid()
     for _ in range(6):
         try:
-            # Absolute path: the user's PATH shims ps through a grc colorizer whose ANSI
-            # output would break this parsing, and hooks inherit that PATH.
             fields = subprocess.run(
                 ["/bin/ps", "-o", "tty=,ppid=", "-p", str(pid)],
                 capture_output=True,

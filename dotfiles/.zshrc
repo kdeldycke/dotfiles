@@ -312,27 +312,6 @@ alias .....="cd ../../../.."
 # Tool defaults
 ###############################################################################
 
-# Use GRC for additional colorization.
-GRC=$(command -v grc)
-if [ -n "$GRC" ]; then
-    alias colourify="$GRC -es --colour=auto"
-    alias as='colourify as'
-    alias configure='colourify ./configure'
-    alias dig='colourify dig'
-    alias g++='colourify g++'
-    alias gas='colourify gas'
-    alias gcc='colourify gcc'
-    alias head='colourify head'
-    alias ifconfig='colourify ifconfig'
-    alias ld='colourify ld'
-    alias make='colourify make'
-    alias mount='colourify mount'
-    alias ping='colourify ping'
-    alias ps='colourify ps'
-    alias tail='colourify tail'
-    alias traceroute='colourify traceroute'
-fi
-
 export LESS="-eRX"
 
 
