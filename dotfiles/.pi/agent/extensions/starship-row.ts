@@ -230,8 +230,8 @@ const DEFAULT_SESSION_NAME = /^\d{2}-\d{2}@\d{2}:\d{2}$/;
 /**
  * Build the payload in the shape Claude Code sends, so `statusline.py` needs no pi-specific code.
  *
- * `effort.level` is where pi's thinking level goes: the wrapper reads that field into `CC_FLAGS`,
- * which is the same slot Claude Code's reasoning effort occupies.
+ * `effort.level` is where pi's thinking level goes: the `claude_model` format renders that field
+ * as `$effort`, the same slot Claude Code's reasoning effort occupies.
  */
 function buildPayload(
 	ctx: ExtensionContext,

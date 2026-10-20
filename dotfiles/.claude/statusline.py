@@ -11,8 +11,8 @@ fallback shows the directory Claude Code was launched from, and it does not foll
 during the session. So the wrapper reads `workspace.current_dir` and passes it on both flags.
 `--path` drives git and read-only detection; `--logical-path` drives what `directory` prints.
 
-The rest of the JSON has no starship module at all. Rate limits, reasoning effort, the open
-pull request, the session name and the worktree are all absent from the schema starship parses.
+The rest of the JSON has no starship module at all. Rate limits, fast mode, the open pull
+request, the session name and the worktree are all absent from the schema starship parses.
 The wrapper exports each one as an environment variable, which an `env_var` module in
 `~/.config/starship.toml` renders with the same styling as any native module. An absent field
 leaves its variable unset, and `env_var` prints nothing for an unset variable, so every one of
@@ -177,27 +177,12 @@ def format_pull_request(session: dict) -> str | None:
 
 
 def format_flags(session: dict) -> str | None:
-    """Return the reasoning effort, flagged with a bolt when fast mode is on.
-
-    starship parses `effort` on `main` and exposes it to the `claude_model` format as
-    `$effort`, but 1.26.0 does not: the field is absent from its `ClaudeCodeData`, so the
-    variable resolves empty. Reporting it here works on both.
-
-    ```{todo}
-    Drop the effort half of this once the installed starship carries `$effort`, and read it
-    from the `claude_model` format instead.
-    ```
+    """Return a bolt when fast mode is on.
 
     `thinking.enabled` is deliberately not reported. It is on in every ordinary session, so it
     would cost a column permanently to say nothing.
     """
-    parts = []
-    effort = (session.get("effort") or {}).get("level")
-    if effort:
-        parts.append(str(effort))
-    if session.get("fast_mode"):
-        parts.append("⚡")
-    return " ".join(parts) or None
+    return "⚡" if session.get("fast_mode") else None
 
 
 def format_session_name(session: dict) -> str | None:

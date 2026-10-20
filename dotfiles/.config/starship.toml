@@ -183,8 +183,8 @@ style = 'fg:color_bg1'
 # Leads the row the way `username` leads the shell prompt, in blue where the shell leads in
 # orange: the hue is what tells an agent row from a human one at a glance. The aliases keep
 # the block short: an unaliased name renders in full, so a new model degrades to something long
-# rather than to nothing. Reasoning effort would belong here as $effort, but starship 1.26.0
-# does not parse it: `statusline.py` reports it through CC_FLAGS instead.
+# rather than to nothing. `$effort` carries Claude Code's reasoning effort or pi's thinking
+# level, and its group hides when the session reports neither.
 [claude_model]
 # `nf-md-robot`, not starship's default `🤖`. The emoji is East Asian Wide, so the terminal
 # reserves two cells while the font paints about one and a half, and that slack read as a stray
@@ -193,7 +193,7 @@ style = 'fg:color_bg1'
 # single width it takes its trailing space back, exactly like `` in `username`.
 symbol = "󰚩 "
 style = "fg:color_fg0 bg:color_blue"
-format = '[ $symbol$model ]($style)'
+format = '[ $symbol$model( 󰧑 $effort) ]($style)'
 model_aliases = { "Opus 5 (1M context)" = "Opus 5 1M", "Sonnet 5 (1M context)" = "Sonnet 5 1M" }
 
 # Drawn by the `pi` profile alone. Out of the Claude Code row because the name is already in the
@@ -235,10 +235,10 @@ format = '[$env_value ](bold purple bg:color_bg3)'
 variable = "CC_PR"
 format = '[$env_value ](bold green bg:color_bg3)'
 
-# Reasoning level: Claude Code's effort, pi's thinking level. Same slot, same meaning.
+# Session flags: a bolt for Claude Code's fast mode.
 [env_var.CC_FLAGS]
 variable = "CC_FLAGS"
-format = '[󰧑 $env_value ](bold cyan bg:color_bg3)'
+format = '[$env_value ](bold cyan bg:color_bg3)'
 
 # `` is `fa-hourglass`, the glyph `cmd_duration` already uses; `⏳` is absent from the font.
 # One tier per severity, because `env_var` carries a single style and cannot colour by threshold
