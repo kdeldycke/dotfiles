@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "1.1.0",
+  "lastChangelogVersion": "1.3.0",
   "theme": "gruvbox",
   "tuiMode": "regular",
   "defaultProvider": "openrouter",
@@ -19,18 +19,16 @@
     "z-ai/glm-5.3",
     "qwen/qwen3.8-max-0902",
     "openrouter/qwen/qwen3.8-27b",
-    "deepseek/deepseek-v4-pro",
-    "deepseek/deepseek-v4-flash",
-    "anthropic/claude-sonnet-5",
+    "deepseek/deepseek-v4-pro-0813",
+    "deepseek/deepseek-v4.1-flash-1017",
     "anthropic/claude-sonnet-5-5",
-    "anthropic/claude-opus-5",
     "anthropic/claude-opus-5-5",
-    "anthropic/claude-haiku-4-5",
+    "anthropic/claude-haiku-5-5",
     "anthropic/claude-fable-5-1",
     "~openai/gpt-astra-latest",
     "~openai/gpt-sol-latest",
     "~google/gemini-pro-latest",
     "~moonshotai/kimi-latest"
   ],
-  "_enabledModelsRationale": "The Claude entries are the models this account's Claude Max subscription covers. They go directly through the anthropic provider and never through OpenRouter, which bills the same models to credits. Each of the six answered a one-word prompt sent with `pi --print --model anthropic/{id}` through the plan login on 2026-10-01: run the same probe before a new Claude model enters the scope, and drop a model that answers that the plan does not include it. Fable 5.1 draws at most 50% of the weekly limits (https://support.claude.com/en/articles/15424964-claude-fable-models-on-your-plan, read 2026-10-01). When every anthropic model answers 400 'out of extra usage', the five-hour session limit is spent, not the model tier. The other entries are OpenRouter models billed to credits. An entry that starts with ~ and ends in -latest is an OpenRouter alias that follows the newest release of one model line. qwen3.8-27b carries the openrouter/ prefix because groq and huggingface list the same id, huggingface in another letter case. A bare id that two configured providers share is ambiguous, and pi then takes a fuzzy match, here the :free variant. The saved default (qwen3.8-max-0902) is inside the scope, so new sessions start on it. pi adds an entry to this list when a model outside the scope is saved as the default with Ctrl+S in /model: prune deliberately. A retired alias costs a warning, not an error: `pi --list-models` resolves this same scope and prints `Warning: No models match pattern` on stderr while still exiting 0, so run it after `pi update --models`. Every claim about pi in this note holds for pi 1.1.0, checked 2026-10-12."
+  "_enabledModelsRationale": "The Claude entries are the models this account's Claude Max subscription covers. They go directly through the anthropic provider and never through OpenRouter, which bills the same models to credits. Only the newest version of each Claude line stays in the scope: when a successor enters, its predecessor leaves. Before a Claude model enters the scope, send it a one-word prompt with `pi --print --model anthropic/{id}` through the plan login, and drop a model that answers that the plan does not include it. Send the same probe to a model already in the scope as a control. Fable models draw at most 50% of the weekly limits (https://support.claude.com/en/articles/15424964-claude-fable-models-on-your-plan). When every anthropic model answers 400 'out of extra usage', the five-hour session limit is spent, not the model tier: such a probe proves nothing about one entry, which stays in the scope until a later probe answers it. The other entries are OpenRouter models billed to credits. An entry that starts with ~ and ends in -latest is an OpenRouter alias that follows the newest release of one model line. A pinned entry names the newest dated snapshot of its line, because an undated id can resolve to an older snapshot: the `canonical_slug` an id carries in OpenRouter's `/api/v1/models` reply names the snapshot it resolves to. An entry whose id another configured provider also lists carries its provider prefix: a bare id that two providers share is ambiguous, and pi then takes a fuzzy match, which can land on a `:free` variant of the model. The saved default stays inside the scope, so new sessions start on it. pi adds an entry to this list when a model outside the scope is saved as the default with Ctrl+S in /model: prune deliberately. A retired alias costs a warning, not an error: `No models match pattern` shows in the startup model scope line and in `/scoped-models`, which resolves this list against the available models. `pi --list-models` does not read this list: it prints every available model, fuzzy-filtered by its optional search argument, so it cannot confirm a scope entry. Every claim about pi in this note holds for pi 1.3.0, checked 2026-10-21."
 }
