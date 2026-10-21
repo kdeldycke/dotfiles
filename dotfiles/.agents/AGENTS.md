@@ -640,6 +640,8 @@ Read what ran on a commit with `gh api 'repos/{owner}/{repo}/actions/runs?head_s
 
 `gh search prs` and `gh search issues` truncate silently at `--limit`. Put every exclusion in the query after the `--` separator (`gh search prs --author {user} -- -user:{user}`) and every flag before it, raise `--limit` toward its 1000 ceiling, and treat a result count equal to the limit as truncated.
 
+`gh issue view {n} --comments` prints only the comments when its output is not a terminal, so the first commenter reads as the reporter. Read the issue itself with a plain `gh issue view {n}`.
+
 ## Local environment
 
 Non-obvious facts about this machine that have caused hard-to-diagnose failures:
