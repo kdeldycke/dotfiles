@@ -14,9 +14,10 @@
  * ## Why `agent_settled` and not `waitForIdle()` in the handler
  *
  * The extension-facing `sendUserMessage` is fire-and-forget, and `prompt()`
- * awaits several times (input event, auth check, `before_agent_start`) before
- * the run starts. A `waitForIdle()` right after the send can therefore return
- * while the agent is still idle, and the shutdown would race the wrap-up.
+ * awaits several times (command lookup, input event, auth check) before the
+ * run starts and marks the session busy (pi 1.3.0). A `waitForIdle()` right
+ * after the send can therefore return while the agent is still idle, and the
+ * shutdown would race the wrap-up.
  * Instead the command arms a flag and `agent_settled` decides: quit only when
  * the last user message in the branch is the wrap-up prompt (matched on the
  * `<skill name="wrapup-session">` block pi expands, or on the fallback tag)
