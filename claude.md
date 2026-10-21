@@ -15,6 +15,10 @@ This file holds only the rules specific to this repository. The generic conventi
 
 - **Nativ's Configure for Pi drops three hand-added `compat` keys from `dotfiles/.pi/agent/models.json`: `supportsFinishReason`, `maxTokensField` and `thinkingFormat`.** After a Configure, read `git diff -- dotfiles/.pi/agent/models.json`, keep the new model list and restore each key the diff shows as removed.
 
+## pi upgrades
+
+- **The first interactive start of a new pi release rewrites `lastChangelogVersion` in `dotfiles/.pi/agent/settings.json`, so the previous version is the one at `HEAD`.** Read the newer `CHANGELOG.md` sections in `/opt/homebrew/opt/pi-coding-agent/libexec/lib/node_modules/@earendil-works/pi-coding-agent/`, validate the pi config files against the `schemas/` there, and re-check each claim that `git grep -n -E 'pi .?[0-9]+\.[0-9]+\.[0-9]+'` finds stamped with an older version. Keep each stamp on one line, or that grep misses it.
+
 ## Skills
 
 - **Each `repomatic init` and `sync-repomatic` run rewrites every skill under `dotfiles/.agents/skills/` that `.claude-plugin/plugin.json` does not list.** Port a lesson written into one of them to `../repomatic/.claude/skills/{name}/SKILL.md` in the same pass.

@@ -39,8 +39,8 @@
  * line next to pi's own resume hint, carrying a complete one-liner:
  * `pi --session <id> "/bye"`. An initial CLI message goes through
  * `session.prompt()`, whose `expandPromptTemplates` defaults to true, so the
- * `/bye` argument dispatches as an extension command (verified against pi
- * 0.84.3) and the one-liner resumes, wraps up, and quits in one move. TUI
+ * `/bye` argument dispatches as an extension command (pi 1.3.0) and the
+ * one-liner resumes, wraps up, and quits in one move. TUI
  * mode only, so `pi -p` output stays clean, and only for persisted sessions:
  * an unsaved session has nothing to resume.
  *
