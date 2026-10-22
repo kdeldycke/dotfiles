@@ -14,6 +14,7 @@ Check the conversation for a closing report from an earlier invocation of this s
 
 On a repeat call, do not re-list the leftovers. Finish them:
 
+- Settle each `Decide:` item first. Apply the answer the user gave, in the arguments or in a later message. With no answer, apply the recommended one if it changes only the working tree. An item that changes something outside the working tree stays listed until the user answers it.
 - Execute every remaining item in the working tree: apply the deferred fix, write the code or the docs entry, draft the upstream report, delete the scratch files left in a checkout, run the verifications. Re-verify each item first, per § 2: work finished by hand since the last report is done, not to do.
 - The repeat invocation is the user's go-ahead to commit: stage and commit the finished work locally, one commit per strand, following the commit-message rules. A first invocation never commits; a repeat one does.
 - Pushing to a remote and posting to an external service still need the user's own hand. If only such items remain, say the tree is clean and name them.
@@ -50,20 +51,20 @@ Guards:
 - Read the target file first and dedupe: update an existing rule in place instead of appending a near-duplicate.
 - Write a lesson for the global file as its rule and its fix, in two sentences at most. Leave the story out: no dates, durations, counts or account of what happened, and a version stamp only on a claim about the harness itself. Keep an exact error string when it is how the situation announces itself.
 - Measure the global file before and after the pass (`wc -c`): each lesson adds about 400 characters at most. More means a story stayed in or a narrower home was skipped, so cut until it fits. When the harness warns that the instruction files exceed its size limit, remove at least as much as the pass adds.
-- Apply small, safe edits directly, in the working tree only. Anything larger becomes a one-line proposal, reported as a `Review:` item in the closing report (§ 4).
+- Apply small, safe edits directly, in the working tree only. Anything larger becomes a one-line proposal, reported as a `Decide:` item in the closing report (§ 4).
 
 ## 4. Closing report
 
 End with two short lists, a few words per item: **Done** first, then **Left to do**. Write "none" where a list is empty. Keep the whole report under about 15 lines.
 
-**Done** holds what this session finished: lessons persisted and where (with the global file's size before and after, when the pass touched it), plus any tree work completed this turn. A lesson deliberately capped at a suggestion is not done: it moves to **Left to do** as a `Review:` item instead, so every decision the user owes lives in one list. A lesson examined and skipped because the code, history, or docs already record it appears here as one line: `Skipped: …`, naming where it already lives. The report is exactly these two lists and nothing else.
+**Done** holds what this session finished: lessons persisted and where (with the global file's size before and after, when the pass touched it), plus any tree work completed this turn. A lesson deliberately capped at a suggestion is not done: it moves to **Left to do** as a `Decide:` item instead, so every decision the user owes lives in one list. A lesson examined and skipped because the code, history, or docs already record it appears here as one line: `Skipped: …`, naming where it already lives. The report is exactly these two lists and nothing else.
 
-**Left to do** holds every remaining action. Order it so it can be executed top to bottom: create-and-fix work first, then documentation, then `Commit:`, then `Push:`/`Report:`. Name each item's target in full: the path, the SHA, the checkout, the upstream project. Say what an item waits on when this session cannot run it: a credential it does not hold, a release not yet published. Prefix each item with an action label naming the verb it needs, so the list is scannable at a glance. Pick the narrowest label that fits:
+**Left to do** holds every remaining action. Order it so it can be executed top to bottom. `Decide:` items come first, since an answer can add work below them. Then come create-and-fix work, documentation and `Commit:`. The steps only the user can take come last: `Push:`, `Report:`, a merge, a credential to supply. Name each item's target in full: the path, the SHA, the checkout, the upstream project. Say what an item waits on when this session cannot run it: a credential it does not hold, a release not yet published. Prefix each item with an action label naming the verb it needs, so the list is scannable at a glance. Pick the narrowest label that fits:
 
-- `Commit:` — uncommitted changes to stage and commit in this repository.
-- `Push:` — commits already made but not on the remote.
-- `Implement:` — new code or a feature to write, in this repo or a sibling checkout (name the checkout).
-- `Report:` — an issue or comment to file upstream (name the project).
-- `Review:` — something the user must read or decide on: a draft awaiting approval, a proposal from the lessons pass.
+- `Decide:` a change this session proposed and the user has not approved, like a proposal from the lessons pass, or a choice between options. End the item with the answer you recommend: yes, no, or one option.
+- `Implement:` new code or a feature to write, in this repo or a sibling checkout (name the checkout).
+- `Commit:` uncommitted changes to stage and commit in this repository.
+- `Push:` commits already made but not on the remote.
+- `Report:` an issue or comment to file upstream. Name the project, and the draft's path once one exists.
 
-These five are the whole vocabulary: do not coin new labels. An item that fits none of them is a plain bullet whose first word is the verb, like "Fix the …" or "Stop the …".
+These five are the whole vocabulary: do not coin new labels. An item that fits none of them is a plain bullet whose first word is the verb, like "Fix the …" or "Stop the …". A finding that asks for no action is not an item: list it as a `Decide:` item that proposes its fix, or leave it out.
