@@ -291,9 +291,9 @@ At every macOS major release, I audit `macos-config.sh` against the [NIST macOS 
 3. Generate the compliance script from the tailored baseline and run it in check-only mode:
 
    ```shell-session
-   $ uv run --with-requirements requirements.txt scripts/generate_guidance.py --script build/baselines/cis_lvl1.yaml
-   $ sudo zsh build/cis_lvl1/cis_lvl1_compliance.sh --check
-   $ sudo zsh build/cis_lvl1/cis_lvl1_compliance.sh --stats
+   $ uv run --with-requirements requirements.txt scripts/generate_guidance.py --script custom/baselines/cis_lvl1_macos_27.0.yaml
+   $ sudo zsh build/cis_lvl1_macos_27.0/cis_lvl1_macos_27.0_compliance.sh --check
+   $ sudo zsh build/cis_lvl1_macos_27.0/cis_lvl1_macos_27.0_compliance.sh --stats
    ```
 
 4. Reconcile every failing rule: port the rule's `fix` command into `macos-config.sh` (tagged with its mSCP rule id), or add the rule to the exemption list below. Then re-run `macos-config.sh` and check again: macOS upgrades silently reset some settings (launchd service overrides and `pmset` values in particular), and re-running the script is the intended remedy. Rules marked "implemented by a Configuration Profile" have no CLI equivalent: generate the profiles with `--profiles` (or `--consolidated-profile`) and import them via `System Settings.app` → `Privacy & Security` → `Profiles`.
