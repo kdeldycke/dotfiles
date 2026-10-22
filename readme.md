@@ -37,7 +37,7 @@ We will reinstall macOS from scratch.
    [flash it with the macOS image](https://support.apple.com/en-us/HT201372):
 
    ```shell-session
-   $ sudo /Applications/Install\ macOS\ Tahoe.app/Contents/Resources/createinstallmedia --volume /Volumes/Untitled --nointeraction
+   $ sudo /Applications/Install\ macOS\ 27\ Golden\ Gate.app/Contents/Resources/createinstallmedia --volume /Volumes/Untitled --nointeraction
    ```
 
 3. Reboot your machine, reinstall macOS, create a user.
@@ -275,10 +275,10 @@ It mainly consist in refreshing some assets at every macOS major release:
 
 At every macOS major release, I audit `macos-config.sh` against the [NIST macOS Security Compliance Project](https://github.com/usnistgov/macos_security) (mSCP) to catch security settings that the new release moved, renamed or retired. Security-related lines in the script are tagged with their stable mSCP rule id (like `system_settings_firewall_enable`) so a failing rule maps straight back to the line to update.
 
-1. Clone the mSCP branch named after the macOS release (`tahoe` for macOS 26, `sequoia` for macOS 15, and so on):
+1. Clone the mSCP guidance for the macOS release. macOS 27 has no release branch: its guidance is in the `release_27.0` tag. Older releases have a branch named after the release (`tahoe` for macOS 26, `sequoia` for macOS 15, and so on):
 
    ```shell-session
-   $ git clone --branch tahoe --depth 1 https://github.com/usnistgov/macos_security.git
+   $ git clone --branch release_27.0 --depth 1 https://github.com/usnistgov/macos_security.git
    $ cd macos_security
    ```
 
@@ -314,7 +314,8 @@ Rules that stay check-only without an MDM, to carry into the generated configura
 Only the current default `main` branch is supported and actively maintained.
 Older branches are available for archive.
 
-- [macOS 26 (Tahoe)](https://github.com/kdeldycke/dotfiles/tree/main) (current)
+- [macOS 27 (Golden Gate)](https://github.com/kdeldycke/dotfiles/tree/main) (current)
+- [macOS 26 (Tahoe)](https://github.com/kdeldycke/dotfiles/tree/macos-26)
 - [macOS 15 (Sequoia)](https://github.com/kdeldycke/dotfiles/tree/macos-15)
 - [macOS 14 (Sonoma)](https://github.com/kdeldycke/dotfiles/tree/macos-14)
 - [macOS 13 (Ventura)](https://github.com/kdeldycke/dotfiles/tree/macos-13)
