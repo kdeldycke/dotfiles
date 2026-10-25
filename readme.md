@@ -186,13 +186,13 @@ Stealth Mode drops QUIC, because AdGuard cannot rewrite the SNI of a handshake i
 Claude Code reads skills and agents from the filesystem (`~/.claude/skills/` and `~/.claude/agents/`, symlinked to this repo), but Cowork and the Desktop chat resolve them from the account-level deployment store and cannot read local files ([anthropics/claude-code#76724](https://github.com/anthropics/claude-code/issues/76724), [anthropics/claude-code#84611](https://github.com/anthropics/claude-code/issues/84611)). A plugin is what reaches those surfaces, and two catalogs cover my skills:
 
 - `kdeldycke/repomatic` carries the 19 skills and 3 agents that repository owns, which is their canonical source.
-- `kdeldycke/dotfiles` carries the 7 that live only here: `agent-config-self-tune`, `audit-repo-issues`, `fill-web-form`, `pr-triage`, `rename-with-dates`, `session-title` and `wrapup-session`.
+- `kdeldycke/dotfiles` carries the 8 that live only here: `agent-config-self-tune`, `audit-repo-issues`, `fill-web-form`, `pr-triage`, `rename-with-dates`, `session-title`, `transcribe-recording` and `wrapup-session`.
 
 Add each in the Claude Desktop app under **Settings** → **Customize** → **Plugins**, through **Add** → **Add marketplace** → **Add from a repository**, then install its plugin from the **Discover** tab. Both verified on 2026-08-29 against Claude Code `2.1.236` and Desktop `1.37937.3`. Every skill then appears once, tagged with the catalog it came from:
 
 ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/claude-skills-by-plugin.png)
 
-This repository's own plugin declares its seven skills by path, and its root is the repository itself, so an install carries every other file here too: more than 100 of them, assets and workflows included. Scoping that payload would mean moving the plugin root down to `dotfiles/.agents`, where `skills/` sits at the location the spec scans and all 26 skills would likely be discovered, including the repomatic ones this catalog must not republish. The wasted files are the cheaper of the two.
+This repository's own plugin declares its eight skills by path, and its root is the repository itself, so an install carries every other file here too: more than 100 of them, assets and workflows included. Scoping that payload would mean moving the plugin root down to `dotfiles/.agents`, where `skills/` sits at the location the spec scans and all 27 skills would likely be discovered, including the repomatic ones this catalog must not republish. The wasted files are the cheaper of the two.
 
 Keeping a catalog current on every push needs the GitHub App, which grants read and write on code, workflows, issues and pull requests, so it is worth a thought before installing. Without it a plugin still updates on request, and the app polls every 20 minutes anyway.
 

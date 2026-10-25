@@ -5,7 +5,7 @@
     "name": "Kevin Deldycke",
     "url": "https://github.com/kdeldycke"
   },
-  "description": "Personal skills for document wrangling, web form filling, multi-repo triage and Claude Code upkeep",
+  "description": "Personal skills for document wrangling, speech transcription, web form filling, multi-repo triage and Claude Code upkeep",
   "displayName": "Kevin's dotfiles skills",
   "homepage": "https://github.com/kdeldycke/dotfiles",
   "keywords": [
@@ -14,6 +14,7 @@
     "file-renaming",
     "github",
     "pull-requests",
+    "transcription",
     "web-automation"
   ],
   "license": "BSD-2-Clause",
@@ -26,6 +27,7 @@
     "./dotfiles/.agents/skills/pr-triage",
     "./dotfiles/.agents/skills/rename-with-dates",
     "./dotfiles/.agents/skills/session-title",
+    "./dotfiles/.agents/skills/transcribe-recording",
     "./dotfiles/.agents/skills/wrapup-session"
   ],
   "version": "1.0.0"

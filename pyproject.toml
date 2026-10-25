@@ -259,3 +259,22 @@ warn_return_any = true
 warn_unreachable = true
 # Use visually nicer output in error messages.
 pretty = true
+
+[[tool.mypy.overrides]]
+# The scripts of the transcribe-recording skill import packages that their PEP 723
+# block or the Python of Nativ provides, and that CI does not install.
+ignore_missing_imports = true
+module = [
+    "extract_msg",
+    "huggingface_hub",
+    "mlx.*",
+    "mlx_audio.*",
+    "num2words",
+    "numpy",
+    "PIL.*",
+    "pyannote.*",
+    "pymupdf",
+    "rapidfuzz.*",
+    "torch",
+    "wordfreq",
+]
