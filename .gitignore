@@ -859,3 +859,7 @@ $RECYCLE.BIN/
 # Host keys of the local UTM guests, rewritten whenever a guest is rebuilt.
 # The glob also covers the `.old` backup `ssh-keygen -R` leaves behind.
 **/.ssh/known_hosts_utm*
+
+# The virtualenv template ignores every folder named `scripts`, and each skill
+# keeps its helper scripts in one.
+!/dotfiles/.agents/skills/*/scripts/
