@@ -22,6 +22,7 @@ This file holds only the rules specific to this repository. The generic conventi
 ## Skills
 
 - **Each `repomatic init` and `sync-repomatic` run rewrites every skill under `dotfiles/.agents/skills/` that `.claude-plugin/plugin.json` does not list.** Port a lesson written into one of them to `../repomatic/.claude/skills/{name}/SKILL.md` in the same pass.
+- **The Bash sandbox denies writes under `dotfiles/.agents/skills/` and to `dotfiles/.agents/AGENTS.md`.** Change those files with the Write and Edit tools; Bash can still read them, so lint and test a skill in place.
 
 ## Assets
 
