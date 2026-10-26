@@ -674,7 +674,7 @@ For any non-trivial workflow, data processing, or multi-step logic: write Python
 
 **Every Python script is a uv standalone script.** Give the file a `#!/usr/bin/env -S uv run --script` shebang and a PEP 723 inline metadata block that declares its dependencies, as the [click-extra tutorial](https://kdeldycke.github.io/click-extra/tutorial.html#standalone-script) shows. The file then carries its own environment. uv installs the declared dependencies into an isolated environment before the first run. No project boilerplate, lockfile, or install step sits in between. That resolution is a live-registry install, so [§ Cooldown on every install](#cooldown-on-every-install) binds it. The user-wide `exclude-newer` in `~/.config/uv/uv.toml` covers this machine, and the workflow-level `UV_EXCLUDE_NEWER` covers a workflow that calls the script elsewhere.
 
-Run one with `uv run --script {absolute path}`, not through its shebang. A file written by a tool call is not executable, so invoking it by path fails with `permission denied`, and the `chmod +x … && …` that would fix it is a compound command the harness denies, the same way it denies a leading `cd`. The shebang stays for a human running the file from a shell.
+Run one with `uv run --script {absolute path}`, not through its shebang. A file written by a tool call is not executable, so invoking it by path fails with `permission denied`, and the `chmod +x … && …` that would fix it is a compound command the harness denies, the same way it denies a leading `cd`. The shebang stays for a human running the file from a shell. A heredoc piped to `uv run --script /dev/stdin` runs nothing and still exits `0`: write the script to a file first.
 
 ## Data visualization
 
