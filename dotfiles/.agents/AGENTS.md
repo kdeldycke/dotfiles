@@ -608,6 +608,8 @@ When a change needs a live CI run to validate it, push to `main` rather than to 
 
 When drafting a bug report, a reproducer write-up, or a reply on an upstream issue, the maintainer of that code is the authority on it. The job is to hand over observations they can verify in one click, not conclusions to agree with. Load the `file-bug-report` skill for any upstream report or reply: it carries the evidence rules, among them SHA-pinned permalinks, log-line anchors and a control beside every reproducer.
 
+Fold a small fix into the open pull request that already edits the same lines, never into a second one: the reviewer meets the bug in that diff anyway, and the new text may rely on the fix.
+
 Never shop for a proxy submitter. Several distributions refuse a package submitted by the software's own author: where that rule applies, accept it, publish the verified templates, and say a distribution user is welcome to submit them as their own. Never ask a named contributor to re-file the work, and never offer to take maintainership back once it is merged.
 
 ## Shell commands
