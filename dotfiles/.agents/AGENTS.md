@@ -654,6 +654,8 @@ Read what ran on a commit with `gh api 'repos/{owner}/{repo}/actions/runs?head_s
 
 `gh issue view {n} --comments` prints only the comments when its output is not a terminal, so the first commenter reads as the reporter. Read the issue itself with a plain `gh issue view {n}`.
 
+- **A pasted multi-line command breaks at every backslash continuation: this terminal appends trailing whitespace after the `\`, so it escapes the space instead of the newline and zsh runs each fragment as its own command.** Hand over one long line, or a script file under `/private/tmp` invoked by a short path, and never a `\`-continued block.
+
 ## Local environment
 
 Non-obvious facts about this machine that have caused hard-to-diagnose failures:
@@ -677,6 +679,7 @@ Non-obvious facts about this machine that have caused hard-to-diagnose failures:
 - **`git worktree add` and `git worktree remove` fail inside the Bash sandbox** (Claude Code `2.1.284`) with `Operation not permitted` under `.git/worktrees`: run them with the sandbox off. So does every write to `.git/config`, like deleting a tracking branch, which fails with `could not lock config file .git/config`.
 - **`[Errno 28] No space left on device` from `multiprocessing` means the named POSIX semaphore table is full, not the disk.** A spawn pool killed with `-9` leaks its named semaphores until the next reboot: count the free slots with a loop over `multiprocessing.get_context("spawn").Semaphore()`, then reboot to clear them.
 - **`/Library/StagedExtensions` denies every user-space write under SIP: `sudo rm`, `sudo mv` and `sudo /usr/bin/trash` all fail there with `Permission denied` or `afpAccessDenied`, even as root.** Orphaned staged kexts of a removed driver survive reboots unloaded and unreferenced by `kmutil check`; leave them, since disabling SIP to delete inert files costs more than it recovers.
+- **Screenshots the model cannot view are readable through `tesseract` at `/opt/homebrew/bin/tesseract`, after copying the PNG out of `~/Library/Mobile Documents/com~apple~CloudDocs/Downloads/`: iCloud removes a file there within minutes of its phone-side deletion, and every read but `ls` then fails with `ENOENT`.** Copy to `/private/tmp` first, then OCR.
 
 ## Code generation preferences
 
