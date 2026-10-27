@@ -35,9 +35,11 @@
  *
  * ## The nudge
  *
- * A plain `/quit` or Ctrl+D on a session with real user turns prints one dim
- * line next to pi's own resume hint, carrying a complete one-liner:
- * `pi --session <id> "/bye"`. An initial CLI message goes through
+ * A plain `/quit` or Ctrl+D on a session with real user turns prints a dim
+ * hint line, then the one-liner `pi --session <id> "/bye"` on a line of its
+ * own, next to pi's own resume hint: a terminal triple-click then copies the
+ * command without the hint text. pi's own resume hint still prefixes the
+ * command inline. An initial CLI message goes through
  * `session.prompt()`, whose `expandPromptTemplates` defaults to true, so the
  * `/bye` argument dispatches as an extension command (pi 1.3.0) and the
  * one-liner resumes, wraps up, and quits in one move. TUI
@@ -192,8 +194,10 @@ export default function (pi: ExtensionAPI) {
 		// A non-default session dir would need a --session-dir flag the id alone cannot carry.
 		const sessionId = manager.usesDefaultSessionDir?.() === false ? undefined : manager.getSessionId?.();
 		const command = sessionId ? `pi --session ${sessionId} "/bye"` : `pi -c "/bye"`;
+		// The command sits alone on its line so a triple-click selects it whole,
+		// without the hint text in the selection.
 		try {
-			process.stdout.write(`\x1b[2mWrap-up skipped: \`${command}\` closes it properly.\x1b[0m\n`);
+			process.stdout.write(`\x1b[2mWrap-up skipped. Close it properly with:\x1b[0m\n${command}\n`);
 		} catch {
 			// A signal shutdown can reach here with the terminal already gone.
 		}
