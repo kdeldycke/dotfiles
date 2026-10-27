@@ -10,6 +10,7 @@ This file holds only the rules specific to this repository. The generic conventi
 ## pi extensions
 
 - **`pi --help` cannot validate an extension edit** (pi `1.3.0`): it exits 0 on a file that does not parse. Probe the compile with `node --experimental-strip-types -e "import('{absolute path}.ts')"`, safe only when the extension's side effects all sit inside its default-exported factory, and only when it imports nothing but types from a pi package: those resolve inside pi's loader alone. That checks syntax and load, not types: read the option and context shapes off the `.d.ts` files under the pi install. Exercise a handler that fires on one exit path only, like `session_shutdown` with reason `quit`, once, and read its log. Exercise a tool handler with no model and no network: a probe extension that registers `fauxProvider()` from `@earendil-works/pi-ai` replays scripted tool calls, with `PI_CODING_AGENT_DIR` on a scratch directory, `PI_OFFLINE=1` and `--mode json` to read each `tool_execution_end`. A built-in extension is named `builtin:{name}`, and `--no-extensions` disables the built-ins too: a probe that needs one adds `--extension builtin:{name}`.
+- **Exercising a TUI exit-path handler needs a real session under a pty.** `{ sleep {seconds}; printf '\004'; } | script -q {log} pi --model {fast-model} '{one-word prompt}'` leaves the exit output in the log. A `/quit` fed while a turn runs queues as a user message and never quits: wait for the turn to settle, then send Ctrl+D.
 
 ## pi models
 
@@ -18,6 +19,10 @@ This file holds only the rules specific to this repository. The generic conventi
 ## pi upgrades
 
 - **The first interactive start of a new pi release rewrites `lastChangelogVersion` in `dotfiles/.pi/agent/settings.json`, so the previous version is the one at `HEAD`.** Read the newer `CHANGELOG.md` sections in `/opt/homebrew/opt/pi-coding-agent/libexec/lib/node_modules/@earendil-works/pi-coding-agent/`, validate the pi config files against the `schemas/` there, and re-check each claim that `git grep -n -E 'pi .?[0-9]+\.[0-9]+\.[0-9]+'` finds stamped with an older version. Keep each stamp on one line, or that grep misses it.
+
+## pi auth
+
+- **A running pi session overwrites hand edits to `auth.json`.** It persists its refreshed credential when the token expires and replaces the whole entry, so a credential swap applied mid-session reverts. Quit pi sessions first, or re-apply and confirm with `pi auth check --provider {id}` plus one live probe.
 
 ## Skills
 
