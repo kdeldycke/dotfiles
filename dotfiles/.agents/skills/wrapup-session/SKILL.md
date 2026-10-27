@@ -17,6 +17,7 @@ On a repeat call, do not re-list the leftovers. Finish them:
 - Settle each `Decide:` item first. Apply the answer the user gave, in the arguments or in a later message. With no answer, apply the recommended one if it changes only the working tree. An item that changes something outside the working tree stays listed until the user answers it.
 - Execute every remaining item in the working tree: apply the deferred fix, write the code or the docs entry, draft the upstream report, delete the scratch files left in a checkout, run the verifications. Re-verify each item first, per § 2: work finished by hand since the last report is done, not to do.
 - The repeat invocation is the user's go-ahead to commit: stage and commit the finished work locally, one commit per strand, following the commit-message rules. A first invocation never commits; a repeat one does.
+- That go-ahead covers the work this session wrote, not a review artifact. A draft issue report, pull request body or review reply stays untracked and stays listed for the user to file or discard.
 - Pushing to a remote and posting to an external service still need the user's own hand. If only such items remain, say the tree is clean and name them.
 - Then run the lessons pass (§ 3) and close with the same two lists (§ 4), near-empty by design.
 
