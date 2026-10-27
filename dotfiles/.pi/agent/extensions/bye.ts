@@ -33,6 +33,17 @@
  * wrap-up (or typing anything after `/bye`) cancels the auto-quit rather
  * than quitting under the user.
  *
+ * ## The resume-line rewrite
+ *
+ * pi prints its own exit hint as one line, `To resume this session: pi
+ * --session <id>`, from core (`interactive-mode.ts`), after `session_shutdown`
+ * handlers run. A triple-click on that line selects the label with the
+ * command, so the paste is not runnable. Upstream declined the one-line fix
+ * (earendil-works/pi#9515, closed NOT_PLANNED), so this extension rewrites the
+ * chunk during the shutdown window: the label keeps its line, the command
+ * gets the next one. The match is anchored to the label and its optional dim
+ * escape, so no other write in that window changes.
+ *
  * ## The nudge
  *
  * A plain `/quit` or Ctrl+D on a session with real user turns prints a dim
@@ -180,8 +191,29 @@ export default function (pi: ExtensionAPI) {
 		ctx.shutdown();
 	});
 
+	/** Installed once per process, from the first quit through process exit. */
+	let resumeLineRewritten = false;
+
+	/** Put pi's exit resume command on its own line, for terminal line selection. */
+	function rewriteResumeLineOntoItsOwn(): void {
+		if (resumeLineRewritten) return;
+		resumeLineRewritten = true;
+		const original = process.stdout.write.bind(process.stdout);
+		process.stdout.write = ((chunk: unknown, ...rest: unknown[]): boolean => {
+			if (typeof chunk === "string") {
+				return (original as (...args: unknown[]) => boolean)(
+					chunk.replace(/(To resume this session:(?:\x1b\[[0-9;]*m)?) /, "$1\n"),
+					...rest,
+				);
+			}
+			return (original as (...args: unknown[]) => boolean)(chunk, ...rest);
+		}) as typeof process.stdout.write;
+	}
+
 	pi.on("session_shutdown", async (event, ctx) => {
-		if (event.reason !== "quit" || armed || ctx.mode !== "tui") return;
+		if (event.reason !== "quit" || ctx.mode !== "tui") return;
+		rewriteResumeLineOntoItsOwn();
+		if (armed) return;
 		if (!hasRealUserTurns(ctx)) return;
 		// The runtime object behind ReadonlySessionManager is the full SessionManager;
 		// the probes beyond the Pick type are optional so a slimmer object degrades to -c.
@@ -195,7 +227,7 @@ export default function (pi: ExtensionAPI) {
 		const sessionId = manager.usesDefaultSessionDir?.() === false ? undefined : manager.getSessionId?.();
 		const command = sessionId ? `pi --session ${sessionId} "/bye"` : `pi -c "/bye"`;
 		// The command sits alone on its line so a triple-click selects it whole,
-		// without the hint text in the selection.
+		// without the hint text in the selection, as pi's own hint now does too.
 		try {
 			process.stdout.write(`\x1b[2mWrap-up skipped. Close it properly with:\x1b[0m\n${command}\n`);
 		} catch {
