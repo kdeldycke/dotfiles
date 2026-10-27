@@ -676,6 +676,7 @@ Non-obvious facts about this machine that have caused hard-to-diagnose failures:
 - **A socket bind or a process-table read fails inside the Bash sandbox** (Claude Code `2.1.284`) with `PermissionError: [Errno 1] Operation not permitted`. A Sphinx build with `sphinx_sitemap` stops this way, and so do the `pytest-httpserver` and process tests of click-extra: run them with the sandbox off, and a full Sphinx build in the background, since it can outlast one tool call.
 - **`git worktree add` and `git worktree remove` fail inside the Bash sandbox** (Claude Code `2.1.284`) with `Operation not permitted` under `.git/worktrees`: run them with the sandbox off. So does every write to `.git/config`, like deleting a tracking branch, which fails with `could not lock config file .git/config`.
 - **`[Errno 28] No space left on device` from `multiprocessing` means the named POSIX semaphore table is full, not the disk.** A spawn pool killed with `-9` leaks its named semaphores until the next reboot: count the free slots with a loop over `multiprocessing.get_context("spawn").Semaphore()`, then reboot to clear them.
+- **`/Library/StagedExtensions` denies every user-space write under SIP: `sudo rm`, `sudo mv` and `sudo /usr/bin/trash` all fail there with `Permission denied` or `afpAccessDenied`, even as root.** Orphaned staged kexts of a removed driver survive reboots unloaded and unreferenced by `kmutil check`; leave them, since disabling SIP to delete inert files costs more than it recovers.
 
 ## Code generation preferences
 
