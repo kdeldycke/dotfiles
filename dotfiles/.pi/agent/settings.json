@@ -4,7 +4,7 @@
   "theme": "gruvbox",
   "tuiMode": "regular",
   "defaultProvider": "openrouter",
-  "defaultModel": "qwen/qwen3.8-max-0902",
+  "defaultModel": "deepseek/deepseek-v4.1-flash-1017",
   "defaultThinkingLevel": "high",
   "enableInstallTelemetry": false,
   "enableAnalytics": false,
