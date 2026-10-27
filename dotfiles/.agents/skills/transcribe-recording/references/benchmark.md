@@ -4,11 +4,11 @@ Measured on an M1 Pro with 32 GiB, with the speech runtime that Nativ `0.4.0` bu
 
 ## Verdict
 
-**Prime model: Whisper large-v3.** It ties for the best accuracy (8.6% word error rate, and the best result of any model in one listening condition: 4.4%). Of the three most accurate models, it is the only one that invents almost nothing in silence (one word) and never loops. It gives word times and takes the dictionary as a prompt. It runs at about 4 times real time and takes 8.3 GiB.
+**Prime model: [Whisper large-v3](https://huggingface.co/mlx-community/whisper-large-v3-asr-fp16).** It ties for the best accuracy (8.6% word error rate, and the best result of any model in one listening condition: 4.4%). Of the three most accurate models, it is the only one that invents almost nothing in silence (one word) and never loops. It gives word times and takes the dictionary as a prompt. It runs at about 4 times real time and takes 8.3 GiB.
 
-- **Canary 1B v2** matches its accuracy (8.5%) in a third of the time and memory. It loops on silence and noise, gives no word times and takes no hints. A speech filter stops the loops but raises its error rate to 12.3%.
-- **Cohere Transcribe** is close (9.8%) and the fastest of the three (about 35 times real time). It is the least robust: it loops in silence and on short noisy stretches. It gives 30-second times only, takes no hints, and needs its gated licence accepted.
-- **MOSS-Transcribe-Diarize** gives usable speaker turns, but its tags restart every 10 minutes, so **pyannote community-1** replaced it for the turns: see [Speaker turns](#speaker-turns). Like Qwen3-ASR, it writes what is spoken, such as `je suis pas`, where the other models rewrite into written French. Its error rate is higher (14.7%): use it for who spoke, not for what was said.
+- **[Canary 1B v2](https://huggingface.co/CogniSoftOrg/canary-1b-v2-mlx-bf16)** matches its accuracy (8.5%) in a third of the time and memory. It loops on silence and noise, gives no word times and takes no hints. A speech filter stops the loops but raises its error rate to 12.3%.
+- **[Cohere Transcribe](https://huggingface.co/CohereLabs/cohere-transcribe-03-2026)** is close (9.8%) and the fastest of the three (about 35 times real time). It is the least robust: it loops in silence and on short noisy stretches. It gives 30-second times only, takes no hints, and needs its gated licence accepted.
+- **[MOSS-Transcribe-Diarize](https://huggingface.co/OpenMOSS-Team/MOSS-Transcribe-Diarize)** gives usable speaker turns, but its tags restart every 10 minutes, so **[pyannote community-1](https://huggingface.co/pyannote/speaker-diarization-community-1)** replaced it for the turns: see [Speaker turns](#speaker-turns). Like [Qwen3-ASR](https://huggingface.co/mlx-community/Qwen3-ASR-1.7B-bf16), it writes what is spoken, such as `je suis pas`, where the other models rewrite into written French. Its error rate is higher (14.7%): use it for who spoke, not for what was said.
 - **A vote of five models** (Whisper, Canary, Cohere, Parakeet, MOSS) scored 5.0% on the clips. That figure is optimistic, see below. It costs about 30 minutes of compute for one hour of speech.
 
 ## Test material
@@ -25,18 +25,18 @@ Measured on an M1 Pro with 32 GiB, with the speech runtime that Nativ `0.4.0` bu
 - **Agreement word error rate.** Over the whole recording, each model against the word-by-word vote of all the other models, on the time line of Parakeet (of Whisper for Parakeet itself). A speech-only variant votes with the seven full runs. This rate rewards agreement with the majority, not truth, but it covers the whole recording instead of 6 minutes.
 - **Words invented in silence.** The words that a model places in the stretches of 20 seconds or more below -55 dB.
 
-| Model                        | Human rate, all / content | Agreement rate, content | Speed, times real time | Peak MLX memory | Words invented in silence | Longest loop | `ne` per 100 `pas` |
-| :--------------------------- | ------------------------: | ----------------------: | ---------------------: | --------------: | ------------------------: | -----------: | -----------------: |
-| Canary 1B v2                 |                 8.5 / 8.0 |                    13.1 |                     13 |         2.6 GiB |                        16 |           23 |                 96 |
-| Whisper large-v3             |                 8.6 / 8.2 |                    13.1 |                      4 |         8.3 GiB |                         1 |            2 |                 77 |
-| Cohere Transcribe 03-2026    |                 9.8 / 9.3 |                    15.5 |                     35 |         5.3 GiB |                       167 |           30 |                 87 |
-| Parakeet TDT 0.6B v3         |               12.3 / 11.9 |                    21.6 |                     35 |         4.9 GiB |                         0 |            2 |                 82 |
-| Granite Speech 4.1 2B NAR    |               14.5 / 13.5 |                    14.5 |                     14 |         5.4 GiB |                        11 |            1 |                 76 |
-| MOSS-Transcribe-Diarize 0.9B |               14.7 / 12.9 |                    13.8 |                    6.5 |         3.6 GiB |                         0 |            2 |                 29 |
-| Qwen3-ASR 1.7B               |               16.2 / 13.2 |                    15.1 |                      8 |         6.9 GiB |                       n/a |            4 |                 35 |
-| Canary, speech only          |               12.3 / 11.6 |                    11.8 |                     13 |         2.6 GiB |                         0 |            2 |                 94 |
-| Cohere, speech only          |               12.8 / 11.6 |                    11.9 |                     20 |         4.5 GiB |                         0 |           40 |                 73 |
-| Granite, speech only         |               16.3 / 15.0 |                    13.9 |                     11 |         5.4 GiB |                         0 |            1 |                 79 |
+| Model                                                                                           | Human rate, all / content | Agreement rate, content | Speed, times real time | Peak MLX memory | Words invented in silence | Longest loop | `ne` per 100 `pas` |
+| :---------------------------------------------------------------------------------------------- | ------------------------: | ----------------------: | ---------------------: | --------------: | ------------------------: | -----------: | -----------------: |
+| [Canary 1B v2](https://huggingface.co/CogniSoftOrg/canary-1b-v2-mlx-bf16)                       |                 8.5 / 8.0 |                    13.1 |                     13 |         2.6 GiB |                        16 |           23 |                 96 |
+| [Whisper large-v3](https://huggingface.co/mlx-community/whisper-large-v3-asr-fp16)              |                 8.6 / 8.2 |                    13.1 |                      4 |         8.3 GiB |                         1 |            2 |                 77 |
+| [Cohere Transcribe 03-2026](https://huggingface.co/CohereLabs/cohere-transcribe-03-2026)        |                 9.8 / 9.3 |                    15.5 |                     35 |         5.3 GiB |                       167 |           30 |                 87 |
+| [Parakeet TDT 0.6B v3](https://huggingface.co/mlx-community/parakeet-tdt-0.6b-v3)               |               12.3 / 11.9 |                    21.6 |                     35 |         4.9 GiB |                         0 |            2 |                 82 |
+| [Granite Speech 4.1 2B NAR](https://huggingface.co/mlx-community/granite-speech-4.1-2b-nar-mlx) |               14.5 / 13.5 |                    14.5 |                     14 |         5.4 GiB |                        11 |            1 |                 76 |
+| [MOSS-Transcribe-Diarize 0.9B](https://huggingface.co/OpenMOSS-Team/MOSS-Transcribe-Diarize)    |               14.7 / 12.9 |                    13.8 |                    6.5 |         3.6 GiB |                         0 |            2 |                 29 |
+| [Qwen3-ASR 1.7B](https://huggingface.co/mlx-community/Qwen3-ASR-1.7B-bf16)                      |               16.2 / 13.2 |                    15.1 |                      8 |         6.9 GiB |                       n/a |            4 |                 35 |
+| Canary, speech only                                                                             |               12.3 / 11.6 |                    11.8 |                     13 |         2.6 GiB |                         0 |            2 |                 94 |
+| Cohere, speech only                                                                             |               12.8 / 11.6 |                    11.9 |                     20 |         4.5 GiB |                         0 |           40 |                 73 |
+| Granite, speech only                                                                            |               16.3 / 15.0 |                    13.9 |                     11 |         5.4 GiB |                         0 |            1 |                 79 |
 
 - **Speed:** each model ran alone, with two exceptions. The speed of MOSS comes from a 10-minute test alone. Whisper shared the GPU with short tests during part of its run, so its speed is a lower bound.
 - **Words invented in silence:** exact for the models with word or sentence times (Whisper, Parakeet, MOSS), approximate for the blocks of 25 to 30 seconds, and not measurable for the 5-minute blocks of Qwen3-ASR.
@@ -74,7 +74,7 @@ The reference started from a draft voted by Whisper, Canary, Cohere, Parakeet an
 
 ## Speaker turns
 
-pyannote `speaker-diarization-community-1` (pyannote.audio `4.0.7`, MPS) against the turns of MOSS, on the same recording and with the same cues. A second with one `speaker` cue and no `room` cue counts as speech of that speaker.
+pyannote [`speaker-diarization-community-1`](https://huggingface.co/pyannote/speaker-diarization-community-1) (pyannote.audio `4.0.7`, MPS) against the turns of [MOSS](https://huggingface.co/OpenMOSS-Team/MOSS-Transcribe-Diarize), on the same recording and with the same cues. A second with one `speaker` cue and no `room` cue counts as speech of that speaker.
 
 | Measure                                                  |                 MOSS | pyannote community-1 |
 | :------------------------------------------------------- | -------------------: | -------------------: |
@@ -91,19 +91,19 @@ pyannote `speaker-diarization-community-1` (pyannote.audio `4.0.7`, MPS) against
 
 Each model transcribed the three corrected clips as standalone 2-minute WAV files, so every model heard the same audio. Without the surrounding audio, rates run higher than in the tables above. Speed is in times real time on the M1 Pro. `review.py clips` computes these tables from the runs on the clip WAVs.
 
-| Model                                       | Rate, all / content | Per clip         |     Speed | Notes                                                                  |
-| :------------------------------------------ | ------------------: | :--------------- | --------: | :--------------------------------------------------------------------- |
-| Voxtral Mini 4B Realtime, fp16, 2.4 s delay |          10.7 / 9.8 | 9.9, 11.4, 10.7  |      0.38 | No word times.                                                         |
-| Canary 1B v2                                |         10.9 / 10.5 | 12.5, 8.4, 12.1  |         8 |                                                                        |
-| Cohere Transcribe 03-2026                   |         11.1 / 10.6 | 13.2, 10.2, 10.4 |        14 |                                                                        |
-| Whisper large-v3                            |         13.2 / 12.2 | 13.2, 13.8, 12.6 |       3.5 | Drops the half sentence at the cut.                                    |
-| MOSS-Transcribe-Diarize                     |         14.6 / 13.2 | 12.1, 15.3, 15.9 |         5 |                                                                        |
-| Kyutai stt-1b-en_fr (MLX)                   |         19.3 / 19.0 | 11.0, 12.0, 32.3 |       1.3 | Drops whole sentences of fast, overlapping talk.                       |
-| Parakeet TDT 0.6B v3                        |         19.4 / 18.3 | 9.2, 35.3, 12.6  |        20 | Lost 80 words on the second clip.                                      |
-| VibeVoice-ASR 9B, 8-bit                     |         20.2 / 16.3 | 23.1, 19.2, 18.9 |       1.5 | Verbatim, with fillers and `[Silence]` tags; gives speakers and times. |
-| whisper-large-v3-french                     |         22.3 / 19.7 | 11.4, 35.0, 18.9 |         5 | Skips the start of the second clip and invents a sentence.             |
-| Hojo-ASR-Multi-V1                           |      35.9 on clip 1 | 35.9             | under 0.5 | Junk first tokens and empty windows on MPS.                            |
-| VibeVoice-ASR Streaming 1.5B                |         59.8 / 57.9 | 43.2, 84.1, 49.9 |       1.2 | Garbles words and loops.                                               |
+| Model                                                                                                                  | Rate, all / content | Per clip         |     Speed | Notes                                                                  |
+| :--------------------------------------------------------------------------------------------------------------------- | ------------------: | :--------------- | --------: | :--------------------------------------------------------------------- |
+| [Voxtral Mini 4B Realtime](https://huggingface.co/mlx-community/Voxtral-Mini-4B-Realtime-2602-fp16), fp16, 2.4 s delay |          10.7 / 9.8 | 9.9, 11.4, 10.7  |      0.38 | No word times.                                                         |
+| [Canary 1B v2](https://huggingface.co/CogniSoftOrg/canary-1b-v2-mlx-bf16)                                              |         10.9 / 10.5 | 12.5, 8.4, 12.1  |         8 |                                                                        |
+| [Cohere Transcribe 03-2026](https://huggingface.co/CohereLabs/cohere-transcribe-03-2026)                               |         11.1 / 10.6 | 13.2, 10.2, 10.4 |        14 |                                                                        |
+| [Whisper large-v3](https://huggingface.co/mlx-community/whisper-large-v3-asr-fp16)                                     |         13.2 / 12.2 | 13.2, 13.8, 12.6 |       3.5 | Drops the half sentence at the cut.                                    |
+| [MOSS-Transcribe-Diarize](https://huggingface.co/OpenMOSS-Team/MOSS-Transcribe-Diarize)                                |         14.6 / 13.2 | 12.1, 15.3, 15.9 |         5 |                                                                        |
+| [Kyutai stt-1b-en_fr (MLX)](https://huggingface.co/kyutai/stt-1b-en_fr-mlx)                                            |         19.3 / 19.0 | 11.0, 12.0, 32.3 |       1.3 | Drops whole sentences of fast, overlapping talk.                       |
+| [Parakeet TDT 0.6B v3](https://huggingface.co/mlx-community/parakeet-tdt-0.6b-v3)                                      |         19.4 / 18.3 | 9.2, 35.3, 12.6  |        20 | Lost 80 words on the second clip.                                      |
+| [VibeVoice-ASR 9B, 8-bit](https://huggingface.co/mlx-community/VibeVoice-ASR-8bit)                                     |         20.2 / 16.3 | 23.1, 19.2, 18.9 |       1.5 | Verbatim, with fillers and `[Silence]` tags; gives speakers and times. |
+| [whisper-large-v3-french](https://huggingface.co/bofenghuang/whisper-large-v3-french)                                  |         22.3 / 19.7 | 11.4, 35.0, 18.9 |         5 | Skips the start of the second clip and invents a sentence.             |
+| [Hojo-ASR-Multi-V1](https://huggingface.co/HojoAI/Hojo-ASR-Multi-V1)                                                   |      35.9 on clip 1 | 35.9             | under 0.5 | Junk first tokens and empty windows on MPS.                            |
+| [VibeVoice-ASR Streaming 1.5B](https://huggingface.co/microsoft/VibeVoice-ASR-Streaming-1.5B)                          |         59.8 / 57.9 | 43.2, 84.1, 49.9 |       1.2 | Garbles words and loops.                                               |
 
 Votes on the same clips, with Whisper as the pivot:
 
@@ -120,7 +120,7 @@ On 901 words, gaps under about 2 points are noise, so no vote above beats the fi
 Runtime notes:
 
 - Hojo-ASR-Multi-V1 (`hojo-asr` 0.1.3) pins torch below 2.6, whose MPS attention fails on grouped-query heads, and it turns on autocast for CUDA only. With both patched, it still writes a junk first token and returns empty windows.
-- `mlx-community/Voxtral-Mini-4B-Realtime-6bit` has no `model_type` and writes garbage. `mlx-community/Voxtral-Mini-4B-Realtime-2602-fp16` works in the mlx-audio that Nativ bundles.
+- [`mlx-community/Voxtral-Mini-4B-Realtime-6bit`](https://huggingface.co/mlx-community/Voxtral-Mini-4B-Realtime-6bit) has no `model_type` and writes garbage. [`mlx-community/Voxtral-Mini-4B-Realtime-2602-fp16`](https://huggingface.co/mlx-community/Voxtral-Mini-4B-Realtime-2602-fp16) works in the mlx-audio that Nativ bundles.
 - VibeVoice and whisper-large-v3-french checkpoints carry a spare output head: load them with `strict=False`.
 - Kyutai runs with `moshi_mlx` 0.3.0, which needs Python 3.12 or older: `uv run --no-project --python 3.12 --with 'moshi_mlx==0.3.0' -- python -m moshi_mlx.run_inference --hf-repo kyutai/stt-1b-en_fr-mlx {wav} --temp 0`.
 
@@ -161,50 +161,50 @@ For a model without hints, a short list of replacements built from the dictionar
 
 ## Features
 
-| Model                        | Weights | Licence           | Times            | Speakers                             | Hints    |
-| :--------------------------- | ------: | :---------------- | :--------------- | :----------------------------------- | :------- |
-| Whisper large-v3             | 2.9 GiB | Apache-2.0        | word             | no                                   | prompt   |
-| Canary 1B v2                 | 3.0 GiB | CC-BY-4.0         | 25-second window | no                                   | no       |
-| Cohere Transcribe 03-2026    | 3.9 GiB | Apache-2.0, gated | 30-second block  | no                                   | no       |
-| Parakeet TDT 0.6B v3         | 2.3 GiB | CC-BY-4.0         | word             | no                                   | no       |
-| Granite Speech 4.1 2B NAR    | 4.2 GiB | Apache-2.0        | 25-second window | no                                   | no       |
-| MOSS-Transcribe-Diarize 0.9B | 1.7 GiB | Apache-2.0        | sentence         | yes, restarting per 10-minute window | prompt   |
-| Qwen3-ASR 1.7B               | 3.8 GiB | Apache-2.0        | 5-minute block   | no                                   | hotwords |
+| Model                                                                                           | Weights | Licence           | Times            | Speakers                             | Hints    |
+| :---------------------------------------------------------------------------------------------- | ------: | :---------------- | :--------------- | :----------------------------------- | :------- |
+| [Whisper large-v3](https://huggingface.co/mlx-community/whisper-large-v3-asr-fp16)              | 2.9 GiB | Apache-2.0        | word             | no                                   | prompt   |
+| [Canary 1B v2](https://huggingface.co/CogniSoftOrg/canary-1b-v2-mlx-bf16)                       | 3.0 GiB | CC-BY-4.0         | 25-second window | no                                   | no       |
+| [Cohere Transcribe 03-2026](https://huggingface.co/CohereLabs/cohere-transcribe-03-2026)        | 3.9 GiB | Apache-2.0, gated | 30-second block  | no                                   | no       |
+| [Parakeet TDT 0.6B v3](https://huggingface.co/mlx-community/parakeet-tdt-0.6b-v3)               | 2.3 GiB | CC-BY-4.0         | word             | no                                   | no       |
+| [Granite Speech 4.1 2B NAR](https://huggingface.co/mlx-community/granite-speech-4.1-2b-nar-mlx) | 4.2 GiB | Apache-2.0        | 25-second window | no                                   | no       |
+| [MOSS-Transcribe-Diarize 0.9B](https://huggingface.co/OpenMOSS-Team/MOSS-Transcribe-Diarize)    | 1.7 GiB | Apache-2.0        | sentence         | yes, restarting per 10-minute window | prompt   |
+| [Qwen3-ASR 1.7B](https://huggingface.co/mlx-community/Qwen3-ASR-1.7B-bf16)                      | 3.8 GiB | Apache-2.0        | 5-minute block   | no                                   | hotwords |
 
 - **Canary:** the loader reports one unused tensor at load. It is harmless: the output is good.
 - **Parakeet:** leaves long stretches without punctuation.
 - **MOSS:** in 2 windows, it wrote times without speaker labels.
-- **Helper models:** Qwen3-ForcedAligner 0.6B gives word times to any text (17 seconds for 10 minutes of audio). Nemotron 3 Diarization finds speaker turns at 380 times real time, but with 8 slots it mixes people over a long meeting. Silero detects speech.
+- **Helper models:** [Qwen3-ForcedAligner 0.6B](https://huggingface.co/mlx-community/Qwen3-ForcedAligner-0.6B-bf16) gives word times to any text (17 seconds for 10 minutes of audio). [Nemotron 3 Diarization](https://huggingface.co/mlx-community/Nemotron-3-Diarization) finds speaker turns at 380 times real time, but with 8 slots it mixes people over a long meeting. [Silero](https://huggingface.co/mlx-community/silero-vad) detects speech.
 
 ## Models left out
 
-| Model                                | Reason                                                                                                               |
-| :----------------------------------- | :------------------------------------------------------------------------------------------------------------------- |
-| Voxtral Mini 3B                      | Its audio pre-processing needs PyTorch, which the runtime of Nativ does not include.                                 |
-| VibeVoice-ASR (8-bit)                | 38 minutes and 13 GiB for a 10-minute clip, and no text in the output.                                               |
-| Hojo-ASR-Multi-V1                    | Best open-weight French score on the Open ASR Leaderboard, but the runtime of Nativ has no loader for it.            |
-| Cohere Transcribe on `mlx-community` | That conversion is for the `mlx-speech` library: the loader of Nativ accepts it without an error and writes garbage. |
+| Model                                                                            | Reason                                                                                                               |
+| :------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------- |
+| Voxtral Mini 3B                                                                  | Its audio pre-processing needs PyTorch, which the runtime of Nativ does not include.                                 |
+| [VibeVoice-ASR (8-bit)](https://huggingface.co/mlx-community/VibeVoice-ASR-8bit) | 38 minutes and 13 GiB for a 10-minute clip, and no text in the output.                                               |
+| [Hojo-ASR-Multi-V1](https://huggingface.co/HojoAI/Hojo-ASR-Multi-V1)             | Best open-weight French score on the Open ASR Leaderboard, but the runtime of Nativ has no loader for it.            |
+| Cohere Transcribe on `mlx-community`                                             | That conversion is for the `mlx-speech` library: the loader of Nativ accepts it without an error and writes garbage. |
 
 ## Revisions
 
 Each model ran from the Hugging Face revision below: the one on `main` when it was downloaded.
 
-| Model                          | Repository                                         | Revision  | Revision date |
-| :----------------------------- | :------------------------------------------------- | :-------- | :------------ |
-| Whisper large-v3               | `mlx-community/whisper-large-v3-asr-fp16`          | `f4b9d56` | 2026-01-13    |
-| Canary 1B v2                   | `CogniSoftOrg/canary-1b-v2-mlx-bf16` (community)   | `f86c158` | 2026-06-02    |
-| Cohere Transcribe 03-2026      | `CohereLabs/cohere-transcribe-03-2026`             | `d552dad` | 2026-10-07    |
-| Parakeet TDT 0.6B v3           | `mlx-community/parakeet-tdt-0.6b-v3`               | `ed2b7e8` | 2025-08-16    |
-| Granite Speech 4.1 2B NAR      | `mlx-community/granite-speech-4.1-2b-nar-mlx`      | `6acb789` | 2026-05-28    |
-| MOSS-Transcribe-Diarize 0.9B   | `OpenMOSS-Team/MOSS-Transcribe-Diarize`            | `704aa4a` | 2026-09-02    |
-| Qwen3-ASR 1.7B                 | `mlx-community/Qwen3-ASR-1.7B-bf16`                | `e1f6c26` | 2026-01-29    |
-| Voxtral Mini 4B Realtime, fp16 | `mlx-community/Voxtral-Mini-4B-Realtime-2602-fp16` | `9977a0f` | 2026-02-09    |
-| Kyutai stt-1b-en_fr (MLX)      | `kyutai/stt-1b-en_fr-mlx`                          | `2b99572` | 2025-06-19    |
-| VibeVoice-ASR 9B, 8-bit        | `mlx-community/VibeVoice-ASR-8bit`                 | `725c72e` | 2026-01-23    |
-| VibeVoice-ASR Streaming 1.5B   | `microsoft/VibeVoice-ASR-Streaming-1.5B`           | `4262d23` | 2026-09-03    |
-| whisper-large-v3-french        | `bofenghuang/whisper-large-v3-french`              | `90a7cd1` | 2024-02-05    |
-| Hojo-ASR-Multi-V1              | `HojoAI/Hojo-ASR-Multi-V1`                         | `aa1d0df` | 2026-08-30    |
-| pyannote community-1           | `pyannote/speaker-diarization-community-1`         | `3533c8c` | 2025-09-29    |
-| Qwen3-ForcedAligner 0.6B       | `mlx-community/Qwen3-ForcedAligner-0.6B-bf16`      | `53c8c0e` | 2026-01-29    |
-| Nemotron 3 Diarization         | `mlx-community/Nemotron-3-Diarization`             | `59ed2db` | 2026-09-23    |
-| Silero VAD                     | `mlx-community/silero-vad`                         | `7bc17f2` | 2026-04-30    |
+| Model                          | Repository                                                                                                                    | Revision  | Revision date |
+| :----------------------------- | :---------------------------------------------------------------------------------------------------------------------------- | :-------- | :------------ |
+| Whisper large-v3               | [`mlx-community/whisper-large-v3-asr-fp16`](https://huggingface.co/mlx-community/whisper-large-v3-asr-fp16)                   | `f4b9d56` | 2026-01-13    |
+| Canary 1B v2                   | [`CogniSoftOrg/canary-1b-v2-mlx-bf16`](https://huggingface.co/CogniSoftOrg/canary-1b-v2-mlx-bf16) (community)                 | `f86c158` | 2026-06-02    |
+| Cohere Transcribe 03-2026      | [`CohereLabs/cohere-transcribe-03-2026`](https://huggingface.co/CohereLabs/cohere-transcribe-03-2026)                         | `d552dad` | 2026-10-07    |
+| Parakeet TDT 0.6B v3           | [`mlx-community/parakeet-tdt-0.6b-v3`](https://huggingface.co/mlx-community/parakeet-tdt-0.6b-v3)                             | `ed2b7e8` | 2025-08-16    |
+| Granite Speech 4.1 2B NAR      | [`mlx-community/granite-speech-4.1-2b-nar-mlx`](https://huggingface.co/mlx-community/granite-speech-4.1-2b-nar-mlx)           | `6acb789` | 2026-05-28    |
+| MOSS-Transcribe-Diarize 0.9B   | [`OpenMOSS-Team/MOSS-Transcribe-Diarize`](https://huggingface.co/OpenMOSS-Team/MOSS-Transcribe-Diarize)                       | `704aa4a` | 2026-09-02    |
+| Qwen3-ASR 1.7B                 | [`mlx-community/Qwen3-ASR-1.7B-bf16`](https://huggingface.co/mlx-community/Qwen3-ASR-1.7B-bf16)                               | `e1f6c26` | 2026-01-29    |
+| Voxtral Mini 4B Realtime, fp16 | [`mlx-community/Voxtral-Mini-4B-Realtime-2602-fp16`](https://huggingface.co/mlx-community/Voxtral-Mini-4B-Realtime-2602-fp16) | `9977a0f` | 2026-02-09    |
+| Kyutai stt-1b-en_fr (MLX)      | [`kyutai/stt-1b-en_fr-mlx`](https://huggingface.co/kyutai/stt-1b-en_fr-mlx)                                                   | `2b99572` | 2025-06-19    |
+| VibeVoice-ASR 9B, 8-bit        | [`mlx-community/VibeVoice-ASR-8bit`](https://huggingface.co/mlx-community/VibeVoice-ASR-8bit)                                 | `725c72e` | 2026-01-23    |
+| VibeVoice-ASR Streaming 1.5B   | [`microsoft/VibeVoice-ASR-Streaming-1.5B`](https://huggingface.co/microsoft/VibeVoice-ASR-Streaming-1.5B)                     | `4262d23` | 2026-09-03    |
+| whisper-large-v3-french        | [`bofenghuang/whisper-large-v3-french`](https://huggingface.co/bofenghuang/whisper-large-v3-french)                           | `90a7cd1` | 2024-02-05    |
+| Hojo-ASR-Multi-V1              | [`HojoAI/Hojo-ASR-Multi-V1`](https://huggingface.co/HojoAI/Hojo-ASR-Multi-V1)                                                 | `aa1d0df` | 2026-08-30    |
+| pyannote community-1           | [`pyannote/speaker-diarization-community-1`](https://huggingface.co/pyannote/speaker-diarization-community-1)                 | `3533c8c` | 2025-09-29    |
+| Qwen3-ForcedAligner 0.6B       | [`mlx-community/Qwen3-ForcedAligner-0.6B-bf16`](https://huggingface.co/mlx-community/Qwen3-ForcedAligner-0.6B-bf16)           | `53c8c0e` | 2026-01-29    |
+| Nemotron 3 Diarization         | [`mlx-community/Nemotron-3-Diarization`](https://huggingface.co/mlx-community/Nemotron-3-Diarization)                         | `59ed2db` | 2026-09-23    |
+| Silero VAD                     | [`mlx-community/silero-vad`](https://huggingface.co/mlx-community/silero-vad)                                                 | `7bc17f2` | 2026-04-30    |
