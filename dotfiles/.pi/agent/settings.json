@@ -1,6 +1,6 @@
 {
   "$schema": "https://pi.dev/schemas/settings.schema.json",
-  "lastChangelogVersion": "1.3.0",
+  "lastChangelogVersion": "1.4.0",
   "theme": "gruvbox",
   "tuiMode": "regular",
   "defaultProvider": "openrouter",
@@ -17,19 +17,21 @@
   ],
   "_extensionsRationale": "The built-in llama.cpp extension is off because no llama.cpp router runs here: the local models come from the nativ provider in models.json, on the port that extension takes for its own default.",
   "enabledModels": [
-    "z-ai/glm-5.3",
     "qwen/qwen3.8-max-0902",
-    "openrouter/qwen/qwen3.8-27b",
-    "deepseek/deepseek-v4-pro-0813",
+    "z-ai/glm-5.3",
+    "moonshotai/kimi-k3",
     "deepseek/deepseek-v4.1-flash-1017",
-    "anthropic/claude-sonnet-5-5",
-    "anthropic/claude-opus-5-5",
-    "anthropic/claude-haiku-5-5",
     "anthropic/claude-fable-5-1",
-    "~openai/gpt-astra-latest",
-    "~openai/gpt-sol-latest",
-    "~google/gemini-pro-latest",
-    "~moonshotai/kimi-latest"
+    "anthropic/claude-opus-5-5",
+    "anthropic/claude-sonnet-5-5",
+    "anthropic/claude-haiku-5-5",
+    "github-copilot/gpt-6-luna",
+    "github-copilot/claude-sonnet-5.5",
+    "github-copilot/kimi-k3",
+    "github-copilot/gpt-5.6-terra",
+    "github-copilot/gpt-5.3-codex",
+    "github-copilot/gemini-3.8-flash",
+    "github-copilot/claude-haiku-5.5"
   ],
-  "_enabledModelsRationale": "The Claude entries are the models this account's Claude Max subscription covers. They go directly through the anthropic provider and never through OpenRouter, which bills the same models to credits. Only the newest version of each Claude line stays in the scope: when a successor enters, its predecessor leaves. Before a Claude model enters the scope, send it a one-word prompt with `pi --print --model anthropic/{id}` through the plan login, and drop a model that answers that the plan does not include it. Send the same probe to a model already in the scope as a control. Fable models draw at most 50% of the weekly limits (https://support.claude.com/en/articles/15424964-claude-fable-models-on-your-plan). When every anthropic model answers 400 'out of extra usage', the five-hour session limit is spent, not the model tier: such a probe proves nothing about one entry, which stays in the scope until a later probe answers it. The other entries are OpenRouter models billed to credits. An entry that starts with ~ and ends in -latest is an OpenRouter alias that follows the newest release of one model line. A pinned entry names the newest dated snapshot of its line, because an undated id can resolve to an older snapshot: the `canonical_slug` an id carries in OpenRouter's `/api/v1/models` reply names the snapshot it resolves to. An entry whose id another configured provider also lists carries its provider prefix: pi puts a bare id in the scope once for every provider that lists it, in any letter case, and warns at startup that the pattern `matches several providers`. The saved default stays inside the scope, so new sessions start on it. pi adds an entry to this list when a model outside the scope is saved as the default with Ctrl+S in /model: prune deliberately. A retired alias costs a warning, not an error: `No models match pattern` shows in the startup model scope line and in `/scoped-models`, which resolves this list against the available models. `pi --list-models` does not read this list: it prints every available model, fuzzy-filtered by its optional search argument, so it cannot confirm a scope entry. Every claim about pi in this note holds for pi 1.3.0, checked 2026-10-21."
+  "_enabledModelsRationale": "The Claude entries go directly through the anthropic provider and never through OpenRouter, which bills the same models to credits. Until 2026-10-30 the anthropic provider authenticates with an API key behind a keychain command and draws a promotional grant; `/login anthropic` restores the Claude Max subscription login. Only the newest version of each Claude line stays in the scope: when a successor enters, its predecessor leaves. Before a Claude model enters the scope, send it a one-word prompt with `pi --print --model anthropic/{id}` through the plan login, and drop a model that answers that the plan does not include it. Send the same probe to a model already in the scope as a control. Fable models draw at most 50% of the weekly limits (https://support.claude.com/en/articles/15424964-claude-fable-models-on-your-plan). When every anthropic model answers 400 'out of extra usage', the five-hour session limit is spent, not the model tier: such a probe proves nothing about one entry, which stays in the scope until a later probe answers it. The GitHub Copilot entries draw the Copilot subscription and sit after the Claude group, strongest first, with the light tiers (flash, haiku) at the bottom. Their ids carry the `github-copilot/` prefix because other providers list the same ids. The copilot group and the anthropic group carry the same Claude 5.5 versions under different ids (`claude-sonnet-5.5` vs `claude-sonnet-5-5`): the anthropic copies bill the grant, the copilot copies draw the subscription. The other entries are OpenRouter models billed to credits, from vendors no subscription here covers. No OpenAI, Google or Anthropic model goes through OpenRouter: the Anthropic models come from the anthropic provider or the Copilot subscription, the OpenAI and Google models from the Copilot subscription. No entry uses a `-latest` alias: every id names the model line and version it serves, resolved by a one-token probe through the alias plus the `canonical_slug` from OpenRouter's `/api/v1/models` reply. Only ids OpenRouter itself lists dated are true snapshot pins (`qwen3.8-max-0902`, `deepseek-v4.1-flash-1017`); the versioned ids (`glm-5.3`, `kimi-k3`) can re-snapshot under the same id, and a hard pin for one needs a `models.json` model override carrying the dated id. An entry whose id another configured provider also lists carries its provider prefix: pi puts a bare id in the scope once for every provider that lists it, in any letter case, and warns at startup that the pattern `matches several providers`. The saved default stays inside the scope, so new sessions start on it. pi adds an entry to this list when a model outside the scope is saved as the default with Ctrl+S in /model: prune deliberately. A retired alias costs a warning, not an error: `No models match pattern` shows in the startup model scope line and in `/scoped-models`, which resolves this list against the available models. `pi --list-models` does not read this list: it prints every available model, fuzzy-filtered by its optional search argument, so it cannot confirm a scope entry. The list is a preference order, strongest model first within each group: OpenRouter-billed models first, then the Claude models, fable first and haiku last. The order drives `Ctrl+P` cycling and `/scoped-models` only; the `/model` picker sorts by current model, default, then provider name, and no setting changes that (pi 1.4.0). Every claim about pi in this note holds for pi 1.3.0, checked 2026-10-21, except where it names 1.4.0."
 }
