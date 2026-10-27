@@ -634,6 +634,8 @@ Never `cd` in Bash calls: pass absolute paths to the tool instead. Claude Code's
 
 `sed -i ''` misbehaves in this harness: it applies the edits, then exits `2` with `can't read :`. Use Python for in-place multi-file rewrites.
 
+`rg -rn {pattern}` adds no recursion, which `rg` does by default: `-r` takes a replacement string, so the flag swaps every match for a literal `n` and prints mangled lines that still read as results. Write `rg -n`.
+
 The tool shell is zsh with `nomatch` on: quote every glob meant for the program (`--include='*.swift'`), every argument that starts with `=`, and every `gh api` path that holds a `?`. Otherwise zsh aborts the command before it runs: an unmatched glob dies with `no matches found`, and `echo ======` dies with `===== not found`, because zsh expands `=name` to the path of a command.
 
 zsh also reads a colon and a letter after a variable as a modifier of the expansion, when the letter names one, like `c`, `h` or `t`: `git show $sha:content/x.md` loses its `:c` and asks git for `{sha}ontent/x.md`. Write `${sha}:content/x.md`.
