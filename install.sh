@@ -162,7 +162,7 @@ $($FIND_CLI dotfiles/.config -depth 1 -not -name '\.DS_Store')"
     # Collect all "Library" subfolders but "Application Support", "Preferences"
     # and "LaunchAgents" folders. LaunchAgents is excluded for the same reason
     # as the others: ~/Library/LaunchAgents is a real directory holding agents
-    # this repository does not own (Google Updater, Samsung Magician, anything
+    # this repository does not own (Google Updater, anything
     # `brew services` installs). Linking the folder would move all of them
     # aside into a backup and silently stop them, so its contents are linked
     # file by file below.
