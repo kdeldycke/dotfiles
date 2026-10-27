@@ -204,6 +204,10 @@ Enable the extension where it is missing (`sphinx.ext.todo` plus `todo_include_t
 
 Example data everywhere (docs, docstrings, comments, workflows, fixtures) must be domain-neutral: cities, weather, fruits, animals, recipes. Do not reference the project, software engineering concepts, or package metadata. The reader should understand the example without knowing what the project is.
 
+### Measurements are timeless
+
+Identify each model, tool and runtime in a benchmark or a measured claim by its version or release date. Do not write the date of the run: the version tells the reader whether the result still applies.
+
 ## File naming conventions
 
 ### Extensions: prefer long form
@@ -417,7 +421,7 @@ Patterns that recur across sessions, to watch for proactively:
 - **Anchor a scripted edit on its target member, never on the first match in the file.** The same docstring prefix recurs across members: locate the `def {name}` line, search forward from there, and assert something unique to the target block before writing.
 - **Grep for pinned phrases before rewriting text that has tests.** A suite may assert exact strings from the file being edited: a heading, an opening word, a checklist step. A rewrite that keeps the meaning can still fail it. Grep the tests and callers for distinctive phrases before editing; keep what they pin, or update the assertions in the same change.
 - **A grep context window is not evidence of drift.** `-A`/`-B` can cut the governing clause mid-sentence, and the cut text then reads as a stale claim. Read the full block before you report text as outdated, and again before you edit it. A search cut by `head` is no evidence of absence either: count the matches before you report that something is not there. Nor is an API's own method listing, which can hide private methods: grep the source before you report a call as gone. Nor is a comment cut to its first characters (`--jq '.body[0:400]'`): read the whole reply before you report what its author said.
-- **Claude Code behavior claims rot between releases.** Record the version and date a claim was verified against, and re-check it before you trust it: grep the installed binary (under `~/.local/share/claude/versions/` here), then run a live probe. The docs and the binary disagree regularly; the binary and the probe win.
+- **Claude Code behavior claims rot between releases.** Record the version a claim was verified against, and re-check it before you trust it: grep the installed binary (under `~/.local/share/claude/versions/` here), then run a live probe. The docs and the binary disagree regularly; the binary and the probe win.
 - **Give a best-effort handler a log before debugging it.** An exit hook or shutdown callback that swallows its failures cannot tell "never fired" from "fired and gave up at step N". Add a small capped log line at every silent exit point, then run one cheap probe per fact.
 
 ### Agent behavior policy
