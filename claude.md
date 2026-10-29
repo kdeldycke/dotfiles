@@ -28,6 +28,7 @@ This file holds only the rules specific to this repository. The generic conventi
 
 - **Each `repomatic init` and `sync-repomatic` run rewrites every skill under `dotfiles/.agents/skills/` that `.claude-plugin/plugin.json` does not list.** Port a lesson written into one of them to `../repomatic/.claude/skills/{name}/SKILL.md` in the same pass.
 - **The Bash sandbox denies writes under `dotfiles/.agents/skills/` and `dotfiles/.claude/`, and to `dotfiles/.agents/AGENTS.md`.** Change those files with the Write and Edit tools; Bash can still read them, so lint and test a skill in place. A script holding backslash escapes goes in with `cp` outside the sandbox, which keeps its bytes and mode.
+- **`dotfiles/.agents/skills/synced/` and `.trash/` come from the Claude app sync.** `synced/{id}/manifest.json` names each skill's `source` (`anthropic`, `anthropic-example`), and a skill in `.trash/` came from there. The claude.ai Skills page does not list them: hide one with `skillOverrides` in `.claude/settings.json` and a `!` glob in the pi `skills` setting. `pi config` is a TUI only: count the skills pi loads with a node script that calls `DefaultResourceLoader` (from pi's `dist/index.js`) `reload()` then `getSkills()`.
 
 ## Assets
 
