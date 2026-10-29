@@ -209,7 +209,7 @@ variable = "CC_SESSION"
 format = '[ $env_value ](dimmed fg:color_fg0 bg:color_bg1)'
 
 [claude_context]
-format = '[$gauge $percentage ]($style)'
+format = '[$percentage $gauge ]($style)'
 display = [
   { threshold = 0, style = "bold green bg:color_bg3" },
   { threshold = 60, style = "bold yellow bg:color_bg3" },
