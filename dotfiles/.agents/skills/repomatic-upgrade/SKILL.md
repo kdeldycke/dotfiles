@@ -69,11 +69,26 @@ Produce one table: changelog entry, bin (`breaking`, `adopt`, `drop`, `simplify`
 ### Apply
 
 1. **Apply one row at a time, breaking rows first.** Keep each change readable on its own in `git diff`.
+
 2. **Keep the local edits a synced copy carries.** Restore the file as it stood before the upgrade when upstream left it unchanged between the two tags. Otherwise keep that `git merge-file` output as the new copy, once its conflicts are resolved. To re-apply one local commit instead, `git apply -C1` gets past a context line upstream reworded. Then port the edits upstream, as step 4 describes, or the next sync reverts them again.
+
 3. **Run the local checks after each row.** The project's tests, `mypy` and `ruff`, plus `<cmd> lint-repo --repo {owner}/{repo}` when the row touched `.github/` or `pyproject.toml`. After a row that touched a workflow, also run `<cmd> run actionlint`, which parses its `${{ }}` expressions. A failing check vetoes the row: revert it and note it in the report. Never loosen a test to pass.
+
 4. **Send generator problems upstream, as edits in the sibling checkout.** When a row needs a change in `repomatic` itself (a generator writing something unwanted, a missing knob, a docs gap, a lesson a synced copy carries) and the context shows `SIBLING_CHECKOUT`, implement it in `../repomatic`: the code, the tests it breaks, and a changelog bullet. Verify it there. `repomatic run typos` and `mdformat` rewrite files in place and print no findings, so judge them by `git diff`. Another session may share that checkout: edit only the files the row needs, and name them in the report so they can be committed by pathspec. Leave every change uncommitted. Without a sibling checkout, describe the change in the report instead.
+
 5. **Never commit, push, or open an issue or pull request.** The user reviews the working tree and decides.
-6. **Report.** What was applied, per row. What sits uncommitted in `../repomatic`. What was skipped, and why.
+
+6. **Close with two short lists.** Keep the table as the triage record, then end the answer with two lists, a few words per item, in place of prose about what was applied or skipped:
+
+   - **Done**: each applied row, with the files it changed. A `breaking` row carries the detail it needs as sub-bullets here, and a row that needed no local edit stays in the table's closing line.
+   - **Left to do**: each remaining action, ordered so it can be executed top to bottom, prefixed with one of these five labels and nothing else. Put `Decide:` items first, since an answer can add work below them.
+     - `Decide:` a change this pass proposed and the user has not approved, or a choice between options. End the item with the answer you recommend.
+     - `Implement:` code or a docs entry to write, naming the checkout when it is not this one.
+     - `Commit:` uncommitted changes, naming each repository and path.
+     - `Push:` commits made but not on the remote.
+     - `Report:` an issue or comment to file upstream, naming the project and the draft's path.
+
+   An item that fits none of the five is a plain bullet whose first word is the verb. Write "none" for an empty list, and add no closing summary.
 
 ### What not to touch
 
