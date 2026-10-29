@@ -10,7 +10,7 @@ This is the last turn of the session: the harness may quit as soon as it settles
 
 ## 1. Repeat invocation
 
-Check the conversation for a closing report from an earlier invocation of this skill: the labelled to-do list (`Commit:` …, `Push:` …) is its signature. If one is there, this is a repeat call, and the session must end clean this time instead of deferring again.
+Check the conversation for a closing report from an earlier invocation of this skill: the numbered, labelled to-do list (`T1 Commit:` …, `T2 Push:` …) is its signature. The user may refer to its items by ID. If one is there, this is a repeat call, and the session must end clean this time instead of deferring again.
 
 On a repeat call, do not re-list the leftovers. Finish them:
 
@@ -56,7 +56,9 @@ Guards:
 
 ## 4. Closing report
 
-End with two short lists, a few words per item: **Done** first, then **Left to do**. Write "none" where a list is empty. Keep the whole report under about 15 lines.
+End with two short lists, a few words per item: **Done** first, then **Left to do**. Write "none" where a list is empty.
+
+Start each item with an ID, so the user can answer "yes to `T1`" or "drop `T3`". Number **Done** items `D1`, `D2`, … and **Left to do** items `T1`, `T2`, …, like `- T1 Decide: …`. The IDs restart at `1` on each invocation. Keep the whole report under about 15 lines.
 
 **Done** holds what this session finished: lessons persisted and where (with the global file's size before and after, when the pass touched it), plus any tree work completed this turn. A lesson deliberately capped at a suggestion is not done: it moves to **Left to do** as a `Decide:` item instead, so every decision the user owes lives in one list. A lesson examined and skipped because the code, history, or docs already record it appears here as one line: `Skipped: …`, naming where it already lives. The report is exactly these two lists and nothing else.
 
@@ -68,4 +70,4 @@ End with two short lists, a few words per item: **Done** first, then **Left to d
 - `Push:` commits already made but not on the remote.
 - `Report:` an issue or comment to file upstream. Name the project, and the draft's path once one exists.
 
-These five are the whole vocabulary: do not coin new labels. An item that fits none of them is a plain bullet whose first word is the verb, like "Fix the …" or "Stop the …". A finding that asks for no action is not an item: list it as a `Decide:` item that proposes its fix, or leave it out.
+These five are the whole vocabulary: do not coin new labels. An item that fits none of them takes a verb as its first word after the ID, like `- T4 Fix the …` or `- T5 Stop the …`. A finding that asks for no action is not an item: list it as a `Decide:` item that proposes its fix, or leave it out.
