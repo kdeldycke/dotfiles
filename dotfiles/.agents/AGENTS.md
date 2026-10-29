@@ -42,11 +42,11 @@ Then run `/repomatic-upgrade`, which `init` prints as its last next step. A rena
 
 ### Tools called from workflows are version-pinned
 
-Every external tool a workflow invokes carries an exact version literal, in one of the shapes `sync-workflow-pins` recognizes: an action `uses:` ref, `uvx '{pkg}=={X.Y.Z}'` and the `--with` form for PyPI, `npm install {pkg}@{X.Y.Z}` for npm, and the `version:` input on `astral-sh/setup-uv`. That job resolves each to the newest release past `minimum-release-age` and opens a pull request. A tool invoked unpinned floats to the newest release on every run, outside the window entirely: see [§ Live registries with no cooldown knob](#live-registries-with-no-cooldown-knob).
+Every external tool a workflow invokes carries an exact version literal, in one of the shapes `sync-workflow-pins` recognizes: an action `uses:` ref, `uvx '{pkg}=={X.Y.Z}'` and the `--with` form for PyPI, `npm install {pkg}@{X.Y.Z}` for npm, the tag of `gh release download vX.Y.Z --repo {owner}/{repo}` for a release asset, and the `version:` input on `astral-sh/setup-uv`. That job resolves each to the newest release past `minimum-release-age` and opens a pull request. A tool invoked unpinned floats to the newest release on every run, outside the window entirely: see [§ Live registries with no cooldown knob](#live-registries-with-no-cooldown-knob).
 
 A tool the runner image happens to provide is worse than an unpinned install, because it carries no version anywhere in the repository for anything to bump. Reach for a pinned dependency that already does the job instead of finding a way to pin the tool.
 
-A version literal outside those shapes is worse still, because it *looks* maintained and nothing walks it. `gh release download vX.Y.Z` is the one to watch: it pins honestly, `sync-workflow-pins` does not recognize it, and no job ever proposes a bump. Where a pin cannot take a recognized shape, say so in a comment beside it naming who is expected to bump it. A permanently-red gating job hides such a pin twice over, since a cell that can only fail teaches readers to ignore that workflow's red runs.
+A version literal outside those shapes is worse still, because it *looks* maintained and nothing walks it. Watch for a `gh release download vX.Y.Z` with no `--repo`: it pins honestly, but `sync-workflow-pins` skips it, so no job ever proposes a bump. Where a pin cannot take a recognized shape, say so in a comment beside it naming who is expected to bump it. A permanently-red gating job hides such a pin twice over, since a cell that can only fail teaches readers to ignore that workflow's red runs.
 
 ### PAT-gated checks degrade, they do not fail
 

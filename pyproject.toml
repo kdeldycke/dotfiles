@@ -86,7 +86,7 @@ skills.location = "./dotfiles/.agents/skills/"
 subagents.location = "./dotfiles/.claude/agents/"
 
 [tool.repomatic.lint-repo.declined]
-mypy.overrides = "No Python file here imports Sphinx, so mypy reports the override as an unused section."
+mypy.overrides.'{ module = ["sphinx.*"], ignore_missing_imports = true, follow_imports = "skip" }' = "No Python file here imports Sphinx, so mypy reports the override as an unused section."
 
 [tool.repomatic.workflow.paths]
 "docs.yaml" = [
@@ -166,8 +166,6 @@ exclude = [
     # VirusTotal analysis pages are a JS app that rate-limits bots, and the
     # binaries page links one per released binary.
     "^https://www\\.virustotal\\.com/gui/.*$",
-    # star-history.com fragments are JS-rendered and invisible to lychee.
-    "^https://star-history\\.com/.*$",
 ]
 
 [tool.typos]

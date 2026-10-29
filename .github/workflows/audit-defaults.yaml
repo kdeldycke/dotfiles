@@ -19,9 +19,7 @@ permissions: {}
 
 concurrency:
   # Without this, two pushes to `main` in quick succession each hold a macOS
-  # runner to completion. Cancellation is unconditional, unlike the guarded
-  # expression install.yaml inherits from upstream: there is no release
-  # machinery in this repository for a `[changelog] Release` commit to protect.
+  # runner to completion.
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 

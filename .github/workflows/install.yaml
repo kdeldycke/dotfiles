@@ -36,9 +36,11 @@ name: 🔬 Install
 
 permissions: {}
 
+# A newer run always supersedes an older one. Upstream keys a release push on its
+# SHA so that no later push cancels it, and this repository has no release push.
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: ${{ !startsWith(github.event.head_commit.message, '[changelog] Release') }}
+  cancel-in-progress: true
 
 # Supply-chain cooldown: no package published within the window can be resolved
 # by any command in this workflow. Set here, not per command, so it also covers
