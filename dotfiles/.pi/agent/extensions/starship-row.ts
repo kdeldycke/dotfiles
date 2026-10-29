@@ -334,16 +334,18 @@ class StarshipRow {
 	}
 
 	private maybeRefresh(width: number): void {
-		// A resize invalidates how much was shed: the row may fit whole again, so start from nothing
-		// shed and let the measurement decide, rather than staying trimmed for one narrow moment.
-		if (width !== this.width) {
+		// What overflowed a moment ago may fit now: a resize changes the room, and a commit removes
+		// the git status and diff counts that pushed the row over. So a resize and each stale refresh
+		// start again from nothing shed and let the measurement decide.
+		const stale = Date.now() - this.lastRun >= STALE_MS;
+		if (width !== this.width || stale) {
 			this.width = width;
 			this.shed = 0;
 		}
 		const shed = this.shedSet();
 		const inputs = [buildPayload(this.ctx, shed), buildEnvironment(this.ctx)];
 		const signature = `${width} ${this.shed} ${JSON.stringify(inputs)}`;
-		if (signature === this.signature && Date.now() - this.lastRun < STALE_MS) return;
+		if (signature === this.signature && !stale) return;
 		this.signature = signature;
 		this.run(width);
 	}
@@ -377,6 +379,13 @@ class StarshipRow {
 		child.on("close", () => {
 			this.running = false;
 			if (this.disposed) return;
+			// A run that started before a resize measured the old width. Its overflow must not raise the
+			// shed count of the new width, so drop the result and measure again.
+			if (width !== this.width) {
+				this.signature = "";
+				this.tui.requestRender();
+				return;
+			}
 			const lines = output.replace(/\n+$/, "").split("\n");
 
 			// Measure what came back instead of predicting it. An overflowing row is worth one more
