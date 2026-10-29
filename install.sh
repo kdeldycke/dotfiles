@@ -178,11 +178,11 @@ $($FIND_CLI 'dotfiles/Library/Application Support' -depth 1 -not -name '\.DS_Sto
     #
     # The ".claude" and ".agents" entries are what keeps ~/.claude a real
     # directory: each lands beside the state Claude Code owns instead of
-    # replacing the folder holding it. Two links this loop cannot express are
-    # left out and maintained by hand, because it always names a link after its
-    # source: ~/.claude/CLAUDE.md (pointing at .agents/global-instruction.md, a
-    # rename) and ~/.claude/skills (a second link to .agents/skills, already
-    # linked into ~/.agents/skills below).
+    # replacing the folder holding it. The loop always names a link after its
+    # source, so it leaves out the links named otherwise: ~/.claude/CLAUDE.md
+    # and ~/.pi/agent/AGENTS.md, created after the loop, and ~/.claude/skills (a
+    # second link to .agents/skills, already linked into ~/.agents/skills
+    # below), which stays hand-maintained.
     #
     # .pi/agent/APPEND_SYSTEM.md is a link inside this repository, to
     # .claude/tropes.md. pi expands no "@" import in AGENTS.md, so the tropes
@@ -248,6 +248,30 @@ dotfiles/.ssh/utm-host.py"
             # Force symbolic link (re-)creation. It either doesn't exist or point to the wrong place.
             ln -sf "${DESTINATION}" "${LINK_FOLDER}"
         fi
+    done
+
+    # The global instructions, which the loop above cannot link: Claude Code
+    # reads them as ~/.claude/CLAUDE.md and pi as ~/.pi/agent/AGENTS.md, and
+    # neither name is the source's. A link that already resolves to the source
+    # stays as it is, relative or absolute. A regular file is never replaced: an
+    # editor writing through the home path forks the file that way, and the
+    # fork may hold edits the source lacks.
+    GLOBAL_INSTRUCTION="${PWD}/dotfiles/.agents/global-instruction.md"
+    if [[ ! -f "${GLOBAL_INSTRUCTION}" ]]; then
+        echo "Missing source: ${GLOBAL_INSTRUCTION}" >&2
+        exit 1
+    fi
+    for LINK in "${HOME}/.claude/CLAUDE.md" "${HOME}/.pi/agent/AGENTS.md"; do
+        if [[ -L "${LINK}" && "${LINK:A}" == "${GLOBAL_INSTRUCTION:A}" ]]; then
+            continue
+        fi
+        if [[ -e "${LINK}" && ! -L "${LINK}" ]]; then
+            echo "${LINK} is a regular file: merge it into ${GLOBAL_INSTRUCTION}, remove it, then re-run." >&2
+            exit 1
+        fi
+        echo "Create link: ${LINK} -> ${GLOBAL_INSTRUCTION}"
+        mkdir -p "${LINK:h}"
+        ln -sfn "${GLOBAL_INSTRUCTION}" "${LINK}"
     done
 
     # On a machine with no ~/.gnupg or ~/.ssh yet, the loop above creates them
