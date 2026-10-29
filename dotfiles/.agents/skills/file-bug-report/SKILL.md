@@ -167,7 +167,7 @@ $ gh search issues --repo <owner/repo> "<keywords>" --json title,url,state
 $ gh issue list --repo <owner/repo> --state all --json title,url,state
 ```
 
-Search with multiple keyword variations (error messages, function names, symptoms). Check both open and closed issues: the bug may have been reported and closed as "won't fix", or fixed in a version the user hasn't upgraded to.
+Search with multiple keyword variations (error messages, function names, symptoms). The search API allows 30 requests per minute, so run many queries from one script that pauses about 2 seconds between calls and retries on `HTTP 403: API rate limit exceeded`. Check both open and closed issues: the bug may have been reported and closed as "won't fix", or fixed in a version the user hasn't upgraded to.
 
 If a matching open issue exists, report it to the user and stop. Do not offer a comment on an issue that a maintainer has already answered as in progress, unless the user asks for one. If a matching closed issue exists, mention it in the report with a link and explain why this is a new occurrence (different version, different context, regression).
 
