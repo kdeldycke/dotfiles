@@ -564,76 +564,80 @@ def menubar_report(script: Path, scan: bool) -> tuple[list[str], bool]:
         return f"`{domain}`{' (per-host)' if per_host else ''} | `{key}`"
 
     lines = [f"# Menu bar audit of {script.name}", ""]
-    lines.append(
-        f"{len(declared)} keys declared, {len(removed)} declared gone, "
-        f"{len(live)} stored by macOS: {len(drift)} in conflict, "
-        f"{len(unapplied)} never applied, {len(stale)} not cleaned up, "
-        f"{len(undeclared)} unmanaged, {len(synced)} in sync."
-    )
-    lines.append("")
-
-    lines.append(f"## Conflicting: {len(drift)}")
-    lines.append("")
-    lines.append(
-        "The script and the running system disagree. Either the system was "
-        "changed in the UI and the change belongs in the script, or the script "
-        "was edited and has not been run since."
-    )
-    lines.append("")
-    lines.append("| Line | Domain | Key | Declared | Stored |")
-    lines.append("| ---: | :--- | :--- | :--- | :--- |")
+    lines.extend((
+        (
+            f"{len(declared)} keys declared, {len(removed)} declared gone, "
+            f"{len(live)} stored by macOS: {len(drift)} in conflict, "
+            f"{len(unapplied)} never applied, {len(stale)} not cleaned up, "
+            f"{len(undeclared)} unmanaged, {len(synced)} in sync."
+        ),
+        "",
+        f"## Conflicting: {len(drift)}",
+        "",
+        (
+            "The script and the running system disagree. Either the system was "
+            "changed in the UI and the change belongs in the script, or the script "
+            "was edited and has not been run since."
+        ),
+        "",
+        "| Line | Domain | Key | Declared | Stored |",
+        "| ---: | :--- | :--- | :--- | :--- |",
+    ))
     for scope, call, current in drift:
         lines.append(
             f"| {call['line']} | {scope_label(scope)} | "
             f"{format_value(call['value'])} | {format_value(current)} |"
         )
-    lines.append("")
-
-    lines.append(f"## Declared but never applied: {len(unapplied)}")
-    lines.append("")
-    lines.append(
-        "The script sets these and macOS stores nothing under them, either "
-        "because the script has not run since the line was written, or "
-        "because the write was refused, which is how a dead key looks from "
-        "here. The verdict names whichever reading the timestamps can show."
-    )
-    lines.append("")
-    lines.append("| Line | Domain | Key | Declared | Verdict |")
-    lines.append("| ---: | :--- | :--- | :--- | :--- |")
+    lines.extend((
+        "",
+        f"## Declared but never applied: {len(unapplied)}",
+        "",
+        (
+            "The script sets these and macOS stores nothing under them, either "
+            "because the script has not run since the line was written, or "
+            "because the write was refused, which is how a dead key looks from "
+            "here. The verdict names whichever reading the timestamps can show."
+        ),
+        "",
+        "| Line | Domain | Key | Declared | Verdict |",
+        "| ---: | :--- | :--- | :--- | :--- |",
+    ))
     for scope, call in unapplied:
         verdict = run_verdict(script, *scope[:2], call["line"], "write refused")
         lines.append(
             f"| {call['line']} | {scope_label(scope)} | "
             f"{format_value(call['value'])} | {verdict} |"
         )
-    lines.append("")
-
-    lines.append(f"## Declared gone but still stored: {len(stale)}")
-    lines.append("")
-    lines.append(
-        "The script deletes these and macOS still holds them, on the same two "
-        "readings and the same verdict as above."
-    )
-    lines.append("")
-    lines.append("| Line | Domain | Key | Stored | Verdict |")
-    lines.append("| ---: | :--- | :--- | :--- | :--- |")
+    lines.extend((
+        "",
+        f"## Declared gone but still stored: {len(stale)}",
+        "",
+        (
+            "The script deletes these and macOS still holds them, on the same two "
+            "readings and the same verdict as above."
+        ),
+        "",
+        "| Line | Domain | Key | Stored | Verdict |",
+        "| ---: | :--- | :--- | :--- | :--- |",
+    ))
     for scope, call in stale:
         verdict = run_verdict(script, *scope[:2], call["line"], "delete refused")
         lines.append(
             f"| {call['line']} | {scope_label(scope)} | "
             f"{format_value(live[scope])} | {verdict} |"
         )
-    lines.append("")
-
-    lines.append(f"## Stored but unmanaged: {len(undeclared)}")
-    lines.append("")
-    lines.append(
-        "This machine carries settings the script would not reproduce. Copy "
-        "the ones worth keeping into the Menubar section."
-    )
-    lines.append("")
-    lines.append("| Domain | Key | Stored |")
-    lines.append("| :--- | :--- | :--- |")
+    lines.extend((
+        "",
+        f"## Stored but unmanaged: {len(undeclared)}",
+        "",
+        (
+            "This machine carries settings the script would not reproduce. Copy "
+            "the ones worth keeping into the Menubar section."
+        ),
+        "",
+        "| Domain | Key | Stored |",
+        "| :--- | :--- | :--- |",
+    ))
     for scope, current in undeclared:
         lines.append(f"| {scope_label(scope)} | {format_value(current)} |")
     lines.append("")
@@ -645,29 +649,31 @@ def menubar_report(script: Path, scan: bool) -> tuple[list[str], bool]:
         binaries = collect_binaries(MENUBAR_BINARY_GLOBS)
         hits = scan_keys(probes, binaries)
         orphans = sorted(key for key in probes if not hits.get(key))
-        lines.append(f"## Carried by no menu bar process: {len(orphans)}")
-        lines.append("")
-        lines.append(
-            f"Scanned {len(binaries)} binaries for {len(probes)} keys, skipping "
-            f"{len(composed)} that AppKit assembles at runtime. A key no menu "
-            "bar process names is one macOS still stores and nothing reads, the "
-            "shape left behind when a module is retired."
-        )
-        lines.append("")
-        lines.append(
-            "Absence proves far less than presence here, so confirm in System "
-            "Settings before pruning. `Show24Hour` is the worked example: it "
-            "governs a clock that visibly reads 24-hour time, and it is in no "
-            "string table on this machine."
-        )
-        lines.append("")
-        lines.append(
-            "A presence is not proof either, since the match is on the key name "
-            "alone and says nothing about which domain it belongs to. Control "
-            "Center's retired `Spotlight` module code stays off this list only "
-            "because Spotlight's own domain uses the same word."
-        )
-        lines.append("")
+        lines.extend((
+            f"## Carried by no menu bar process: {len(orphans)}",
+            "",
+            (
+                f"Scanned {len(binaries)} binaries for {len(probes)} keys, skipping "
+                f"{len(composed)} that AppKit assembles at runtime. A key no menu "
+                "bar process names is one macOS still stores and nothing reads, the "
+                "shape left behind when a module is retired."
+            ),
+            "",
+            (
+                "Absence proves far less than presence here, so confirm in System "
+                "Settings before pruning. `Show24Hour` is the worked example: it "
+                "governs a clock that visibly reads 24-hour time, and it is in no "
+                "string table on this machine."
+            ),
+            "",
+            (
+                "A presence is not proof either, since the match is on the key name "
+                "alone and says nothing about which domain it belongs to. Control "
+                "Center's retired `Spotlight` module code stays off this list only "
+                "because Spotlight's own domain uses the same word."
+            ),
+            "",
+        ))
         for key in orphans:
             lines.append(f"- `{key}`")
         lines.append("")

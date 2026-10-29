@@ -1,46 +1,53 @@
 #!/usr/bin/env python3
 """Session wrap-up nudge for Claude Code: a ``SessionEnd`` hook.
 
-Claude Code counterpart of the pi extension ``dotfiles/.pi/agent/extensions/bye.ts``. Only the
-nudge half ports: Claude Code has no interceptable quit and no way for a hook or skill to run one
-more agentic turn at exit, so the wrap-up itself stays a manual ``/wrapup-session`` last turn, and
-this hook reminds about it when a session with real prompts quits without one.
+Claude Code counterpart of the pi extension ``dotfiles/.pi/agent/extensions/bye.ts``.
+Only the nudge half ports: Claude Code has no interceptable quit and no way for a hook
+or skill to run one more agentic turn at exit, so the wrap-up itself stays a manual
+``/wrapup-session`` last turn, and this hook reminds about it when a session with real
+prompts quits without one.
 
-Verified against Claude Code 2.1.236 (2026-08-29), by strings-grepping the Caskroom binary, live
-transcripts, and this hook's own log across real exits:
+Verified against Claude Code 2.1.236 (2026-08-29), by strings-grepping the Caskroom
+binary, live transcripts, and this hook's own log across real exits:
 
-- The ``SessionEnd`` payload carries ``session_id``, ``transcript_path``, ``reason``, ``cwd`` and
-  ``hook_event_name``; the reason enum is ``clear``, ``logout``, ``prompt_input_exit``, ``other``,
-  ``resume``. Only ``prompt_input_exit`` is an interactive exit (Ctrl+C, Ctrl+D, ``/exit``), so
-  only it nudges: headless ``claude -p`` runs, ``/clear`` and resume-switches stay silent.
-- ``SessionEnd`` can fire more than once for one goodbye (observed twice, 16s apart, the second
-  without ``prompt_id``), hence the per-session dedupe window below.
-- Hook stdout at ``SessionEnd`` is not rendered as terminal output, and hook processes run with
-  **no controlling terminal**: ``open("/dev/tty")`` fails with ``ENXIO`` from the hook itself. The
-  terminal device is recovered by walking ancestor PIDs with ``ps -o tty=`` until a process with a
-  tty appears (the CLI holds it), then opening ``/dev/ttysNNN`` by explicit path, which needs only
-  ownership, never a controlling-terminal relationship.
-- A typed prompt in the transcript JSONL is an entry of type ``user`` whose ``message.content``
-  is a string and which has no ``toolUseResult`` key; tool results carry a content array instead.
-  Synthetic user messages (command wrappers, system reminders) start with ``<`` and do not count.
-- A wrap-up ran when an assistant entry holds a ``Skill`` tool_use with ``input.skill`` equal to
-  ``wrapup-session``, or a user entry contains the ``/wrapup-session`` command tag.
+- The ``SessionEnd`` payload carries ``session_id``, ``transcript_path``, ``reason``,
+  ``cwd`` and ``hook_event_name``; the reason enum is ``clear``, ``logout``,
+  ``prompt_input_exit``, ``other``, ``resume``. Only ``prompt_input_exit`` is an
+  interactive exit (Ctrl+C, Ctrl+D, ``/exit``), so only it nudges: headless
+  ``claude -p`` runs, ``/clear`` and resume-switches stay silent.
+- ``SessionEnd`` can fire more than once for one goodbye (observed twice, 16s apart, the
+  second without ``prompt_id``), hence the per-session dedupe window below.
+- Hook stdout at ``SessionEnd`` is not rendered as terminal output, and hook processes
+  run with **no controlling terminal**: ``open("/dev/tty")`` fails with ``ENXIO`` from
+  the hook itself. The terminal device is recovered by walking ancestor PIDs with
+  ``ps -o tty=`` until a process with a tty appears (the CLI holds it), then opening
+  ``/dev/ttysNNN`` by explicit path, which needs only ownership, never a
+  controlling-terminal relationship.
+- A typed prompt in the transcript JSONL is an entry of type ``user`` whose
+  ``message.content`` is a string and which has no ``toolUseResult`` key; tool results
+  carry a content array instead. Synthetic user messages (command wrappers, system
+  reminders) start with ``<`` and do not count.
+- A wrap-up ran when an assistant entry holds a ``Skill`` tool_use with ``input.skill``
+  equal to ``wrapup-session``, or a user entry contains the ``/wrapup-session`` command
+  tag.
 
-The tty write is detached and delayed rather than direct. Under ``tui: fullscreen`` the session
-runs on the alternate screen, and an immediate write can land there and vanish when Claude Code
-restores the main screen on its way out. A child process detached with ``start_new_session``
-sleeps past the restore and writes the line beside the fresh shell prompt through the inherited
-descriptor (it must inherit: after ``setsid`` the child could not reopen any controlling path).
+The tty write is detached and delayed rather than direct. Under ``tui: fullscreen`` the
+session runs on the alternate screen, and an immediate write can land there and vanish
+when Claude Code restores the main screen on its way out. A child process detached with
+``start_new_session`` sleeps past the restore and writes the line beside the fresh shell
+prompt through the inherited descriptor (it must inherit: after ``setsid`` the child
+could not reopen any controlling path).
 
-The tty device is the only working channel. The hook-output schema documents a ``systemMessage``
-display field for all hooks, but a ``SessionEnd`` hook printing one renders nothing (tested live,
-2.1.236, 2026-08-29): the session is past displaying anything through the harness by then.
+The tty device is the only working channel. The hook-output schema documents a
+``systemMessage`` display field for all hooks, but a ``SessionEnd`` hook printing one
+renders nothing (tested live, 2.1.236, 2026-08-29): the session is past displaying
+anything through the harness by then.
 
-Every invocation appends one line to ``~/.claude/debug/wrapup-session-nudge.log`` with the
-payload keys and the decision, and the delayed writer appends its own outcome, because a hook
-that only acts at exit is otherwise invisible: the log is the only way to tell "did not fire"
-from "fired and chose silence" from "wrote to a dead terminal". The file is wiped when it grows
-past 64 KiB.
+Every invocation appends one line to ``~/.claude/debug/wrapup-session-nudge.log`` with
+the payload keys and the decision, and the delayed writer appends its own outcome,
+because a hook that only acts at exit is otherwise invisible: the log is the only way to
+tell "did not fire" from "fired and chose silence" from "wrote to a dead terminal". The
+file is wiped when it grows past 64 KiB.
 
 The hook always exits 0: a reminder must never block or delay an exit.
 """
@@ -66,8 +73,8 @@ DEDUPE_SECONDS = 60
 TTY_DELAY_SECONDS = 0.5
 """How long the detached writer sleeps before writing.
 
-Long enough for Claude Code to finish hooks, leave the alternate screen and exit; short enough
-that the line lands right beside the returning shell prompt.
+Long enough for Claude Code to finish hooks, leave the alternate screen and exit; short
+enough that the line lands right beside the returning shell prompt.
 """
 
 DETACHED_WRITER = f"""
@@ -180,6 +187,7 @@ def find_terminal() -> str | None:
                 capture_output=True,
                 text=True,
                 timeout=5,
+                check=False,
             ).stdout.split()
         except (OSError, subprocess.SubprocessError):
             return None
@@ -205,7 +213,7 @@ def emit(message: str, tty_path: str | None) -> str:
         # Test path (--tty): write synchronously so a pipe-test can assert on the file.
         delayed = False
     try:
-        tty = open(tty_path, "w", encoding="UTF-8")
+        tty = open(tty_path, "w", encoding="UTF-8")  # noqa: SIM115
     except OSError as error:
         return f"open {tty_path} failed: {error}"
     with tty:
@@ -248,13 +256,13 @@ def main() -> None:
         log(f"skip (nudged this session within {DEDUPE_SECONDS}s)")
         return
     resume = f"claude --resume {session_id}" if session_id else "claude --continue"
-    # A CLI-argument prompt dispatches skill slash commands (verified live in print mode,
-    # 2.1.236, 2026-08-29), so this one-liner reopens the session with the wrap-up already
-    # running. Deliberately not `-p`: a wrap-up opens threads. It can surface work left to
-    # do, draft contributions back to the downstream or upstream repository, or propose
-    # changes to the wrap-up skill itself, whose improvements compound across every later
-    # session. Each of those needs the user present to pick up, steer, and approve, so the
-    # wrap-up never runs headless.
+    # A CLI-argument prompt dispatches skill slash commands (verified live in print
+    # mode, 2.1.236, 2026-08-29), so this one-liner reopens the session with the wrap-up
+    # already running. Deliberately not `-p`: a wrap-up opens threads. It can surface
+    # work left to do, draft contributions back to the downstream or upstream
+    # repository, or propose changes to the wrap-up skill itself, whose improvements
+    # compound across every later session. Each of those needs the user present to pick
+    # up, steer, and approve, so the wrap-up never runs headless.
     plain = f'Wrap-up skipped: `{resume} "/{SKILL_NAME}"` closes it properly.'
     outcome = emit(f"{DIM}{plain}{RESET}\n", tty_path)
     log(f"nudge ({why}): {outcome} keys={sorted(payload)}")

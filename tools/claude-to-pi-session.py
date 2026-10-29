@@ -1,6 +1,6 @@
 #!/usr/bin/env -S uv run --script
 # /// script
-# requires-python = ">=3.10"
+# requires-python = ">=3.11"
 # dependencies = []
 # ///
 """Convert a Claude Code transcript into a pi session file.
@@ -59,7 +59,7 @@ import re
 import shutil
 import subprocess
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 # Claude Code tool name -> pi tool name. Only a tool whose arguments pi reads
@@ -98,7 +98,7 @@ def entry_id(seed: str) -> str:
 
 def parse_timestamp(value: str) -> int:
     """Return Unix milliseconds for an ISO 8601 timestamp."""
-    return int(datetime.fromisoformat(value.replace("Z", "+00:00")).timestamp() * 1000)
+    return int(datetime.fromisoformat(value).timestamp() * 1000)
 
 
 def read_transcript(path: Path) -> list[dict]:
@@ -341,7 +341,7 @@ def convert(rows: list[dict]) -> tuple[list[dict], dict]:
     cwds = [r["cwd"] for r in rows if isinstance(r.get("cwd"), str)]
     cwd = max(set(cwds), key=cwds.count) if cwds else str(Path.cwd())
     stamps = [r["timestamp"] for r in rows if isinstance(r.get("timestamp"), str)]
-    first_stamp = min(stamps) if stamps else datetime.now(timezone.utc).isoformat()
+    first_stamp = min(stamps) if stamps else datetime.now(UTC).isoformat()
 
     for row in rows:
         kind = row.get("type")

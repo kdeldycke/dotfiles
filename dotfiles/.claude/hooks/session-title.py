@@ -115,9 +115,7 @@ Output: {"title": "Debug flaky integration auth test"}
 def in_schedule(turn: int) -> bool:
     if turn in SCHEDULE_FIXED:
         return True
-    if turn >= SCHEDULE_OFFSET and (turn - SCHEDULE_OFFSET) % SCHEDULE_STEP == 0:
-        return True
-    return False
+    return turn >= SCHEDULE_OFFSET and (turn - SCHEDULE_OFFSET) % SCHEDULE_STEP == 0
 
 
 def sanitize(title: str) -> str:
@@ -210,7 +208,7 @@ def read_sidecar(session_id: str) -> str | None:
 
 def write_osc(title: str) -> None:
     try:
-        with open("/dev/tty", "w") as tty:
+        with open("/dev/tty", "w", encoding="UTF-8") as tty:
             tty.write(f"\x1b]0;{title}\x07")
             tty.flush()
     except OSError:
@@ -250,6 +248,7 @@ def call_haiku(transcript: str) -> str | None:
             text=True,
             timeout=HAIKU_TIMEOUT,
             env=env,
+            check=False,
         )
     except (subprocess.TimeoutExpired, FileNotFoundError):
         return None
