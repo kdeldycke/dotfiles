@@ -15,23 +15,23 @@ The video of a Teams call shows who speaks, in two areas:
    $ uv run --script {skill}/scripts/sources/teams.py frame {video} --at 600 --out {work}/frame.png
    ```
 
-1. Read the frame and note two crop boxes, as `width:height:x:y` in pixels of the full frame: the participant strip and the slide corner. On a 1080p Teams recording, the boxes were `246:1012:1674:68` and `420:110:1255:72`.
+2. Read the frame and note two crop boxes, as `width:height:x:y` in pixels of the full frame: the participant strip and the slide corner. On a 1080p Teams recording, the boxes were `246:1012:1674:68` and `420:110:1255:72`.
 
-1. Save the two areas of each second, then group the boxes that show the same text:
+3. Save the two areas of each second, then group the boxes that show the same text:
 
    ```shell-session
    $ uv run --script {skill}/scripts/sources/teams.py extract {video} --until {end of speech, in seconds} --strip {box} --corner {box} --folder {work}/teams
    $ uv run --script {skill}/scripts/sources/teams.py scan --folder {work}/teams
    ```
 
-1. Read each contact sheet, `P_sheet_*.png` for the participants and `O_sheet_*.png` for the slide owners, then fill the two names files. A room that joins through the account of a person is a room account.
+4. Read each contact sheet, `P_sheet_*.png` for the participants and `O_sheet_*.png` for the slide owners, then fill the two names files. A room that joins through the account of a person is a room account.
 
    | File           | Value for each group                                                                                                                        |
    | :------------- | :------------------------------------------------------------------------------------------------------------------------------------------ |
    | `P_names.json` | The full name of a remote participant; `room` or `room: {account}` for the account of a meeting room; `ignore` for a box that names nobody. |
    | `O_names.json` | The name of the slide owner, or `ignore`.                                                                                                   |
 
-1. Write the cue file:
+5. Write the cue file:
 
    ```shell-session
    $ uv run --script {skill}/scripts/sources/teams.py export --folder {work}/teams --cues {work}/cues.json

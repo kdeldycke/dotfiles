@@ -3,10 +3,10 @@
 Each `.m4a` clip has a `.txt` draft beside it. The draft is a vote of several models, in lowercase and without punctuation. Your corrected text becomes the reference that measures every model.
 
 1. Play the clip.
-1. Correct the `.txt` file to exactly what is said: change, add or delete words.
-1. Keep each `[h:mm:ss]` marker at the start of its line. A word can stay in the line where you hear it, or go to the next line: the score does not use the lines.
-1. Do not add comments: the score reads every word in the file.
-1. Save the file.
+2. Correct the `.txt` file to exactly what is said: change, add or delete words.
+3. Keep each `[h:mm:ss]` marker at the start of its line. A word can stay in the line where you hear it, or go to the next line: the score does not use the lines.
+4. Do not add comments: the score reads every word in the file.
+5. Save the file.
 
 Rules for the text:
 
