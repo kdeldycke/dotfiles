@@ -86,6 +86,8 @@ uv accepts a friendly duration (`1 week`), an ISO 8601 span (`P7D`), or an absol
 
 A cooldown-filtered resolution is not a dependency conflict: before you diagnose a uv "No solution found" as one, read its `hint:` line, which names the filtered package, the cutoff it hit and the version it would otherwise have picked. No exit code tells the two apart.
 
+Before you trace a bug into a dependency, compare the version that resolved against its newest release: the cooldown can hold back a release that already fixes it.
+
 For any other package manager, [meta-package-manager's cooldown inventory](https://kdeldycke.github.io/meta-package-manager/cooldown.html#supported-managers) lists which ones enforce a cooldown natively, which have support proposed upstream, and which have none. Read its N/A verdict as a different threat model, not a gap: see [§ Distro archives are out of scope](#distro-archives-are-out-of-scope-not-an-exception).
 
 ### Live registries with no cooldown knob
@@ -162,7 +164,7 @@ Use `**Breaking:**` when a surface the reader actually consumes is gone and thei
 
 **Who consumes the project decides what counts as breaking.** A project consumed as a library breaks real code when a Python symbol is renamed, moved or dropped, so that symbol earns a bullet. A project that is invoked rather than imported does not: its importable surface is an implementation detail, and a bullet announcing a dropped enum or a regrouped module only alarms readers who could never have called it.
 
-To back a `**Deprecated:**` change in code, keep the old name importable for one cycle instead of deleting it: resolve it through an alias registry in a PEP 562 module `__getattr__` hook that emits the `DeprecationWarning` and redirects to the replacement, then remove it in the release the entry named. Reserve a hard `**Breaking:**` removal for a surface that genuinely cannot keep working. The `_deprecated.py` modules in `click-extra` and `extra-platforms` are reference implementations.
+To back a `**Deprecated:**` change in code, keep the old name importable for one cycle instead of deleting it: resolve it through an alias registry in a PEP 562 module `__getattr__` hook that emits the `DeprecationWarning` and redirects to the replacement, then remove it in the release the entry named. Reserve a hard `**Breaking:**` removal for a surface that genuinely cannot keep working. The `_deprecated.py` module in `click-extra` is the reference implementation.
 
 The `repomatic-changelog` skill holds the rest: what to leave out of an entry, how to consolidate a section and how to validate it. Load it before you rework a section.
 
