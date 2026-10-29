@@ -107,7 +107,9 @@
   "skillOverrides": {
     "built-in-browser": "off",
     "chrome-browser": "off",
-    "computer-use": "off"
+    "computer-use": "off",
+    "docs": "off",
+    "google-workspace": "off"
   },
   "hooks": {
     "SessionEnd": [

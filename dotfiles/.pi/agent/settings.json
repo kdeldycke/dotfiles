@@ -16,6 +16,14 @@
     "-builtin:llama.cpp"
   ],
   "_extensionsRationale": "The built-in llama.cpp extension is off because no llama.cpp router runs here: the local models come from the nativ provider in models.json, on the port that extension takes for its own default.",
+  "skills": [
+    "!**/synced/*/built-in-browser/**",
+    "!**/synced/*/chrome-browser/**",
+    "!**/synced/*/computer-use/**",
+    "!**/synced/*/docs/**",
+    "!**/synced/*/google-workspace/**"
+  ],
+  "_skillsRationale": "The Claude app syncs these Anthropic skills into skills/synced/, which pi also scans. They guide tools that exist only in the Claude app (browser pane, Claude in Chrome, computer use, docs and Google connectors), so pi hides them. The same five are off in .claude/settings.json skillOverrides.",
   "enabledModels": [
     "qwen/qwen3.8-max-0902",
     "z-ai/glm-5.3",
