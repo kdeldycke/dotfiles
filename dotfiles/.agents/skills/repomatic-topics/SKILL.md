@@ -9,6 +9,7 @@ argument-hint: '[audit|apply]'
 ## Context
 
 !`grep -A1 '^\[project\]' pyproject.toml 2>/dev/null | tail -1`
+
 !`gh api repos/{owner}/{repo} --jq '.topics | join(", ")' 2>/dev/null || echo "NO_GH_ACCESS"`
 
 ## Instructions

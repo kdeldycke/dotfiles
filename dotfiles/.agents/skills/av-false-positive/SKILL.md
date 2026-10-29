@@ -9,9 +9,13 @@ argument-hint: '[version]'
 ## Context
 
 !`gh repo view --json nameWithOwner --jq '.nameWithOwner' 2>/dev/null`
+
 !`gh release view --json tagName --jq '.tagName' 2>/dev/null`
+
 !`grep -m1 'license' pyproject.toml 2>/dev/null`
+
 !`grep -m1 'name' pyproject.toml 2>/dev/null`
+
 !`grep -A1 '\[project.urls\]' pyproject.toml 2>/dev/null | head -5`
 
 ## Instructions
@@ -32,7 +36,7 @@ $ gh release view v{VERSION} --json assets --jq '.assets[].name'
 
 ### Step 2: retrieve or refresh VirusTotal results
 
-The release pipeline already uploaded every release binary at publication time, so a fresh upload is rarely needed. Per-engine detection details (which neither the CLI nor the scan history expose) always require querying the VT API directly via Python with the `vt` library. For a re-upload, use the `scan-virustotal` CLI command: it requires `--tag` and `--binaries-dir`, and `--poll --records docs/assets/virustotal-scans.csv` appends the fresh snapshot to the scan history (same-day re-scans replace their record; later dates accumulate, and the catalog keeps showing the earliest, at-release snapshot). Add `--carry-from scan-virustotal`, which restores the records still pending in that pull request before appending: without it the run writes a history missing every snapshot nobody has merged yet.
+The release pipeline already uploaded every release binary at publication time, so a fresh upload is rarely needed. Per-engine detection details (which neither the CLI nor the scan history expose) always require querying the VT API directly, from a Python script on the standard library: `urllib.request`, with the key in an `x-apikey` header. For a re-upload, use the `scan-virustotal` CLI command: it requires `--tag` and `--binaries-dir`, and `--poll --records docs/assets/virustotal-scans.csv` appends the fresh snapshot to the scan history (same-day re-scans replace their record; later dates accumulate, and the catalog keeps showing the earliest, at-release snapshot). Add `--carry-from scan-virustotal`, which restores the records still pending in that pull request before appending: without it the run writes a history missing every snapshot nobody has merged yet.
 
 The VT API key comes from: `$VIRUSTOTAL_API_KEY` env var, or ask the user.
 

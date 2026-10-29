@@ -9,6 +9,7 @@ argument-hint: '[audit|labels|milestones|slop]'
 ## Context
 
 !`gh label list --limit 50 2>/dev/null || echo "NO_GH_ACCESS"`
+
 !`gh api "repos/{owner}/{repo}/milestones?state=all&per_page=100" --jq 'length' 2>/dev/null`
 
 ## Instructions

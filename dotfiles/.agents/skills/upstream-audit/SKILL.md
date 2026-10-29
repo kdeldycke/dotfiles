@@ -9,9 +9,13 @@ argument-hint: '[audit|init|refresh|sync-git]'
 ## Context
 
 !`[ -f pyproject.toml ] && grep '^name' pyproject.toml | head -1 || echo "No pyproject.toml"`
+
 !`git config user.name 2>/dev/null || echo "No git user"`
+
 !`gh api /user --jq '.login' 2>/dev/null || echo "No gh auth"`
+
 !`[ -f docs/upstream.md ] && grep '^## ' docs/upstream.md || echo "No docs/upstream.md yet"`
+
 !`[ -f docs/upstream.md ] && grep -c 'github.com/' docs/upstream.md || echo 0`
 
 ## Instructions
@@ -96,6 +100,7 @@ Move an item found on the wrong sibling page to its home, and delete it from the
 #### 4. Check status of each item
 
 For PRs: `gh pr view <url> --json state,mergedAt,title`
+
 For issues: `gh issue view <url> --json state,stateReason,title`
 
 To resolve many items at once, batch them into a single GraphQL call with aliased `issueOrPullRequest` nodes:

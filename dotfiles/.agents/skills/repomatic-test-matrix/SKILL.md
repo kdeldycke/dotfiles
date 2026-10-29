@@ -9,6 +9,7 @@ argument-hint: '[review|add <axis>|drop <axis>]'
 ## Context
 
 !`grep -A20 '^\[tool.repomatic.test-matrix' pyproject.toml 2>/dev/null || echo "NO_TEST_MATRIX_CONFIG"`
+
 !`grep -E '^\s*requires-python' pyproject.toml 2>/dev/null || echo "NO_REQUIRES_PYTHON"`
 
 ## Instructions
@@ -16,7 +17,7 @@ argument-hint: '[review|add <axis>|drop <axis>]'
 `repomatic show-metadata` builds the full and PR test matrices from `[tool.repomatic.test-matrix.*]`. Read the effective matrices before proposing anything:
 
 ```shell-session
-$ repomatic show-metadata --format json test_matrix test_matrix_pr
+$ repomatic show-metadata --output-format json test_matrix test_matrix_pr
 ```
 
 A matrix cell costs a runner on every push, so each one has to earn its place. These are the selection conventions.
@@ -27,7 +28,7 @@ Released dependencies on stable Python get a broad spread, but *broad* means bro
 
 Unreleased dependency branches and prerelease Python run on one runner as `continue-on-error` probes (`test-matrix.unstable`), never across platforms: a probe that fails is information, and paying for it six times over buys none.
 
-A *released* free-threaded build (`3.14t`) is a different case and runs **stable** on a single runner, as a `python-version` variation pinned with `exclude` and left out of `unstable`. It is shipped software, so a failure there is a real failure.
+A *released* free-threaded build (`3.15t`) is a different case and runs **stable** on a single runner, as one `include` row pinned to that runner and left out of `unstable`. It is shipped software, so a failure there is a real failure.
 
 ### Ask what a cell has caught, not what it might
 
@@ -61,13 +62,17 @@ One pinned value verifies one dependency. To run every declared floor at once, a
 ```toml
 [tool.repomatic]
 test-matrix.full-include = [
-  { "os" = "ubuntu-26.04-arm", "python-version" = "3.10", "resolution" = "lowest-direct" },
+  { "os" = "ubuntu-26.04-arm", "python-version" = "3.11", "resolution" = "lowest-direct" },
 ]
 ```
 
 The `tests` job of the bundled `tests.yaml` resolves the project again in a cell that carries that key: each direct dependency takes the lowest version its specifier allows. The cell fails when the code calls an API newer than a declared floor.
 
-A `tests.yaml` whose jobs predate that step ignores the key, and the cell then repeats its twin. Copy the step that reads `matrix.resolution` from the upstream workflow first, at the tag the repository pins: `gh api 'repos/kdeldycke/repomatic/contents/.github/workflows/tests.yaml?ref=vX.Y.Z' -H 'Accept: application/vnd.github.raw'`.
+A `tests.yaml` whose jobs predate that step ignores the key, and the cell then repeats its twin. Copy the step that reads `matrix.resolution` from the upstream workflow first, at the tag the repository pins: `gh api 'repos/kdeldycke/repomatic/contents/.github/workflows/tests.yaml?ref=vX.Y.Z' -H 'Accept: application/vnd.github.raw'`. Then put `--frozen` on every `uv run` after it. A plain `uv run` finds the rewritten lockfile out of date and resolves it back to the newest releases.
+
+Replay the cell before you add the row, in a scratch copy of the repository, since the resolution rewrites `uv.lock`. On the floor Python, run `uv sync --resolution lowest-direct --all-extras --group test`, then the suite with `uv run --frozen`. Run it several times and judge each run by its exit code, never by its summary line. Test plugins have floors too: one below its floor can abort the collection under xdist, or end a passing run on an `INTERNALERROR`.
+
+A test that reads the matrix's `python-version` axis must also read its `include` rows. A `full-include` row flattens the full matrix into a job list with no axis.
 
 The cell cannot see a dependency that another requirement holds above its floor, or a library that the tests replace with a mock. Check those two by hand: the `/repomatic-deps` skill, when present, holds the procedure.
 
@@ -79,7 +84,7 @@ Measure, do not reason from the chip:
 $ repomatic job-timings --workflow tests.yaml --limit 5
 ```
 
-That reports median whole-job wall-clock per runner image from recent successful runs. Read it before proposing any runner change: the parallel `pytest --numprocesses=auto` suite favours `ubuntu-26.04-arm`, which is why that is the test PR Linux slot, but the ratio is workload-dependent and yours may differ.
+That reports median whole-job wall-clock per runner image from recent successful runs. Read it before proposing any runner change: the parallel `pytest --numprocesses=logical` suite favours `ubuntu-26.04-arm`, which is why that is the test PR Linux slot, but the ratio is workload-dependent and yours may differ.
 
 Where one fast runner suffices, `ubuntu-26.04-arm` is the default: fastest and cheapest tier, against hosted macOS billing roughly ten times Linux. Reserve `macos-26` and Windows for the OS coverage only they add, and drop the slower twin of an OS pair with `test-matrix.remove.os`.
 

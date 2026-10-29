@@ -9,8 +9,11 @@ argument-hint: '[lang-code]'
 ## Context
 
 !`ls readme.*.md 2>/dev/null || echo "No readme translations"`
+
 !`ls .github/contributing.*.md 2>/dev/null || echo "No contributing translations"`
+
 !`[ -f repomatic/__init__.py ] && echo "CANONICAL_REPO" || echo "DOWNSTREAM"`
+
 !`[ -d repomatic/data/awesome_template ] && echo "HAS_AWESOME_TEMPLATE" || echo "NO_AWESOME_TEMPLATE"`
 
 ## Instructions

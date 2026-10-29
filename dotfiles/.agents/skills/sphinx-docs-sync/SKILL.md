@@ -9,8 +9,11 @@ argument-hint: '[path-or-github-url ...]'
 ## Context
 
 !`[ -f repomatic/__init__.py ] && echo "CANONICAL_REPO" || echo "DOWNSTREAM"`
+
 !`[ -d docs ] && echo "docs/ exists" || echo "No docs/ directory"`
+
 !`[ -f docs/conf.py ] && head -5 docs/conf.py || echo "No docs/conf.py"`
+
 !`ls ../*/docs/conf.py 2>/dev/null | head -20 || echo "No sibling projects with docs/conf.py"`
 
 ## Instructions
@@ -45,7 +48,7 @@ For each project, collect (parallelize with sub-Agents when possible). For each 
 - **`docs/cli.md` and `docs/configuration.md`** (agent § Recipes). Diff the auto-region between markers, then compare the regenerator script (`docs/docs_update.py`) across the projects that still carry one. The agent's recipes render both pages live, so a project with no script has already migrated and is not missing anything.
 - **Auto-region marker naming** (agent § Auto-generated reference tables, marker naming convention). Grep all `docs/*.md` for `<!-- start -->`/`<!-- end -->` pairs; flag any bare markers, recommend renaming to `<!-- {feature}-{kind} -->`/`<!-- {feature}-{kind}-end -->`. Confirm that named markers across siblings use consistent `{kind}` slugs (`table`, `sankey`, `mindmap`, `chart`, `autodata`, `automodule`, `autodoc`, `reference`).
 - **Theme assets** (agent § `conf.py` hygiene › Theme assets and OpenGraph). Confirm the sidebar logo is Furo's `light_logo`/`dark_logo` **pair** in `html_theme_options`, each name also listed in `html_static_path`, with `html_logo` **unset** — Furo prefers `html_logo` and skips the pair when it is present, so a lingering `html_logo` is drift to report, never the thing to confirm. Confirm `html_favicon = "assets/favicon.svg"`, and that `ogp_image` is `_static/banner-social-<variant>.png` with that PNG also listed in `html_static_path`, never a bare `assets/...` path (`docs/assets/` is not copied into the built site, so that value 404s for social crawlers). An absolute `raw.githubusercontent.com` URL was the earlier rule: it still resolves, so report it as alignment, not as a bug. Flag projects with `sphinxext.opengraph` enabled but no `ogp_image` set. Suggest the user run `/brand-assets` on flagged projects to regenerate or backfill the asset set in one pass.
-- **`sphinx_issues` migration** (agent § Migrating off `sphinx_issues`). Grep each project for `{issue}` `/`{pr}` ` / `{user}` `/`{commit}` ` (MyST) and `:issue:` `/`:pr:` ` / `:user:` `/`:commit:` ` (reST) across `*.md`, `*.rst`, `*.py`. Flag every occurrence and offer to apply the migration recipe in one pass per repo. After replacement, drop `"sphinx_issues"` from `extensions` in `conf.py`, `"sphinx-issues>=…"` from `[dependency-groups] docs`, and any `issues_github_path` setting unused by other extensions.
+- **`sphinx_issues` roles** (agent § Standard extension set). Grep each project for `{issue}` `/`{pr}` ` / `{user}` `/`{commit}` ` (MyST) and `:issue:` `/`:pr:` ` / `:user:` `/`:commit:` ` (reST) across `*.md`, `*.rst`, `*.py`. Flag every occurrence, and recommend an explicit GitHub URL in its place. Once none is left, drop `"sphinx_issues"` from `extensions` in `conf.py`, `"sphinx-issues>=…"` from `[dependency-groups] docs`, and any `issues_github_path` setting unused by other extensions.
 - **`pyproject.toml` docs dependency group**. Compare against what `conf.py` actually imports — flag undeclared imports and declared-but-unimported deps. Don't change version pins unless provably stale (a conditional dep on a Python version below the project's floor; a transitively-constrained loose pin held by a meta-extra like `click-extra[sphinx]`).
 - **`readme.md`**. Compare badge sets and section structure. Flag developer setup held in a `## Development` section or in `claude.md`: it belongs on the `contributing` page (per agent § High-frequency lapses).
 - **Sphinx tests** (agent § Sphinx tests). Look for `tests/sphinx/`, `tests/test_sphinx_*.py`, or `test_sphinx_crossrefs.py`. Note which projects have render-tests and which don't; suggest adopting cross-reference render tests where the docs surface complex `{role}` cross-refs.
@@ -85,7 +88,6 @@ These are about *how* you run the audit, not what counts as a violation:
 - Never silently bump a version pin. Loose pins are sometimes intentional; tight pins always have a reason. Flag, don't fix.
 - Adding a docs dependency to `pyproject.toml` is half the change: every workflow here installs with `uv run --frozen`, so an unregenerated `uv.lock` fails the docs job on the next push. Re-lock in the same pass, with `XDG_CONFIG_HOME` pointed at an empty directory so a machine-wide `uv.toml` cannot write its own `exclude-newer-package` entries into the project's lockfile. Never reach for `--no-config`, which discards the project's `[tool.uv]` along with it.
 - Before flagging download-URL or asset-name findings, list the real release assets (`gh release view {tag} --json assets`). Releases in this lineage attach unversioned alias binaries alongside the version-stamped ones, so `releases/latest/download/` links that look impossible against stamped filenames are in fact valid.
-- A marker or format deviating from the current convention may already be self-healing: check the generator for a legacy-marker migration shim before reporting drift (repomatic's binaries page auto-migrates legacy `binaries-start` and `binaries-chart-start` opens to the bare `binaries-chart` on next touch).
 - Sandboxed sessions usually cannot re-test `linkcheck_ignore` hosts: network allowlists make denials indistinguishable from real 403s. Hand the probe list to the user or defer to a local `sphinx-build -b linkcheck` run instead of silently skipping the re-test.
 
 ### Next steps

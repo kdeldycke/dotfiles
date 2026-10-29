@@ -9,9 +9,13 @@ argument-hint: '[all|workflows|configs|upstream]'
 ## Context
 
 !`ls .github/workflows/*.yaml 2>/dev/null`
+
 !`grep -h 'uses:.*kdeldycke/repomatic' .github/workflows/*.yaml 2>/dev/null | head -5`
+
 !`grep -A5 '\[tool.repomatic\]' pyproject.toml 2>/dev/null || echo "No [tool.repomatic] section"`
+
 !`grep -E '^(subagents|skills|gitignore)\.location' pyproject.toml 2>/dev/null`
+
 !`[ -f repomatic/__init__.py ] && echo "CANONICAL_REPO" || echo "DOWNSTREAM"`
 
 ## Instructions
@@ -26,8 +30,8 @@ Before flagging an issue, verify that the gap isn't **deliberate** or covered by
 
 - **`[tool.repomatic] exclude` is authoritative.** Files listed there (like `workflows/changelog.yaml` or `labels`) are intentionally absent on disk. Do **not** report them as MISSING.
 - **`[tool.repomatic] lint-repo.declined` records a decision.** Each entry names one bundled template entry that a `[tool.X]` section leaves out, with the reason. Do **not** report that entry as DRIFT. Report the record itself when `lint-repo` says it declines nothing.
-- **Bundled defaults applied at runtime.** Some config is materialized from the bundled template at runtime when the file is absent, so no on-disk copy is needed. **Absence of these files is not a problem**: it is the intended state when the user is happy with the bundled policy. Only flag DRIFT if the user wants to deviate from it. Exactly five tools carry such a fallback, the ones whose `ToolSpec` sets `default_config` in `repomatic/tooling/tool_registry.py`: `actionlint`, `mdformat`, `ruff`, `yamllint` and `zizmor`.
-- **A `[tool.X]` section is never a candidate for deletion.** The inverse of the rule above, and the more expensive mistake. Every other tool has no `default_config`, so its resolution chain has no level 3 to fall back on: `lychee`, `typos`, `mypy`, `pytest`, `coverage`, `bumpversion` and `uv` are *deployed* into `pyproject.toml` by `repomatic init`, and that section is the only config the tool will ever see. Deleting it does not restore inheritance from a bundled default, it drops the tool to level 4 and runs it bare, silently discarding every rule the section held. Read the tool's `default_config` before proposing a section be dropped "to inherit upstream updates". Re-running `repomatic init` fixes a stale section only for the components marked `SyncMode.ONGOING` in `repomatic/registry.py` (`lychee`, `typos`, `bumpversion`, `uv`). It never revisits a `mypy`, `pytest` or `coverage` section after the first write: `lint-repo` warns on each bundled template entry such a section lacks, to copy by hand or to decline with a reason under `[tool.repomatic] lint-repo.declined`.
+- **Bundled defaults applied at runtime.** Some config is materialized from the bundled template at runtime when the file is absent, so no on-disk copy is needed. **Absence of these files is not a problem**: it is the intended state when the user is happy with the bundled policy. Only flag DRIFT if the user wants to deviate from it. Exactly five tools carry such a fallback, the ones whose `ToolSpec` sets `default_config` in `repomatic/tooling/registry.py`: `actionlint`, `mdformat`, `ruff`, `yamllint` and `zizmor`.
+- **A `[tool.X]` section is never a candidate for deletion.** The inverse of the rule above, and the more expensive mistake. Every other tool has no `default_config`, so its resolution chain has no level 3 to fall back on: `lychee`, `typos`, `mypy`, `pytest`, `coverage`, `bumpversion` and `uv` are *deployed* into `pyproject.toml` by `repomatic init`, and that section is the only config the tool will ever see. Deleting it does not restore inheritance from a bundled default, it drops the tool to level 4 and runs it bare, silently discarding every rule the section held. Read the tool's `default_config` before proposing a section be dropped "to inherit upstream updates". Re-running `repomatic init` fixes a stale section only for the components marked `SyncMode.ONGOING` in `repomatic/components.py` (`lychee`, `typos`, `bumpversion`, `uv`). It never revisits a `mypy`, `pytest` or `coverage` section after the first write: `lint-repo` warns on each bundled template entry such a section lacks, to copy by hand or to decline with a reason under `[tool.repomatic] lint-repo.declined`.
 - **Generator artifacts vs user error.** When local thin-callers diverge from upstream (e.g., extra `workflow_dispatch:`, missing `paths:`), the cause may be the **upstream generator**, not downstream tampering. Inspect `repomatic/github/workflow_sync.py` (`generate_thin_caller`, `_adapt_trigger_paths`, `generate_workflow_header`) before recommending the user re-run `repomatic init` to "fix" something `init` itself produced.
 - **Project-level `claude.md` may live under a sub-directory.** `[tool.repomatic] subagents.location` and `skills.location` indicate a project where `.claude/` is not at the root (e.g., dotfiles repos with `dotfiles/.claude/CLAUDE.md`). Search the configured location, not just `./CLAUDE.md`.
 
@@ -64,10 +68,12 @@ Before you compare a managed file by hand, run the adopted release's generator o
 
 ```shell-session
 $ git worktree add --detach {scratch}/audit HEAD
-$ uvx --no-progress --exclude-newer '1 week' --exclude-newer-package repomatic=P0D --directory {scratch}/audit 'repomatic==X.Y.Z' init
+$ uvx --no-progress --exclude-newer '{window}' --exclude-newer-package repomatic=P0D --directory {scratch}/audit 'repomatic==X.Y.Z' init
 $ git -C {scratch}/audit diff
 $ git worktree remove --force {scratch}/audit
 ```
+
+Read `{window}` from the `UV_EXCLUDE_NEWER` value of any `.github/workflows/*.yaml`, which `repomatic init` renders from `[tool.repomatic] minimum-release-age`.
 
 An empty diff means every thin caller, each header-only workflow header and each ongoing-sync `[tool.X]` section equals what that release generates. Any hunk is DRIFT that the sync would rewrite. Keep `--directory`: `--output-dir` alone writes into the copy but reads `[tool.repomatic]` from the directory the command started in.
 
@@ -87,8 +93,7 @@ The header (name, `on:`, `concurrency:`) is synced automatically, but custom job
 
 - **Stale action versions**: e.g., `actions/checkout`, `astral-sh/setup-uv` — compare pinned versions. `setup-uv` carries a second, independent pin: a `with: version: "X.Y.Z"` input naming the uv it downloads. Absent, the runner installs whatever uv is newest, leaving the tool that enforces every cooldown without one; split across two values, the fleet silently tests two resolvers. `lint-repo`'s `setup-uv-version-pin` check reports both, non-fatally.
 - **Inline upstream pin with no cooldown exemption**: a `run:` command pinning the toolkit (`uvx 'repomatic==X.Y.Z' …`) under a workflow that sets `UV_EXCLUDE_NEWER` must carry `--exclude-newer-package repomatic=P0D` on the same command line, since `uvx` reads no project configuration and the pin routinely names a release published hours ago. Without it the command cannot resolve, and every `needs: metadata` job dies with it. `lint-repo`'s `self-pin-cooldown-exemption` check is fatal on this.
-- **Missing workarounds**: e.g., the "Force native ARM64 Python on Windows ARM64" step that sets `UV_PYTHON`.
-- **Missing matrix exclusions**: e.g., `windows-11-arm` + Python 3.10 (no native ARM64 build).
+- **Missing workarounds**: e.g., the "Force UTF-8 encoding on Windows" step that sets `PYTHONIOENCODING`.
 - **Outdated integration patterns**: e.g., a third-party action still in use where upstream replaced it with a `repomatic run` tool.
 - **Missing coverage floor**: e.g., no `report.fail_under` under `[tool.coverage]`, so a coverage regression never fails the suite.
 - **YAML scalar style issues**: e.g., `run: |` where `run: >` is needed for multi-line single commands.
@@ -106,6 +111,13 @@ The relevant config schema lives in `WorkflowConfig` (`repomatic/config.py`): `s
 
 Respect `exclude` entries from `[tool.repomatic]` in `pyproject.toml`. Report excluded files but do not flag them as drift.
 
+#### Read the CI state
+
+A file can match its reference and still fail. Read the latest runs on the default branch, the open autofix pull requests and the open bot issues:
+
+- A job that fails on every push is a finding, whatever its files look like.
+- An autofix pull request that stays open across many pushes means a tool and the files it rewrites disagree.
+
 ### 2. Config file audit (`configs`)
 
 Compare these files against the upstream reference. **Before flagging absence as DRIFT**, verify the file is not deliberately omitted (see "Distinguishing real drift" above):
@@ -121,6 +133,7 @@ Compare these files against the upstream reference. **Before flagging absence as
 | `.github/funding.yml`                 | Compare with reference                                                                                            | —                                                                                                                                                        |
 | `.gitignore`                          | Must be a real file: git skips an in-tree `.gitignore` reached via symlink; otherwise content vs upstream         | Auto-generated by repomatic; drift means the user should re-run sync.                                                                                    |
 | `pyproject.toml` `[tool.lychee]`      | Note differences (usually project-specific, just flag for review); a root `lychee.toml` wins as native config     | Project doesn't run lychee.                                                                                                                              |
+| `pyproject.toml` `[tool.gitleaks]`    | An allowlist alone replaces the built-in rules, so the scan finds nothing. It needs `extend.useDefault = true`    | No `[tool.gitleaks]` section: gitleaks keeps its built-in rules.                                                                                         |
 
 **Skip** files that are intentionally excluded via `exclude` in `[tool.repomatic]`, and settings declined under `lint-repo.declined`. Cross-check `[tool.ruff] extend-exclude` and similar before flagging "missing" entries.
 

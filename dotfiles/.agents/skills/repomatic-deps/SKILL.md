@@ -1,6 +1,6 @@
 ---
 name: repomatic-deps
-description: Generate dependency graphs. Audit pyproject.toml declarations against the version policy. Explore unused dependency APIs that could simplify code. Modernize code against the changelogs of upgraded dependencies.
+description: Generate dependency graphs. Audit pyproject.toml declarations against the version policy. Explore unused dependency APIs that could simplify code, and flag thin dependencies that in-house code could replace. Modernize code against the changelogs of upgraded dependencies.
 compatibility: 'Designed for Claude Code. Recommended model: Opus.'
 allowed-tools: Bash Read Grep Glob Agent Edit Write WebFetch
 argument-hint: '[graph [--level N]|review [all|runtime|dev|policy]|explore [<package>]|modernize [<package>]]'
@@ -9,8 +9,11 @@ argument-hint: '[graph [--level N]|review [all|runtime|dev|policy]|explore [<pac
 ## Context
 
 !`[ -f uv.lock ] && echo "uv.lock exists" || echo "No uv.lock found"`
+
 !`[ -f pyproject.toml ] && head -5 pyproject.toml || echo "No pyproject.toml found"`
+
 !`grep -c '".*>=\|".*~=\|".*<\|".*==' pyproject.toml 2>/dev/null || echo "0"`
+
 !`[ -f repomatic/__init__.py ] && echo "CANONICAL_REPO" || echo "DOWNSTREAM"`
 
 ## Instructions
@@ -21,14 +24,14 @@ You help users understand and maintain their project's dependencies. This skill 
 
 - If the context above shows `CANONICAL_REPO`, use `uv run repomatic`.
 - Otherwise, use `uvx -- repomatic`.
-- Gate the `uvx` form with the supply-chain cooldown: `uvx --exclude-newer '1 week' --exclude-newer-package repomatic=P0D -- repomatic`. The window matches `[tool.repomatic] minimum-release-age`; repomatic itself is exempt because a fresh release must stay installable, while its dependency tree stays gated.
+- Gate the `uvx` form with the supply-chain cooldown: `uvx --exclude-newer '{window}' --exclude-newer-package repomatic=P0D -- repomatic`. Read `{window}`, here and in every command below, from the `UV_EXCLUDE_NEWER` value of any `.github/workflows/*.yaml`, which `repomatic init` renders from `[tool.repomatic] minimum-release-age`. `--exclude-newer-package` exempts repomatic itself, so a fresh release stays installable while its dependency tree stays gated.
 
 ### Mode selection
 
 - No arguments: Run both `graph` and `review all`.
 - `graph`: Generate and analyze the dependency graph only.
 - `review [all|runtime|dev|policy]`: Audit `pyproject.toml` declarations only.
-- `explore [<package>]`: Search for unused dependency APIs that could simplify existing code.
+- `explore [<package>]`: Search for unused dependency APIs that could simplify existing code, and flag thin dependencies that in-house code could replace.
 - `modernize [<package>]`: Refactor code to adopt new features from upgraded dependencies, applying and test-gating each change.
 - If `$ARGUMENTS` starts with `--level` or a number, treat it as `graph` mode with those arguments.
 
@@ -77,7 +80,9 @@ These conventions are derived from the `pyproject.toml` files across all `kdeldy
 #### Runtime dependencies (`[project].dependencies`)
 
 1. **Use `>=` (not `~=` or `==`).** Relaxed lower bounds give packagers freedom to release security hotfixes without waiting for an upstream bump. Upper bounds are forbidden per [https://iscinumpy.dev/post/bound-version-constraints/](https://iscinumpy.dev/post/bound-version-constraints/).
+
 2. **Every version bound needs a comment tying the floor to a concrete code dependency.** The comment goes on the line above the dependency and states which feature, method, or API from that version the project actually uses. Prefer referencing the call site or module that depends on it:
+
    ```toml
    dependencies = [
      # wcmatch 10.0 changed globbing semantics; our sync_gitignore() relies on
@@ -85,23 +90,31 @@ These conventions are derived from the `pyproject.toml` files across all `kdeldy
      "wcmatch>=10",
    ]
    ```
+
    A good floor comment answers: "if someone installed an older version, what would break and where?" If you cannot point to a concrete usage, the floor may be unnecessarily high.
+
    **A floor comment documents the floor as it stands, in one short paragraph.** It is not a record of how the floor got there. Left alone it drifts that way on its own: each bump appends a paragraph about the newly required version, nothing is deleted, and the comment becomes a private changelog of the dependency with the declared version buried under the floors it replaced. When raising a floor, **rewrite the comment rather than extending it**: keep what the new version buys (API, fix, `requires-python` alignment, the call site consuming it, a CVE or upstream issue identifier), delete every superseded floor (`git log -- pyproject.toml` keeps that history), and move out what is not about this floor (usage detail belongs in the module using it, a comparison against an alternative package in an `XXX` pointer to the upstream ticket). `lint-deps` warns past 40 words, which is the ceiling to write to even where it is not run.
+
    **Security fixes are also a valid floor bump reason.** A CVE or advisory in an older version justifies raising the floor even when the API is unchanged. The comment should cite the CVE or advisory:
+
    ```toml
    dependencies = [
      # requests 2.32.0 fixes CVE-2024-35195 (session credential leak on redirects).
      "requests>=2.32",
    ]
    ```
+
 3. **Python version support is not a valid reason to bump a floor.** The dependency resolver already picks the right version via `requires-python` metadata. If `mango>=2` works and mango 5 merely adds Python 3.13 support, keep `>=2` — the resolver handles it. **Exception:** when a dependency *drops* a Python version your project still supports (or your project drops one, aligning minimum `requires-python`), that alignment is a valid floor bump reason. The comment should state the version range alignment, not the Python support:
+
    ```toml
    dependencies = [
-     # coverage 7.11.0 dropped Python 3.9, matching our requires-python >= 3.10.
-     "coverage>=7.11",
+     # papaya 7.11.0 dropped Python 3.10, matching our requires-python >= 3.11.
+     "papaya>=7.11",
    ]
    ```
+
 4. **Use conditional markers for Python-version-gated deps.** Example: `"tomli>=2; python_version<'3.11'"`. When a dep has a version marker, the floor rationale must make sense for the Python versions where the dep is actually installed — not for versions excluded by the marker.
+
 5. **Alphabetical order** within the list.
 
 #### Development dependencies (`[dependency-groups]`)
@@ -109,7 +122,7 @@ These conventions are derived from the `pyproject.toml` files across all `kdeldy
 06. **Prefer `[dependency-groups]`** (uv standard) over `[project.optional-dependencies]` for test, typing, and docs groups.
 07. **`>=` is preferred for dev deps too**, but `~=` is acceptable when stricter pinning reduces CI randomness. If a package also appears in runtime deps, the dev entry must use the same specifier style. The relaxation is about specifier *style* (`~=` allowed), not about floor *accuracy* — dev dep floors still need to be grounded in actual API or compatibility requirements, not adoption timestamps.
 08. **Standard group names:** `test`, `typing`, `docs` (lowercase, alphabetical).
-09. **Type stubs** go in the `typing` group with stub-specific versions: `"types-boltons>=25.0.0.20250822"`.
+09. **Type stubs** go in the `typing` group with stub-specific versions: `"types-pyyaml>=6.0.12.9"`.
 10. **Alphabetical order** within each group.
 
 #### General rules
@@ -139,21 +152,21 @@ Read the full `pyproject.toml`. `lint-deps` already reports the specifier style,
 Comments and changelogs can lie; the codebase is the source of truth. For each dependency with a weak or suspicious comment, verify the floor against actual usage:
 
 1. **Grep for imports.** Search the source tree for all imports from the package. List the specific APIs used (functions, classes, constants).
-2. **Determine the oldest version providing those APIs.** Check when the API was introduced — changelogs, release notes, or `pip index versions <pkg>` to see what exists on PyPI. A floor that rests on a behavior (comments kept, output formatting) needs a bisect instead, since a changelog can credit it to a later release than the one that shipped it. Run one probe per release with `uv run --no-project --exclude-newer '1 week' --with '<pkg>==<version>' python probe.py`, and compare each output byte for byte with the locked release.
+2. **Determine the oldest version providing those APIs.** Check when the API was introduced — changelogs, release notes, or `pip index versions <pkg>` to see what exists on PyPI. A floor that rests on a behavior (comments kept, output formatting) needs a bisect instead, since a changelog can credit it to a later release than the one that shipped it. Run one probe per release with `uv run --no-project --exclude-newer '{window}' --with '<pkg>==<version>' python probe.py`, and compare each output byte for byte with the locked release.
 3. **Lower the floor** when it exceeds the oldest compatible version. Prefer conservative minimums (the major version that introduced the API) over aggressive ones. Update both the version specifier and the comment.
-4. **Run `uv lock`** after any floor change to verify the lock still resolves. Run it with the uv version the workflows pin on their `setup-uv` steps, like `uvx --exclude-newer '1 week' --from 'uv==X.Y.Z' uv lock`: a newer local uv rewrites the lockfile `revision` and adds tables that CI never writes. After a floor raised in one dependency group only, add `--upgrade-package <pkg>`: a group with its own `requires-python` resolves as a separate fork, and a plain `uv lock` keeps the old pin in the other one.
+4. **Run `uv lock`** after any floor change to verify the lock still resolves. Run it with the uv version the workflows pin on their `setup-uv` steps, like `uvx --exclude-newer '{window}' --from 'uv==X.Y.Z' uv lock`: a newer local uv rewrites the lockfile `revision` and adds tables that CI never writes. After a floor raised in one dependency group only, add `--upgrade-package <pkg>`: a group with its own `requires-python` resolves as a separate fork, and a plain `uv lock` keeps the old pin in the other one.
 
 #### Lowest-version check
 
 A floor can also be too low: the code calls an API that the declared version lacks. The lockfile holds the newest release of each dependency, so no ordinary test run shows it, and the first to see it is a user on an old environment.
 
-1. **Resolve every direct dependency at its floor.** Run `uv pip compile pyproject.toml --resolution lowest-direct --exclude-newer '1 week' --python-version <floor>`, with the lowest Python the project supports. It prints the set and installs nothing.
+1. **Resolve every direct dependency at its floor.** Run `uv pip compile pyproject.toml --resolution lowest-direct --exclude-newer '{window}' --python-version <floor>`, with the lowest Python the project supports. It prints the set and installs nothing.
 2. **Compare the output with the declared floors.** A package resolved above its floor is held there by another requirement, so no install can reach the declared version. Report it as **Info**, with the requirement that holds it.
 3. **Run the suite on the lowest set.** In a throwaway `git worktree`, `uv sync --resolution lowest-direct --all-extras --group test` installs it and `uv run --frozen -- pytest` tests it. The sync rewrites `uv.lock`, so keep it out of the main checkout. When the test matrix carries a `lowest-direct` cell, read its last CI result instead.
-4. **Probe what the suite cannot see.** Two cases pass the suite and still break a user. The test tooling can hold a dependency above its floor, as pytest does for `packaging`. A mocked client hides the library behind it. For each one, write a script that makes the call the code makes, and run it against the floor: `uv run --no-project --exclude-newer '1 week' --with '<pkg>==<floor>' python probe.py`.
+4. **Probe what the suite cannot see.** Two cases pass the suite and still break a user. The test tooling can hold a dependency above its floor, as pytest does for `packaging`. A mocked client hides the library behind it. For each one, write a script that makes the call the code makes, and run it against the floor: `uv run --no-project --exclude-newer '{window}' --with '<pkg>==<floor>' python probe.py`.
 5. **Raise a floor that fails**, to the first release that passes. Name the failing call in the comment.
 
-To test one floor alone, build an environment from the lockfile and swap that package in with `uv pip install --exclude-newer '1 week' --no-deps '<pkg>==<floor>'`. `uv run --with` resolves the package's own dependencies again, so a failure there can come from another package.
+To test one floor alone, build an environment from the lockfile and swap that package in with `uv pip install --exclude-newer '{window}' --no-deps '<pkg>==<floor>'`. `uv run --with` resolves the package's own dependencies again, so a failure there can come from another package.
 
 #### Special cases
 
@@ -281,6 +294,14 @@ Common false-positive patterns to reject early:
 - **Adding atomicity where none is needed.** `atomic_save` on files that are immediately git-committed or overwritten by CI.
 - **Unifying glob implementations.** stdlib `glob` and `wcmatch.glob` serve different purposes; not every `glob.glob()` call needs extended syntax.
 - **Replacing regex with structured parsing** when the regex is simpler. `re.match(r"extra\s*==\s*'([^']+)'", marker)` is more direct than navigating a `Marker` object's internal structure.
+
+### Removal candidates
+
+The usage catalog of step 1 also shows when the project uses a dependency so little that in-house code can replace it.
+
+- **Flag a thin dependency.** A package that a few call sites use, and that the standard library or a short function can replace, is a removal candidate.
+- **Check what else requires it.** Run `uv tree --invert --package {pkg}` before you report that the lockfile drops it. Another dependency can still require it: then only the direct entry and its type stubs leave the lock.
+- **Keep it installed as a reference until the replacement matches it.** Compare the two over a generated range of inputs, edge cases included, and remove the package only when no output differs.
 
 ---
 

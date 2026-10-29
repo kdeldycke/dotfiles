@@ -9,6 +9,7 @@ argument-hint: <issue-or-pr-url>
 ## Context
 
 !`gh api repos/{owner}/{repo} --jq '.description' 2>/dev/null`
+
 !`cat .github/contributing.md 2>/dev/null | head -20`
 
 ## Instructions

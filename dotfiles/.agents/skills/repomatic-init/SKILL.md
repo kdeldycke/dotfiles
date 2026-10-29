@@ -9,7 +9,9 @@ argument-hint: '[component ...]'
 ## Context
 
 !`[ -f pyproject.toml ] && echo "pyproject.toml exists" || echo "No pyproject.toml"`
+
 !`ls .github/workflows/ 2>/dev/null || echo "No .github/workflows/ directory"`
+
 !`[ -f repomatic/__init__.py ] && echo "CANONICAL_REPO" || echo "DOWNSTREAM"`
 
 ## Instructions
@@ -20,7 +22,7 @@ You help users bootstrap a repository to use the reusable GitHub Actions workflo
 
 - If the context above shows `CANONICAL_REPO`, use `uv run repomatic init`.
 - Otherwise, use `uvx -- repomatic init`.
-- Gate the `uvx` form with the supply-chain cooldown: `uvx --exclude-newer '1 week' --exclude-newer-package repomatic=P0D -- repomatic`. The window matches `[tool.repomatic] minimum-release-age`; repomatic itself is exempt because a fresh release must stay installable, while its dependency tree stays gated.
+- Gate the `uvx` form with the supply-chain cooldown: `uvx --exclude-newer '{window}' --exclude-newer-package repomatic=P0D -- repomatic`. Read `{window}` from the `UV_EXCLUDE_NEWER` value of any `.github/workflows/*.yaml`, which `repomatic init` renders from `[tool.repomatic] minimum-release-age`. With no workflow yet, read that key from `pyproject.toml`, and ask the user when it is unset. `--exclude-newer-package` exempts repomatic itself, so a fresh release stays installable while its dependency tree stays gated.
 
 ### Argument handling
 

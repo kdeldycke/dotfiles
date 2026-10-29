@@ -9,7 +9,9 @@ argument-hint: '[add|check|fix|consolidate [VERSION]|VERSION]'
 ## Context
 
 !`head -40 changelog.md 2>/dev/null || echo "No changelog.md found"`
+
 !`git log --oneline -10 2>/dev/null`
+
 !`[ -f repomatic/__init__.py ] && echo "CANONICAL_REPO" || echo "DOWNSTREAM"`
 
 ## Instructions
@@ -18,13 +20,13 @@ You help users manage their `changelog.md` file. See § Style rules below for ho
 
 ### Mechanical layer
 
-The `changelog.yaml` workflow's `fix-changelog` job runs `lint-changelog --fix` in CI, checking release dates against PyPI, orphaned versions, over-long unreleased bullets, and *released* sections holding no entry. The `check` and `fix` subcommands below invoke the same tool locally. The `add` subcommand is purely analytical — it reviews git history and drafts entries, which no CI job does.
+The `changelog.yaml` workflow's `fix-changelog` job runs `lint-changelog --fix` in CI, checking release dates against PyPI, orphaned versions, over-long unreleased bullets, *released* sections holding no entry, an entry filed out of the Breaking, then Deprecated, then ordinary order, a `#N` naming no thread, and a heading carrying a `v` tag prefix, which `--fix` strips. The `check` and `fix` subcommands below invoke the same tool locally. The `add` subcommand is purely analytical — it reviews git history and drafts entries, which no CI job does.
 
 ### Determine invocation method
 
 - If the context above shows `CANONICAL_REPO`, use `uv run repomatic`.
 - Otherwise, use `uvx -- repomatic`.
-- Gate the `uvx` form with the supply-chain cooldown: `uvx --exclude-newer '1 week' --exclude-newer-package repomatic=P0D -- repomatic`. The window matches `[tool.repomatic] minimum-release-age`; repomatic itself is exempt because a fresh release must stay installable, while its dependency tree stays gated.
+- Gate the `uvx` form with the supply-chain cooldown: `uvx --exclude-newer '{window}' --exclude-newer-package repomatic=P0D -- repomatic`. Read `{window}` from the `UV_EXCLUDE_NEWER` value of any `.github/workflows/*.yaml`, which `repomatic init` renders from `[tool.repomatic] minimum-release-age`. `--exclude-newer-package` exempts repomatic itself, so a fresh release stays installable while its dependency tree stays gated.
 
 ### Argument handling
 
@@ -45,16 +47,14 @@ Entries accumulate during development as features are built incrementally. Befor
 04. **Merge entries that describe infrastructure and its usage together.** "Add binary download infrastructure" + "add 5 binary tools" + "migrate 5 workflow steps" = one bullet covering the feature end-to-end.
 05. **Keep distinct user-facing changes as separate entries.** A breaking config key change and a new CLI command are separate features even if they landed in the same development cycle.
 06. **Keep the names users need, shed the rest.** Tool names, config keys, CLI options, and breaking-change notes stay explicit. But consolidation cuts per-entry *length*, not just bullet count: a merged entry is one short sentence naming the feature, not a paragraph stacking every mechanism and rationale from the bullets it replaced. Target ~10-25 words; push implementation detail and "why" to the commit, PR, code comment, or `docs/`.
-07. **Remove implementation details** that don't affect users: internal refactors, helper functions, test additions.
-    Also strip upstream issue commentary: trailing prose that links to upstream tickets and narrates their status ("Click does not ship an equivalent: the upstream conversation is in `pallets/click#NNNN` (open)…", "mirrors the upstream fix in PR `…#NNNN`"). The status rots within days and the prose duplicates what the linked thread already says. A bare upstream link is acceptable on a direct backport entry; longer rationale belongs in a code comment, docstring, or PR body.
-08. **Never leave the section empty.** A heading with no bullets still gets tagged and published, and reads as broken to whoever scans the release notes. When rules 02-07 collapse the unreleased section to zero bullets and the net cycle is genuinely mechanical, backfill one generic bullet naming what moved — e.g. "Sync CI tooling, workflow pins and dependency floors with the latest repomatic release." This is a fallback for an empty net cycle, not a substitute for drafting: it fires only after `add` has had its own chance to draft real entries from `git log`. As the section's sole bullet it needs no category ordering.
+07. **Remove implementation details** that don't affect users: internal refactors, helper functions, test additions. Also strip upstream issue commentary: trailing prose that links to upstream tickets and narrates their status ("Click does not ship an equivalent: the upstream conversation is in `pallets/click#NNNN` (open)…", "mirrors the upstream fix in PR `…#NNNN`"). The status rots within days and the prose duplicates what the linked thread already says. A bare upstream link is acceptable on a direct backport entry; longer rationale belongs in a code comment, docstring, or PR body.
+08. **Never leave the section empty.** A heading with no bullets reads as broken to whoever scans the release notes. When rules 02-07 collapse the unreleased section to zero bullets and the net cycle is genuinely mechanical, backfill one generic bullet naming what moved — e.g. "Sync CI tooling, workflow pins and dependency floors with the latest repomatic release." This is a fallback for an empty net cycle, not a substitute for drafting: it fires only after `add` has had its own chance to draft real entries from `git log`. As the section's sole bullet it needs no category ordering. The `prepare-release` job opens no release pull request while the section is empty, so this bullet is what unblocks a mechanical release.
 09. **Order entries by category, breaking changes first:** lead with `**Breaking:**` entries, then `**Deprecated:**` entries, then new features, then broad/global changes, then bug fixes, then documentation and testing. Breaking changes are what a reader scans for before upgrading, so they go at the top of the block. `**Deprecated:**` marks a surface that still resolves but warns and is slated for removal in a named future release.
 10. **Apply directly.** Write the consolidated section to `changelog.md` without asking for approval. Summarize what was merged, dropped, or reordered after writing.
-11. **Validate after writing.** A bulk rewrite can introduce malformed markup, silently drop structure, or leave entries over-long. Run `<cmd> lint-changelog`, which measures the bullet lengths against `changelog.bullet-word-threshold` — gate on what it reports, not on a delegated agent's self-report of how much it compressed. Then run `<cmd> run mdformat --verify -- <file>`, which reports what the write path would change without touching the file; a bare `mdformat`/`mdformat --with mdformat-myst` diverges on MyST directive colon-options like a `{list-table}`'s `:header-rows:`, so gate on the pinned runner. Confirm by eye what neither tool measures: rule 08 (its empty-section check covers *released* sections only, and deliberately skips the unreleased one you just consolidated, which is legitimately empty for most of a cycle), no doubled list markers (a stray `- -`), and the `## [...]` heading count and availability-admonition count unchanged from before the edit. Breaking entries lead each section (rule 9).
+11. **Validate after writing.** A bulk rewrite can introduce malformed markup, silently drop structure, or leave entries over-long. Run `<cmd> lint-changelog`, which measures the bullet lengths against `changelog.bullet-word-threshold` — gate on what it reports, not on a delegated agent's self-report of how much it compressed. Then run `<cmd> run mdformat --verify -- <file>`, which reports what the write path would change without touching the file; a bare `mdformat`/`mdformat --with mdformat-myst` diverges on MyST directive colon-options like a `{list-table}`'s `:header-rows:`, so gate on the pinned runner. Confirm by eye what neither tool measures: rule 08 (its empty-section check covers *released* sections only, and deliberately skips the unreleased one you just consolidated, which is legitimately empty for most of a cycle), no doubled list markers (a stray `- -`), and the `## [...]` heading count and availability-admonition count unchanged from before the edit.
 
 ### Style rules
 
-- **Write bare versions in changelog headings**, with no `v` prefix. The `v` prefix names a git tag, not a package version.
 - **One bullet per user-facing change**, one sentence of ~10-25 words, saying what changed rather than how it was built or why. A second sentence only flags a breaking change or a migration step.
 - **Cut what the user cannot act on.** Mechanism goes to the commit or PR; rationale goes to a code comment or `docs/`.
 - **Mark a change breaking when a surface the reader uses is gone**, so their code, invocation, config or workflow must change to keep working.

@@ -9,8 +9,11 @@ argument-hint: '[audit|init|add <project>|refresh-badges]'
 ## Context
 
 !`[ -f pyproject.toml ] && grep '^name' pyproject.toml | head -1 || echo "No pyproject.toml"`
+
 !`[ -f docs/benchmark.md ] && head -15 docs/benchmark.md || echo "No docs/benchmark.md yet"`
+
 !`[ -f docs/benchmark.md ] && grep -c '^|' docs/benchmark.md || echo 0`
+
 !`[ -f CLAUDE.md ] && grep -i 'ordering\|benchmark\|comparison' CLAUDE.md | head -5 || echo "No ordering conventions found"`
 
 ## Instructions
@@ -203,7 +206,7 @@ Verify the GitHub `owner/repo` in badge URLs matches the current canonical locat
 
 #### 6. Star history chart
 
-Check the chart is a locally rendered asset rather than a third-party embed: every such embed served an error card once GitHub restricted stargazer access in June 2026, and a committed history cannot be revoked that way. Then check `[tool.repomatic.metrics] subjects` lists every project the page still compares and none it has excluded, since that one list feeds both the chart and the weekly sampler.
+Check the chart is a locally rendered asset rather than a third-party embed: every such embed served an error card once GitHub restricted stargazer access in June 2026, and a committed history cannot be revoked that way. Then check `[tool.repomatic.metrics] subjects` lists every project the page still compares and none it has excluded, since that one list feeds both the chart and the quarterly sampler.
 
 ### Adding a project (`add`)
 
