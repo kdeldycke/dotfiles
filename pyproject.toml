@@ -20,14 +20,12 @@ include = ["skills", "subagents"]
 # this fleet does not use. The downstream repos dropped their copies at the
 # same time and keep only their own domain-specific skills and agents.
 #
-# The `agent` component left `include` on 2026-08-20 for the same reason. The
-# instructions file dotfiles/.agents/AGENTS.md is symlinked to
-# ~/.claude/CLAUDE.md and therefore loads on every project opened from this
-# machine, so syncing per-repo copies of the same generic conventions merely
-# duplicated them in every session, modulo the drift between sync schedules.
-# The generic content moved into that file as hand-owned text instead, and
-# each downstream repository's instructions file keeps only what is specific
-# to it.
+# The instructions file is hand-owned, not synced: repomatic dropped its
+# `agent` component and the `agent.location` key, so `include` cannot name it.
+# dotfiles/.agents/AGENTS.md is symlinked to ~/.claude/CLAUDE.md and loads on
+# every project opened from this machine, so a per-repo copy would only
+# duplicate it. The generic conventions live there as hand-owned text, and
+# each downstream repository's instructions file keeps what is specific to it.
 # gitignore.location is left at its default, the repository root, and the file
 # there has to be a real one: git opens in-tree .gitignore, .gitattributes and
 # .mailmap with O_NOFOLLOW, so a symlink is skipped with a "Too many levels of

@@ -18,6 +18,8 @@ name: 🔬 Install
       - main
     paths:
       - .github/workflows/install.yaml
+      # macos-config.sh imports `./assets/{theme}.terminal`.
+      - assets/**
       - dotfiles/**
       - install.sh
       - macos-config.sh
