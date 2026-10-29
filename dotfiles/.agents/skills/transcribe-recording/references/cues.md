@@ -52,5 +52,5 @@ Each span has a `kind`:
 ## Add a source
 
 1. Write `scripts/sources/{source}.py`, a `uv` script that reads the source and writes this file, like `teams.py`.
-1. Write `references/sources/{source}.md` on the pattern of `teams.md`: what the source shows, how to read its cues, what each cue gives, the header lines of the transcript and the traps.
-1. Add a row for the source to the table of step 7 in `SKILL.md`.
+2. Write `references/sources/{source}.md` on the pattern of `teams.md`: what the source shows, how to read its cues, what each cue gives, the header lines of the transcript and the traps.
+3. Add a row for the source to the table of step 7 in `SKILL.md`.

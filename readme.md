@@ -1,29 +1,16 @@
 # Kevin's dotfiles
 
-Dot-files and system configuration for Python developers on **macOS** with
-Apple Silicon hardware.
+Dot-files and system configuration for Python developers on **macOS** with Apple Silicon hardware.
 
 ![Mac OS X 10.13 High Sierra solarized terminal and vim](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/macos-10.13.jpeg)
 
 ## Features
 
 - Aimed at Python programmers using `Neovim` and `VisualStudio Code`.
-- Targets `ZSH` shell (now the
-  [default since Catalina](https://support.apple.com/en-gb/HT208050)).
+- Targets `ZSH` shell (now the [default since Catalina](https://support.apple.com/en-gb/HT208050)).
 - Produce colored output for most of shell commands.
-- All color schemes are based on
-  [Monokai](https://web.archive.org/web/20161107090516/http://www.monokai.nl/blog/2006/07/).
-  The terminal uses the
-  [Monokai Soda](https://github.com/lysyi3m/macos-terminal-themes#monokai-soda-download)
-  variant instead of the
-  [official Monokai Pro terminal themes](https://monokai.pro/terminal): all Pro
-  variants
-  [map orange to the ANSI blue slot](https://github.com/monokai-pro/sublime-text/issues/45),
-  which breaks any tool relying on blue semantically (`ls` directory listings,
-  `git diff` headers, `man` highlights, `dircolors`). Monokai Soda keeps purple
-  in the blue slot and has higher contrast on dark backgrounds.
-- Terminal and coding font is
-  [Source Code Pro](https://en.wikipedia.org/wiki/Source_Code_Pro).
+- All color schemes are based on [Monokai](https://web.archive.org/web/20161107090516/http://www.monokai.nl/blog/2006/07/). The terminal uses the [Monokai Soda](https://github.com/lysyi3m/macos-terminal-themes#monokai-soda-download) variant instead of the [official Monokai Pro terminal themes](https://monokai.pro/terminal): all Pro variants [map orange to the ANSI blue slot](https://github.com/monokai-pro/sublime-text/issues/45), which breaks any tool relying on blue semantically (`ls` directory listings, `git diff` headers, `man` highlights, `dircolors`). Monokai Soda keeps purple in the blue slot and has higher contrast on dark backgrounds.
+- Terminal and coding font is [Source Code Pro](https://en.wikipedia.org/wiki/Source_Code_Pro).
 - Keeps macOS fast, lean and secure.
 
 ## Pre-installation
@@ -32,9 +19,7 @@ We will reinstall macOS from scratch.
 
 1. Download macOS from the `App Store.app`.
 
-2. Plug a USB drive to your machine, format it with the Disk Utility app,
-   double-check it is mounted at `/Volumes/Untitled`, and finally
-   [flash it with the macOS image](https://support.apple.com/en-us/HT201372):
+2. Plug a USB drive to your machine, format it with the Disk Utility app, double-check it is mounted at `/Volumes/Untitled`, and finally [flash it with the macOS image](https://support.apple.com/en-us/HT201372):
 
    ```shell-session
    $ sudo /Applications/Install\ macOS\ 27\ Golden\ Gate.app/Contents/Resources/createinstallmedia --volume /Volumes/Untitled --nointeraction
@@ -44,13 +29,11 @@ We will reinstall macOS from scratch.
 
 4. Login to your new user, and launch `System Preferences.app`.
 
-5. Go to `Security & Privacy` → `Privacy` → `Click the lock to make changes`,
-   and then unlock with touch ID or password:
+5. Go to `Security & Privacy` → `Privacy` → `Click the lock to make changes`, and then unlock with touch ID or password:
 
    ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/system-preferences-security-privacy-unlock.png)
 
-6. Go to `Full Disk Access`, click the `+` button, go to `Applications` →
-   `Utilities`, and choose `Terminal.app`:
+6. Go to `Full Disk Access`, click the `+` button, go to `Applications` → `Utilities`, and choose `Terminal.app`:
 
    ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/terminal-full-disk-access.png)
 
@@ -107,8 +90,7 @@ $ ./install.sh cleanup snapshot
 
 Manual setup required to finish up the perfect configuration.
 
-This is a list of manual post-installation steps required to fully configure
-the system. Haven't found any way to automate them all.
+This is a list of manual post-installation steps required to fully configure the system. Haven't found any way to automate them all.
 
 ### `System Preferences.app`
 
@@ -126,24 +108,20 @@ the system. Haven't found any way to automate them all.
 
    ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/accessibility-preferences.png)
 
-4. In `Security & Privacy` → `Privacy` → `Full Disk Access`, click the `+`
-   button. Then go to `Applications` → `Utilities`, to add:
+4. In `Security & Privacy` → `Privacy` → `Full Disk Access`, click the `+` button. Then go to `Applications` → `Utilities`, to add:
 
    - `BlockBlock.app`
    - `KnockKnock.app`
 
-5. In `Security & Privacy` → `Privacy` → `Analytics & Improvements`: uncheck
-   all options to disallow analytics sharing.
+5. In `Security & Privacy` → `Privacy` → `Analytics & Improvements`: uncheck all options to disallow analytics sharing.
 
    ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/analytics-and-improvements-preferences.png)
 
-6. In `Security & Privacy` → `Privacy` → `Apple Advertising`: uncheck
-   `Personalized Ads` option.
+6. In `Security & Privacy` → `Privacy` → `Apple Advertising`: uncheck `Personalized Ads` option.
 
    ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/apple-advertising-preferences.png)
 
-7. In `Security & Privacy` → `Privacy` → `Developer Tools`, activate
-   `Terminal`:
+7. In `Security & Privacy` → `Privacy` → `Developer Tools`, activate `Terminal`:
 
    ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/developer-tools-preferences.png)
 
@@ -164,8 +142,7 @@ In `Preferences...` → `Extensions`, activate:
 
 ### AdGuard
 
-In `Preferences...` → `Filters`, click the `+` button and subscribe to all
-filter lists:
+In `Preferences...` → `Filters`, click the `+` button and subscribe to all filter lists:
 
 ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/adguard-filter-lists-subscription.png)
 
@@ -212,8 +189,7 @@ pi has no permission layer, so the [`shell-deny.ts` extension](dotfiles/.pi/agen
 
 ### Logi Options
 
-For productivity, setup custom trackball shortcuts with macOS desktop
-management tools and Amethyst windows commands.
+For productivity, setup custom trackball shortcuts with macOS desktop management tools and Amethyst windows commands.
 
 Page-up button assignment → `Smart zoom`:
 
@@ -245,8 +221,7 @@ Side button assignment → `Shift` + `Opt` + `Space`:
 
 ## Upgrade
 
-I'm trying to make the install procedure idempotent so you'll just have to
-call the script again to upgrade your system:
+I'm trying to make the install procedure idempotent so you'll just have to call the script again to upgrade your system:
 
 ```shell-session
 $ ./install.sh 2>&1 | tee ./install.log
@@ -258,8 +233,7 @@ To refresh only a part of the system, call the corresponding [stage](#stages), l
 
 It mainly consist in refreshing some assets at every macOS major release:
 
-- Regenerate
-  [`Monokai Soda.terminal` profile](https://github.com/kdeldycke/dotfiles/blob/main/assets/Monokai%20Soda.terminal).
+- Regenerate [`Monokai Soda.terminal` profile](https://github.com/kdeldycke/dotfiles/blob/main/assets/Monokai%20Soda.terminal).
 
 - Keep list of packages up-to-date:
 
@@ -311,8 +285,7 @@ Rules that stay check-only without an MDM, to carry into the generated configura
 
 ## Versions
 
-Only the current default `main` branch is supported and actively maintained.
-Older branches are available for archive.
+Only the current default `main` branch is supported and actively maintained. Older branches are available for archive.
 
 - [macOS 27 (Golden Gate)](https://github.com/kdeldycke/dotfiles/tree/main) (current)
 - [macOS 26 (Tahoe)](https://github.com/kdeldycke/dotfiles/tree/macos-26)
@@ -326,10 +299,7 @@ Older branches are available for archive.
 - [macOS 10.13 (High Sierra)](https://github.com/kdeldycke/dotfiles/tree/macos-10.13)
 - [macOS 10.12 (Sierra)](https://github.com/kdeldycke/dotfiles/tree/macos-10.12)
 
-Former
-[support of Kubuntu and Ubuntu Server Linux distributions has been dropped](https://github.com/kdeldycke/dotfiles/commit/e667245f6a4c90c6d41907e392adb74c5acfcf13).
-You can still find these as dedicated branches, but all are quite ancient
-(2016).
+Former [support of Kubuntu and Ubuntu Server Linux distributions has been dropped](https://github.com/kdeldycke/dotfiles/commit/e667245f6a4c90c6d41907e392adb74c5acfcf13). You can still find these as dedicated branches, but all are quite ancient (2016).
 
 ## Resources
 
@@ -338,17 +308,10 @@ You can still find these as dedicated branches, but all are quite ancient
 
 ## License
 
-For convenience, some third party code and assets are hard-copied in place.
-These particular items have their own license and copyright:
+For convenience, some third party code and assets are hard-copied in place. These particular items have their own license and copyright:
 
 - [Monokai Soda](https://github.com/lysyi3m/macos-terminal-themes#monokai-soda-download).
 
-The rest of the content is configuration and code I accumulated over years.
-Some was heavily inspired by other dotfiles repositories. But each time I
-borrow something, I try to credit the author and/or point to the source. You
-should be able to trace back the origin of things by looking at the commit
-history.
+The rest of the content is configuration and code I accumulated over years. Some was heavily inspired by other dotfiles repositories. But each time I borrow something, I try to credit the author and/or point to the source. You should be able to trace back the origin of things by looking at the commit history.
 
-If you can't find any clue about an external source, then assume it is original
-content I produced, which I released under the
-[BSD 2-Clause License](LICENSE.md).
+If you can't find any clue about an external source, then assume it is original content I produced, which I released under the [BSD 2-Clause License](LICENSE.md).

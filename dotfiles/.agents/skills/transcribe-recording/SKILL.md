@@ -10,14 +10,14 @@ argument-hint: '[recording file] [folder of related documents]'
 The process runs on this Mac only:
 
 1. Check the recording, and cut its speech to a WAV file.
-1. Build a dictionary of names and terms from the related documents.
-1. Run five speech models, one at a time.
-1. Find the speaker turns over the whole recording.
-1. Check that the models agree.
-1. Vote the text word by word.
-1. Read the cues of the source, like the names that the video of a call shows.
-1. Build the transcript: Markdown, SRT and VTT, a table of doubtful words, and a table of voices to name.
-1. Deliver the files.
+2. Build a dictionary of names and terms from the related documents.
+3. Run five speech models, one at a time.
+4. Find the speaker turns over the whole recording.
+5. Check that the models agree.
+6. Vote the text word by word.
+7. Read the cues of the source, like the names that the video of a call shows.
+8. Build the transcript: Markdown, SRT and VTT, a table of doubtful words, and a table of voices to name.
+9. Deliver the files.
 
 For one hour of speech, the five models take about 30 minutes, and the speaker turns about 5 more. [`references/benchmark.md`](references/benchmark.md) gives the measurements behind the choice of models, made on French speech.
 
@@ -114,7 +114,7 @@ For the other models, change `--family`, `--model` and `--name`. Give `--diction
 After each run:
 
 1. Read the warnings. Fewer than 20 words per minute means that the model stopped early. Letters outside the Latin script mean that the weights do not match the loader.
-1. Read the first segments of the run JSON.
+2. Read the first segments of the run JSON.
 
 ## 4. Find the speaker turns
 
@@ -207,9 +207,9 @@ Read the start of the transcript and the voices table before the delivery.
 ## 9. Deliver
 
 1. Confirm the destination folder and the stem.
-1. Make sure that no file in the destination starts with the stem: never overwrite.
-1. Build again with `--out {destination}/{stem}`. A destination under ProtonDrive needs the Bash sandbox off.
-1. List the written files with their sizes.
+2. Make sure that no file in the destination starts with the stem: never overwrite.
+3. Build again with `--out {destination}/{stem}`. A destination under ProtonDrive needs the Bash sandbox off.
+4. List the written files with their sizes.
 
 ## Measure the models by ear
 
