@@ -262,7 +262,8 @@ def cached_addresses() -> dict[str, str]:
 
 def remember(alias: str, address: str) -> None:
     """Cache the address an alias answered at, for `find_by_host_key` to try
-    first."""
+    first.
+    """
     cache = cached_addresses()
     if cache.get(alias) == address:
         return

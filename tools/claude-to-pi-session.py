@@ -59,7 +59,7 @@ import re
 import shutil
 import subprocess
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 # Claude Code tool name -> pi tool name. Only a tool whose arguments pi reads
@@ -341,7 +341,7 @@ def convert(rows: list[dict]) -> tuple[list[dict], dict]:
     cwds = [r["cwd"] for r in rows if isinstance(r.get("cwd"), str)]
     cwd = max(set(cwds), key=cwds.count) if cwds else str(Path.cwd())
     stamps = [r["timestamp"] for r in rows if isinstance(r.get("timestamp"), str)]
-    first_stamp = min(stamps) if stamps else datetime.now(timezone.utc).isoformat()
+    first_stamp = min(stamps) if stamps else datetime.now(UTC).isoformat()
 
     for row in rows:
         kind = row.get("type")
