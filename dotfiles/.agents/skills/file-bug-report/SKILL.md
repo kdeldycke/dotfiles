@@ -1,6 +1,6 @@
 ---
 name: file-bug-report
-description: Write a bug report for an upstream project. Read its contribution guidelines, issue templates and community norms first, then produce a markdown file ready to paste.
+description: Write a bug report for an upstream project, or a reply on an existing issue. Read its contribution guidelines, issue templates and community norms first, then produce a markdown file ready to paste.
 compatibility: 'Designed for Claude Code. Recommended model: Opus.'
 allowed-tools: Bash Read Grep Glob Write WebFetch WebSearch Agent
 argument-hint: <owner/repo> <one-line summary of the bug>
@@ -11,6 +11,18 @@ argument-hint: <owner/repo> <one-line summary of the bug>
 Create a well-structured bug report for filing against an external project. The report is written to a local markdown file so the user can review before pasting into a GitHub issue.
 
 `$ARGUMENTS` contains the target repo (`owner/repo`) and a short summary of the bug.
+
+## Replies on an existing issue
+
+A reply on an existing issue or pull request keeps the evidence rules, with a shorter workflow:
+
+- Keep step 1 for the rules that bind comments, like a policy on AI-generated text or a code of conduct. Skip the issue templates of 1d and all of step 4: a comment has no form.
+- Skip the duplicate search of step 2. Link the related threads the reply relies on instead.
+- Apply step 3 in full. Run every code example and paste its real output, and run each console session as a doctest. Test the oldest release the reply claims to support, and state that floor.
+- Write the draft outside the checkout, in the session's scratch directory, as `{repo}-{number}-reply.md`. A file at the repository root does not belong to the project, and a broad `git add` can stage it.
+- Keep the prose under 150 words. Code and quoted evidence do not count.
+
+The writing, rendering and code block rules below apply to replies too.
 
 ## Workflow
 
