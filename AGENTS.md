@@ -1,6 +1,6 @@
 # Development guide
 
-This file holds only the rules specific to this repository. The generic conventions load from `dotfiles/.agents/AGENTS.md`, which every session on this machine reads.
+This file holds only the rules specific to this repository. The generic conventions load from `dotfiles/.agents/global-instruction.md`, which every session on this machine reads.
 
 ## Shell startup and packages
 
@@ -24,10 +24,16 @@ This file holds only the rules specific to this repository. The generic conventi
 
 - **A running pi session overwrites hand edits to `auth.json`.** It persists its refreshed credential when the token expires and replaces the whole entry, so a credential swap applied mid-session reverts. Quit pi sessions first, or re-apply and confirm with `pi auth check --provider {id}` plus one live probe.
 
+## Instruction files
+
+- **The global file is `dotfiles/.agents/global-instruction.md`, reached by two symlinks: `~/.claude/CLAUDE.md` and `~/.pi/agent/AGENTS.md`.** Claude Code `2.1.284` reads a project's `AGENTS.md` only when no `CLAUDE.md` stands on the walk from the root down to the working directory. It files what it finds as project instructions, never as user scope, so the user-scope link keeps the name `CLAUDE.md`. A repository file named `CLAUDE.md` turns the fallback off for that project.
+- **Do not name the global file `AGENTS.md`.** The fallback reads an `AGENTS.md` under `dotfiles/.agents/` as a nested project file, so a Read there can attach the whole global file a second time. This comes from the built-in plugin's source in Claude Code `2.1.284`, not from a live probe.
+- **Check which instruction file a project loads without the API:** run `claude --print --debug-file {log}` from the project directory and read the `[agents-md]` lines, like `no CLAUDE.md found; AGENTS.md loaded: {path}`. The lines appear before the first API call, so a blocked network does not hide them.
+
 ## Skills
 
 - **Each `repomatic init` and `sync-repomatic` run rewrites every skill under `dotfiles/.agents/skills/` that `.claude-plugin/plugin.json` does not list.** Port a lesson written into one of them to `../repomatic/.claude/skills/{name}/SKILL.md` in the same pass.
-- **The Bash sandbox denies writes under `dotfiles/.agents/skills/` and `dotfiles/.claude/`, and to `dotfiles/.agents/AGENTS.md`.** Change those files with the Write and Edit tools; Bash can still read them, so lint and test a skill in place. A script holding backslash escapes goes in with `cp` outside the sandbox, which keeps its bytes and mode.
+- **The Bash sandbox denies writes under `dotfiles/.agents/skills/` and `dotfiles/.claude/`, and to the global file, `dotfiles/.agents/global-instruction.md`.** Change those files with the Write and Edit tools; Bash can still read them, so lint and test a skill in place. A script holding backslash escapes goes in with `cp` outside the sandbox, which keeps its bytes and mode.
 - **`dotfiles/.agents/skills/synced/` and `.trash/` come from the Claude app sync.** `synced/{id}/manifest.json` names each skill's `source` (`anthropic`, `anthropic-example`), and a skill in `.trash/` came from there. The claude.ai Skills page does not list them: hide one with `skillOverrides` in `.claude/settings.json` and a `!` glob in the pi `skills` setting. `pi config` is a TUI only: count the skills pi loads with a node script that calls `DefaultResourceLoader` (from pi's `dist/index.js`) `reload()` then `getSkills()`.
 
 ## Assets

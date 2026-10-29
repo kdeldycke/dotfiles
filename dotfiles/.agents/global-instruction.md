@@ -138,9 +138,9 @@ Every version floor carries a comment above it saying what breaks below that ver
 
 ## Documentation requirements
 
-### Keeping `claude.md` lean
+### Keeping `AGENTS.md` lean
 
-`claude.md` must contain only conventions, policies, rationale, and non-obvious rules Claude cannot discover by reading the codebase. Actively remove:
+`AGENTS.md` must contain only conventions, policies, rationale, and non-obvious rules Claude cannot discover by reading the codebase. Actively remove:
 
 - **Structural inventories**: project trees, module tables, workflow lists. Discoverable via `Glob`/`Read`.
 - **Code examples that duplicate source files**: YAML snippets copied from workflows, patterns visible in every module. Reference the source instead.
@@ -182,7 +182,7 @@ Each piece of knowledge has one canonical home, chosen by audience; other locati
 | Developers            | Python docstrings         | Design decisions, trade-offs, "why" explanations.                       |
 | Workflow maintainers  | YAML comments             | Brief "what" + pointer to Python code for "why."                        |
 | Bug reporters         | `.github/ISSUE_TEMPLATE/` | Reproduction steps, version commands.                                   |
-| Contributors / Claude | `claude.md`               | Conventions, policies, non-obvious rules.                               |
+| Contributors / Claude | `AGENTS.md`               | Conventions, policies, non-obvious rules.                               |
 
 **YAML → Python distillation:** migrate lengthy "why" explanations from workflow YAML to Python module/class/constant docstrings (MyST admonitions like ```` ```{note} ````). Trim the YAML comment to a one-line "what" plus a pointer: `# See {package}/{module}.py for rationale.`
 
@@ -218,7 +218,7 @@ Use the longest, most explicit file extension. For YAML, `.yaml` (not `.yml`); l
 
 ### Filenames: lowercase
 
-Use lowercase filenames everywhere. Avoid shouting-case names like `FUNDING.YML` or `README.MD`.
+Use lowercase filenames everywhere. Avoid shouting-case names like `FUNDING.YML` or `README.MD`. The exception is `AGENTS.md`: agent harnesses look the file up by that exact spelling.
 
 ### GitHub exceptions
 
@@ -388,7 +388,7 @@ Every configurable default lives in exactly one place: the canonical config data
 
 ### Source of truth hierarchy
 
-`CLAUDE.md` defines the rules; the codebase and GitHub (issues, PRs, CI logs) are what you measure against them. When they disagree, fix the code to match; if the rules are wrong, fix `CLAUDE.md`.
+`AGENTS.md` defines the rules; the codebase and GitHub (issues, PRs, CI logs) are what you measure against them. When they disagree, fix the code to match; if the rules are wrong, fix `AGENTS.md`.
 
 ### Common maintenance pitfalls
 
@@ -522,7 +522,7 @@ These are my personal rules and my generic coding conventions, loaded on every p
 
 The boundary is one-way. Nothing personal here belongs in a project's instructions file: "push to `main` rather than a scratch branch" assumes admin rights on the remote, "use first-person singular" assumes a solo author, and the commit-authorization rule describes my review habits rather than a project's contribution policy.
 
-The conventions for building `repomatic` itself live in that repository, beside what they govern: `~/code/repomatic/claude.md` holds operation naming and contracts and the rules for bundled agents and skills, and each module, test and workflow states its own rules in its docstring or comments. Read them before adding a job, a CLI command or a bundled asset to any repository.
+The conventions for building `repomatic` itself live in that repository, beside what they govern: `~/code/repomatic/AGENTS.md` holds operation naming and contracts and the rules for bundled agents and skills, and each module, test and workflow states its own rules in its docstring or comments. Read them before adding a job, a CLI command or a bundled asset to any repository.
 
 ## Writing: ASD-STE100 Simplified Technical English
 
@@ -670,7 +670,7 @@ Non-obvious facts about this machine that have caused hard-to-diagnose failures:
 - **`git config diff.noprefix` is `true` here, and it leaks into generated artifacts.** A generated artifact that runs `git diff` must pass `--no-prefix` or `--default-prefix` instead of inheriting the config: verify by rebuilding with `GIT_CONFIG_GLOBAL` and `GIT_CONFIG_SYSTEM` pointed at an empty file. A patch from this machine's `git diff` needs `git apply -p0`: without it the apply fails with `does not exist in index`, which never mentions the prefix.
 - **`git config push.followTags` is `true` here.** A push also sends every annotated tag that the pushed commit reaches and the remote lacks: pass `--no-follow-tags` on a push to a fork and on a hand-built refspec push. On a fork, GitHub rejects those tags as `! [remote rejected] {tag} -> {tag} (permission denied)`, and the push exits 1 although the branch did update.
 - **Claude Code transcript paths use the realpath'd cwd.** A session run from `/tmp/x` writes to `~/.claude/projects/-private-tmp-x/`, and print-mode sessions write a transcript too. The transcript keeps every Write input and tool result verbatim: a scratch file that a restart deleted can come back from it.
-- **File discovery must use `-iname` on this machine.** APFS resolves paths case-insensitively, but `find -name` matches case-sensitively, and these repos store `claude.md` in lowercase. Git pathspecs match case-sensitively too: `git diff -- CLAUDE.md` prints nothing for a tracked `claude.md`, so name the tracked spelling. `ls`, `stat` and `readlink` run through shims that reject BSD flags, print nothing for a regular file, or draw a glyph before every entry: use Python for timestamps and link targets, and never grep `ls` output. `head`, `tail` and `ps` are `colourify` aliases that fail with `no such file or directory: /opt/homebrew/bin/grc` while grc is missing: call `command {tool}`.
+- **File discovery must use `-iname` on this machine.** APFS resolves paths case-insensitively, but `find -name` matches case-sensitively, and these repos spell `AGENTS.md` in uppercase and most other names in lowercase. Git pathspecs match case-sensitively too: `git diff -- agents.md` prints nothing for a tracked `AGENTS.md`, so name the tracked spelling. `ls`, `stat` and `readlink` run through shims that reject BSD flags, print nothing for a regular file, or draw a glyph before every entry: use Python for timestamps and link targets, and never grep `ls` output. `head`, `tail` and `ps` are `colourify` aliases that fail with `no such file or directory: /opt/homebrew/bin/grc` while grc is missing: call `command {tool}`.
 - **The `code` CLI reports success without opening anything.** Under the sandbox, `code {file}` exits 0 and the running VS Code never receives the file. Open editors with a plain `open -a "Visual Studio Code" {file}`, then confirm the app's PID. The `open *` pattern in `sandbox.excludedCommands` runs it outside the sandbox (Claude Code `2.1.284`), only while nothing is chained to it: a trailing `; echo` sends the whole line back in, where `open` fails with `-600 procNotFound`. `pgrep` fails inside the sandbox with `Cannot get process list`: run the PID check with it off.
 - **Three browsers are installed, and Firefox is not.** Launch `open -a Chromium {url}` (the ungoogled-chromium build), `open -a "Tor Browser" {url}` or `open -a Safari {url}`, each as a plain command.
 - **Never retry a signed commit that hangs.** Secretive `4.0.0` shows the Touch ID modal only while one request waits. A second request retracts the modal and moves both into the agent's Pending Requests window. That window opens behind the others or on another display, and no setting turns it off: [maxgoedjen/secretive#842](https://github.com/maxgoedjen/secretive/issues/842) tracks it. A client that gives up leaves its request in the queue. A retry then sends the next request to that window too. A Fork fetch queues there as well: hours-old `git-upload-pack` processes show it. Stop the hung commit with SIGTERM, which lets git remove `.git/index.lock`, then ask me to clear that window. After that, send one signed commit at a time and wait for each. For a batch, ask me to pick a duration in Secretive's "signed" notification: it keeps the key unlocked for 1 minute to 24 hours. An error ends its request, so one retry is safe after `Couldn't sign message (signer): agent refused operation?` or `communication with agent failed?`. Signing and `%G?` both work inside the sandbox (Claude Code `2.1.284`), which allows the Secretive socket and `~/.ssh/allowed_signers`: keep it on for `git commit`. Its network proxy still breaks an SSH `git push` (`ssh_dispatch_run_fatal: Connection to UNKNOWN port 65535: Broken pipe`, or `This proxy requires authentication, and this client did not offer an authentication method`): push with it off.

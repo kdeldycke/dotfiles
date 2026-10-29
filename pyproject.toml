@@ -22,9 +22,9 @@ include = ["skills", "subagents"]
 #
 # The instructions file is hand-owned, not synced: repomatic dropped its
 # `agent` component and the `agent.location` key, so `include` cannot name it.
-# dotfiles/.agents/AGENTS.md is symlinked to ~/.claude/CLAUDE.md and loads on
-# every project opened from this machine, so a per-repo copy would only
-# duplicate it. The generic conventions live there as hand-owned text, and
+# dotfiles/.agents/global-instruction.md is symlinked to ~/.claude/CLAUDE.md
+# and loads on every project opened from this machine, so a per-repo copy would
+# only duplicate it. The generic conventions live there as hand-owned text, and
 # each downstream repository's instructions file keeps what is specific to it.
 # gitignore.location is left at its default, the repository root, and the file
 # there has to be a real one: git opens in-tree .gitignore, .gitattributes and
@@ -180,14 +180,14 @@ default.extend-words = { astroid = "astroid", certifi = "certifi", oject = "ojec
 default.extend-ignore-re = [ "(?s)<!-- typos:off -->.*?<!-- typos:on -->" ]
 default.extend-ignore-identifiers-re = [
   # error: `alikes` should be `alike`, `likes`
-  #     ╭▸ ./dotfiles/.agents/AGENTS.md:401:400
+  #     ╭▸ ./dotfiles/.agents/global-instruction.md:401:400
   #     │
   # 401 │ …Literal blank look-alikes flatten the same way: an nbsp, braille blank…
   #     ╰╴                    ━━━━━━
   # The second half of "look-alikes". typos checks each side of a hyphen alone.
   "^alikes$",
   # error: `mis` should be `miss`, `mist`
-  #     ╭▸ ./dotfiles/.agents/AGENTS.md:399:38
+  #     ╭▸ ./dotfiles/.agents/global-instruction.md:399:38
   #     │
   # 399 │ - **A regex that stops at whitespace mis-parses paths on macOS.**…
   #     ╰╴                                     ━━━

@@ -180,9 +180,9 @@ $($FIND_CLI 'dotfiles/Library/Application Support' -depth 1 -not -name '\.DS_Sto
     # directory: each lands beside the state Claude Code owns instead of
     # replacing the folder holding it. Two links this loop cannot express are
     # left out and maintained by hand, because it always names a link after its
-    # source: ~/.claude/CLAUDE.md (pointing at .agents/AGENTS.md, a rename) and
-    # ~/.claude/skills (a second link to .agents/skills, already linked into
-    # ~/.agents/skills below).
+    # source: ~/.claude/CLAUDE.md (pointing at .agents/global-instruction.md, a
+    # rename) and ~/.claude/skills (a second link to .agents/skills, already
+    # linked into ~/.agents/skills below).
     #
     # .pi/agent/APPEND_SYSTEM.md is a link inside this repository, to
     # .claude/tropes.md. pi expands no "@" import in AGENTS.md, so the tropes
