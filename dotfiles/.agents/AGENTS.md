@@ -320,7 +320,7 @@ Keep `__init__.py` minimal (easy to overlook): no logic, constants, or re-export
 
 - Import from the root package (`from {package} import cli`), not submodules, when possible.
 - Imports go at the top of the file unless avoiding circular imports. **Never use local imports inside functions**: they hide dependencies and bypass ruff's import sorting.
-- **Version-dependent imports** (like a `tomllib` fallback for Python 3.10) go after all normal imports but before the `TYPE_CHECKING` block, so ruff can sort the normal imports above.
+- **Version-dependent imports** (like a `typing_extensions` fallback for `override` below Python 3.12) go after all normal imports but before the `TYPE_CHECKING` block, so ruff can sort the normal imports above.
 
 ### `TYPE_CHECKING` block
 
@@ -334,9 +334,9 @@ Use `collections.abc` and built-in types instead of `typing` imports; `X | Y` no
 
 Omit annotations on locals, loop variables, and assignments when mypy can infer from the right-hand side. Add one only when mypy errors (empty collections needing an element type like `items: list[Package] = []`, ambiguous `None` init, unions mypy can't narrow). Always annotate function parameters and return types.
 
-### Python 3.10 compatibility
+### Minimum Python version
 
-Project supports Python 3.10+. Unavailable syntax: multi-line f-string expressions (3.12+; split into concatenated strings), exception groups / `except*` (3.11+), `Self` type hint (3.11+; use `from typing_extensions import Self`).
+The minimum supported Python is the oldest release that upstream still maintains, listed on https://devguide.python.org/versions/. It is 3.11 until its end of life in October 2027, then 3.12. Not available on 3.11: multi-line f-string expressions (3.12+; split into concatenated strings), the `type` statement and type parameter lists (3.12+; use `TypeAlias` and `TypeVar`), and `@override` (3.12+; use `from typing_extensions import override`).
 
 ### YAML workflows
 
@@ -405,7 +405,7 @@ Patterns that recur across sessions, to watch for proactively:
 - **A regex that stops at whitespace mis-parses paths on macOS.** `Mobile Documents`, `Application Support` and most Library paths contain spaces, so a pattern like `file\.filename=([^ ,]+)` truncates mid-path and its match then fails.
 - **Take a literal from the file, never from the screen.** Tool output can show one character as another (a `/` read as `-`), so do an exact replacement in Python against text read from disk, or anchor the match on text with no ambiguous character. Where one character must be checked, print a control beside it.
 - **An escape typed into an edit tool arrives decoded.** Tool parameters are JSON, so `\u00a0` written into Python source through the Edit tool arrives as a literal non-breaking space, invisible in any diff. Spell its backslash as `\u005c`, since a doubled backslash arrives doubled, or insert the escape from a script, then scan the file for the raw character before committing. Literal blank look-alikes flatten the same way: an nbsp, braille blank or figure space typed into a `write` or `bash` parameter arrived as U+0020. Build such characters with `chr()` and prove the bytes with `hexdump` before trusting the artifact.
-- **Type-checking divergence.** Code that passes `mypy` locally may fail in CI under `--python-version 3.10`; always check the minimum supported version.
+- **Type-checking divergence.** Code that passes `mypy` locally may fail in CI, which passes the [minimum supported Python](#minimum-python-version) as `--python-version`: always check that version.
 - **Trace to root cause before coding a fix.** Audit a bug's scope before writing the patch. If the same pattern appears in multiple places, fix it at the shared layer; if only one call site is affected, check whether the data is on the wrong code path before handling it where it lands.
 - **Check the premise of an instruction before you build on it.** When a command proves it false, as for a redirect of an address the site never served, say so first and do only the work that does not rest on it.
 - **Three failed fix attempts end the loop.** After three turns of "still broken", stop editing code: name the assumption the diagnosis rests on, ask one diagnostic question, and wait. Patching a wrong diagnosis repeatedly is the failure mode, not slowness.
