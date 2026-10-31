@@ -55,7 +55,7 @@ This is not covered by `contributing.md`. Look for these signals. **Any two, dra
 - The PR body or issue text reads as LLM output (generic phrasing, no specific knowledge of the list's content, template-like structure beyond the actual template).
 - The PR explicitly discloses AI generation (e.g., "Generated with Claude Code", "Created by Copilot").
 - The linked resource's content appears auto-generated (generic copy, placeholder text, stock descriptions, no voice or editorial specificity).
-- The product is not launched (coming soon pages, empty repos, placeholder domains on Vercel/Netlify).
+- The product is not launched (coming soon pages, empty repos). A temporary address is a separate hard check: see §8.
 - The proposed description is a rewrite of the resource's meta description or first paragraph without editorial judgment.
 
 See also §9 for contributor and repo provenance signals — these often reinforce the surface-level slop tells above.
@@ -88,6 +88,12 @@ Check the diff (for PRs) against `contributing.md` §§ Formatting and Editorial
 #### 8. Resource quality
 
 - **Launched and functional**: The product or article must exist and be accessible.
+- **Production URL**: The link must resolve, after redirects, to the permanent home of the resource. Content, code, products and services at a temporary, development or preproduction address fail this check, whatever their quality. These addresses count as temporary:
+  - A subdomain that a hosting platform assigns by default, like `*.pages.dev`, `*.workers.dev`, `*.vercel.app`, `*.netlify.app`, `*.surge.sh`, `*.onrender.com`, `*.herokuapp.com`, `*.fly.dev` or `*.web.app`.
+  - A staging marker in the hostname or path (`staging`, `preprod`, `dev`, `preview`, `test`, `qa`, `uat`), `localhost`, or a bare IP address.
+  - A tunnel (`*.ngrok-free.app`, `*.trycloudflare.com`), or a playground link (StackBlitz, CodeSandbox, Replit) in place of a repository.
+
+  GitHub Pages, GitLab Pages and Read the Docs are the permanent home of many open-source projects. Accept them for the documentation or the articles of a project, but not for a commercial product. When the address is the only failed check, ask the contributor for the canonical one on their own domain. Suggest the source repository instead when it meets the baseline in `contributing.md`.
 - **Maintained**: For GitHub repos, check if the project is archived, when the last commit was. Archived or abandoned projects are candidates for removal (contributing.md FAQ "Why removes inactive GitHub projects?"). Check for forks or reboots before recommending deletion.
 - **Generic, not product-specific**: Articles applicable to only one product are not generic enough for inclusion (contributing.md "Why my link was rejected?").
 - **Original, not a rehash of its own sources**: Trace the candidate to its primary source before scoring it. Look for a republication notice ("Originally published at ..."), then diff the body against whatever it links under "further reading" or references. A page that paraphrases Wikipedia row by row without citing it adds an unstable hop and no data: prefer the primary source, and write the software framing into the description yourself, which `contributing.md` section Formatting licenses as "smart editorializing". Same test picks the canonical URL: the author's own domain beats a syndication, an aggregator or a mirror.
@@ -116,7 +122,7 @@ This is not covered by `contributing.md`. Use to filter vibe-coded throwaway pro
 
 **Cross-checks**:
 
-- Demo URLs on disposable hosts (`*.surge.sh`, `*.vercel.app`, `*.netlify.app`, GitHub Pages) as **the product domain** itself, not just a docs deploy.
+- Product domain on a temporary or platform-assigned host (§8 "Production URL"). Besides the hard reject, it counts as one signal toward the §3 two-signal bar.
 - Future-dated "verified" / "as of" stamps in the resource content that don't match the git history.
 - Numerical claims in the PR body (counts of supported items, languages, integrations) that don't match the actual product page — inconsistencies are a generation-time tell, not a copywriting choice.
 
@@ -134,7 +140,7 @@ After running all checks, provide one of:
 
 - **ACCEPT**: All checks pass. Suggest merging (possibly with minor formatting fixes).
 - **ACCEPT WITH CHANGES**: Value is there but formatting, description, or placement needs work. List the specific changes needed.
-- **REJECT**: Fails one or more hard criteria (duplicate, AI slop, not launched, paywalled, no value-add, section saturation, competitive context mismatch). Draft a rejection comment.
+- **REJECT**: Fails one or more hard criteria (duplicate, AI slop, not launched, temporary URL, paywalled, no value-add, section saturation, competitive context mismatch). Draft a rejection comment.
 - **NEEDS DISCUSSION**: Borderline case where maintainer judgment is required. Summarize the arguments for and against.
 
 After the verdict, propose 2-3 short, ready-to-post comments that the maintainer can copy-paste to explain the decision to the author. Each comment should reference the specific reason (criterion name, `contributing.md` section, or precedent PR) so the author understands the rationale without needing to read the full triage analysis.
@@ -152,6 +158,8 @@ When drafting a rejection or request-for-changes comment:
 - Stay polite and constructive. Contributors may improve and resubmit.
 
 - For AI slop: keep it brief. State the specific tells (e.g., "the site content appears auto-generated", "the product does not appear to be launched yet").
+
+- For a temporary URL: name the address type (a platform default or preview domain). Ask for the canonical address only when no other check failed, so the contributor does not resubmit for nothing.
 
 - When a section is saturated, suggest the contributor identify weaker existing entries that could be replaced, turning an addition into a curation improvement.
 
