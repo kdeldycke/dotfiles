@@ -210,6 +210,8 @@ Example data everywhere (docs, docstrings, comments, workflows, fixtures) must b
 
 Identify each model, tool and runtime in a benchmark or a measured claim by its version or release date. Do not write the date of the run: the version tells the reader whether the result still applies.
 
+Compare a speedup against the old code in one interleaved run, median of 10 or more samples: a baseline taken earlier in the session carries other load.
+
 ## File naming conventions
 
 ### Extensions: prefer long form
