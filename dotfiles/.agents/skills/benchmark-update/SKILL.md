@@ -174,7 +174,7 @@ For each project in the benchmark, check via `gh api`:
 
 Classify each as: **active**, **slow but maintained**, **stale** (no activity in 12+ months), or **abandoned/archived**.
 
-Stale or abandoned projects should be moved to the "Excluded projects" section with a `{note}` admonition explaining why.
+Stale or abandoned projects should be moved to the "Excluded projects" section with a `{note}` admonition explaining why. Drop such a project from `[tool.repomatic.metrics] subjects` as well, delete its rows from the metrics store, and redraw the charts offline with `repomatic sample-metrics --no-forward --no-reconstruct`.
 
 #### 2. Feature matrix accuracy
 
@@ -202,7 +202,7 @@ Search for projects in the same space with significant GitHub stars not already 
 
 #### 5. Badge health
 
-Verify the GitHub `owner/repo` in badge URLs matches the current canonical location. Repos get transferred. Check via `gh api repos/{owner}/{repo} --jq '.full_name'`.
+Verify the GitHub `owner/repo` in badge URLs matches the current canonical location. Repos get transferred. Check via `gh api repos/{owner}/{repo} --jq '.full_name'`. Follow a transfer in `[tool.repomatic.metrics] subjects` and in the rows of the metrics store, which key each subject by its URL.
 
 #### 6. Star history chart
 
