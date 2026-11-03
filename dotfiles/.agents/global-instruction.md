@@ -598,7 +598,7 @@ A documentation outline is a structure too: before moving sections across a page
 
 Never run `git commit`, `git push`, `gh pr create`, or any other command that creates a commit, pushes to a remote, or opens a pull request unless I have explicitly authorized that specific action in the current conversation. Staging changes, drafting commit messages, and showing diffs are fine; the actual commit, push, or PR creation requires my explicit go-ahead each time. A prior authorization does not carry over to later actions.
 
-**A bare "commit" covers this session's repository alone.** For work in a sibling checkout too, ask before you stage there: the harness denies that commit as `[Unrequested Commit in a Connected App]` (Claude Code `2.1.284`).
+**A bare "commit" covers this session's repository alone.** For work in a sibling checkout, hand me one `! git -C {repo} commit --message '…' -- {paths}` line per repository: the harness denies that commit as `[Unrequested Commit in a Connected App]`, even after I approve it (Claude Code `2.1.284`).
 
 **Check `git log origin/<branch>..HEAD` before rewriting any commit, and rewrite only what it lists.** A commit already on the remote is mine to rewrite, not yours, whatever the improvement on offer: re-signing an unsigned one, correcting a message, splitting a bundle. Report it and let me decide. I push mid-session without announcing it, so a commit you made minutes ago may already be upstream, and "I only just wrote it" is not evidence that it is local. The recovery, when you have already rewritten one, is `git reset --mixed origin/<branch>`, which restores my history and keeps your later work in the tree; never force-push to make the remote match instead.
 
@@ -660,7 +660,7 @@ Read what ran on a commit with `gh api 'repos/{owner}/{repo}/actions/runs?head_s
 
 `gh issue view {n} --comments` prints only the comments when its output is not a terminal, so the first commenter reads as the reporter. Read the issue itself with a plain `gh issue view {n}`.
 
-- **A pasted multi-line command breaks at every backslash continuation: this terminal appends trailing whitespace after the `\`, so it escapes the space instead of the newline and zsh runs each fragment as its own command.** Hand over one long line, or a script file under `/private/tmp` invoked by a short path, and never a `\`-continued block.
+- **A pasted multi-line command breaks at every backslash continuation: this terminal appends trailing whitespace after the `\`, so it escapes the space instead of the newline and zsh runs each fragment as its own command.** Hand over one long line, or a script file under `/private/tmp` invoked by a short path, and never a `\`-continued block. A `!` paste whose first line is empty reaches you as a message and runs nothing: confirm its effect before you report it, and ask me to paste again with `!` as the first character.
 
 ## Local environment
 
