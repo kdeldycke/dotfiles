@@ -186,6 +186,13 @@ default.extend-ignore-identifiers-re = [
   #     ╰╴                    ━━━━━━
   # The second half of "look-alikes". typos checks each side of a hyphen alone.
   "^alikes$",
+  # error: `cripts` should be `crypts`, `scripts`
+  #     ╭▸ ./dotfiles/.agents/global-instruction.md:670:46
+  #     │
+  # 670 │ - **`~/.gitignore_global` ignores every `[Ss]cripts` directory, in every repository.** A new repository that tracks a `scripts/` fold…
+  #     ╰╴                                             ━━━━━━
+  # The tail of the gitignore glob `[Ss]cripts`. typos checks the letters after the bracket as a word of their own.
+  "^cripts$",
   # error: `mis` should be `miss`, `mist`
   #     ╭▸ ./dotfiles/.agents/global-instruction.md:399:38
   #     │
