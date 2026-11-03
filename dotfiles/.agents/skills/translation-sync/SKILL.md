@@ -122,11 +122,11 @@ Flag files missing the badge block or with mismatched language entries.
 - Section ordering in the translation must match the English source.
 - When drafting translations, match the register and terminology of the existing translated content. Do not impose a different style.
 - For `awesome-falsehood`, sections are in alphabetical order (per `contributing.md`). Verify the translation preserves this.
-- The PR template checklist item "I applied the changes to all translatations in `readme.*.md` files" is the contributor-facing enforcement. This skill is the maintainer-facing verification.
+- The PR template checklist item "I applied the changes to all translations in `readme.*.md` files" is the contributor-facing enforcement. This skill is the maintainer-facing verification.
 
 ### Next steps
 
 Suggest the user run:
 
 - `/awesome-triage` to check if any open PRs need translation updates before merging.
-- `/repomatic-audit` to verify broader upstream/downstream alignment.
+- `/repomatic-upgrade` to verify broader upstream/downstream alignment.

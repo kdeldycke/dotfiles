@@ -8,6 +8,12 @@ compatibility: 'Designed for Claude Code. Recommended model: Sonnet.'
 
 Monitor the `tests.yaml`, `lint.yaml`, `autofix.yaml`, `docs.yaml`, and `release.yaml` (Nuitka binary matrix, on projects that enable it) workflows in a fix-verify loop until all stable matrix variations pass and type-checking is clean.
 
+## Context
+
+!`[ -f repomatic/__init__.py ] && echo "CANONICAL_REPO" || echo "DOWNSTREAM"`
+
+!`grep -rhoE 'kdeldycke/repomatic/[^@ ]+@[0-9a-f]{40} # v[0-9.]+' .github/workflows 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+$' | sort -u | sed 's/^/WORKFLOW_PIN=/'`
+
 ## Invocation
 
 This skill involves repeated `gh`, `git`, `uv run pytest`, `git commit`, and `git push` calls. Run with `--dangerously-skip-permissions` to avoid manual approval on each step. Sonnet is recommended: the task is mechanical (fetch logs, match patterns, edit code, commit) and doesn't need deep reasoning:
@@ -19,9 +25,16 @@ $ claude --dangerously-skip-permissions --model sonnet /babysit-ci
 > [!WARNING]
 > `--dangerously-skip-permissions` bypasses every permission prompt for the whole session: only use it in an environment you trust, ideally a sandbox or disposable checkout, never against an unfamiliar repository or untrusted input.
 
-Because this loop runs autonomously without human review, **every commit carries a `Co-Authored-By: Claude <noreply@anthropic.com>` trailer by default** so unattended changes stay traceable, including where a project `CLAUDE.md` or a global `~/.claude/CLAUDE.md` says nothing about commit attribution. The default yields to one thing: an explicit standing rule from the repository's maintainer against AI attribution, which outranks it because the trailer lands in their permanent history. A parent skill (like `/repomatic-ship`) spawning this loop does not by itself relax the requirement, but an exemption that skill passes down does, and it binds every commit made from that point on.
+Because this loop runs autonomously without human review, **every commit carries a `Co-Authored-By: Claude <noreply@anthropic.com>` trailer by default** so unattended changes stay traceable, including where a project `AGENTS.md` or a global `~/.claude/CLAUDE.md` says nothing about commit attribution. The default yields to one thing: an explicit standing rule from the repository's maintainer against AI attribution, which outranks it because the trailer lands in their permanent history. A parent skill (like `/repomatic-ship`) spawning this loop does not by itself relax the requirement, but an exemption that skill passes down does, and it binds every commit made from that point on.
 
 Keep the message itself short: an imperative subject naming the fix, under 72 characters, and **no body at all** unless the commit meets one of three cases. It bundles orthogonal work, a public record holds the context, or it resolves a tracked item (`Closes #N`). A CI fix rarely does: `` Fix Windows path assertion in `test_cache_paths` `` is a complete commit message. The case that recurs here is the link: when the red traces to an upstream bug, a dependency release or a linked discussion, put that URL in the body, since it is the only place the next reader will find why the fix looks the way it does. That body is the URL plus at most one clause naming what it holds, and it is capped hard at two lines and 25 words. Never summarize the linked page, and never record what you measured while diagnosing: a failing assertion, a version a probe reported, the flag that turned out to be the cause. Those belong in a code comment beside the fix.
+
+### Determine invocation method
+
+- If the context above shows `CANONICAL_REPO`, use `uv run --frozen repomatic`: without `--frozen`, an edit to `pyproject.toml` makes the local uv relock `uv.lock`.
+- Otherwise, use `uvx --exclude-newer '{window}' --exclude-newer-package repomatic=P0D --from 'repomatic==X.Y.Z' -- repomatic`, with `X.Y.Z` the `WORKFLOW_PIN` the context shows. Read `{window}` from the `UV_EXCLUDE_NEWER` value of any `.github/workflows/*.yaml`, which `repomatic init` renders from `[tool.repomatic] minimum-release-age`. `--exclude-newer-package` exempts repomatic itself, so a fresh release stays installable while its dependency tree stays gated. The pin keeps the tool registry (`ruff`, `mypy` versions) identical to what CI runs. Drop the `--from` clause only when the context shows no `WORKFLOW_PIN`.
+
+References to `<cmd>` below resolve to one or the other.
 
 ### Yield to the orchestrator that spawned you
 
@@ -40,7 +53,7 @@ Three feedback channels run in parallel after every push, each at a different la
         └─ ruff ───┘              │    YAML, secrets, zizmor)       │
                                   │                                 │
                                   └─ tests.yaml ─────────────────┐  │
-                                      (14 stable + 6 unstable)   │  │
+                                      (stable + unstable jobs)   │  │
                                                                  │  │
  0:30   GATE 1: local done                                       │  │
         fail? ─── yes ──► step 5 (fix now, skip CI)              │  │
@@ -82,22 +95,26 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
 
    Track all five run IDs (`docs.yaml` may have none: its `paths:` filter skips pushes touching nothing docs-relevant). An empty run list for the *other* workflows is not paths-filtering: GitHub can sit on a push event for hours before materializing any run (a 4-hour lag has been observed), so when a freshly pushed SHA shows no runs, keep re-polling instead of concluding the push was filtered, and measure the wait from run creation, not from the push. The `tests.yaml` run exercises the full test matrix; `lint.yaml` runs ruff and mypy over every tracked Python file and lints YAML; `autofix.yaml` runs the mechanical fix jobs (`format-*`, `sync-*`, `update-*`, `fix-typos`, `fix-vulnerable-deps`) and turns red when one *crashes* instead of committing a fix; `docs.yaml` builds and deploys the Sphinx site and runs the broken-links check (an externally cancelled or link-flaky run re-runs cleanly via `gh workflow run docs.yaml --ref <BRANCH>`, no commit needed); `release.yaml` runs the Nuitka binary matrix (dev binaries: an ordinary push rebuilds only the `[tool.repomatic] nuitka.dev-targets` canary subset, while release commits, the weekly `schedule` and `workflow_dispatch` build the full target fleet) — but only on projects with `[tool.repomatic] nuitka.enabled` and a CLI entry point; with Nuitka disabled the per-platform jobs skip on every push, release commits included, and a green `release.yaml` means package build plus dev pre-release sync only. Even with Nuitka enabled, a single push can still skip the matrix: `Metadata.skip_binary_build` (`repomatic/metadata/git.py`) is the authoritative signal, true when the head commit is on a non-code branch, is a user-initiated version-bump commit, or (the common case) its changed files fall entirely outside `Metadata.binary_affecting_paths` — a docs-only commit, say, or a workflow-only one that leaves `release.yaml` and `_release-engine.yaml` alone. `nuitka_matrix` is empty whenever `skip_binary_build` is true. An empty matrix in the logged `metadata=` output of `build / 🧬 Project metadata` does not say which condition fired. Check `skip_binary_build`'s three conditions before asserting why a matrix skipped, since any one of them is enough on its own. All five workflows must pass — see § Autofix job failures and § Nuitka binary build failures in `references/failure-patterns.md` for how to triage them without stalling the loop.
 
-3. **Run local tests while waiting for CI.** Don't idle while polling. Start the full test suite and linters locally in the background immediately:
+3. **Run local tests while waiting for CI.** Don't idle while polling. Start the full test suite and linters locally in the background immediately, each through the Bash tool's background mode (`run_in_background: true`):
 
    ```shell-session
-   $ uv run --frozen --all-extras --group test pytest --no-header -q &
-   $ uv run --group typing repomatic run mypy &
-   $ uv run repomatic run ruff -- check repomatic tests docs &
+   $ uv run --frozen --all-extras --group test pytest --no-header -q
+   $ UV_PROJECT_ENVIRONMENT={scratch}/mypy-venv <cmd> run mypy
+   $ <cmd> run ruff -- check
    ```
 
-   Give `run mypy` no arguments: the tool runner resolves the same file list CI's `lint.yaml` runs it on, so the two cannot diverge. Naming directories instead is what used to make mypy pass locally and fail in CI.
+   Run mypy in an environment synced like CI's lint job, which installs every dependency group. Sync it with `UV_PROJECT_ENVIRONMENT={scratch}/mypy-venv uv sync --frozen --all-extras --all-groups`, with `{scratch}` a directory outside the repository, and sync it again after any change to `uv.lock`. A venv synced with the test groups alone reports each missing type stub as an `import-untyped` error.
+
+   Never append `&` to one of them instead: a non-interactive shell starts a `&` job with `SIGINT` ignored, which fails every test that expects Python's `KeyboardInterrupt` handler.
+
+   Give `run mypy` and `run ruff` no paths: the tool runner then checks the same files CI's `lint.yaml` does, so the two cannot diverge. Naming directories instead is what used to make mypy pass locally and fail in CI.
 
    **Gate 1 (local, ~30s):** if any local check fails, you already have the diagnosis: skip straight to step 5 without waiting for CI.
 
    If local passes, watch CI:
 
    ```shell-session
-   $ uv run repomatic ci-status --branch=<BRANCH> --wait --no-fatal
+   $ <cmd> ci-status --branch=<BRANCH> --wait --no-fatal
    ```
 
    It reads every workflow a push can start (derived from `.github/workflows/`, so its list is wider than the five above), polls in-process at `--interval` (60 seconds by default, which keeps the REST quota intact), prints each run whose verdict changed, and returns the moment a required job fails, or once every run settled and the tip has a run of its own. A matrix job whose name still holds its `${{` template never evaluated, and the report says so. Four traps it settles, so no hand-rolled `jq` has to: a run's own `status` lags its jobs (every monitored workflow can read `queued` while a dozen jobs have already finished, which is indistinguishable from the runner-cap saturation a busy account genuinely hits); a `continue-on-error` probe that crashed hides inside a `success` run conclusion; a run whose `conclusion` is `failure` with *no* failed job is a workflow-level error (an invalid `strategy.matrix` expression, malformed YAML, a missing secret) with no job log to read, which the command flags rather than letting you write off a persistently-red workflow as a known artifact; and a run that was cancelled, or that ran no job, has no failed job and still gives its commit no result, so its verdict reads `cancelled` or `skipped`, never `green`.
@@ -117,7 +134,7 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
 4. **On any CI failure**, cancel the branch's remaining runs to free runners:
 
    ```shell-session
-   $ uv run repomatic cancel-runs --branch=<BRANCH>
+   $ <cmd> cancel-runs --branch=<BRANCH>
    ```
 
    The command spares any run whose head commit opens on `[changelog] Release` or `[changelog] Post-release`, the two commits of a release push. The concurrency groups of `release.yaml` and `tests.yaml` apply the same test. Cancelling a release run costs that version its binaries permanently, so never hand-roll the sweep with `gh run cancel`.
@@ -125,7 +142,7 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
    Then fetch the logs of **all** failed required jobs across the workflows (logs are retained after cancellation):
 
    ```shell-session
-   $ uv run repomatic ci-status --branch=<BRANCH> --no-fatal --failed-logs <DIR>
+   $ <cmd> ci-status --branch=<BRANCH> --no-fatal --failed-logs <DIR>
    ```
 
    One file per failed required job, control sequences stripped, readable the moment the job settled: a failed cell is diagnosed twenty minutes into its slowest sibling's build, since the job-scoped log endpoint answers at once where `gh run view --log-failed` waits for the whole run. Fix them as one batch: different sources surface different issues. Batch only what has *already failed*, never what might still fail. Once every harvested failure is root-caused and fixed, push immediately rather than waiting for undrained cells to surface more: the fresh run supersedes the stale one, and serially waiting out each full matrix is the slow path. Analyze following the [error triage discipline](#error-triage-discipline): stable-job `FAILED`/`AssertionError` lines only. Then match each failure against `references/failure-patterns.md` before fixing anything.
@@ -140,9 +157,9 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
 
    ```shell-session
    $ uv run --frozen --all-extras --group test pytest --no-header -q
-   $ uv run --group typing repomatic run mypy
-   $ uv run repomatic run ruff -- check repomatic tests docs
-   $ uv run repomatic run ruff -- format repomatic tests docs
+   $ UV_PROJECT_ENVIRONMENT={scratch}/mypy-venv <cmd> run mypy
+   $ <cmd> run ruff -- check
+   $ <cmd> run ruff -- format
    ```
 
    **Hard gate:** all four must come back clean before step 6. If a fix introduces new failures not in the original set, the fix is wrong: revert it and try a different approach rather than layering another fix on top.
@@ -176,7 +193,7 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
 
 ### When supersession never lets a run conclude
 
-A busy default branch can cancel the same workflow indefinitely. Every push shares the `${{ github.workflow }}-${{ github.ref }}` concurrency group, so an unrelated commit landing mid-matrix cancels yours, and the next one cancels its replacement. Only a release push escapes it, in `tests.yaml` and `release.yaml`. Three consecutive heads leaving `tests.yaml` cancelled is an ordinary afternoon, not a fault. Dispatching a fresh run does not escape it: a `workflow_dispatch` run joins the same group and is cancelled by the next push like any other.
+A busy default branch can cancel the same workflow indefinitely. Every push shares the `${{ github.workflow }}-${{ github.ref }}` concurrency group, so an unrelated commit landing mid-matrix cancels yours, and the next one cancels its replacement. Only a release push escapes it, in `tests.yaml` and `release.yaml`. Three consecutive heads leaving `tests.yaml` cancelled is an ordinary afternoon, not a fault. Dispatching a fresh run does not escape it: a `workflow_dispatch` run joins the same group and is cancelled by the next push like any other. A `gh run rerun` of an older run joins it too, and cancels the in-flight run of the current head: re-run only once that run is terminal.
 
 A dispatch does settle one case: a version-bump commit, whose subject starts with `[changelog] Bump`, merged right after your push. It cancels your runs, and `tests.yaml` skips the bump commit itself, so `ci-status` reads `cancelled` on your commit. Run `gh workflow run tests.yaml --ref <BRANCH>` once: the dispatched run tests the head, which holds your change.
 

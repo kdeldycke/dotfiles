@@ -28,7 +28,7 @@ If `$ARGUMENTS` are provided, each argument is a local directory path or a GitHu
 
 When no `$ARGUMENTS` are given, the default reference depends on which repo you are in (the `## Context` block reports `CANONICAL_REPO` or `DOWNSTREAM`):
 
-- **`DOWNSTREAM`**: compare this project's `docs/` against the canonical `kdeldycke/repomatic` reference, cloned into a tmpdir with `gh repo clone kdeldycke/repomatic`. This is the "align me with the source of truth" default, mirroring how `/repomatic-audit` treats workflows and configs.
+- **`DOWNSTREAM`**: compare this project's `docs/` against the canonical `kdeldycke/repomatic` reference, cloned into a tmpdir with `gh repo clone kdeldycke/repomatic`. This is the "align me with the source of truth" default, mirroring how `/repomatic-upgrade` audits workflows and configs.
 - **`CANONICAL_REPO`** (you are inside `kdeldycke/repomatic`): comparing against `kdeldycke/repomatic` would diff the repo against itself, so scan the parent directory of the cwd for sibling projects with a `docs/conf.py` and push conventions outward to them instead.
 
 When scanning siblings, filter out forks: check `git remote get-url origin` and skip projects whose upstream repo name doesn't match the directory name (a local `click/` pointing to a fork of `pallets/click`). Focus on the user's own projects.
@@ -50,7 +50,7 @@ For each project, collect (parallelize with sub-Agents when possible). For each 
 - **Theme assets** (agent § `conf.py` hygiene › Theme assets and OpenGraph). Confirm the sidebar logo is Furo's `light_logo`/`dark_logo` **pair** in `html_theme_options`, each name also listed in `html_static_path`, with `html_logo` **unset** — Furo prefers `html_logo` and skips the pair when it is present, so a lingering `html_logo` is drift to report, never the thing to confirm. Confirm `html_favicon = "assets/favicon.svg"`, and that `ogp_image` is `_static/banner-social-<variant>.png` with that PNG also listed in `html_static_path`, never a bare `assets/...` path (`docs/assets/` is not copied into the built site, so that value 404s for social crawlers). An absolute `raw.githubusercontent.com` URL was the earlier rule: it still resolves, so report it as alignment, not as a bug. Flag projects with `sphinxext.opengraph` enabled but no `ogp_image` set. Suggest the user run `/brand-assets` on flagged projects to regenerate or backfill the asset set in one pass.
 - **`sphinx_issues` roles** (agent § Standard extension set). Grep each project for `{issue}` `/`{pr}` ` / `{user}` `/`{commit}` ` (MyST) and `:issue:` `/`:pr:` ` / `:user:` `/`:commit:` ` (reST) across `*.md`, `*.rst`, `*.py`. Flag every occurrence, and recommend an explicit GitHub URL in its place. Once none is left, drop `"sphinx_issues"` from `extensions` in `conf.py`, `"sphinx-issues>=…"` from `[dependency-groups] docs`, and any `issues_github_path` setting unused by other extensions.
 - **`pyproject.toml` docs dependency group**. Compare against what `conf.py` actually imports — flag undeclared imports and declared-but-unimported deps. Don't change version pins unless provably stale (a conditional dep on a Python version below the project's floor; a transitively-constrained loose pin held by a meta-extra like `click-extra[sphinx]`).
-- **`readme.md`**. Compare badge sets and section structure. Flag developer setup held in a `## Development` section or in `claude.md`: it belongs on the `contributing` page (per agent § High-frequency lapses).
+- **`readme.md`**. Compare badge sets and section structure. Flag developer setup held in a `## Development` section or in `AGENTS.md`: it belongs on the `contributing` page (per agent § High-frequency lapses).
 - **Sphinx tests** (agent § Sphinx tests). Look for `tests/sphinx/`, `tests/test_sphinx_*.py`, or `test_sphinx_crossrefs.py`. Note which projects have render-tests and which don't; suggest adopting cross-reference render tests where the docs surface complex `{role}` cross-refs.
 - **Static assets and auto-generated files**. Compare `docs/_static/`, `docs/assets/`, `.rst` files, `docs_update.py`. Hunt for stale `.rst` orphans from past package renames.
 
@@ -94,6 +94,6 @@ These are about *how* you run the audit, not what counts as a violation:
 
 Suggest the user run:
 
-- `/repomatic-audit` for broader workflow and config alignment across the same projects.
+- `/repomatic-upgrade` in each downstream project, for broader workflow and config alignment.
 - `/repomatic-deps` to analyze dependency graphs for projects with stale or divergent docs deps.
 - Opting into the `sphinx-docs` agent (`repomatic init subagents/sphinx-docs`) on any project that drifted significantly — Claude will then auto-load the conventions when working in that repo.

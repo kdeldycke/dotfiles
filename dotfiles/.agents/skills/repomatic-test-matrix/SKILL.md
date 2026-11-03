@@ -76,6 +76,21 @@ A test that reads the matrix's `python-version` axis must also read its `include
 
 The cell cannot see a dependency that another requirement holds above its floor, or a library that the tests replace with a mock. Check those two by hand: the `/repomatic-deps` skill, when present, holds the procedure.
 
+### Test the sdist the way a distribution builds it
+
+A distribution builds from the sdist, outside a git checkout, on the newest dependency releases. To catch what breaks only there, add one `full-include` row that carries `source = "sdist"`, on the newest stable Python of the fastest runner:
+
+```toml
+[tool.repomatic]
+test-matrix.full-include = [
+  { "os" = "ubuntu-26.04-arm", "python-version" = "3.15", "source" = "sdist" },
+]
+```
+
+The `tests` job of the bundled `tests.yaml` then builds and unpacks the sdist, installs it with `uv sync --upgrade`, and runs the suite there. A test that needs the checkout must skip without a `.git` directory: the cell fails on any that does not.
+
+Replay the cell before you add the row. Build the sdist with `uv build --sdist`, unpack it outside the repository, run `uv sync --upgrade --all-extras --group test` there, then the suite with `uv run --frozen`. A `tests.yaml` whose jobs predate the three steps that read `matrix.source` repeats the twin cell: copy them first, with the `if:` conditions of the checkout steps.
+
 ### Select runners by measured speed and workload, not architecture
 
 Measure, do not reason from the chip:

@@ -14,7 +14,7 @@ argument-hint: '[audit|init|add <project>|refresh-badges]'
 
 !`[ -f docs/benchmark.md ] && grep -c '^|' docs/benchmark.md || echo 0`
 
-!`[ -f CLAUDE.md ] && grep -i 'ordering\|benchmark\|comparison' CLAUDE.md | head -5 || echo "No ordering conventions found"`
+!`[ -f AGENTS.md ] && grep -i 'ordering\|benchmark\|comparison' AGENTS.md | head -5 || echo "No ordering conventions found"`
 
 ## Instructions
 
@@ -36,7 +36,7 @@ Fetch these files as reference when building or auditing a benchmark page:
 
 ### Column ordering convention
 
-If `CLAUDE.md` defines a benchmark ordering convention, follow it. Otherwise, place the current project first, its direct dependencies/foundation second, then remaining projects sorted by GitHub stars (descending).
+If `AGENTS.md` defines a benchmark ordering convention, follow it. Otherwise, place the current project first, its direct dependencies/foundation second, then remaining projects sorted by GitHub stars (descending).
 
 ### Creating a benchmark from scratch (`init`)
 

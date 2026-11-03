@@ -16,15 +16,16 @@ argument-hint: '[graph [--level N]|review [all|runtime|dev|policy]|explore [<pac
 
 !`[ -f repomatic/__init__.py ] && echo "CANONICAL_REPO" || echo "DOWNSTREAM"`
 
+!`grep -rhoE 'kdeldycke/repomatic/[^@ ]+@[0-9a-f]{40} # v[0-9.]+' .github/workflows 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+$' | sort -u | sed 's/^/WORKFLOW_PIN=/'`
+
 ## Instructions
 
 You help users understand and maintain their project's dependencies. This skill has four modes: **graph** (visualize the resolved dependency tree), **review** (audit `pyproject.toml` declarations against version policy), **explore** (find unused dependency APIs that could simplify existing code), and **modernize** (refactor code to adopt features from recently-upgraded dependencies, applying the changes).
 
 ### Determine invocation method
 
-- If the context above shows `CANONICAL_REPO`, use `uv run repomatic`.
-- Otherwise, use `uvx -- repomatic`.
-- Gate the `uvx` form with the supply-chain cooldown: `uvx --exclude-newer '{window}' --exclude-newer-package repomatic=P0D -- repomatic`. Read `{window}`, here and in every command below, from the `UV_EXCLUDE_NEWER` value of any `.github/workflows/*.yaml`, which `repomatic init` renders from `[tool.repomatic] minimum-release-age`. `--exclude-newer-package` exempts repomatic itself, so a fresh release stays installable while its dependency tree stays gated.
+- If the context above shows `CANONICAL_REPO`, use `uv run --frozen repomatic`: without `--frozen`, an edit to `pyproject.toml` makes the local uv relock `uv.lock`.
+- Otherwise, use `uvx --exclude-newer '{window}' --exclude-newer-package repomatic=P0D --from 'repomatic==X.Y.Z' -- repomatic`, with `X.Y.Z` the `WORKFLOW_PIN` the context shows. Read `{window}`, here and in every command below, from the `UV_EXCLUDE_NEWER` value of any `.github/workflows/*.yaml`, which `repomatic init` renders from `[tool.repomatic] minimum-release-age`. `--exclude-newer-package` exempts repomatic itself, so a fresh release stays installable while its dependency tree stays gated. The pin runs `update-dep-graph` at the version the `update-dep-graph` job runs, so a local graph does not churn against the next CI refresh. Drop the `--from` clause only when the context shows no `WORKFLOW_PIN`.
 
 ### Mode selection
 
@@ -62,7 +63,7 @@ With `[tool.repomatic] dependency-graph.update = false`, the `update-dep-graph` 
 
 ### Mechanical layer
 
-`<cmd> lint-deps` decides everything readable from `pyproject.toml` alone: upper bounds, missing specifiers, unsorted lists, type stubs outside the `typing` group, floors with no comment above them, and floor comments running past `[tool.repomatic] lint-deps.comment-word-threshold` words (40 by default). Run it first and let it own those rows. CI runs it from the release lane's `lint-deps` job (`_release-build.yaml`, reached through `release.yaml`), which fires on every push but annotates with `--no-fatal` until a release commit makes the *shippability* findings fatal. These policy rows never block either way, so no CI gate will catch them for you.
+`<cmd> lint-deps` decides everything readable from `pyproject.toml` and `uv.lock`: upper bounds, missing specifiers, extras that install nothing, unsorted lists, type stubs outside the `typing` group, floors with no comment above them, and floor comments running past `[tool.repomatic] lint-deps.comment-word-threshold` words (40 by default). Run it first and let it own those rows. CI runs it from the release lane's `lint-deps` job (`_release-build.yaml`, reached through `release.yaml`), which fires on every push but annotates with `--no-fatal` until a release commit makes the blocking *shippability* findings fatal. A floor inside the cooldown blocks only in `[project]` dependencies and extras, which reach the published metadata. In a dependency group, it stays a warning. These policy rows never block either way, so no CI gate will catch them for you.
 
 What is left is the part no parser settles, and it is the reason this mode exists: whether a floor is **justified** by the APIs the code actually calls, whether a comment is **stale or weak**, and whether a rationale **contradicts** its conditional marker. Spend the review there.
 
@@ -128,12 +129,12 @@ These conventions are derived from the `pyproject.toml` files across all `kdeldy
 #### General rules
 
 11. **No upper bounds** (`<`, `<=`, `!=`, `~=` that implies an upper bound). The only exception is conditional markers like `python_version<'3.11'`.
-12. **Extras syntax** is fine: `"coverage[toml]>=7.11"`.
+12. **Extras syntax** is fine: `"pytest-xdist[psutil]>=3.7"`.
 13. **One dependency per line** for readable diffs. Short groups that fit on one line are acceptable — the `format-pyproject` job normalizes layout automatically.
 
 ### Audit procedure
 
-Read the full `pyproject.toml`. `lint-deps` already reports the specifier style, missing comments, ordering, bare dependencies and misplaced type stubs, so read its output rather than re-deriving them. For each dependency entry, check what it cannot:
+Read the full `pyproject.toml`. `lint-deps` already reports the specifier style, missing comments, ordering, bare dependencies, empty extras and misplaced type stubs, so read its output rather than re-deriving them. For each dependency entry, check what it cannot:
 
 | Check                     | What to flag                                                                                                                                                    |
 | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -325,7 +326,7 @@ The usage catalog of step 1 also shows when the project uses a dependency so lit
    - Failing that, find the last release tag (`git tag --sort=-v:refname | head -1`) and diff the lockfile against it (`git diff <tag> -- uv.lock`), reading the version pairs.
    - For a single named package, read its locked version and the `pyproject.toml` floor.
 
-2. **Read each changelog for the delta.** Fetch the release notes covering that version range from the link in the bump table (GitHub releases via `gh api repos/{owner}/{repo}/releases`, or `WebFetch` on the compare URL; the PyPI project page otherwise). Extract only what is **new or changed** in the range: added public APIs, fixed bugs our code works around, and deprecations of APIs we still call. **Degrade gracefully:** if `WebFetch` is unavailable and the package is not on GitHub, fall back to your own knowledge of the library's release history and lower your confidence accordingly.
+2. **Read each changelog for the delta.** Fetch the release notes covering that version range from the link in the bump table (GitHub releases via `gh api repos/{owner}/{repo}/releases`, or `WebFetch` on the compare URL; the PyPI project page otherwise). A release body that only links to a docs page, as Sphinx's does, has its notes in the repository: read the changelog file at the tag with `gh api 'repos/{owner}/{repo}/contents/{file}?ref={tag}' -H "Accept: application/vnd.github.raw"`. Extract only what is **new or changed** in the range: added public APIs, fixed bugs our code works around, and deprecations of APIs we still call. **Degrade gracefully:** if `WebFetch` is unavailable and the package is not on GitHub, fall back to your own knowledge of the library's release history and lower your confidence accordingly.
 
 3. **Map deltas to our code.** For each new or changed item, grep the source tree (not tests) for code it touches, reusing the candidate patterns and false-positive filters from [Explore mode](#explore-mode):
 
@@ -353,4 +354,4 @@ Suggest the user run:
 
 - `/repomatic-deps review all` to audit version floors and specifier policy.
 - `/repomatic-deps modernize` after a `sync-uv-lock` PR lands, to fold the freshly-upgraded dependencies' new features into the code.
-- `/repomatic-audit` for a comprehensive alignment check beyond dependencies.
+- `/repomatic-upgrade` for an alignment check beyond dependencies, in a downstream repository.

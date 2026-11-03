@@ -14,6 +14,8 @@ argument-hint: '[add|check|fix|consolidate [VERSION]|VERSION]'
 
 !`[ -f repomatic/__init__.py ] && echo "CANONICAL_REPO" || echo "DOWNSTREAM"`
 
+!`grep -rhoE 'kdeldycke/repomatic/[^@ ]+@[0-9a-f]{40} # v[0-9.]+' .github/workflows 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+$' | sort -u | sed 's/^/WORKFLOW_PIN=/'`
+
 ## Instructions
 
 You help users manage their `changelog.md` file. See § Style rules below for how an entry must read.
@@ -24,9 +26,8 @@ The `changelog.yaml` workflow's `fix-changelog` job runs `lint-changelog --fix` 
 
 ### Determine invocation method
 
-- If the context above shows `CANONICAL_REPO`, use `uv run repomatic`.
-- Otherwise, use `uvx -- repomatic`.
-- Gate the `uvx` form with the supply-chain cooldown: `uvx --exclude-newer '{window}' --exclude-newer-package repomatic=P0D -- repomatic`. Read `{window}` from the `UV_EXCLUDE_NEWER` value of any `.github/workflows/*.yaml`, which `repomatic init` renders from `[tool.repomatic] minimum-release-age`. `--exclude-newer-package` exempts repomatic itself, so a fresh release stays installable while its dependency tree stays gated.
+- If the context above shows `CANONICAL_REPO`, use `uv run --frozen repomatic`: without `--frozen`, an edit to `pyproject.toml` makes the local uv relock `uv.lock`.
+- Otherwise, use `uvx --exclude-newer '{window}' --exclude-newer-package repomatic=P0D --from 'repomatic==X.Y.Z' -- repomatic`, with `X.Y.Z` the `WORKFLOW_PIN` the context shows. Read `{window}` from the `UV_EXCLUDE_NEWER` value of any `.github/workflows/*.yaml`, which `repomatic init` renders from `[tool.repomatic] minimum-release-age`. `--exclude-newer-package` exempts repomatic itself, so a fresh release stays installable while its dependency tree stays gated. The pin keeps `lint-changelog` and the bundled `mdformat` identical to the versions CI runs. Drop the `--from` clause only when the context shows no `WORKFLOW_PIN`.
 
 ### Argument handling
 

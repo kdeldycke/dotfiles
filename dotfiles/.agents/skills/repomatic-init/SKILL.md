@@ -20,7 +20,7 @@ You help users bootstrap a repository to use the reusable GitHub Actions workflo
 
 ### Determine invocation method
 
-- If the context above shows `CANONICAL_REPO`, use `uv run repomatic init`.
+- If the context above shows `CANONICAL_REPO`, use `uv run --frozen repomatic init`: without `--frozen`, an edit to `pyproject.toml` makes the local uv relock `uv.lock`.
 - Otherwise, use `uvx -- repomatic init`.
 - Gate the `uvx` form with the supply-chain cooldown: `uvx --exclude-newer '{window}' --exclude-newer-package repomatic=P0D -- repomatic`. Read `{window}` from the `UV_EXCLUDE_NEWER` value of any `.github/workflows/*.yaml`, which `repomatic init` renders from `[tool.repomatic] minimum-release-age`. With no workflow yet, read that key from `pyproject.toml`, and ask the user when it is unset. `--exclude-newer-package` exempts repomatic itself, so a fresh release stays installable while its dependency tree stays gated.
 
@@ -39,4 +39,4 @@ You help users bootstrap a repository to use the reusable GitHub Actions workflo
 
 Suggest the user run:
 
-- `/repomatic-audit` to check the generated files against upstream conventions.
+- `/repomatic-upgrade` to check the generated files against upstream conventions.
