@@ -16,6 +16,10 @@ This file holds only the rules specific to this repository. The generic conventi
 
 - **Nativ's Configure for Pi drops three hand-added `compat` keys from `dotfiles/.pi/agent/models.json`: `supportsFinishReason`, `maxTokensField` and `thinkingFormat`.** After a Configure, read `git diff -- dotfiles/.pi/agent/models.json`, keep the new model list and restore each key the diff shows as removed.
 
+  ```{todo}
+  Remove `maxTokensField` from `dotfiles/.pi/agent/models.json` and from this rule once Nativ's bundled mlx-vlm server reads `max_completion_tokens`, which pi sends by default. The fix is [Neywa-Labs/mlx-vlm#2484](https://github.com/Neywa-Labs/mlx-vlm/pull/2484), merged after mlx-vlm `0.7.11`. To check, search `mlx_vlm/server/request_normalization.py` under `/Applications/Nativ.app/Contents/Frameworks/NativServerKit.framework/Versions/A/Resources/mlx-vlm-server/` for `max_completion_tokens`.
+  ```
+
 ## pi upgrades
 
 - **The first interactive start of a new pi release rewrites `lastChangelogVersion` in `dotfiles/.pi/agent/settings.json`, so the previous version is the one at `HEAD`.** Read the newer `CHANGELOG.md` sections in `/opt/homebrew/opt/pi-coding-agent/libexec/lib/node_modules/@earendil-works/pi-coding-agent/`, validate the pi config files against the `schemas/` there, and re-check each claim that `git grep -n -E 'pi .?[0-9]+\.[0-9]+\.[0-9]+'` finds stamped with an older version. Keep each stamp on one line, or that grep misses it.
