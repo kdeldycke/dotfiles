@@ -661,7 +661,7 @@ Read what ran on a commit with `gh api 'repos/{owner}/{repo}/actions/runs?head_s
 
 `gh issue view {n} --comments` prints only the comments when its output is not a terminal, so the first commenter reads as the reporter. Read the issue itself with a plain `gh issue view {n}`.
 
-- **A pasted multi-line command breaks at every backslash continuation: this terminal appends trailing whitespace after the `\`, so it escapes the space instead of the newline and zsh runs each fragment as its own command.** Hand over one long line, or a script file under `/private/tmp` invoked by a short path, and never a `\`-continued block. A `!` paste whose first line is empty reaches you as a message and runs nothing: confirm its effect before you report it, and ask me to paste again with `!` as the first character.
+- **A pasted multi-line command breaks at every backslash continuation: this terminal appends trailing whitespace after the `\`, so it escapes the space instead of the newline and zsh runs each fragment as its own command.** Hand over one long line, or a script file under `/private/tmp` invoked by a short path, and never a `\`-continued block. A `!` paste whose first character is not `!` reaches you as a message and runs nothing, like one opening on an empty line or on the indent of a list item: never indent a `!` line you hand me, confirm its effect before you report it, and ask me to paste again with `!` as the first character.
 
 ## Local environment
 
