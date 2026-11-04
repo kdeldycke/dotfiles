@@ -68,6 +68,9 @@
     # Do not keep backup files around after a successful merge.
     keepBackup = false
 [branch]
+    # Track the start point only for a branch of the same name. git push then
+    # sends a branch created from upstream/master to origin.
+    autoSetupMerge = simple
     autosetuprebase = remote
     # Show most recently changed branches first.
  	sort = -committerdate
