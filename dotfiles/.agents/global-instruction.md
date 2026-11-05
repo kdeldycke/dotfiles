@@ -206,6 +206,10 @@ Enable the extension where it is missing (`sphinx.ext.todo` plus `todo_include_t
 
 Example data everywhere (docs, docstrings, comments, workflows, fixtures) must be domain-neutral: cities, weather, fruits, animals, recipes. Do not reference the project, software engineering concepts, or package metadata. The reader should understand the example without knowing what the project is.
 
+### Generated content speaks for itself
+
+Prose around a generated table or list says why the reader cares, in one sentence at most. Never restate what it shows, how it is computed or how it refreshes: link the docs of the mechanism instead.
+
 ### Measurements are timeless
 
 Identify each model, tool and runtime in a benchmark or a measured claim by its version or release date. Do not write the date of the run: the version tells the reader whether the result still applies.
