@@ -24,7 +24,6 @@ The loop commits and pushes on every iteration. Get the user's explicit go-ahead
 
 - **Mark it temporary in line one.** The workflow's first comment says `TEMPORARY probe workflow, to be deleted once <question> is answered`. Name the file `<subject>-probe.yaml`.
 - **Trigger on `push` with a `paths:` filter covering the workflow file AND the code under test.** A probe validating `mymodule.py` must re-run when `mymodule.py` changes, or code iterations silently test nothing.
-- **Run on the runner label of the job the probe stands in for.** Images and architectures differ in network path and preinstalled tools, so a measurement taken on `ubuntu-26.04` can disagree with a job that runs on `ubuntu-26.04-arm`.
 - **Cooldown rules apply.** Installs from live registries carry the repository's cooldown (`UV_EXCLUDE_NEWER`, `NPM_CONFIG_MIN_RELEASE_AGE` in the workflow `env:`); distro archives (`apt-get`, `apk`) are out of scope by design. Pin actions by SHA and tools by version, copied from an existing workflow.
 - **Hard gates, not eyeballs.** Every claim becomes a `grep -q` (or `test -e`, exit-code check) against captured output: `command > out.txt 2>&1 || true` then grep. A step that only prints is a diagnostic, not a validation, and belongs in the run only while a question is open.
 - **Negative gates too.** Assert the behavior does NOT fire where it must not (`if grep -q ...; then exit 1; fi`), or the probe proves half the contract.
