@@ -127,7 +127,7 @@ Waterfall for every merged PR, most authoritative source first:
 Systematic corrections the raw waterfall gets wrong:
 
 - **`Release vX.Y.Z` PRs merge after their own tag ships**, so containment lands them one release late. Trust the version in the title.
-- **Branch-sync PRs near release boundaries**: when a live milestone is already set, it usually encodes maintainer intent better than containment. Trust live.
+- **Branch-sync PRs take the milestone of the PRs they carry**, even over a live milestone. A sync PR merges one long-lived branch into another, like `stable` into `main`. Containment, dates and hand-set milestones all misplace it near a release. List the carried PRs with `git log --oneline {merge_commit}^1..{merge_commit}^2`, and skip any nested sync PR among them. Flag the sync PR for review when its carried PRs span several milestones.
 - **Changelog-vs-live conflicts get individual review**: wording like "completing the partial fix from {pr}`N`" proves N shipped *earlier* than the section citing it.
 - Closed-unmerged PRs get **no milestone**: nothing shipped.
 
