@@ -22,6 +22,8 @@ The two formats disagree on five points this script resolves:
 3. Claude Code records Anthropic usage field names. pi records `Usage` with
    `input`/`output`/`cacheRead`/`cacheWrite` plus a `cost` breakdown. Rates
    come from the pi-ai model catalogue when it is reachable, else cost is zero.
+   A reachable catalogue can still list no cost for a model: that model costs
+   zero too, and the report names it.
 4. These models' reasoning arrives encrypted: the thinking block carries an
    empty text field and only a signature blob, and Claude Code persists that
    verbatim (older transcripts keep readable thinking text, so the emptiness
@@ -126,11 +128,16 @@ def pi_install_root() -> Path | None:
     return None
 
 
-def model_rates(provider: str, model_id: str) -> dict | None:
-    """Return per-million-token cost rates from the bundled pi-ai catalogue."""
+def model_rates(provider: str, model_id: str) -> tuple[dict | None, bool]:
+    """Return `(rates, reachable)` from the bundled pi-ai catalogue.
+
+    `reachable` is False when the catalogue cannot be read at all. Rates is
+    None with `reachable` True when the catalogue is fine but lists no cost
+    for the model.
+    """
     root = pi_install_root()
     if root is None:
-        return None
+        return None, False
     catalog = (
         root
         / "node_modules"
@@ -142,17 +149,17 @@ def model_rates(provider: str, model_id: str) -> dict | None:
         / f"{provider}.json"
     )
     if not catalog.is_file():
-        return None
+        return None, False
     try:
         payload = json.loads(catalog.read_text(encoding="UTF-8"))
     except (OSError, json.JSONDecodeError):
-        return None
+        return None, False
     for api_models in payload.values():
         model = api_models.get(model_id) if isinstance(api_models, dict) else None
         cost = model.get("cost") if isinstance(model, dict) else None
         if isinstance(cost, dict):
-            return cost
-    return None
+            return cost, True
+    return None, True
 
 
 def build_usage(raw: dict, rates: dict | None) -> dict:
@@ -335,7 +342,13 @@ class SessionWriter:
 
 def convert(rows: list[dict]) -> tuple[list[dict], dict]:
     """Return pi session entries and a conversion report for `rows`."""
-    report: dict = {"skipped": {}, "dropped": 0, "tools": {}}
+    report: dict = {
+        "skipped": {},
+        "dropped": 0,
+        "tools": {},
+        "rates_missing": [],
+        "catalog_unreachable": False,
+    }
 
     session_id = next((r["sessionId"] for r in rows if r.get("sessionId")), None)
     cwds = [r["cwd"] for r in rows if isinstance(r.get("cwd"), str)]
@@ -447,7 +460,12 @@ def convert(rows: list[dict]) -> tuple[list[dict], dict]:
         provider = "anthropic"
         model_id = group["members"][0]["message"].get("model", "unknown")
         if model_id not in rates_cache:
-            rates_cache[model_id] = model_rates(provider, model_id)
+            rates, reachable = model_rates(provider, model_id)
+            if not reachable:
+                report["catalog_unreachable"] = True
+            elif rates is None and model_id not in report["rates_missing"]:
+                report["rates_missing"].append(model_id)
+            rates_cache[model_id] = rates
         stop_reason = next(
             (
                 m["message"].get("stop_reason")
@@ -609,10 +627,16 @@ def main() -> int:
     print(f"  tool results: {report['tools']}")
     print(f"  dropped rows: {report['dropped']} (no content pi can render)")
     print(f"  skipped row types: {report['skipped']}")
-    if cost:
-        print(f"  cost: ${cost:.4f}")
-    else:
+    if report["catalog_unreachable"]:
         print("  cost: not computed (pi-ai catalogue unreachable)")
+    else:
+        print(f"  cost: ${cost:.4f}")
+        if report["rates_missing"]:
+            print(
+                "  no rates for "
+                + ", ".join(report["rates_missing"])
+                + " in the pi-ai catalogue: their usage costs $0"
+            )
     if args.trash_source:
         artifacts = claude_session_artifacts(args.transcript, report["session_id"])
         if not artifacts:
