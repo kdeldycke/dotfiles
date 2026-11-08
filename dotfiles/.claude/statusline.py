@@ -98,6 +98,16 @@ def session_directory(session: dict) -> str | None:
     return workspace.get("current_dir") or session.get("cwd")
 
 
+def caller_option(argv: list[str], flag: str) -> str | None:
+    """Return the value the caller passed for `flag`, in either form clap accepts."""
+    for index, argument in enumerate(argv):
+        if argument == flag and index + 1 < len(argv):
+            return argv[index + 1]
+        if argument.startswith(f"{flag}="):
+            return argument.split("=", 1)[1]
+    return None
+
+
 def caller_terminal_width(argv: list[str]) -> int | None:
     """Return the width the caller passed as `--terminal-width`, if it passed one.
 
@@ -106,14 +116,8 @@ def caller_terminal_width(argv: list[str]) -> int | None:
     component the real usable width, where Claude Code only reports the terminal and
     hides the box.
     """
-    for index, argument in enumerate(argv):
-        if argument == "--terminal-width" and index + 1 < len(argv):
-            value = argv[index + 1]
-            return int(value) if value.isdigit() else None
-        if argument.startswith("--terminal-width="):
-            value = argument.split("=", 1)[1]
-            return int(value) if value.isdigit() else None
-    return None
+    value = caller_option(argv, "--terminal-width")
+    return int(value) if value and value.isdigit() else None
 
 
 def terminal_width() -> int | None:
@@ -193,13 +197,12 @@ def format_flags(session: dict) -> str | None:
 
 
 def format_session_name(session: dict) -> str | None:
-    """Return the session name verbatim.
+    """Return the session name as the caller sent it.
 
-    The row is where the name gets copied from, and what a copy must match is the stored
-    name the `/resume` picker lists: an elided tail pastes into no filter. A name comes
-    from `--name`, from `/rename`, or from the title `session-title.py` generates, so
-    nothing bounds its length; a terminal too narrow for it sheds whole segments first,
-    see `SHED` in `.pi/agent/extensions/starship-row.ts`.
+    A name comes from `--name`, from `/rename`, or from the title `session-title.py`
+    generates, so nothing bounds its length. Only the caller measures the rendered row,
+    so fitting the name is its job: pi cuts the tail to an ellipsis, see `nextFit` in
+    `.pi/agent/extensions/starship-row.ts`.
     """
     name = session.get("session_name")
     return str(name) if name else None
@@ -257,7 +260,12 @@ def main() -> int:
     if isinstance(session, dict):
         directory = session_directory(session)
         if directory:
-            command += ["--path", directory, "--logical-path", directory]
+            command += ["--path", directory]
+            # A caller that passes its own logical path decides what `directory`
+            # prints, like pi shortening it to make room. starship rejects the flag
+            # given twice.
+            if caller_option(sys.argv[1:], "--logical-path") is None:
+                command += ["--logical-path", directory]
         environment.update(build_environment(session, width))
 
     if width and supplied is None:

@@ -23,10 +23,10 @@
  * ## What pi's own footer showed and this one keeps
  *
  * Directory, git branch, model, thinking level, cost and context percentage come back through
- * starship modules. The session name comes back through `CC_SESSION` verbatim, prefix and all:
- * the row is where the name gets copied from, and what a copy must match is the stored name the
- * `/resume` picker lists. The Claude Code row drops the name entirely, because Claude Code
- * prints it twice elsewhere; pi does not, so here it earns its place. `PI_CTXWINDOW` survives as
+ * starship modules. The session name comes back through `CC_SESSION`, prefix and all, and loses
+ * its tail to an ellipsis only when the terminal has no room for the whole of it. The Claude Code
+ * row drops the name entirely, because Claude Code prints it twice elsewhere; pi does not, so
+ * here it earns its place. `PI_CTXWINDOW` survives as
  * the bare `?` that marks a known window whose percentage is not, the one thing
  * `claude_context` cannot say: its gauge reads empty there, which reads as zero rather than as
  * unknown. The cumulative token counts and the cache hit rate pi's footer printed are gone from
@@ -64,12 +64,12 @@
  * resize and the starship run that answers it: those still hold the row measured for the old,
  * wider terminal.
  *
- * Shedding whole segments first is what keeps the clamp rare, since a cut row loses its
- * right-hand block, where the context gauge and the cost live, and leaves a powerline glyph
- * dangling. One segment is sheddable and no more: the session name. Starship fills the rest
- * from its own modules, which no variable of `statusline.py` reaches, so a terminal narrower
- * than the row's floor, about 90 columns where the directory path is long and the tree is
- * dirty, gets a cut row.
+ * Shortening segments first is what keeps the clamp rare, since a cut row loses its right-hand
+ * block, where the context gauge and the cost live, and leaves a powerline glyph dangling. Two
+ * segments give way, the directory path and then the session name, see `nextFit`. Starship fills
+ * the rest from its own modules, which no variable of `statusline.py` reaches, so a terminal
+ * narrower than the row's floor, about 100 columns with a long model label and a dirty tree, gets
+ * a cut row.
  *
  * ## Refresh
  *
@@ -193,29 +193,82 @@ function collectUsage(ctx: ExtensionContext): { totals: Totals; latest?: Usage }
 	return { totals, latest };
 }
 
-const SHED = ["session"] as const;
 /**
- * What to drop, in order, when the rendered row is wider than the terminal.
+ * How much of the row gives way when it is wider than the terminal.
  *
  * Fixed width thresholds would not survive here: a pi model label runs from `anthropic:opus` to
  * `openrouter:qwen3.8-max-0902`, so the same terminal fits everything for one model and
- * overflows for another. The component measures what starship actually returned and sheds one
- * more item until it fits, which needs no calibration and follows a model switch on its own.
- * The session
- * name is the only field the row can lose and still say everything else, so it is the only shed
- * item: the model name prints in full or not at all, since an elided one names no model the
- * picker could list. A row still too wide after it is clamped by `render()`, which is what a
- * terminal narrower than the row's floor of about 90 columns gets.
+ * overflows for another. The component measures what starship actually returned and gives up a
+ * little more until it fits, which needs no calibration and follows a model switch on its own.
+ * The model name never gives way: an elided one names no model the picker could list.
+ */
+interface Fit {
+	/** Print the path `abbreviatePath` returns instead of the real one. */
+	shortPath: boolean;
+	/** Widest the session name may print, in columns: unset prints it whole, 0 drops it. */
+	sessionWidth?: number;
+}
+
+const WHOLE: Fit = { shortPath: false };
+
+const SESSION_MIN_WIDTH = 16;
+/**
+ * Narrowest the session name prints, in columns, before the row drops it.
+ *
+ * A name `session-title.ts` writes opens on an 11-column timestamp, and a cut that leaves little
+ * more reads as the clock `DEFAULT_SESSION_NAME` keeps off the row.
  */
 
-type ShedItem = (typeof SHED)[number];
+const ELLIPSIS = "…";
+
+const GRAPHEMES = new Intl.Segmenter(undefined, { granularity: "grapheme" });
+
+/**
+ * Abbreviate every directory above the working one to its initial: `~/L/C/P/Network & machines`.
+ *
+ * Same rule as the `directory` module applies past its `truncation_length`, a leading dot keeping
+ * the letter after it, so starship prints the result as given. The home prefix stays whole, for
+ * starship to contract to `~`.
+ */
+function abbreviatePath(path: string): string {
+	const home = homedir();
+	const base = path === home || path.startsWith(`${home}/`) ? home : "";
+	const parts = path.slice(base.length).split("/").filter(Boolean);
+	const leaf = parts.pop();
+	if (leaf === undefined) return path;
+	const initials = parts.map((part) =>
+		Array.from(GRAPHEMES.segment(part), ({ segment }) => segment)
+			.slice(0, part.startsWith(".") ? 2 : 1)
+			.join(""),
+	);
+	return [base, ...initials, leaf].join("/");
+}
+
+/**
+ * Cut plain text to `width` columns, ending on an ellipsis when anything was cut.
+ *
+ * pi-tui's `truncateToWidth` wraps its ellipsis in ANSI resets, which inside a starship segment
+ * clear the background too and leave a hole in the block.
+ */
+function elide(text: string, width: number): string {
+	if (visibleWidth(text) <= width) return text;
+	const room = width - visibleWidth(ELLIPSIS);
+	let kept = "";
+	let used = 0;
+	for (const { segment } of GRAPHEMES.segment(text)) {
+		used += visibleWidth(segment);
+		if (used > room) break;
+		kept += segment;
+	}
+	return `${kept.trimEnd()}${ELLIPSIS}`;
+}
 
 /**
  * Name the model under its provider's full name: `openrouter:qwen3.8-max-0902`. The prefix says
  * where the model is consumed from, in the grammar of a fully qualified image or coordinate, and
- * costs nine columns over the bare id, which a row this wide sheds the session name before it
- * ever truncates. A family prefix before a slash in the id still goes, since it only repeats the
- * model's own name.
+ * costs nine columns over the bare id, which the row takes from the path and the session name
+ * before it ever truncates. A family prefix before a slash in the id still goes, since it only
+ * repeats the model's own name.
  */
 function modelLabel(ctx: ExtensionContext): string {
 	const model = ctx.model;
@@ -228,33 +281,55 @@ function modelLabel(ctx: ExtensionContext): string {
 const DEFAULT_SESSION_NAME = /^\d{2}-\d{2}@\d{2}:\d{2}$/;
 
 /**
+ * The session name the row prints, before any fitting, or `undefined` for none.
+ *
+ * pi names an unrenamed session after its creation time, and a frozen timestamp on the row reads
+ * as a clock that stalls while the session ages. No row draws a clock, so the stored name earns
+ * its column only once it says more: a `/rename`, or the summary `session-title.ts` adds at exit.
+ */
+function sessionName(ctx: ExtensionContext): string | undefined {
+	const stored = ctx.sessionManager.getSessionName();
+	return stored && !DEFAULT_SESSION_NAME.test(stored) ? stored : undefined;
+}
+
+/**
+ * The fit to try after a row came back `overflow` columns too wide, or `undefined` once nothing
+ * is left to give way and `render()` clamps the row.
+ *
+ * The path gives way first: its abbreviation keeps the working directory whole, where a cut name
+ * loses words. The name then loses exactly the overflow: starship prints one fill glyph even on a
+ * row too wide for `$fill`, and the overflow counts it, so the cut row lands on the terminal width.
+ */
+function nextFit(ctx: ExtensionContext, fit: Fit, overflow: number): Fit | undefined {
+	const cwd = ctx.sessionManager.getCwd();
+	if (!fit.shortPath && abbreviatePath(cwd) !== cwd) return { ...fit, shortPath: true };
+	const name = sessionName(ctx);
+	if (!name || fit.sessionWidth === 0) return undefined;
+	const shown = fit.sessionWidth === undefined ? name : elide(name, fit.sessionWidth);
+	const width = visibleWidth(shown) - overflow;
+	return { ...fit, sessionWidth: width >= SESSION_MIN_WIDTH ? width : 0 };
+}
+
+/**
  * Build the payload in the shape Claude Code sends, so `statusline.py` needs no pi-specific code.
  *
  * `effort.level` is where pi's thinking level goes: the `claude_model` format renders that field
  * as `$effort`, the same slot Claude Code's reasoning effort occupies.
  */
-function buildPayload(
-	ctx: ExtensionContext,
-	shed: ReadonlySet<ShedItem>,
-): Record<string, unknown> {
+function buildPayload(ctx: ExtensionContext, fit: Fit): Record<string, unknown> {
 	const { totals, latest } = collectUsage(ctx);
 	const cwd = ctx.sessionManager.getCwd();
 	const context = ctx.getContextUsage();
 	const reasoning = (ctx.model as { reasoning?: unknown } | undefined)?.reasoning;
 	const thinking = ctx.thinkingLevel;
-	// pi names an unrenamed session after its creation time, and a frozen timestamp on the row
-	// reads as a clock that stalls while the session ages. No row draws a clock, so the stored
-	// name earns its column only once a human has renamed the session.
-	const stored = ctx.sessionManager.getSessionName();
-	const sessionName =
-		shed.has("session") || !stored || DEFAULT_SESSION_NAME.test(stored) ? undefined : stored;
+	const name = fit.sessionWidth === 0 ? undefined : sessionName(ctx);
 
 	return {
 		hook_event_name: "Status",
 		model: { id: ctx.model?.id ?? "", display_name: modelLabel(ctx) },
 		cwd,
 		workspace: { current_dir: cwd, project_dir: cwd },
-		session_name: sessionName || undefined,
+		session_name: name && fit.sessionWidth !== undefined ? elide(name, fit.sessionWidth) : name,
 		effort: reasoning && thinking ? { level: thinking } : undefined,
 		context_window: {
 			context_window_size: context?.contextWindow ?? 0,
@@ -303,7 +378,6 @@ class StarshipRow {
 	private running = false;
 	private disposed = false;
 	private width = 0;
-	private shed = 0;
 
 	private readonly tui: RenderTarget;
 	private readonly ctx: ExtensionContext;
@@ -335,35 +409,31 @@ class StarshipRow {
 
 	private maybeRefresh(width: number): void {
 		// What overflowed a moment ago may fit now: a resize changes the room, and a commit removes
-		// the git status and diff counts that pushed the row over. So a resize and each stale refresh
-		// start again from nothing shed and let the measurement decide.
+		// the git status and diff counts that pushed the row over. So each refresh starts again from
+		// the whole row and lets the measurement decide how much gives way.
+		this.width = width;
 		const stale = Date.now() - this.lastRun >= STALE_MS;
-		if (width !== this.width || stale) {
-			this.width = width;
-			this.shed = 0;
-		}
-		const shed = this.shedSet();
-		const inputs = [buildPayload(this.ctx, shed), buildEnvironment(this.ctx)];
-		const signature = `${width} ${this.shed} ${JSON.stringify(inputs)}`;
+		const inputs = [buildPayload(this.ctx, WHOLE), buildEnvironment(this.ctx)];
+		const signature = `${width} ${JSON.stringify(inputs)}`;
 		if (signature === this.signature && !stale) return;
 		this.signature = signature;
-		this.run(width);
+		this.run(width, WHOLE);
 	}
 
-	private shedSet(): ReadonlySet<ShedItem> {
-		return new Set(SHED.slice(0, this.shed));
-	}
-
-	private run(width: number): void {
+	private run(width: number, fit: Fit): void {
 		if (this.running || this.disposed) return;
 		this.running = true;
 		this.lastRun = Date.now();
 
-		const shed = this.shedSet();
-		const payload = buildPayload(this.ctx, shed);
+		const payload = buildPayload(this.ctx, fit);
 		// pi hands the component its exact usable width, so it is stated rather than left to the
 		// wrapper's COLUMNS reading, which subtracts a margin for the narrower box Claude Code draws.
-		const child = spawn(this.statusline, ["--profile", PROFILE, "--terminal-width", String(width)], {
+		const args = ["--profile", PROFILE, "--terminal-width", String(width)];
+		// The display path only: `statusline.py` still hands starship the real one, for git.
+		if (fit.shortPath) {
+			args.push("--logical-path", abbreviatePath(this.ctx.sessionManager.getCwd()));
+		}
+		const child = spawn(this.statusline, args, {
 			env: { ...process.env, ...buildEnvironment(this.ctx), COLUMNS: String(width) },
 			stdio: ["pipe", "pipe", "ignore"],
 		});
@@ -379,8 +449,8 @@ class StarshipRow {
 		child.on("close", () => {
 			this.running = false;
 			if (this.disposed) return;
-			// A run that started before a resize measured the old width. Its overflow must not raise the
-			// shed count of the new width, so drop the result and measure again.
+			// A run that started before a resize measured the old width. Its overflow says nothing
+			// about the new width, so drop the result and measure again.
 			if (width !== this.width) {
 				this.signature = "";
 				this.tui.requestRender();
@@ -388,13 +458,13 @@ class StarshipRow {
 			}
 			const lines = output.replace(/\n+$/, "").split("\n");
 
-			// Measure what came back instead of predicting it. An overflowing row is worth one more
-			// attempt with the next item dropped, bounded by SHED's length, since a whole segment
-			// reads better than a cut one. Past the last item `render()` clamps what is left.
-			if (lines.some((line) => visibleWidth(line) > width) && this.shed < SHED.length) {
-				this.shed += 1;
-				this.signature = "";
-				this.run(width);
+			// Measure what came back instead of predicting it. An overflowing row is worth another
+			// run with the next fit, since a shortened segment reads better than a cut row. Past the
+			// last fit `render()` clamps what is left.
+			const overflow = Math.max(...lines.map((line) => visibleWidth(line))) - width;
+			const next = overflow > 0 ? nextFit(this.ctx, fit, overflow) : undefined;
+			if (next) {
+				this.run(width, next);
 				return;
 			}
 
