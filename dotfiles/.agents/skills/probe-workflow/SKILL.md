@@ -14,7 +14,7 @@ Reach for one when:
 - A feature's flagship scenario has only ever run against mocks or a stand-in host.
 - A CI failure depends on runner-image state that local reproduction cannot fake (preinstalled tools, filesystem ACLs, service accounts).
 
-Do not reach for one when a local test, a container run on the development machine, or reading the tool's source answers the question faster.
+Do not reach for one when a local test, a container run on the development machine, a local VM running the same release, or reading the tool's source answers the question faster. Check the VMs the machine already runs before you offer a probe.
 
 ## Invocation
 
