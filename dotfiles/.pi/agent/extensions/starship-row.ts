@@ -77,6 +77,10 @@
  * The component returns the last row it received and refreshes in the background, asking the TUI
  * to redraw only when the output actually changed. That last condition is what stops the loop:
  * a redraw that produced identical bytes requests nothing.
+ *
+ * Inputs that change while a run is in flight start one more refresh when that run ends: the run
+ * read the inputs from before the change. An idle session never redraws, so waiting for the next
+ * redraw would leave its row on the old cost and context.
  */
 
 import { spawn } from "node:child_process";
@@ -376,6 +380,7 @@ class StarshipRow {
 	private signature = "";
 	private lastRun = 0;
 	private running = false;
+	private pending = false;
 	private disposed = false;
 	private width = 0;
 
@@ -416,6 +421,12 @@ class StarshipRow {
 		const inputs = [buildPayload(this.ctx, WHOLE), buildEnvironment(this.ctx)];
 		const signature = `${width} ${JSON.stringify(inputs)}`;
 		if (signature === this.signature && !stale) return;
+		// Not stored yet: the run in flight read the old inputs, see Refresh above.
+		if (this.running) {
+			this.pending = true;
+			return;
+		}
+		this.pending = false;
 		this.signature = signature;
 		this.run(width, WHOLE);
 	}
@@ -468,10 +479,12 @@ class StarshipRow {
 				return;
 			}
 
-			if (lines.join("\n") === this.lines.join("\n")) return;
-			this.lines = lines;
-			// Only on a real change, or this redraw would request the next one forever.
-			this.tui.requestRender();
+			if (lines.join("\n") !== this.lines.join("\n")) {
+				this.lines = lines;
+				// Only on a real change, or this redraw would request the next one forever.
+				this.tui.requestRender();
+			}
+			if (this.pending) this.maybeRefresh(this.width);
 		});
 		// An extension must never take down the host TUI. A failed spawn destroys stdin before this
 		// runs, and a child that exits early makes the write an EPIPE, so neither may throw.
