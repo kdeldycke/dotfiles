@@ -278,6 +278,7 @@ What happens instead, with exact error output in code blocks.
 - If multiple distinct failures exist, group them under numbered sub-sections but keep them in one report if they share a root cause. File separate issues if root causes differ.
 - File a second finding as its own issue, cross-referenced, never by broadening the first one's title. The title must still name the fix that closes it.
 - Keep reproduction steps minimal: strip everything not needed to trigger the bug.
+- Match the depth of the reports the maintainer already accepted: read two or three closed reports of the same kind with their replies, and leave out the checks the maintainer runs themselves. Evidence they would redo only lengthens the report.
 - Link to CI runs or logs when available.
 - Do not speculate about fixes unless the root cause is clear from the evidence.
 - Do not use em dashes; use colons for inline elaboration.
