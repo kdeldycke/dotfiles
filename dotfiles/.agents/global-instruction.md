@@ -658,6 +658,8 @@ zsh also reads a colon and a letter after a variable as a modifier of the expans
 
 zsh never splits an unquoted `$files` into words, so a list held in one variable reaches the program as a single argument, and the call fails on `No such file or directory` naming the whole list. Write each path out, or expand with `${=files}`.
 
+zsh reserves `status` as a read-only variable, so `while read -r id name status` dies with `read-only variable: status`. Name the field `state`.
+
 `ruff` falls back to the current directory's configuration when the target project defines none. Pass `--no-fix` to read findings without changing files, and compare before and after in one invocation: `git show HEAD:{path} | ruff check --no-fix --stdin-filename {path} -`, then the same command fed the working copy. From outside a project that defines its own configuration, never pass `--config`: ruff then resolves relative `src` paths against the current directory, breaks first-party detection and reports `I001` on clean imports. Let it find the configuration from the file path. A repository consuming repomatic with no `[tool.ruff]` of its own takes its CI baseline from `--config ~/code/repomatic/repomatic/data/ruff.toml`, run with the pinned `ruff`, not a system one.
 
 Never run `ruff --fix --select RUF100` outside the project's full rule set: with only RUF100 selected, ruff judges every `# noqa` unused and strips the ones the code needs. Autofix it only under the project's own configuration, and diff the result before staging.
