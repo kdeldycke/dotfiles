@@ -1,6 +1,6 @@
 ---
 name: file-bug-report
-description: Write a bug report for an upstream project, or a reply on an existing issue. Read its contribution guidelines, issue templates and community norms first, then produce a markdown file ready to paste.
+description: Write a bug report for an upstream project. Read its contribution guidelines, issue templates and community norms first, then produce a markdown file ready to paste.
 compatibility: 'Designed for Claude Code. Recommended model: Opus.'
 allowed-tools: Bash Read Grep Glob Write WebFetch WebSearch Agent
 argument-hint: <owner/repo> <one-line summary of the bug>
@@ -11,18 +11,6 @@ argument-hint: <owner/repo> <one-line summary of the bug>
 Create a well-structured bug report for filing against an external project. The report is written to a local markdown file so the user can review before pasting into a GitHub issue.
 
 `$ARGUMENTS` contains the target repo (`owner/repo`) and a short summary of the bug.
-
-## Replies on an existing issue
-
-A reply on an existing issue or pull request keeps the evidence rules, with a shorter workflow:
-
-- Keep step 1 for the rules that bind comments, like a policy on AI-generated text or a code of conduct. Skip the issue templates of 1d and all of step 4: a comment has no form.
-- Skip the duplicate search of step 2. Link the related threads the reply relies on instead.
-- Apply step 3 in full. Run every code example and paste its real output, and run each console session as a doctest. Test the oldest release the reply claims to support, and state that floor.
-- Write the draft outside the checkout, in the session's scratch directory, as `{repo}-{number}-reply.md`. A file at the repository root does not belong to the project, and a broad `git add` can stage it.
-- Keep the prose under 150 words. Code and quoted evidence do not count.
-
-The writing, rendering and code block rules below apply to replies too.
 
 ## Workflow
 
@@ -167,7 +155,7 @@ $ gh search issues --repo <owner/repo> "<keywords>" --json title,url,state
 $ gh issue list --repo <owner/repo> --state all --json title,url,state
 ```
 
-Search with multiple keyword variations (error messages, function names, symptoms). The search API allows 30 requests per minute, so run many queries from one script that pauses about 2 seconds between calls and retries on `HTTP 403: API rate limit exceeded`. Check both open and closed issues: the bug may have been reported and closed as "won't fix", or fixed in a version the user hasn't upgraded to.
+Search with multiple keyword variations (error messages, function names, symptoms). Check both open and closed issues: the bug may have been reported and closed as "won't fix", or fixed in a version the user hasn't upgraded to.
 
 If a matching open issue exists, report it to the user and stop. Do not offer a comment on an issue that a maintainer has already answered as in progress, unless the user asks for one. If a matching closed issue exists, mention it in the report with a link and explain why this is a new occurrence (different version, different context, regression).
 
@@ -278,7 +266,6 @@ What happens instead, with exact error output in code blocks.
 - If multiple distinct failures exist, group them under numbered sub-sections but keep them in one report if they share a root cause. File separate issues if root causes differ.
 - File a second finding as its own issue, cross-referenced, never by broadening the first one's title. The title must still name the fix that closes it.
 - Keep reproduction steps minimal: strip everything not needed to trigger the bug.
-- Match the depth of the reports the maintainer already accepted: read two or three closed reports of the same kind with their replies, and leave out the checks the maintainer runs themselves. Evidence they would redo only lengthens the report.
 - Link to CI runs or logs when available.
 - Do not speculate about fixes unless the root cause is clear from the evidence.
 - Do not use em dashes; use colons for inline elaboration.

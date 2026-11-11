@@ -67,7 +67,7 @@ For each included project, research its feature set by reading its documentation
 - **Distribution**: package registry badges (PyPI, crates.io, npm, Homebrew, etc.) as applicable.
 - **Metadata**: license, main language, latest version, benchmark date.
 
-Use ✅ for a supported feature, 🪫 for incomplete support, and ❌ for a feature the project lacks or rejects. Leave a cell blank where the row does not apply. 🪫 covers four cases: the framework ships part of the feature, or only a hook (a callback, free help text) that the developer completes, or an official extension or companion package ships it, or it sits behind a flag documented as unstable. Link every cell to its evidence: the documentation or a source line for ✅ and 🪫, and for ❌ a maintainer statement, a request closed as not planned or left open, or a documented limit. Absence of the feature is not evidence: with no citable source, leave the cell blank.
+Use ✅ for a supported feature, 🟡 for partial or opt-in support, ❌ for a feature the project lacks or rejects, and `N/A` where the row does not apply. Link every cell to its evidence: the documentation or a source line for ✅ and 🟡, and for ❌ a maintainer statement, a request closed as not planned or left open, or a documented limit. Absence of the feature is not evidence: with no citable source, leave the cell blank.
 
 #### 4. Gap analysis
 
@@ -174,7 +174,7 @@ For each project in the benchmark, check via `gh api`:
 
 Classify each as: **active**, **slow but maintained**, **stale** (no activity in 12+ months), or **abandoned/archived**.
 
-Stale or abandoned projects should be moved to the "Excluded projects" section with a `{note}` admonition explaining why. Drop such a project from `[tool.repomatic.metrics] subjects` as well, delete its rows from the metrics store, and redraw the charts offline with `repomatic sample-metrics --no-forward --no-reconstruct`.
+Stale or abandoned projects should be moved to the "Excluded projects" section with a `{note}` admonition explaining why.
 
 #### 2. Feature matrix accuracy
 
@@ -182,7 +182,7 @@ For each feature row, spot-check 2-3 projects against their current documentatio
 
 To audit the blank cells, research one project per subagent, and have it return the URL and the verbatim quote for each finding. Read every quote back from its source through the API before you fill a cell, and keep a cell blank when the finding contradicts a row that grades the same feature.
 
-A row added since the last pass gets every competitor cell assessed, not a sample: its cells start unassessed, and a blank cell reads as "no citable source" or "does not apply".
+A row added since the last pass gets every competitor cell assessed, not a sample: its cells start unassessed, and a blank cell reads as "no citable source".
 
 Re-anchor the version-pinned evidence links of a competitor that shipped a new release. A link pinned to a tag or a commit with a line range (`blob/v17.12.2/src/steps.rs#L120-L140`) keeps pointing at the old release. Find the same snippet in the new release by its content, never by the old line numbers, then repoint the link to the new tag and range. A snippet that is gone means the cell needs a fresh assessment.
 
@@ -202,7 +202,7 @@ Search for projects in the same space with significant GitHub stars not already 
 
 #### 5. Badge health
 
-Verify the GitHub `owner/repo` in badge URLs matches the current canonical location. Repos get transferred. Check via `gh api repos/{owner}/{repo} --jq '.full_name'`. Follow a transfer in `[tool.repomatic.metrics] subjects` and in the rows of the metrics store, which key each subject by its URL.
+Verify the GitHub `owner/repo` in badge URLs matches the current canonical location. Repos get transferred. Check via `gh api repos/{owner}/{repo} --jq '.full_name'`.
 
 #### 6. Star history chart
 
