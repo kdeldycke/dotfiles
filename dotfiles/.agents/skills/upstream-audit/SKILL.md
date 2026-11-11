@@ -146,14 +146,11 @@ Also check `docs/` and any changelog for upstream references.
 | PR        | closed, not merged                                       | Declined by upstream         |
 | PR        | open                                                     | Open upstream                |
 | Issue     | open or closed, this project still provides a workaround | Addressed by this project    |
-| Issue     | closed as completed, no release ships the fix yet        | Open upstream                |
 | Issue     | closed as completed                                      | Upstreamed from this project |
 | Issue     | closed as not planned                                    | Declined by upstream         |
 | Issue     | open, no local workaround                                | Open upstream                |
 
 The first matching row wins. List every issue the maintainer reported, even one closed with no local workaround ever needed. Skip a closed PR that its author withdrew, or that a later merged PR replaced: nobody declined it.
-
-An issue kept in "Open upstream" after it closed names its fix: "closed by `project#N`, which no release carries yet". The fix is released once the newest release tag contains its merge commit: `gh api repos/{owner}/{repo}/compare/{tag}...{sha} --jq .status` then answers `behind` or `identical`.
 
 To determine whether the project has a workaround for an issue, search the codebase for references to that issue URL or number.
 
@@ -182,17 +179,17 @@ For every GitHub URL in the document, check its current state via `gh`:
 
 Flag items that need to move:
 
-| Current section           | New state                 | Action                                                                         |
-| ------------------------- | ------------------------- | ------------------------------------------------------------------------------ |
-| Open upstream             | PR merged                 | Move to "Code contributed upstream"                                            |
-| Open upstream             | Issue closed as completed | Move to "Addressed" if a workaround exists, else to "Upstreamed" once released |
-| Open upstream             | Closed as not planned     | Move to "Declined by upstream"                                                 |
-| Addressed by this project | Fixed upstream            | Move to "Upstreamed from this project"                                         |
+| Current section           | New state                 | Action                                                                              |
+| ------------------------- | ------------------------- | ----------------------------------------------------------------------------------- |
+| Open upstream             | PR merged                 | Move to "Code contributed upstream"                                                 |
+| Open upstream             | Issue closed as completed | Move to "Upstreamed" or "Addressed" depending on whether a local workaround existed |
+| Open upstream             | Closed as not planned     | Move to "Declined by upstream"                                                      |
+| Addressed by this project | Fixed upstream            | Move to "Upstreamed from this project"                                              |
 
 #### 2. Consistency checks
 
 - All items in "Code contributed upstream" are actually merged (not just closed).
-- All items in "Open upstream" are actually still open, or closed with a fix that no release carries yet.
+- All items in "Open upstream" are actually still open.
 - No item appears in multiple sections.
 - Items within each project subsection are sorted by issue number (newest first).
 
