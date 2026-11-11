@@ -397,6 +397,10 @@ TRIM_SELECTION = ("--only-movies", "--edited", "--not-shared")
 # Name that osxphotos gives to a person that nobody named in Photos.
 UNNAMED_PERSON = "_UNKNOWN_"
 
+# Seconds between two checks while `run` waits for new assets to reach iCloud.
+# Each check reads the whole Photos database, and a large upload takes hours.
+UPLOAD_POLL = 300
+
 # Seconds that `run` waits, at its end, for the last new assets to reach iCloud.
 UPLOAD_WAIT = 7200
 
@@ -1544,8 +1548,17 @@ def comparison(record: dict, old: dict | None, new: dict | None) -> list[tuple]:
     return rows
 
 
-def check_videos(args: argparse.Namespace, tables: bool = True) -> bool:
-    """Compare each original with its new asset in the Photos database."""
+def check_videos(
+    args: argparse.Namespace,
+    tables: bool = True,
+    shown: dict[str, str] | None = None,
+) -> bool:
+    """Compare each original with its new asset in the Photos database.
+
+    :param shown: The last result printed for each video, by UUID. A video gets a
+        line only when its result is not the one in `shown`.
+    """
+    shown = {} if shown is None else shown
     state = load_state(args.work)
     pairs = {
         uuid: record
@@ -1577,7 +1590,9 @@ def check_videos(args: argparse.Namespace, tables: bool = True) -> bool:
             if record["status"] == "imported":
                 record["status"] = "verified"
             result = f"verified, step {record['status']!r}"
-        print(f"  Result: {result}." if tables else f"{uuid}: {result}.")
+        if shown.get(uuid) != result:
+            print(f"  Result: {result}." if tables else f"{uuid}: {result}.")
+        shown[uuid] = result
     save_state(args.work, state)
     return passed
 
@@ -1709,12 +1724,17 @@ def clean_work_files(work: Path) -> None:
 def settle(args: argparse.Namespace, wait: int = 0) -> bool:
     """Run `check` and `mark`, then clean up, until no new asset waits or time ends.
 
+    A round comes every `UPLOAD_POLL` seconds. After the first round, a video gets
+    a line only when its result changes.
+
     :param wait: Seconds to keep trying while a new asset waits for iCloud.
     """
     deadline = time.monotonic() + wait
+    shown: dict[str, str] = {}
+    count = 0
+    print("\nChecking the imported videos.", flush=True)
     while True:
-        print("\nChecking the imported videos.", flush=True)
-        checked = check_videos(args, tables=False)
+        checked = check_videos(args, tables=False, shown=shown)
         complete_albums(args)
         passed = mark_originals(args) and checked
         clean_work_files(args.work)
@@ -1725,8 +1745,14 @@ def settle(args: argparse.Namespace, wait: int = 0) -> bool:
         ]
         if not waiting or time.monotonic() > deadline:
             return passed and not waiting
-        print(f"{len(waiting)} new assets wait for iCloud.", flush=True)
-        time.sleep(60)
+        if len(waiting) != count:
+            count = len(waiting)
+            minutes = UPLOAD_POLL // 60
+            print(
+                f"{count} new assets wait for iCloud. Next check in {minutes} minutes.",
+                flush=True,
+            )
+        time.sleep(UPLOAD_POLL)
 
 
 def disk_space(work: Path) -> int:
