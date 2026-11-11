@@ -986,7 +986,7 @@ def tracks(path: Path) -> list[dict]:
     scale = struct.unpack_from(">I", raw, mvhd + (20 if movie_version else 12))[0]
     found = []
     for kind, start, stop in mp4_boxes(raw, 8, len(raw)):
-        if kind != b"trak":
+        if kind != b"track":
             continue
         hdlr = required_box(raw, start, stop, [b"mdia", b"hdlr"])
         tkhd = required_box(raw, start, stop, [b"tkhd"])
