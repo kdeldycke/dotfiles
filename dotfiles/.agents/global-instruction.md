@@ -630,6 +630,8 @@ Fold a small fix into the open pull request that already edits the same lines, n
 
 Never shop for a proxy submitter. Several distributions refuse a package submitted by the software's own author: where that rule applies, accept it, publish the verified templates, and say a distribution user is welcome to submit them as their own. Never ask a named contributor to re-file the work, and never offer to take maintainership back once it is merged.
 
+A report or reply the user has posted upstream is redundant as a local draft: once the posted URL is recorded, delete the copy, and keep only drafts still waiting to be filed. The posted version on the open web is canonical.
+
 ## Shell commands
 
 Permission rules deny `cd`, `rm`, `curl`, `wget`, `chmod`, `chown` and `sudo`. Claude Code enforces them itself, and pi through `~/.pi/agent/extensions/shell-deny.ts`, which reads the same list. A call that holds one of them fails whole, a compound command included, so never write one. Use `git -C` or an absolute path in place of `cd`. Use `git rm` or `git clean -f -- {path}` in place of `rm`, and `/usr/bin/trash` for a path outside a repository, which keeps it recoverable. Inside the Bash sandbox `trash` fails with `NSCocoaErrorDomain Code=513` (Claude Code `2.1.284`): leave a scratch file under `/private/tmp` in place. Use WebFetch, `gh api` or a Python script in place of `curl`. Use `uv run --script` in place of `chmod +x`. To commit a script as executable, run `git add --chmod=+x {path}`, then `git checkout-index --force -- {path}` to set the bit on disk.
