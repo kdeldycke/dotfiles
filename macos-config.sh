@@ -2329,8 +2329,15 @@ protonvpn_json() {
 }
 
 if [[ -e "${PROTONVPN_PREFS}" ]]; then
-    # Kill switch off: Allow LAN connections needs it off.
+    # Kill switch off: Allow LAN connections needs it off. Version 6.5 reads
+    # `Firewall`. The next version reads `KillSwitchMode` instead (0 off,
+    # 1 standard, 2 advanced), and copies `Firewall` into it only while that key
+    # is missing, so write both.
+    #   https://github.com/ProtonVPN/ios-mac-app/blob/d851e0fd1bad01a103d65bf816f2acc99115ff35/libraries/Core/NEHelper/Sources/VPNAppCore/Migration/MigrationManager%2BKillSwitch.swift
+    # XXX Revisit once Proton's 7.0.0 ships: its source lets Allow LAN
+    # connections work with the kill switch on.
     defaults write "${PROTONVPN_PREFS}" Firewall -bool false
+    defaults write "${PROTONVPN_PREFS}" KillSwitchMode -int 0
 
     # Strict NAT, not Moderate NAT.
     defaults write "${PROTONVPN_PREFS}" NATType -int 0
@@ -2396,9 +2403,9 @@ if [[ -e "${PROTONVPN_PREFS}" ]]; then
         # VPN Accelerator on.
         defaults write "${PROTONVPN_PREFS}" "VpnAcceleratorEnabled${PROTONVPN_ACCOUNT}" -data "$(protonvpn_json '"on"')"
 
-        # Port forwarding on, with its notifications.
-        defaults write "${PROTONVPN_PREFS}" "PortForwarding_${PROTONVPN_ACCOUNT}" -bool true
-        defaults write "${PROTONVPN_PREFS}" "PortForwardingNotificationsEnabled${PROTONVPN_ACCOUNT}" -data "$(protonvpn_json '{"on":{}}')"
+        # Port forwarding off. It only helps an app that listens on the port
+        # Proton forwards, and Transmission takes a random port at each start.
+        defaults write "${PROTONVPN_PREFS}" "PortForwarding_${PROTONVPN_ACCOUNT}" -bool false
 
         # Share no crash reports and no usage statistics.
         defaults write "${PROTONVPN_PREFS}" "TelemetryCrashReports${PROTONVPN_ACCOUNT}" -string false
