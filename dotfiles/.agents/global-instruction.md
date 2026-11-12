@@ -46,7 +46,7 @@ Every external tool a workflow invokes carries an exact version literal, in one 
 
 A tool the runner image happens to provide is worse than an unpinned install, because it carries no version anywhere in the repository for anything to bump. Reach for a pinned dependency that already does the job instead of finding a way to pin the tool.
 
-A version literal outside those shapes is worse still, because it *looks* maintained and nothing walks it. Watch for a `gh release download vX.Y.Z` with no `--repo`: it pins honestly, but `sync-workflow-pins` skips it, so no job ever proposes a bump. Where a pin cannot take a recognized shape, say so in a comment beside it naming who is expected to bump it. A permanently-red gating job hides such a pin twice over, since a cell that can only fail teaches readers to ignore that workflow's red runs.
+A version literal outside those shapes is worse still, because it *looks* maintained and nothing walks it. Watch for a `gh release download vX.Y.Z` with no `--repo`: it pins honestly, but `sync-workflow-pins` skips it, so no job ever proposes a bump. Write the tag once: the job rewrites only that literal, so an asset name or a checksum lookup that repeats the version breaks on the next bump; match the asset with a glob instead. Where a pin cannot take a recognized shape, say so in a comment beside it naming who is expected to bump it. A permanently-red gating job hides such a pin twice over, since a cell that can only fail teaches readers to ignore that workflow's red runs.
 
 ### PAT-gated checks degrade, they do not fail
 
