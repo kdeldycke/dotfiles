@@ -129,6 +129,9 @@ wifiman = "1.2.8"
 6446372766 = "1.5"
 6502835663 = "1.21.2"
 
+[uvx]
+osxphotos = "0.77.2"
+
 [vscode]
 "anthropic.claude-code" = "2.1.226"
 "astral-sh.ty" = "2026.66.0"
