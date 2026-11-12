@@ -42,6 +42,10 @@ This file holds only the rules specific to this repository. The generic conventi
 - **`dotfiles/.agents/skills/synced/` and `.trash/` come from the Claude app sync.** `synced/{id}/manifest.json` names each skill's `source` (`anthropic`, `anthropic-example`), and a skill in `.trash/` came from there. The claude.ai Skills page does not list them: hide one with `skillOverrides` in `.claude/settings.json` and a `!` glob in the pi `skills` setting. `pi config` is a TUI only: count the skills pi loads with a node script that calls `DefaultResourceLoader` (from pi's `dist/index.js`) `reload()` then `getSkills()`.
 - **A private skill lives in `~/code/private-skills`, a local repository with no remote.** Link each skill folder into `dotfiles/.agents/skills/{name}` and ignore the link in `.git/info/exclude`, which keeps its name out of this public repository. Claude Code (`2.1.284`) finds no skill nested one level deeper, so one `private/` link for the whole folder does not work.
 
+## Public repository
+
+- **Keep home-network data out of this public repository.** Subnets, VLANs, the gateway, static routes, device addresses, SSIDs and DNS configuration IDs live in the local-only knowledge base in `~/ProtonDrive/Network & machines/`. A private SSH host goes in `~/.ssh/config.d/`, which `dotfiles/.ssh/config` includes after a `Match all` line.
+
 ## Assets
 
 - **The dated desktop screenshots in `assets/` are kept on purpose.** An audit for unreferenced files must leave them, and may still report the configuration of a tool that is no longer installed.
