@@ -381,8 +381,9 @@ sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setallowsignedapp off
 #   Thunderbolt Bridge
 net_interfaces=$(networksetup -listallnetworkservices | awk '{gsub(/^*/,""); if(NR>1)print}')
 for net_service (${(f)net_interfaces}); do
-    # NextDNS servers.
-    networksetup -setdnsservers "${net_service}" 2a07:a8c0::b9:b127 2a07:a8c1::b9:b127
+    # Use the DNS servers the network hands out. ProtonVPN answers the lookups
+    # itself while it is connected.
+    networksetup -setdnsservers "${net_service}" "Empty"
     # Clear out all search domains.
     networksetup -setsearchdomains "${net_service}" "Empty"
     # Setup 10G NIC.
@@ -553,11 +554,6 @@ sudo defaults write /Library/Preferences/com.apple.mDNSResponder.plist NoMultica
 
 # Show location icon in menu bar when System Services request your location.
 sudo defaults write /Library/Preferences/com.apple.locationmenu.plist ShowSystemServices -bool true
-
-# Install certs
-wget -O "${HOME}/NextDNS.cer" https://nextdns.io/ca
-sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain "${HOME}/NextDNS.cer"
-rm -rfv "${HOME}/NextDNS.cer"
 
 # Secure home folders from other local users, non-recursively as mSCP does
 # (mSCP: os_home_folders_secure).
@@ -2301,6 +2297,114 @@ defaults write com.adguard.mac.adguard FilterHttps -bool true
 
 # Do not filter websites with EV certificates
 defaults write com.adguard.mac.adguard IgnoreEvSslCertificates -bool false
+
+
+###############################################################################
+# ProtonVPN                                                                   #
+###############################################################################
+
+# Sign in first: approve the VPN configuration and the system extensions when
+# macOS asks, connect once, then run the config stage again. Restart the app
+# afterwards, since it reads its settings when it starts. The app is sandboxed,
+# so its preferences live in its container, which appears at its first start.
+#
+# Make the profiles by hand, since the app stores each one under an ID it
+# generates, then point Auto Connect and Quick Connect at one of them. Give each
+# profile a country where Proton hosts servers. Smart Routing serves the other
+# countries from a server in another country, and the app marks them with a
+# globe icon. IPinfo found that the measured exits of VPN providers often
+# differ from the countries they advertise.
+#   https://protonvpn.com/support/how-smart-routing-works
+#   https://ipinfo.io/blog/vpn-location-mismatch-report
+#   https://news.ycombinator.com/item?id=46257339
+#
+# Secure Core, split tunneling and custom DNS servers stay off, as the app
+# ships them. Custom DNS servers would turn NetShield off.
+PROTONVPN_PREFS="${HOME}/Library/Containers/ch.protonvpn.mac/Data/Library/Preferences/ch.protonvpn.mac.plist"
+
+# Some settings are JSON text in a data blob. Hex-encode the JSON the way
+# `defaults write -data` takes it.
+protonvpn_json() {
+    printf '%s' "$1" | xxd -plain -cols 256
+}
+
+if [[ -e "${PROTONVPN_PREFS}" ]]; then
+    # Kill switch off: Allow LAN connections needs it off.
+    defaults write "${PROTONVPN_PREFS}" Firewall -bool false
+
+    # Strict NAT, not Moderate NAT.
+    defaults write "${PROTONVPN_PREFS}" NATType -int 0
+
+    # Stealth, which is WireGuard over TLS, instead of Smart Protocol. Stealth
+    # hides the VPN connection to get past network blocks. Smart Protocol picks
+    # a protocol for each connection, among those that Proton's API allows, so a
+    # change on Proton's side can bring back a protocol that a network can spot
+    # as a VPN. It has nothing to do with virtual locations, which depend on the
+    # server's country: see above.
+    #   https://protonvpn.com/support/how-to-change-vpn-protocols
+    #   https://protonvpn.com/blog/smart-protocol
+    defaults write "${PROTONVPN_PREFS}" smartProtocol -bool false
+    defaults write "${PROTONVPN_PREFS}" VpnProtocol -data "$(protonvpn_json '{"transportProtocol":"tls","rawValue":2}')"
+
+    # Alternative routing on.
+    defaults write "${PROTONVPN_PREFS}" alternativeRouting -bool true
+
+    # Start on boot, minimized. The app syncs its login item with this key.
+    defaults write "${PROTONVPN_PREFS}" StartOnBoot -bool true
+    defaults write "${PROTONVPN_PREFS}" StartMinimized -bool true
+
+    # System notifications on, unprotected networks included.
+    defaults write "${PROTONVPN_PREFS}" SystemNotifications -bool true
+    defaults write "${PROTONVPN_PREFS}" UnprotectedNetwork -bool true
+
+    # Share no crash reports and no usage statistics.
+    defaults write "${PROTONVPN_PREFS}" TelemetryCrashReports -string false
+    defaults write "${PROTONVPN_PREFS}" TelemetryUsageData -string false
+
+    # The other settings are stored per account: each key is the setting's name
+    # followed by the account's username, which the app takes from its keychain.
+    # Read the username back from the key names instead of hard-coding it. It is
+    # the suffix that at least two of these settings share, so a longer key that
+    # only starts with one of their names does not pass for an account.
+    PROTONVPN_KEYS=(${(f)"$(plutil -p "${PROTONVPN_PREFS}" | awk -F '"' '/^  "/ { print $2 }')"})
+    typeset -A PROTONVPN_SUFFIXES
+    PROTONVPN_SUFFIXES=()
+    for PROTONVPN_KEY (${PROTONVPN_KEYS}); do
+        for PROTONVPN_SETTING (excludeLocalNetworks NetShield TelemetryCrashReports TelemetryUsageData VpnAcceleratorEnabled); do
+            [[ "${PROTONVPN_KEY}" == ${PROTONVPN_SETTING}?* ]] || continue
+            PROTONVPN_SUFFIX="${PROTONVPN_KEY#${PROTONVPN_SETTING}}"
+            PROTONVPN_SUFFIXES[${PROTONVPN_SUFFIX}]=$(( ${PROTONVPN_SUFFIXES[${PROTONVPN_SUFFIX}]:-0} + 1 ))
+        done
+    done
+    PROTONVPN_ACCOUNTS=()
+    for PROTONVPN_SUFFIX PROTONVPN_COUNT (${(kv)PROTONVPN_SUFFIXES}); do
+        if (( PROTONVPN_COUNT >= 2 )); then
+            PROTONVPN_ACCOUNTS+=("${PROTONVPN_SUFFIX}")
+        fi
+    done
+    if (( ! ${#PROTONVPN_ACCOUNTS} )); then
+        echo "ProtonVPN: no signed-in account found. Sign in, connect once, then run the config stage again."
+    fi
+
+    for PROTONVPN_ACCOUNT (${PROTONVPN_ACCOUNTS}); do
+        # Allow LAN connections on.
+        defaults write "${PROTONVPN_PREFS}" "excludeLocalNetworks${PROTONVPN_ACCOUNT}" -data "$(protonvpn_json '"on"')"
+
+        # NetShield level 3: block ads, trackers, malware and adult content.
+        defaults write "${PROTONVPN_PREFS}" "NetShield${PROTONVPN_ACCOUNT}" -int 3
+
+        # VPN Accelerator on.
+        defaults write "${PROTONVPN_PREFS}" "VpnAcceleratorEnabled${PROTONVPN_ACCOUNT}" -data "$(protonvpn_json '"on"')"
+
+        # Port forwarding on, with its notifications.
+        defaults write "${PROTONVPN_PREFS}" "PortForwarding_${PROTONVPN_ACCOUNT}" -bool true
+        defaults write "${PROTONVPN_PREFS}" "PortForwardingNotificationsEnabled${PROTONVPN_ACCOUNT}" -data "$(protonvpn_json '{"on":{}}')"
+
+        # Share no crash reports and no usage statistics.
+        defaults write "${PROTONVPN_PREFS}" "TelemetryCrashReports${PROTONVPN_ACCOUNT}" -string false
+        defaults write "${PROTONVPN_PREFS}" "TelemetryUsageData${PROTONVPN_ACCOUNT}" -string false
+    done
+fi
 
 
 ###############################################################################

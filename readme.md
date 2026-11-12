@@ -127,7 +127,7 @@ This is a list of manual post-installation steps required to fully configure the
 
 ### SSH
 
-Copy the SSH folder (`~/.ssh/`) from Time Machine backups. It holds the keys, which stay out of this repository: `./install.sh links` only links the shared config files into it. After restoring, add the public key to GitHub as both an "Authentication key" and a "Signing key" at https://github.com/settings/keys.
+Copy the SSH folder (`~/.ssh/`) from Time Machine backups. It holds the keys, which stay out of this repository: `./install.sh links` only links the shared config files into it. It also holds `config.d/`, the private host blocks that the shared `config` includes. After restoring, add the public key to GitHub as both an "Authentication key" and a "Signing key" at https://github.com/settings/keys.
 
 ### Safari
 
