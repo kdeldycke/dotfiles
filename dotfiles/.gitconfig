@@ -45,6 +45,11 @@
 [commit]
     verbose = true
     gpgsign = true
+[hook "subject-length"]
+    # Refuse a commit subject of 72 characters or more, in every repository.
+    # The script lists its exemptions and how to bypass it.
+    event = commit-msg
+    command = sh ~/code/dotfiles/tools/git-commit-subject-length.sh
 [fetch]
     prune = true
     pruneTags = true
