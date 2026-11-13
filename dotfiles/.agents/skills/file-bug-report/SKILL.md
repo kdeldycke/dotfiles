@@ -173,9 +173,10 @@ If a matching open issue exists, report it to the user and stop. Do not offer a 
 
 A matching issue closed for lack of a reproducer is not a dead end: cite it, because that closure is part of the record, and supply what it lacked.
 
-A keyword search over issues is not enough. Run these four checks too before you report the result to the user:
+A keyword search over issues is not enough. Run these five checks too before you report the result to the user:
 
 - **Pull requests.** Run the same keywords through `gh search prs`: a fix under review answers the report before it is filed.
+- **The code at the default branch.** Blame the lines the bug runs through at the tip of `main`, and read every commit that changed them after the release you measured: a fix can sit there behind an issue whose title shares no word with your symptom. Then check the stable branches for a backport.
 - **Everything since the behavior appeared.** List the issues and pull requests created since the commit that introduced it, and read every title. A body search is noisy, because pasted logs hold the tool's own vocabulary.
 - **Branches and release notes.** Read the development branches and the release notes for a fix in progress, and for the maintainer's own words on the topic.
 - **Overlap.** Name the threads that share the theme without being duplicates. Cross-reference in the report the ones a reader can confuse with it.
