@@ -650,7 +650,7 @@ Never `cd` in Bash calls: pass absolute paths to the tool instead. Claude Code's
 
 `sed -i ''` misbehaves in this harness: it applies the edits, then exits `2` with `can't read :`. Use Python for in-place multi-file rewrites.
 
-`rg -rn {pattern}` adds no recursion, which `rg` does by default: `-r` takes a replacement string, so the flag swaps every match for a literal `n` and prints mangled lines that still read as results. Write `rg -n`.
+`rg -rn {pattern}` adds no recursion, which `rg` does by default: `-r` takes a replacement string, so the flag swaps every match for a literal `n` and prints mangled lines that still read as results. Write `rg -n`. Two more grep flags change meaning: `rg -E` takes an encoding (`unknown encoding: {pattern}`) and `rg -h` prints the help, so write `--no-filename` and drop `-E`.
 
 `git grep -E` here reads `\b` as a literal `b`, so a word-boundary pattern misses matches and reports no error. Search with `git grep -P` or `rg`, which honor `\b`.
 
