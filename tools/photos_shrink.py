@@ -82,18 +82,21 @@ from its first frame. An H.264 new asset can get an HEVC copy in a later run.
 
 `osxphotos export --use-photokit` writes the edited render in place of the
 original of an edited video: it gives PhotoKit the image constant for the
-original, 2, where the video constant is 1. So `--trim` exports the original
-again through `osxphotos run`, with the image constant whose value is 1.
+original, 2, where the video constant is 1. So `--trim` first downloads the
+original file itself through PhotoKit's resource manager, run by `osxphotos run`,
+and puts it in place of the exported file. Photos keeps a local copy of that
+download, so the export then copies it, and the edited render does not download.
 
 The work directory holds the records of a batch: `state.json` and the import
 reports. The large files go to the scratch folder of the work directory, under
 `SCRATCH_ROOT`: one directory per asset UUID under `export/`, and the same layout
-under `encoded/`. Each file keeps its exact name there, and that name becomes the
-name of the new asset. A flat export renames the second of two files that have
-the same name. The layout also lets the export database, which finds a file by
-its relative path, match a copy to the record of its original. `state.json`
-records the step each video reached, so each subcommand skips the work that an
-earlier run completed, and a cut run resumes where it stopped:
+under `encoded/` and, for a cut, `originals/`. Each file keeps its exact name
+there, and that name becomes the name of the new asset. A flat export renames the
+second of two files that have the same name. The layout also lets the export
+database, which finds a file by its relative path, match a copy to the record of
+its original. `state.json` records the step each video reached, so each
+subcommand skips the work that an earlier run completed, and a cut run resumes
+where it stopped:
 
 - A video replaced or kept is never selected again. Its new HEVC asset is not
   selected either, because the selection takes H.264 videos only.
@@ -145,7 +148,6 @@ import shutil
 import struct
 import subprocess
 import sys
-import tempfile
 import time
 from datetime import datetime
 from fractions import Fraction
@@ -328,16 +330,60 @@ if session.status() != AVFoundation.AVAssetExportSessionStatusCompleted:
 # like the faces that an iPhone detects. A source with one goes through AVFoundation.
 PASSTHROUGH_TAGS = ("mebx",)
 
-# Python file that `osxphotos run` executes to export the unedited original of
-# a video into a directory: `{file} {uuid} {directory}`. `PHOTOS_VERSION_UNADJUSTED`
-# holds 1, the value of `PHVideoRequestOptionsVersionOriginal`.
+# Python file that `osxphotos run` executes to download the original file of a
+# video into a directory, with the bytes that Photos stores:
+# `{file} {uuid} {directory} {timeout}`. iCloud sends the file when the library has
+# no local copy. The AVFoundation route of `osxphotos` fails on some originals that
+# only iCloud holds, with "Could not get video for asset".
 PHOTOKIT_ORIGINAL = """\
 import sys
-from osxphotos.photokit import PHOTOS_VERSION_UNADJUSTED, PhotoLibrary
+import threading
+import time
+from pathlib import Path
 
-asset = PhotoLibrary().fetch_uuid(sys.argv[1])
-for path in asset.export(sys.argv[2], version=PHOTOS_VERSION_UNADJUSTED):
-    print(path)
+import Foundation
+import Photos
+
+uuid, folder, timeout = sys.argv[1], Path(sys.argv[2]), float(sys.argv[3])
+asset = Photos.PHAsset.fetchAssetsWithLocalIdentifiers_options_(
+    [f"{uuid}/L0/001"], None
+).firstObject()
+if asset is None:
+    sys.exit(f"no asset {uuid}")
+resources = [
+    item
+    for item in Photos.PHAssetResource.assetResourcesForAsset_(asset)
+    if item.type() == Photos.PHAssetResourceTypeVideo
+]
+if len(resources) != 1:
+    sys.exit(f"the asset has {len(resources)} original video files, not 1")
+shown, errors, done = [-1], [], threading.Event()
+
+
+def progress(fraction):
+    if int(fraction * 10) > shown[0]:
+        shown[0] = int(fraction * 10)
+        print(f"{time.strftime('%H:%M:%S')} download {fraction:.0%}", flush=True)
+
+
+def finished(error):
+    errors.append(error)
+    done.set()
+
+
+options = Photos.PHAssetResourceRequestOptions.alloc().init()
+options.setNetworkAccessAllowed_(True)
+options.setProgressHandler_(progress)
+target = folder / resources[0].originalFilename()
+manager = Photos.PHAssetResourceManager.defaultManager()
+manager.writeDataForAssetResource_toFile_options_completionHandler_(
+    resources[0], Foundation.NSURL.fileURLWithPath_(str(target)), options, finished
+)
+if not done.wait(timeout):
+    sys.exit(f"the download did not end in {timeout:.0f} s")
+if errors[0] is not None:
+    sys.exit(f"the download failed: {errors[0]}")
+print(target)
 """
 
 # AppleScript that asks Photos how many items its library holds.
@@ -664,22 +710,30 @@ def refusal(photo: dict | None, trim: bool = False) -> str | None:
     return None
 
 
-def export_original(uuid: str, path: Path, args: argparse.Namespace) -> None:
-    """Replace an exported file with the unedited original, through PhotoKit.
+def download_original(uuid: str, size: int, args: argparse.Namespace) -> Path:
+    """Download the original file of a video through PhotoKit, and return its path.
 
-    The file keeps its path, which the export database records for the import.
+    The file lands in `originals/{uuid}/` of the scratch folder, with the bytes
+    that Photos stores. A file of the right size from an earlier run is used
+    again, since the download of a large original takes hours.
     """
+    folder: Path = args.scratch / "originals" / uuid
+    held = [item for item in folder.glob("*") if item.is_file()]
+    if len(held) == 1 and held[0].stat().st_size == size:
+        print(f"{uuid}: the original is already downloaded.")
+        return held[0]
+    for item in held:
+        item.unlink()
+    folder.mkdir(parents=True, exist_ok=True)
     helper = args.scratch / ".photokit_original.py"
     helper.write_text(PHOTOKIT_ORIGINAL, encoding="UTF-8")
-    with tempfile.TemporaryDirectory(dir=args.scratch) as folder:
-        command = [tool("osxphotos"), "run", str(helper), uuid, folder]
-        extra_env = {"OSXPHOTOS_PHOTOKIT_TIMEOUT": str(args.download_timeout)}
-        if not drive(command, args.scratch, extra_env):
-            raise RuntimeError("the export of the unedited original failed")
-        found = [item for item in Path(folder).iterdir() if item.is_file()]
-        if len(found) != 1:
-            raise RuntimeError(f"the export of the original wrote {len(found)} files")
-        found[0].replace(path)
+    command = [tool("osxphotos"), "run", str(helper), uuid, str(folder)]
+    if not drive([*command, str(args.download_timeout)], args.scratch):
+        raise RuntimeError("the download of the original failed")
+    found = [item for item in folder.glob("*") if item.is_file()]
+    if len(found) != 1:
+        raise RuntimeError(f"the download of the original wrote {len(found)} files")
+    return found[0]
 
 
 def export_videos(args: argparse.Namespace, uuids: list[str] | None = None) -> bool:
@@ -702,6 +756,18 @@ def export_videos(args: argparse.Namespace, uuids: list[str] | None = None) -> b
             passed = False
             continue
         wanted.append(uuid)
+    # Photos keeps a local copy of each downloaded original, which the export then
+    # copies, so the export does not download the edited render.
+    held: dict[str, Path] = {}
+    for uuid in wanted if trim else []:
+        try:
+            held[uuid] = download_original(
+                uuid, library[uuid]["original_filesize"], args
+            )
+        except RuntimeError as error:
+            print(f"{uuid}: {error}.", file=sys.stderr)
+            passed = False
+    wanted = [uuid for uuid in wanted if uuid in held or not trim]
     for uuid in wanted:
         # osxphotos gives a new name to a file that a cut export left behind.
         for leftover in (export_dir / uuid).glob("*"):
@@ -731,12 +797,10 @@ def export_videos(args: argparse.Namespace, uuids: list[str] | None = None) -> b
             passed = False
             continue
         if trim:
-            try:
-                export_original(uuid, files[0], args)
-            except RuntimeError as error:
-                print(f"{uuid}: {error}.", file=sys.stderr)
-                passed = False
-                continue
+            # The file keeps its path, which the export database records for the
+            # import, and takes the bytes of the original in any case.
+            held[uuid].replace(files[0])
+            held[uuid].parent.rmdir()
         size = files[0].stat().st_size
         photo = library[uuid]
         if size != photo["original_filesize"]:
