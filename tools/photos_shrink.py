@@ -85,13 +85,15 @@ original of an edited video: it gives PhotoKit the image constant for the
 original, 2, where the video constant is 1. So `--trim` exports the original
 again through `osxphotos run`, with the image constant whose value is 1.
 
-The work directory holds one directory per asset UUID under `export/`, and the
-same layout under `encoded/`. Each file keeps its exact name there, and that
-name becomes the name of the new asset. A flat export renames the second of two
-files that have the same name. The layout also lets the export database, which
-finds a file by its relative path, match a copy to the record of its original.
-`state.json` records the step each video reached, so each subcommand skips the
-work that an earlier run completed, and a cut run resumes where it stopped:
+The work directory holds the records of a batch: `state.json` and the import
+reports. The large files go to the scratch folder of the work directory, under
+`SCRATCH_ROOT`: one directory per asset UUID under `export/`, and the same layout
+under `encoded/`. Each file keeps its exact name there, and that name becomes the
+name of the new asset. A flat export renames the second of two files that have
+the same name. The layout also lets the export database, which finds a file by
+its relative path, match a copy to the record of its original. `state.json`
+records the step each video reached, so each subcommand skips the work that an
+earlier run completed, and a cut run resumes where it stopped:
 
 - A video replaced or kept is never selected again. Its new HEVC asset is not
   selected either, because the selection takes H.264 videos only.
@@ -135,6 +137,7 @@ from __future__ import annotations
 
 import argparse
 import fcntl
+import hashlib
 import json
 import os
 import shlex
@@ -362,6 +365,10 @@ SAME_FIELDS = (
     "keywords",
 )
 
+# Folder that holds the scratch folder of each work directory: the exports and the
+# copies, many GiB during a batch. Time Machine skips it.
+SCRATCH_ROOT = Path.home() / "Library" / "Caches" / "photos_shrink"
+
 # osxphotos query that selects the videos of a batch, on top of `--min-size`.
 SELECTION = (
     *("--only-movies", "--not-edited", "--not-shared"),
@@ -441,18 +448,20 @@ def run(args: list[str]) -> subprocess.CompletedProcess[str]:
     return done
 
 
-def drive(args: list[str], work: Path, extra_env: dict[str, str] | None = None) -> bool:
+def drive(
+    args: list[str], scratch: Path, extra_env: dict[str, str] | None = None
+) -> bool:
     """Run a command that prints its own progress, and return whether it passed.
 
-    The command runs in the work directory, because `osxphotos` writes its crash
+    The command runs in the scratch folder, because `osxphotos` writes its crash
     log to the current directory.
     """
     extra_env = extra_env or {}
     settings = [f"{name}={shlex.quote(value)}" for name, value in extra_env.items()]
     print("$ " + " ".join([*settings, shlex.join(args)]), flush=True)
     env = {**os.environ, **extra_env}
-    work.mkdir(parents=True, exist_ok=True)
-    return subprocess.run(args, cwd=work, env=env, check=False).returncode == 0
+    scratch.mkdir(parents=True, exist_ok=True)
+    return subprocess.run(args, cwd=scratch, env=env, check=False).returncode == 0
 
 
 def photos_running() -> bool:
@@ -520,7 +529,7 @@ def ready_photos() -> None:
     sys.exit(f"Photos is not ready: {problem}. Quit it and open it again.")
 
 
-def drive_photos(args: list[str], work: Path, dry_run: bool = False) -> bool:
+def drive_photos(args: list[str], scratch: Path, dry_run: bool = False) -> bool:
     """Run an `osxphotos` command that drives Photos, and return whether it passed.
 
     Photos starts first, except in a dry run. A command that fails has often made
@@ -529,7 +538,7 @@ def drive_photos(args: list[str], work: Path, dry_run: bool = False) -> bool:
     """
     if not dry_run:
         ready_photos()
-    passed = drive(args, work)
+    passed = drive(args, scratch)
     if not passed and not dry_run:
         print("The command failed: quitting Photos.", file=sys.stderr, flush=True)
         quit_photos()
@@ -544,17 +553,29 @@ def keep_awake() -> None:
         print(f"caffeinate did not start, so the Mac can sleep: {error}")
 
 
-def lock_work(work: Path) -> object:
-    """Lock the work directory for this process, or exit when another holds it.
+def scratch_folder(work: Path) -> Path:
+    """Return the scratch folder of a work directory, under `SCRATCH_ROOT`.
+
+    Its name takes the name of the work directory and a digest of its full path,
+    so that two work directories never share a scratch folder.
+    """
+    digest = hashlib.sha256(str(work).encode("UTF-8")).hexdigest()[:8]
+    return SCRATCH_ROOT / f"{work.name}-{digest}"
+
+
+def lock_work(scratch: Path) -> object:
+    """Lock a work directory for this process, or exit when another holds it.
+
+    The lock file sits in the scratch folder of the work directory, on local disk.
 
     :return: The open lock file. The lock lasts as long as the file stays open.
     """
-    work.mkdir(parents=True, exist_ok=True)
-    handle = (work / LOCK_FILE).open("w", encoding="UTF-8")
+    scratch.mkdir(parents=True, exist_ok=True)
+    handle = (scratch / LOCK_FILE).open("w", encoding="UTF-8")
     try:
         fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
     except BlockingIOError:
-        sys.exit(f"Another process uses {work}: wait for it to end.")
+        sys.exit("Another process uses this work directory: wait for it to end.")
     return handle
 
 
@@ -648,14 +669,14 @@ def export_original(uuid: str, path: Path, args: argparse.Namespace) -> None:
 
     The file keeps its path, which the export database records for the import.
     """
-    helper = args.work / ".photokit_original.py"
+    helper = args.scratch / ".photokit_original.py"
     helper.write_text(PHOTOKIT_ORIGINAL, encoding="UTF-8")
-    with tempfile.TemporaryDirectory(dir=args.work) as scratch:
-        command = [tool("osxphotos"), "run", str(helper), uuid, scratch]
+    with tempfile.TemporaryDirectory(dir=args.scratch) as folder:
+        command = [tool("osxphotos"), "run", str(helper), uuid, folder]
         extra_env = {"OSXPHOTOS_PHOTOKIT_TIMEOUT": str(args.download_timeout)}
-        if not drive(command, args.work, extra_env):
+        if not drive(command, args.scratch, extra_env):
             raise RuntimeError("the export of the unedited original failed")
-        found = [item for item in Path(scratch).iterdir() if item.is_file()]
+        found = [item for item in Path(folder).iterdir() if item.is_file()]
         if len(found) != 1:
             raise RuntimeError(f"the export of the original wrote {len(found)} files")
         found[0].replace(path)
@@ -664,7 +685,7 @@ def export_original(uuid: str, path: Path, args: argparse.Namespace) -> None:
 def export_videos(args: argparse.Namespace, uuids: list[str] | None = None) -> bool:
     """Copy each selected original out of the library, one directory per UUID."""
     state = load_state(args.work)
-    export_dir = args.work / "export"
+    export_dir = args.scratch / "export"
     trim = getattr(args, "trim", False)
     uuids = [uuid.upper() for uuid in uuids or args.uuid]
     retry = [u for u in uuids if state.get(u, {}).get("status", "failed") == "failed"]
@@ -698,7 +719,7 @@ def export_videos(args: argparse.Namespace, uuids: list[str] | None = None) -> b
         if args.download_missing:
             command += ["--download-missing", "--use-photokit"]
             extra_env["OSXPHOTOS_PHOTOKIT_TIMEOUT"] = str(args.download_timeout)
-        passed = drive(command, args.work, extra_env) and passed
+        passed = drive(command, args.scratch, extra_env) and passed
     for uuid in wanted:
         files = [
             path
@@ -1143,7 +1164,7 @@ def needs_passthrough(path: Path) -> bool:
     return any(set(t["entry"]) & set(PASSTHROUGH_BOXES) for t in tracks(path)[1:])
 
 
-def passthrough_cut(src: Path, dst: Path, record: dict, work: Path) -> float:
+def passthrough_cut(src: Path, dst: Path, record: dict, scratch: Path) -> float:
     """Cut a video to its trim with AVFoundation, and return the seconds.
 
     The passthrough export copies each packet as it is, and keeps every track and
@@ -1154,7 +1175,7 @@ def passthrough_cut(src: Path, dst: Path, record: dict, work: Path) -> float:
     time_base, first, stop = kept_frames(src, record["trim"])
     if time_base.numerator != 1:
         raise RuntimeError(f"the time base {time_base} is no fraction 1/n of a second")
-    helper = work / ".passthrough_cut.py"
+    helper = scratch / ".passthrough_cut.py"
     helper.write_text(PASSTHROUGH_CUT, encoding="UTF-8")
     dst.parent.mkdir(parents=True, exist_ok=True)
     partial = dst.with_name(f".partial-{dst.name}")
@@ -1348,8 +1369,8 @@ def encode_videos(args: argparse.Namespace, only: set[str] | None = None) -> boo
     for uuid, record in state.items():
         if record["status"] != "exported" or (only and uuid not in only):
             continue
-        src = args.work / "export" / uuid / record["name"]
-        dst = args.work / "encoded" / uuid / record["name"]
+        src = args.scratch / "export" / uuid / record["name"]
+        dst = args.scratch / "encoded" / uuid / record["name"]
         trim = record.get("mode") == "trim"
         signature = CUT_SIGNATURE if trim else " ".join(ENCODER)
         try:
@@ -1367,7 +1388,7 @@ def encode_videos(args: argparse.Namespace, only: set[str] | None = None) -> boo
                 if not trim:
                     seconds = encode(src, dst)
                 elif needs_passthrough(src):
-                    seconds = passthrough_cut(src, dst, record, args.work)
+                    seconds = passthrough_cut(src, dst, record, args.scratch)
                 else:
                     seconds = cut_video(src, dst, record)
                 record["encode_seconds"] = round(seconds)
@@ -1446,14 +1467,14 @@ def import_videos(args: argparse.Namespace, only: set[str] | None = None) -> boo
     report.parent.mkdir(parents=True, exist_ok=True)
     command = [tool("osxphotos"), "import"]
     command += [
-        str(args.work / "encoded" / uuid / r["name"]) for uuid, r in ready.items()
+        str(args.scratch / "encoded" / uuid / r["name"]) for uuid, r in ready.items()
     ]
-    command += ["--exportdb", str(args.work / "export" / EXPORT_DB)]
-    command += ["--exportdir", str(args.work / "encoded")]
+    command += ["--exportdb", str(args.scratch / "export" / EXPORT_DB)]
+    command += ["--exportdir", str(args.scratch / "encoded")]
     command += ["--album", literal(ALBUM_NEW), "--report", str(report), "--verbose"]
     if args.dry_run:
-        return drive([*command, "--dry-run"], args.work)
-    passed = drive_photos(command, args.work)
+        return drive([*command, "--dry-run"], args.scratch)
+    passed = drive_photos(command, args.scratch)
     rows = json.loads(report.read_text(encoding="UTF-8")) if report.exists() else []
     for row in rows:
         uuid = Path(row["filepath"]).parent.name
@@ -1465,7 +1486,7 @@ def import_videos(args: argparse.Namespace, only: set[str] | None = None) -> boo
             print(f"{uuid}: the report records no import.", file=sys.stderr)
             passed = False
     save_state(args.work, state)
-    clean_work_files(args.work)
+    clean_work_files(args)
     return passed
 
 
@@ -1655,7 +1676,7 @@ def complete_albums(args: argparse.Namespace) -> None:
         for path in missing:
             command += ["--add-to-album", literal(path)]
         command += ["--split-folder", "/", "--verbose"]
-        if drive_photos(command, args.work):
+        if drive_photos(command, args.scratch):
             record["check"] = "pending"
         save_state(args.work, state)
 
@@ -1683,7 +1704,7 @@ def mark_originals(args: argparse.Namespace) -> bool:
         command += ["--add-to-album", literal(ALBUM_ORIGINALS), "--verbose"]
         if args.dry_run:
             command.append("--dry-run")
-        marked = drive_photos(command, args.work, args.dry_run)
+        marked = drive_photos(command, args.scratch, args.dry_run)
         passed = marked and passed
         if marked and not args.dry_run:
             for uuid in clean:
@@ -1692,22 +1713,23 @@ def mark_originals(args: argparse.Namespace) -> bool:
     return passed
 
 
-def clean_work_files(work: Path) -> None:
-    """Remove the work files that no later step reads.
+def clean_work_files(args: argparse.Namespace) -> None:
+    """Remove the files of the scratch folder that no later step reads.
 
     The exported original goes once its copy is in the library: the original
     stays in the library and in iCloud until the manual delete. The copy goes
     once its video is finished.
     """
-    state = load_state(work)
+    state = load_state(args.work)
+    export, encoded = args.scratch / "export", args.scratch / "encoded"
     freed = 0
     for uuid, record in state.items():
         if record.get("cleaned"):
             continue
         finished = record["status"] in FINISHED
-        folders = [work / "export" / uuid] if finished or "new_uuid" in record else []
+        folders = [export / uuid] if finished or "new_uuid" in record else []
         if finished:
-            folders.append(work / "encoded" / uuid)
+            folders.append(encoded / uuid)
         for folder in folders:
             for path in folder.glob("*"):
                 freed += path.stat().st_size
@@ -1718,7 +1740,7 @@ def clean_work_files(work: Path) -> None:
             record["cleaned"] = True
     if freed:
         print(f"Removed {freed / 2**30:.1f} GiB of work files.", flush=True)
-    save_state(work, state)
+    save_state(args.work, state)
 
 
 def settle(args: argparse.Namespace, wait: int = 0) -> bool:
@@ -1737,7 +1759,7 @@ def settle(args: argparse.Namespace, wait: int = 0) -> bool:
         checked = check_videos(args, tables=False, shown=shown)
         complete_albums(args)
         passed = mark_originals(args) and checked
-        clean_work_files(args.work)
+        clean_work_files(args)
         waiting = [
             record
             for record in load_state(args.work).values()
@@ -1755,13 +1777,13 @@ def settle(args: argparse.Namespace, wait: int = 0) -> bool:
         time.sleep(UPLOAD_POLL)
 
 
-def disk_space(work: Path) -> int:
-    """Return the disk space, in bytes, that a large write can count on.
+def disk_space(scratch: Path) -> int:
+    """Return the disk space, in bytes, that a large write to `scratch` can count on.
 
     It is the space for important use when macOS gives it, and the free space
     otherwise. A sandbox, for one, hides the first and answers 0.
     """
-    free = shutil.disk_usage(work).free
+    free = shutil.disk_usage(scratch).free
     try:
         answer = run([
             tool("osascript"),
@@ -1769,7 +1791,7 @@ def disk_space(work: Path) -> int:
             "JavaScript",
             "-e",
             IMPORTANT_SPACE,
-            str(work),
+            str(scratch),
         ])
         important = int(float(answer.stdout))
     except (RuntimeError, ValueError):
@@ -1820,7 +1842,8 @@ def run_videos(args: argparse.Namespace) -> bool:
             print(f"{uuid}  {size / 2**20:8.0f} MiB")
         print(f"{len(selected)} videos, {sum(selected.values()) / 2**30:.0f} GiB.")
         return True
-    args.work.mkdir(parents=True, exist_ok=True)
+    for folder in (args.work, args.scratch):
+        folder.mkdir(parents=True, exist_ok=True)
     keep_awake()
     passed = True
     failures = 0
@@ -1837,7 +1860,7 @@ def run_videos(args: argparse.Namespace) -> bool:
         if record.get("status") in FINISHED:
             continue
         size = record.get("source_bytes", size)
-        free = disk_space(args.work)
+        free = disk_space(args.scratch)
         if free < args.min_free + 3 * size:
             print(f"Stopped: {free / 2**30:.0f} GiB of disk space.", file=sys.stderr)
             passed = False
@@ -2035,7 +2058,7 @@ def dedup_assets(args: argparse.Namespace) -> bool:
             for option, *values in changes:
                 command += [option, *(literal(value) for value in values)]
             command += ["--split-folder", "/", "--verbose"]
-            passed = drive_photos(command, args.work) and passed
+            passed = drive_photos(command, args.scratch) and passed
     # A copy goes only once the kept asset holds all that the copy holds.
     library = photos([
         photo["uuid"] for kept, copies, _, _ in merges for photo in (kept, *copies)
@@ -2058,7 +2081,7 @@ def dedup_assets(args: argparse.Namespace) -> bool:
         for uuid in marks:
             command += ["--uuid", uuid]
         command += ["--add-to-album", literal(ALBUM_ORIGINALS), "--verbose"]
-        passed = drive_photos(command, args.work) and passed
+        passed = drive_photos(command, args.scratch) and passed
     return passed
 
 
@@ -2069,7 +2092,12 @@ def main() -> int:
 
     def step(name: str, action) -> argparse.ArgumentParser:
         sub = steps.add_parser(name, help=action.__doc__.splitlines()[0])
-        sub.add_argument("--work", type=Path, required=True, help="Work directory.")
+        sub.add_argument(
+            "--work",
+            type=Path,
+            required=True,
+            help="Work directory, for the records of a batch.",
+        )
         sub.set_defaults(action=action)
         return sub
 
@@ -2153,8 +2181,9 @@ def main() -> int:
 
     args = parser.parse_args()
     args.work = args.work.resolve()
+    args.scratch = scratch_folder(args.work)
     if args.step != "status" and not getattr(args, "list", False):
-        args.lock = lock_work(args.work)
+        args.lock = lock_work(args.scratch)
     passed = args.action(args)
     if args.step != "dedup":
         summary(load_state(args.work))
