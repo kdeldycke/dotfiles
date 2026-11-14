@@ -602,11 +602,13 @@ def keep_awake() -> None:
 def scratch_folder(work: Path) -> Path:
     """Return the scratch folder of a work directory, under `SCRATCH_ROOT`.
 
-    Its name takes the name of the work directory and a digest of its full path,
-    so that two work directories never share a scratch folder.
+    Its name takes the name of the work directory and a digest of its real path, so
+    that two paths to one work directory share a scratch folder, and two work
+    directories never do.
     """
-    digest = hashlib.sha256(str(work).encode("UTF-8")).hexdigest()[:8]
-    return SCRATCH_ROOT / f"{work.name}-{digest}"
+    real = work.resolve()
+    digest = hashlib.sha256(str(real).encode("UTF-8")).hexdigest()[:8]
+    return SCRATCH_ROOT / f"{real.name}-{digest}"
 
 
 def lock_work(scratch: Path) -> object:
@@ -2244,7 +2246,9 @@ def main() -> int:
     dry_run_option(step("dedup", dedup_assets))
 
     args = parser.parse_args()
-    args.work = args.work.resolve()
+    # The work directory keeps the path of the command line, links included: the
+    # real path of a cloud storage folder holds the name of the account.
+    args.work = Path(os.path.abspath(args.work))
     args.scratch = scratch_folder(args.work)
     if args.step != "status" and not getattr(args, "list", False):
         args.lock = lock_work(args.scratch)
