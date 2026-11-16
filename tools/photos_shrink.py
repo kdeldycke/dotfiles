@@ -80,12 +80,11 @@ boxes. A cut that drops a track or a box is rejected, and its video keeps its
 original. The new asset has no edits, so it loses a poster frame that differs
 from its first frame. An H.264 new asset can get an HEVC copy in a later run.
 
-`osxphotos export --use-photokit` writes the edited render in place of the
-original of an edited video: it gives PhotoKit the image constant for the
-original, 2, where the video constant is 1. So `--trim` first downloads the
-original file itself through PhotoKit's resource manager, run by `osxphotos run`,
-and puts it in place of the exported file. Photos keeps a local copy of that
-download, so the export then copies it, and the edited render does not download.
+`--trim` first downloads each original itself, through PhotoKit's resource
+manager run by `osxphotos run`. It then puts that file in place of the exported
+file. The video request of `osxphotos export --use-photokit` fails on some
+originals that only iCloud holds, with "Could not get video for asset". Photos
+keeps a local copy of the download, so the export copies it and downloads nothing.
 
 The work directory holds the records of a batch: `state.json` and the import
 reports. The large files go to the scratch folder of the work directory, under
@@ -759,7 +758,7 @@ def export_videos(args: argparse.Namespace, uuids: list[str] | None = None) -> b
             continue
         wanted.append(uuid)
     # Photos keeps a local copy of each downloaded original, which the export then
-    # copies, so the export does not download the edited render.
+    # copies, so the export downloads nothing.
     held: dict[str, Path] = {}
     for uuid in wanted if trim else []:
         try:

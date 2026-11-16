@@ -130,7 +130,7 @@ wifiman = "1.2.8"
 6502835663 = "1.21.2"
 
 [uvx]
-osxphotos = "0.77.2"
+osxphotos = "0.78.1"
 
 [vscode]
 "anthropic.claude-code" = "2.1.226"
