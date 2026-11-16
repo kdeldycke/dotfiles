@@ -244,9 +244,9 @@ Each model hears the same 2 minutes without the audio around them, so the rates 
 
 ## Traps
 
-These were seen with Nativ `0.4.0` (mlx-audio `0.5.8`). Check them again after a Nativ update.
+Runs with Nativ `0.4.0` (mlx-audio `0.5.8`) found these traps. A reading of the source of Nativ `0.4.5` (mlx-audio `0.6.4`) confirms the traps of the `strict=False` loader, the snapshot path, MOSS, the Qwen3-ASR token budget, Cohere's `vad=True`, Voxtral and pyannote. The other traps need a run, and still date from `0.4.0`: the early stop of 20-minute Qwen3-ASR chunks, the Silero buffer limit, VibeVoice-ASR, the Whisper apostrophe and the Nativ blobs. Check them again after a Nativ update.
 
-- A model whose tensor names do not match the loader loads without an error and writes garbage, because the loader falls back to `strict=False`. Read the first lines of output. The `mlx-community` conversion of Cohere Transcribe is for another library: use the `CohereLabs` weights.
+- A model whose tensor names do not match the loader loads without an error and writes garbage, because the loader loads with `strict=False` by default. `run_model.py` tries `strict=True` first. Read the first lines of output. The `mlx-community` conversion of Cohere Transcribe is for another library: use the `CohereLabs` weights.
 - Load a model by its repository name, never by a snapshot path: the loader can read the snapshot hash as the model type.
 - MOSS: the `hotwords` argument drops the speaker labels, so `run_model.py` appends the hints to the default prompt. The bundled parser also writes `[S01]` into the text, which the script removes.
 - Qwen3-ASR: `max_tokens` bounds the whole file, and chunks of 20 minutes stop early. `run_model.py` uses 5-minute chunks and about 500 tokens per minute.
