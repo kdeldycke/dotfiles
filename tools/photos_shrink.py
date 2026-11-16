@@ -86,10 +86,21 @@ file. The video request of `osxphotos export --use-photokit` fails on some
 originals that only iCloud holds, with "Could not get video for asset". Photos
 keeps a local copy of the download, so the export copies it and downloads nothing.
 
+`--visual-edits` adds to `--trim` the trimmed videos whose other edits a cut
+cannot apply, like a crop or a light change. A slow-motion edit changes the
+timing, so such a video stays out. Each new asset gets the cut as its original,
+and an edit that holds the render that Photos made for the original. Both assets
+then look the same, and "Revert to Original" shows the whole frame of the trimmed
+range. PhotoKit refuses the edit format of Photos from another process. So the
+edit keeps the adjustments of Photos, without the trim, under `EDIT_FORMAT`.
+Photos cannot read that format, so a new edit in Photos starts from the render,
+with neutral values. The cut keeps the audio: the render of a muted video holds
+none.
+
 The work directory holds the records of a batch: `state.json` and the import
 reports. The large files go to the scratch folder of the work directory, under
 `SCRATCH_ROOT`: one directory per asset UUID under `export/`, and the same layout
-under `encoded/` and, for a cut, `originals/`. Each file keeps its exact name
+under `encoded/`, `originals/` and `renders/`. Each file keeps its exact name
 there, and that name becomes the name of the new asset. A flat export renames the
 second of two files that have the same name. The layout also lets the export
 database, which finds a file by its relative path, match a copy to the record of
@@ -126,8 +137,9 @@ Usage:
     photos_shrink.py run --work {directory} --uuid {uuid} [--dry-run]
     photos_shrink.py run --work {directory} --min-size {size} [--limit {n}]
     photos_shrink.py run --work {directory} --trim --min-size {size} [--list]
+    photos_shrink.py run --work {directory} --trim --visual-edits --min-size {size}
     photos_shrink.py status --work {directory}
-    photos_shrink.py export --work {directory} --uuid {uuid} [--trim]
+    photos_shrink.py export --work {directory} --uuid {uuid} [--trim [--visual-edits]]
     photos_shrink.py encode --work {directory}
     photos_shrink.py import --work {directory} [--dry-run]
     photos_shrink.py check --work {directory}
@@ -228,6 +240,12 @@ DUPLICATE_SCAN = (
     *("--quiet", "--mute"),
     *("--print", "{uuid} {photo.fingerprint} {photo.original_filesize}"),
 )
+
+# Format name of the edit that the new asset of a `--visual-edits` video gets.
+# PhotoKit refuses the format of Photos, `com.apple.photo`, from another process,
+# with `PHPhotosErrorDomain` code 3302, even for the data of Photos as it is.
+# Photos cannot read an edit in another format, so it edits the render further.
+EDIT_FORMAT = "photos-shrink.photos-edit"
 
 # ffmpeg arguments for the video stream. A lower `-crf` keeps more quality.
 ENCODER = (
@@ -330,12 +348,100 @@ if session.status() != AVFoundation.AVAssetExportSessionStatusCompleted:
 # like the faces that an iPhone detects. A source with one goes through AVFoundation.
 PASSTHROUGH_TAGS = ("mebx",)
 
-# Python file that `osxphotos run` executes to download the original file of a
-# video into a directory, with the bytes that Photos stores:
-# `{file} {uuid} {directory} {timeout}`. iCloud sends the file when the library has
-# no local copy. The AVFoundation route of `osxphotos` fails on some originals that
-# only iCloud holds, with "Could not get video for asset".
-PHOTOKIT_ORIGINAL = """\
+# Python file that `osxphotos run` executes to give a new asset the edit of its
+# original: `{file} {original} {new asset} {render} {format}`. The edit holds the
+# render file, and the adjustments of the original without the trim, under the
+# format name. A new asset that holds an edit in that format stays as it is.
+# PhotoKit answers a request for an editing input on the main queue, which the run
+# loop serves.
+PHOTOKIT_EDIT = """\
+import json
+import shutil
+import sys
+import threading
+import time
+import zlib
+
+import Foundation
+import Photos
+
+original_uuid, new_uuid, render, format_id = sys.argv[1:5]
+
+
+def fetch(uuid):
+    asset = Photos.PHAsset.fetchAssetsWithLocalIdentifiers_options_(
+        [f"{uuid}/L0/001"], None
+    ).firstObject()
+    if asset is None:
+        sys.exit(f"no asset {uuid}")
+    return asset
+
+
+def editing_input(asset):
+    answer, done = {}, threading.Event()
+
+    def handler(content, info):
+        answer["input"], answer["info"] = content, info
+        done.set()
+
+    options = Photos.PHContentEditingInputRequestOptions.alloc().init()
+    options.setNetworkAccessAllowed_(True)
+    options.setCanHandleAdjustmentData_(lambda data: True)
+    asset.requestContentEditingInputWithOptions_completionHandler_(options, handler)
+    deadline = time.monotonic() + 600
+    while not done.is_set() and time.monotonic() < deadline:
+        Foundation.NSRunLoop.currentRunLoop().runUntilDate_(
+            Foundation.NSDate.dateWithTimeIntervalSinceNow_(0.05)
+        )
+    if answer.get("input") is None:
+        sys.exit(f"no editing input: {answer.get('info')}")
+    return answer["input"]
+
+
+new_asset = fetch(new_uuid)
+content = editing_input(new_asset)
+held = content.adjustmentData()
+if held is not None and held.formatIdentifier() == format_id:
+    print(f"{new_uuid} holds the edit already")
+    sys.exit(0)
+source = editing_input(fetch(original_uuid)).adjustmentData()
+if source is None or source.formatIdentifier() != "com.apple.photo":
+    sys.exit("the original holds no edit of Photos")
+value = json.loads(zlib.decompress(bytes(source.data()), -zlib.MAX_WBITS))
+value["adjustments"] = [
+    item for item in value["adjustments"] if item.get("identifier") != "Trim"
+]
+packer = zlib.compressobj(9, zlib.DEFLATED, -zlib.MAX_WBITS)
+data = packer.compress(json.dumps(value, separators=(",", ":")).encode())
+data += packer.flush()
+output = Photos.PHContentEditingOutput.alloc().initWithContentEditingInput_(content)
+output.setAdjustmentData_(
+    Photos.PHAdjustmentData.alloc().initWithFormatIdentifier_formatVersion_data_(
+        format_id, source.formatVersion(), data
+    )
+)
+shutil.copyfile(render, output.renderedContentURL().path())
+
+
+def change():
+    request = Photos.PHAssetChangeRequest.changeRequestForAsset_(new_asset)
+    request.setContentEditingOutput_(output)
+
+
+library = Photos.PHPhotoLibrary.sharedPhotoLibrary()
+saved, error = library.performChangesAndWait_error_(change, None)
+if not saved:
+    sys.exit(f"Photos refused the edit: {error}")
+print(f"{new_uuid} holds the edit")
+"""
+
+# Python file that `osxphotos run` executes to download one file of a video into a
+# directory, with the bytes that Photos stores: `{file} {uuid} {directory} {kind}
+# {timeout}`. The kind is `original`, or `render` for the file that Photos renders
+# for an edit. iCloud sends the file when the library has no local copy, and the
+# file takes its name once complete. The AVFoundation route of `osxphotos` fails on
+# some originals that only iCloud holds, with "Could not get video for asset".
+PHOTOKIT_RESOURCE = """\
 import sys
 import threading
 import time
@@ -344,7 +450,12 @@ from pathlib import Path
 import Foundation
 import Photos
 
-uuid, folder, timeout = sys.argv[1], Path(sys.argv[2]), float(sys.argv[3])
+uuid, folder, kind = sys.argv[1], Path(sys.argv[2]), sys.argv[3]
+timeout = float(sys.argv[4])
+wanted = {
+    "original": Photos.PHAssetResourceTypeVideo,
+    "render": Photos.PHAssetResourceTypeFullSizeVideo,
+}[kind]
 asset = Photos.PHAsset.fetchAssetsWithLocalIdentifiers_options_(
     [f"{uuid}/L0/001"], None
 ).firstObject()
@@ -353,10 +464,10 @@ if asset is None:
 resources = [
     item
     for item in Photos.PHAssetResource.assetResourcesForAsset_(asset)
-    if item.type() == Photos.PHAssetResourceTypeVideo
+    if item.type() == wanted
 ]
 if len(resources) != 1:
-    sys.exit(f"the asset has {len(resources)} original video files, not 1")
+    sys.exit(f"the asset has {len(resources)} {kind} files, not 1")
 shown, errors, done = [-1], [], threading.Event()
 
 
@@ -375,14 +486,16 @@ options = Photos.PHAssetResourceRequestOptions.alloc().init()
 options.setNetworkAccessAllowed_(True)
 options.setProgressHandler_(progress)
 target = folder / resources[0].originalFilename()
+partial = folder / f".partial-{target.name}"
 manager = Photos.PHAssetResourceManager.defaultManager()
 manager.writeDataForAssetResource_toFile_options_completionHandler_(
-    resources[0], Foundation.NSURL.fileURLWithPath_(str(target)), options, finished
+    resources[0], Foundation.NSURL.fileURLWithPath_(str(partial)), options, finished
 )
 if not done.wait(timeout):
     sys.exit(f"the download did not end in {timeout:.0f} s")
 if errors[0] is not None:
     sys.exit(f"the download failed: {errors[0]}")
+partial.replace(target)
 print(target)
 """
 
@@ -400,6 +513,10 @@ PHOTOS_TIMEOUT = 300
 
 # Errors that a probe of an unusual file can raise.
 PROBE_ERRORS = (RuntimeError, KeyError, IndexError, StopIteration)
+
+# Seconds that the render of a `--visual-edits` video can last more or less than
+# its cut: both hold the trimmed range.
+RENDER_TOLERANCE = 0.1
 
 # Asset fields that must be equal in an original and in its new asset.
 SAME_FIELDS = (
@@ -439,6 +556,10 @@ TEXT_KEYS = ("comment", "description", "keywords", "title")
 # it copies the tags of the original. exiftool calls the keywords `Keyword` in
 # the `ItemList` group and `Keywords` in the other groups.
 TEXT_TAGS = ("Comment", "Description", "Keyword", "Keywords", "Title")
+
+# Photos edits that change the timing of a video. Its render then lasts longer
+# than the trimmed range, so `--visual-edits` leaves the video out.
+TIMING_EDITS = frozenset(("SlowMotion",))
 
 # Photos edits that a cut applies. A trim must be among the enabled edits.
 TRIM_EDITS = frozenset(("Mute", "Trim", "VideoPosterFrame"))
@@ -663,15 +784,18 @@ def photos(uuids: list[str]) -> dict[str, dict]:
     return {photo["uuid"]: photo for photo in json.loads(run(args).stdout)}
 
 
-def trim_edit(photo: dict) -> dict | None:
+def trim_edit(photo: dict, visual: bool = False) -> dict | None:
     """Return the trim of an edited video that a cut can apply, or None.
 
     A cut applies the edits of `TRIM_EDITS`, and only when a trim is among them.
     An edit counts when its `enabled` flag is true or missing: Photos keeps an
     edit that a person turned off, and that edit changes nothing.
 
+    :param visual: Return the trim of a video whose edits go past `TRIM_EDITS`
+        instead, with none of `TIMING_EDITS`. Its new asset keeps those edits in
+        the render of Photos, so its cut keeps the audio that a mute silences.
     :return: The trim start and end as `value/timescale` text, and whether the
-        edits mute the video.
+        cut leaves out the audio.
     """
     adjustments = (photo.get("adjustments") or {}).get("adjustments") or []
     enabled = {
@@ -679,19 +803,26 @@ def trim_edit(photo: dict) -> dict | None:
         for item in adjustments
         if isinstance(item, dict) and item.get("enabled", True)
     }
-    if "Trim" not in enabled or not set(enabled) <= TRIM_EDITS:
+    names = set(enabled)
+    if "Trim" not in names:
+        return None
+    if visual and (names <= TRIM_EDITS or names & TIMING_EDITS):
+        return None
+    if not visual and not names <= TRIM_EDITS:
         return None
     times = {key: enabled["Trim"][f"{key}Time"] for key in ("start", "end")}
     return {
         **{key: f"{time['value']}/{time['timescale']}" for key, time in times.items()},
-        "mute": "Mute" in enabled,
+        "mute": "Mute" in names and not visual,
     }
 
 
-def refusal(photo: dict | None, trim: bool = False) -> str | None:
+def refusal(photo: dict | None, trim: bool = False, visual: bool = False) -> str | None:
     """Return why a video cannot make the round trip, or None when it can.
 
     :param trim: Whether the round trip cuts the video to its trim.
+    :param visual: Whether a cut can also take a video with other edits, which its
+        new asset keeps in the render of Photos.
     """
     if photo is None:
         return "it is not in the library"
@@ -702,9 +833,11 @@ def refusal(photo: dict | None, trim: bool = False) -> str | None:
     if photo["shared"]:
         return "it is in a shared album"
     if trim:
-        if trim_edit(photo) is None:
+        if trim_edit(photo) is not None:
+            return None
+        if trim_edit(photo, visual=True) is None:
             return "it has no trim, or an edit that a cut cannot apply"
-        return None
+        return None if visual else "its other edits need `--visual-edits`"
     if photo["hasadjustments"]:
         return "it has edits, which a new asset cannot keep"
     if (photo["exif_info"] or {}).get("codec") == "hvc1":
@@ -712,29 +845,36 @@ def refusal(photo: dict | None, trim: bool = False) -> str | None:
     return None
 
 
-def download_original(uuid: str, size: int, args: argparse.Namespace) -> Path:
-    """Download the original file of a video through PhotoKit, and return its path.
+def download_resource(
+    uuid: str, kind: str, args: argparse.Namespace, size: int | None = None
+) -> Path:
+    """Download one file of a video through PhotoKit, and return its path.
 
-    The file lands in `originals/{uuid}/` of the scratch folder, with the bytes
-    that Photos stores. A file of the right size from an earlier run is used
-    again, since the download of a large original takes hours.
+    The file lands in `originals/{uuid}/` or `renders/{uuid}/` of the scratch
+    folder, with the bytes that Photos stores. A complete file from an earlier run
+    is used again, since the download of a large original takes hours.
+
+    :param kind: `original`, or `render` for the file that Photos renders for the
+        edit of a video.
+    :param size: The size in bytes that the file must have, when Photos records it.
     """
-    folder: Path = args.scratch / "originals" / uuid
+    folder: Path = args.scratch / f"{kind}s" / uuid
     held = [item for item in folder.glob("*") if item.is_file()]
-    if len(held) == 1 and held[0].stat().st_size == size:
-        print(f"{uuid}: the original is already downloaded.")
-        return held[0]
+    complete = [item for item in held if not item.name.startswith(".")]
+    if len(complete) == 1 and size in (None, complete[0].stat().st_size):
+        print(f"{uuid}: the {kind} is already downloaded.")
+        return complete[0]
     for item in held:
         item.unlink()
     folder.mkdir(parents=True, exist_ok=True)
-    helper = args.scratch / ".photokit_original.py"
-    helper.write_text(PHOTOKIT_ORIGINAL, encoding="UTF-8")
-    command = [tool("osxphotos"), "run", str(helper), uuid, str(folder)]
+    helper = args.scratch / ".photokit_resource.py"
+    helper.write_text(PHOTOKIT_RESOURCE, encoding="UTF-8")
+    command = [tool("osxphotos"), "run", str(helper), uuid, str(folder), kind]
     if not drive([*command, str(args.download_timeout)], args.scratch):
-        raise RuntimeError("the download of the original failed")
+        raise RuntimeError(f"the download of the {kind} failed")
     found = [item for item in folder.glob("*") if item.is_file()]
-    if len(found) != 1:
-        raise RuntimeError(f"the download of the original wrote {len(found)} files")
+    if len(found) != 1 or found[0].name.startswith("."):
+        raise RuntimeError(f"the download of the {kind} wrote {len(found)} files")
     return found[0]
 
 
@@ -743,6 +883,7 @@ def export_videos(args: argparse.Namespace, uuids: list[str] | None = None) -> b
     state = load_state(args.work)
     export_dir = args.scratch / "export"
     trim = getattr(args, "trim", False)
+    visual = getattr(args, "visual_edits", False)
     uuids = [uuid.upper() for uuid in uuids or args.uuid]
     retry = [u for u in uuids if state.get(u, {}).get("status", "failed") == "failed"]
     library = photos(retry)
@@ -752,23 +893,28 @@ def export_videos(args: argparse.Namespace, uuids: list[str] | None = None) -> b
         if uuid not in retry:
             print(f"{uuid}: already at step {state[uuid]['status']!r}.")
             continue
-        reason = refusal(library.get(uuid), trim)
+        reason = refusal(library.get(uuid), trim, visual)
         if reason:
             print(f"{uuid}: refused, {reason}.", file=sys.stderr)
             passed = False
             continue
         wanted.append(uuid)
     # Photos keeps a local copy of each downloaded original, which the export then
-    # copies, so the export downloads nothing.
+    # copies, so the export downloads nothing. A video that a cut alone cannot
+    # edit also needs the render of its edit.
     held: dict[str, Path] = {}
+    renders: dict[str, Path] = {}
     for uuid in wanted if trim else []:
         try:
-            held[uuid] = download_original(
-                uuid, library[uuid]["original_filesize"], args
-            )
+            size = library[uuid]["original_filesize"]
+            original = download_resource(uuid, "original", args, size)
+            if trim_edit(library[uuid]) is None:
+                renders[uuid] = download_resource(uuid, "render", args)
         except RuntimeError as error:
             print(f"{uuid}: {error}.", file=sys.stderr)
             passed = False
+            continue
+        held[uuid] = original
     wanted = [uuid for uuid in wanted if uuid in held or not trim]
     for uuid in wanted:
         # osxphotos gives a new name to a file that a cut export left behind.
@@ -822,7 +968,10 @@ def export_videos(args: argparse.Namespace, uuids: list[str] | None = None) -> b
         }
         if trim:
             codec = (photo["exif_info"] or {}).get("codec")
-            state[uuid].update(mode="trim", trim=trim_edit(photo), codec=codec)
+            cut = trim_edit(photo) or trim_edit(photo, visual=True)
+            state[uuid].update(mode="trim", trim=cut, codec=codec)
+            if uuid in renders:
+                state[uuid]["render"] = renders[uuid].name
         print(f"{uuid}: exported {files[0].name}, {size / 2**20:.0f} MiB.")
     save_state(args.work, state)
     return passed
@@ -1428,6 +1577,32 @@ def cut_problems(src: Path, dst: Path, record: dict) -> list[str]:
     return problems
 
 
+def render_problems(render: Path, cut: Path) -> list[str]:
+    """Return each way the render of an edit does not fit the cut of its video.
+
+    PhotoKit takes only a QuickTime movie as the render of a video edit. The render
+    and the cut both hold the trimmed range, so they last as long as each other,
+    within `RENDER_TOLERANCE`.
+    """
+    problems = []
+    entries = "format=duration:format_tags=major_brand"
+    formats = [
+        probe_json(["-show_entries", entries, str(path)])["format"]
+        for path in (render, cut)
+    ]
+    brand = formats[0].get("tags", {}).get("major_brand", "").strip()
+    if brand != "qt":
+        problems.append(
+            f"the render is a {brand or 'bare'} file, not a QuickTime movie"
+        )
+    lengths = [float(found["duration"]) for found in formats]
+    if abs(lengths[0] - lengths[1]) > RENDER_TOLERANCE:
+        problems.append(
+            f"the render lasts {lengths[0]:.2f} s and the cut {lengths[1]:.2f} s"
+        )
+    return problems
+
+
 def encode_videos(args: argparse.Namespace, only: set[str] | None = None) -> bool:
     """Encode each exported video, then accept the copy or keep the original."""
     state = load_state(args.work)
@@ -1464,6 +1639,9 @@ def encode_videos(args: argparse.Namespace, only: set[str] | None = None) -> boo
             if "date" in record:
                 stamp_date(record, dst)
             problems = cut_problems(src, dst, record) if trim else differences(src, dst)
+            if "render" in record:
+                render = args.scratch / "renders" / uuid / record["render"]
+                problems += render_problems(render, dst)
         except PROBE_ERRORS as error:
             record["error"] = f"{type(error).__name__}: {error}"
             save_state(args.work, state)
@@ -1512,7 +1690,10 @@ def adopt_imports(state: dict[str, dict], ready: dict[str, dict]) -> None:
 
 
 def import_videos(args: argparse.Namespace, only: set[str] | None = None) -> bool:
-    """Add each accepted copy to the library as a new asset."""
+    """Add each accepted copy to the library as a new asset.
+
+    The new asset of a `--visual-edits` video then gets the edit of its original.
+    """
     state = load_state(args.work)
     ready = {
         uuid: record
@@ -1528,7 +1709,7 @@ def import_videos(args: argparse.Namespace, only: set[str] | None = None) -> boo
         save_state(args.work, state)
         ready = {uuid: r for uuid, r in ready.items() if r["status"] == "encoded"}
     if not ready:
-        return True
+        return edit_new_assets(args, only)
     report = args.work / "reports" / f"import-{time.strftime('%Y%m%dT%H%M%S')}.json"
     report.parent.mkdir(parents=True, exist_ok=True)
     command = [tool("osxphotos"), "import"]
@@ -1552,7 +1733,46 @@ def import_videos(args: argparse.Namespace, only: set[str] | None = None) -> boo
             print(f"{uuid}: the report records no import.", file=sys.stderr)
             passed = False
     save_state(args.work, state)
+    passed = edit_new_assets(args, only) and passed
     clean_work_files(args)
+    return passed
+
+
+def edit_new_assets(args: argparse.Namespace, only: set[str] | None = None) -> bool:
+    """Give each new asset of a `--visual-edits` video the edit of its original.
+
+    The edit holds the render that Photos made for the edit of the original, and
+    the adjustments of Photos without the trim, under `EDIT_FORMAT`. An edit that
+    fails waits for the next `import`, and `check` shows its new asset as different.
+    """
+    state = load_state(args.work)
+    pending = [
+        uuid
+        for uuid, record in state.items()
+        if record["status"] == "imported"
+        and "render" in record
+        and not record.get("edited")
+        and (not only or uuid in only)
+    ]
+    if not pending:
+        return True
+    helper = args.scratch / ".photokit_edit.py"
+    helper.write_text(PHOTOKIT_EDIT, encoding="UTF-8")
+    passed = True
+    for uuid in pending:
+        record = state[uuid]
+        render = args.scratch / "renders" / uuid / record["render"]
+        command = [tool("osxphotos"), "run", str(helper), uuid, record["new_uuid"]]
+        command += [str(render), EDIT_FORMAT]
+        if args.dry_run:
+            print("$ " + shlex.join(command))
+            continue
+        if drive(command, args.scratch):
+            record["edited"] = True
+            save_state(args.work, state)
+        else:
+            print(f"{uuid}: the new asset did not take the edit.", file=sys.stderr)
+            passed = False
     return passed
 
 
@@ -1622,6 +1842,13 @@ def comparison(record: dict, old: dict | None, new: dict | None) -> list[tuple]:
         OK if codecs[1] == expected else PENDING if codecs[1] is None else DIFFERENT
     )
     rows.append(("codec", *codecs, verdict))
+    if "render" in record:
+        formats = [
+            ((photo or {}).get("adjustments") or {}).get("format_id")
+            for photo in (old, new)
+        ]
+        verdict = OK if formats[1] == EDIT_FORMAT else DIFFERENT
+        rows.append(("edit", *formats, verdict))
     sizes = [photo["original_filesize"] if photo else None for photo in (old, new)]
     rows.append((
         "bytes",
@@ -1783,8 +2010,8 @@ def clean_work_files(args: argparse.Namespace) -> None:
     """Remove the files of the scratch folder that no later step reads.
 
     The exported original goes once its copy is in the library: the original
-    stays in the library and in iCloud until the manual delete. The copy goes
-    once its video is finished.
+    stays in the library and in iCloud until the manual delete. The copy and the
+    render of an edit go once their video is finished.
     """
     state = load_state(args.work)
     export, encoded = args.scratch / "export", args.scratch / "encoded"
@@ -1795,7 +2022,7 @@ def clean_work_files(args: argparse.Namespace) -> None:
         finished = record["status"] in FINISHED
         folders = [export / uuid] if finished or "new_uuid" in record else []
         if finished:
-            folders.append(encoded / uuid)
+            folders += [encoded / uuid, args.scratch / "renders" / uuid]
         for folder in folders:
             for path in folder.glob("*"):
                 freed += path.stat().st_size
@@ -1885,7 +2112,11 @@ def select_videos(args: argparse.Namespace) -> dict[str, int]:
     command += ["--min-size", args.min_size, "--json"]
     found = json.loads(run(command).stdout)
     if args.trim:
-        found = [photo for photo in found if trim_edit(photo) is not None]
+        found = [
+            photo
+            for photo in found
+            if refusal(photo, trim=True, visual=args.visual_edits) is None
+        ]
     state = load_state(args.work)
     found = [
         photo
@@ -2200,6 +2431,16 @@ def main() -> int:
             default=False,
             help="Cut trimmed videos to their trims, with no re-encoding.",
         )
+        sub.add_argument(
+            "--visual-edits",
+            action=argparse.BooleanOptionalAction,
+            default=False,
+            help=(
+                "With --trim, also take trimmed videos with other edits. Each new "
+                "asset keeps them in the render of Photos, which Photos cannot "
+                "adjust again."
+            ),
+        )
 
     def dry_run_option(sub: argparse.ArgumentParser) -> None:
         sub.add_argument(
@@ -2250,6 +2491,8 @@ def main() -> int:
     dry_run_option(step("dedup", dedup_assets))
 
     args = parser.parse_args()
+    if getattr(args, "visual_edits", False) and not args.trim:
+        parser.error("--visual-edits needs --trim")
     # The work directory keeps the path of the command line, links included: the
     # real path of a cloud storage folder holds the name of the account.
     args.work = Path(os.path.abspath(args.work))
