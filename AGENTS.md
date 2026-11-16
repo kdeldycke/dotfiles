@@ -14,11 +14,7 @@ This file holds only the rules specific to this repository. The generic conventi
 
 ## pi models
 
-- **Nativ's Configure for Pi drops three hand-added `compat` keys from `dotfiles/.pi/agent/models.json`: `supportsFinishReason`, `maxTokensField` and `thinkingFormat`.** After a Configure, read `git diff -- dotfiles/.pi/agent/models.json`, keep the new model list and restore each key the diff shows as removed.
-
-  ```{todo}
-  Remove `maxTokensField` from `dotfiles/.pi/agent/models.json` and from this rule once Nativ's bundled mlx-vlm server reads `max_completion_tokens`, which pi sends by default. The fix is [Neywa-Labs/mlx-vlm#2484](https://github.com/Neywa-Labs/mlx-vlm/pull/2484), merged after mlx-vlm `0.7.11`. To check, search `mlx_vlm/server/request_normalization.py` under `/Applications/Nativ.app/Contents/Frameworks/NativServerKit.framework/Versions/A/Resources/mlx-vlm-server/` for `max_completion_tokens`.
-  ```
+- **Nativ's Configure for Pi drops two hand-added `compat` keys from `dotfiles/.pi/agent/models.json`: `supportsFinishReason` and `thinkingFormat`.** After a Configure, read `git diff -- dotfiles/.pi/agent/models.json`, keep the new model list and restore each key the diff shows as removed.
 
 ## pi upgrades
 

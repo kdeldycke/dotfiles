@@ -5,7 +5,6 @@
       "apiKey" : "nativ",
       "baseUrl" : "http://127.0.0.1:8080/v1",
       "compat" : {
-        "maxTokensField" : "max_tokens",
         "supportsDeveloperRole" : false,
         "supportsFinishReason" : false,
         "supportsReasoningEffort" : false,
