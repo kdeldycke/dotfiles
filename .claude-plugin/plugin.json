@@ -24,6 +24,7 @@
     "./dotfiles/.agents/skills/agent-config-self-tune",
     "./dotfiles/.agents/skills/audit-repo-issues",
     "./dotfiles/.agents/skills/fill-web-form",
+    "./dotfiles/.agents/skills/memory-review",
     "./dotfiles/.agents/skills/pr-triage",
     "./dotfiles/.agents/skills/rename-with-dates",
     "./dotfiles/.agents/skills/session-title",
