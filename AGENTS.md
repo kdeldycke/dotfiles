@@ -34,6 +34,13 @@ This file holds only the rules specific to this repository. The generic conventi
 - **Do not name the global file `AGENTS.md`.** The fallback reads an `AGENTS.md` under `dotfiles/.agents/` as a nested project file, so a Read there can attach the whole global file a second time. This comes from the built-in plugin's source in Claude Code `2.1.284`, not from a live probe.
 - **Check which instruction file a project loads without the API:** run `claude --print --debug-file {log}` from the project directory and read the `[agents-md]` lines, like `no CLAUDE.md found; AGENTS.md loaded: {path}`. The lines appear before the first API call, so a blocked network does not hide them. They cover the project fallback only: the `SessionStart` and `InstructionsLoaded` hooks stay silent in `--print` before the API call (Claude Code `2.1.284`), so nothing offline shows whether the user-scope file loads.
 - **`Instructions no longer present: /Users/kde/.claude/CLAUDE.md` at a session start means the symlink is gone, and every global rule with it.** Recreate it outside the sandbox with `ln -sfn ../code/dotfiles/dotfiles/.agents/global-instruction.md /Users/kde/.claude/CLAUDE.md`.
+- **Cowork in Claude Desktop reads neither link, so the account-wide Settings > Your Claude > Instructions field points its sessions to the copy in the `dotfiles` plugin.** Cowork never loads `~/.claude/CLAUDE.md` (Claude Desktop `5.11492.5`), and the plugin carries this whole repository. The field reaches every chat on the account, so its pointer addresses sessions with file tools only, and its first paragraph is the only rule that plain chats get. No documented API writes the field: when you change the text below, or rename a file it names, paste the text into the field again. The field holds the text below.
+
+```text
+I code in advanced Python. Always produce Markdown files. For rich non-text only document, produce editable OpenOffice documents, and PDF to freeze content.
+
+In a session with file tools, read and follow my global rules before your first action: dotfiles/.agents/global-instruction.md and dotfiles/.claude/tropes.md, under the root of the "dotfiles" plugin (search for the file names if needed). They take precedence over harness defaults, like commit trailers. If you cannot read them, say so in your first reply.
+```
 
 ## Skills
 
