@@ -144,6 +144,7 @@ import json
 import os
 import shlex
 import shutil
+import signal
 import struct
 import subprocess
 import sys
@@ -2151,7 +2152,11 @@ def dedup_assets(args: argparse.Namespace) -> bool:
 
 
 def main() -> int:
-    """Run one step, and return 1 when it failed for a video or a set of assets."""
+    """Run one step, and return 1 when it failed for a video or a set of assets.
+
+    Ctrl-C stops the step with one line in place of a traceback, and the exit
+    code that a shell gives to a process that SIGINT ends.
+    """
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     steps = parser.add_subparsers(dest="step", required=True)
 
@@ -2251,7 +2256,14 @@ def main() -> int:
     args.scratch = scratch_folder(args.work)
     if args.step != "status" and not getattr(args, "list", False):
         args.lock = lock_work(args.scratch)
-    passed = args.action(args)
+    try:
+        passed = args.action(args)
+    except KeyboardInterrupt:
+        print(
+            "\nStopped by Ctrl-C: run the same command again to resume.",
+            file=sys.stderr,
+        )
+        return 128 + signal.SIGINT
     if args.step != "dedup":
         summary(load_state(args.work))
     return 0 if passed else 1
