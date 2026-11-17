@@ -177,6 +177,11 @@ ALBUM_ORIGINALS = "Recompressed originals to delete"
 # audio at the video key frame, which can leave no packet before the cut.
 AUDIO_PREROLL = Fraction(1)
 
+# `roll` sample group that says each AAC packet needs the one before it to decode:
+# an `sgpd` box with a roll distance of -1, as an iPhone writes in its sound track.
+# `with_audio_roll` adds it, with an `sbgp` box that puts every packet in it.
+AUDIO_ROLL = struct.pack(">I4sB3s4sIIh", 26, b"sgpd", 1, b"\0\0\0", b"roll", 2, 1, -1)
+
 # Seconds between two rounds of `check` and `mark` during `run`. Each round
 # reads the whole Photos database, which takes about 15 seconds.
 CHECK_INTERVAL = 1800
@@ -1321,6 +1326,87 @@ def fit_tracks(path: Path, seconds: Fraction, source: Path) -> None:
             handle.write(struct.pack(fmt, value))
 
 
+def with_audio_roll(src: Path, clone: Path) -> Path:
+    """Return a copy of a movie that AVFoundation cuts with the right lead audio.
+
+    AVFoundation keeps the packet before the first kept audio sample only when the
+    sound track says that each packet needs it, through a `roll` sample group, as
+    an iPhone writes. Without one, its passthrough export puts a copy of the next
+    packet in that place, and the first milliseconds of audio come out wrong. An
+    AAC sound track that lacks any sample group gets `AUDIO_ROLL` in an APFS clone
+    of the source. The clone keeps every packet where it was: its new `moov` takes
+    the place of the old one when that is the last box, or goes to the end of the
+    file with the old one turned into a `free` box.
+
+    :return: The clone, or the source when no sound track needs the group.
+    """
+    offset, raw = read_moov(src)
+    if struct.unpack_from(">I", raw)[0] != len(raw):
+        return src
+    inserts: list[tuple[int, bytes, list[int]]] = []
+    chain = [b"mdia", b"minf", b"stbl"]
+    for kind, start, stop in mp4_boxes(raw, 8, len(raw)):
+        if kind != b"trak":
+            continue
+        hdlr = find_box(raw, start, stop, [b"mdia", b"hdlr"])
+        boxes: list[tuple[int, int] | None] = [(start, stop)]
+        boxes += [find_box(raw, start, stop, chain[:depth]) for depth in (1, 2, 3)]
+        if hdlr is None or raw[hdlr[0] + 8 : hdlr[0] + 12] != b"soun":
+            continue
+        # Each box that grows must have an 8-byte header, which holds its size.
+        ranges = [box for box in boxes if box is not None]
+        if len(ranges) != 4 or any(
+            struct.unpack_from(">I", raw, body - 8)[0] != end - body + 8
+            for body, end in ranges
+        ):
+            continue
+        stbl = ranges[-1]
+        children = {child: body for child, body, _ in mp4_boxes(raw, *stbl)}
+        stsd = find_box(raw, *stbl, [b"stsd"])
+        entry = next(mp4_boxes(raw, stsd[0] + 8, stsd[1]), None) if stsd else None
+        sizes = children.get(b"stsz", children.get(b"stz2"))
+        if (
+            stsd is None
+            or entry is None
+            or entry[0] != b"mp4a"
+            or sizes is None
+            or {b"sgpd", b"sbgp"} & children.keys()
+        ):
+            continue
+        count = struct.unpack_from(">I", raw, sizes + 8)[0]
+        group = struct.pack(
+            ">I4sB3s4sIII", 28, b"sbgp", 0, b"\0\0\0", b"roll", 1, count, 1
+        )
+        headers = [body - 8 for body, _ in ranges]
+        inserts.append((stsd[1], AUDIO_ROLL + group, headers))
+    if not inserts:
+        return src
+    moov = bytearray(raw)
+    # From the last insert to the first, so that each position still holds.
+    for at, data, headers in sorted(inserts, reverse=True):
+        moov[at:at] = data
+        for header in headers:
+            size = struct.unpack_from(">I", moov, header)[0]
+            struct.pack_into(">I", moov, header, size + len(data))
+    struct.pack_into(">I", moov, 0, len(moov))
+    clone.unlink(missing_ok=True)
+    # The `cp` of macOS, whose `-c` makes an APFS clone.
+    cloned = subprocess.run(
+        ["/bin/cp", "-c", str(src), str(clone)], capture_output=True, check=False
+    )
+    if cloned.returncode:
+        shutil.copyfile(src, clone)
+    with clone.open("r+b") as handle:
+        end = handle.seek(0, os.SEEK_END)
+        if offset + len(raw) != end:
+            handle.seek(offset + 4)
+            handle.write(b"free")
+            offset = end
+        handle.seek(offset)
+        handle.write(moov)
+    return clone
+
+
 def cut_video(src: Path, dst: Path, record: dict) -> float:
     """Cut a video to its trim with no re-encoding, and return the seconds.
 
@@ -1385,7 +1471,9 @@ def passthrough_cut(src: Path, dst: Path, record: dict, scratch: Path) -> float:
     The passthrough export copies each packet as it is, and keeps every track and
     format box. It starts and ends the cut on the frames that `kept_frames` gives,
     and it leaves out the packets before the first kept frame that no kept frame
-    needs. It runs through `osxphotos run`, whose Python has PyObjC.
+    needs. It reads the copy that `with_audio_roll` makes of a source whose sound
+    track lacks a `roll` group. It runs through `osxphotos run`, whose Python has
+    PyObjC.
     """
     time_base, first, stop = kept_frames(src, record["trim"])
     if time_base.numerator != 1:
@@ -1395,10 +1483,15 @@ def passthrough_cut(src: Path, dst: Path, record: dict, scratch: Path) -> float:
     dst.parent.mkdir(parents=True, exist_ok=True)
     partial = dst.with_name(f".partial-{dst.name}")
     began = time.monotonic()
-    run([
-        *(tool("osxphotos"), "run", str(helper), str(src), str(partial)),
-        *(str(first), str(stop), str(time_base.denominator)),
-    ])
+    source = with_audio_roll(src, scratch / f".roll-{src.name}")
+    try:
+        run([
+            *(tool("osxphotos"), "run", str(helper), str(source), str(partial)),
+            *(str(first), str(stop), str(time_base.denominator)),
+        ])
+    finally:
+        if source != src:
+            source.unlink(missing_ok=True)
     partial.replace(dst)
     record["cut"] = {"first": first, "stop": stop, "time_base": str(time_base)}
     return time.monotonic() - began
