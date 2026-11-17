@@ -310,7 +310,7 @@ The report will be pasted into a GitHub issue (or PR body). Write for GitHub's r
 Before including any error output, tracebacks, or logs in the report, scrub them for readability and privacy:
 
 - **Strip local paths**: replace long absolute paths (`/Users/kde/code/project/venv/lib/python3.12/site-packages/...`) with short relative equivalents (`site-packages/...` or `.venv/.../`). The maintainer does not need the user's home directory or filesystem layout.
-- **Remove private information**: usernames, home directory names, hostnames, IP addresses, API keys, tokens, internal domain names, email addresses. Scan the entire output before pasting.
+- **Remove private information**: usernames, home directory names, hostnames, IP addresses, API keys, tokens, internal domain names, email addresses. Scan the entire output before pasting. A private channel like a vendor's support email is no exception. Name a third party's account by its role, and let the user give the address if support asks.
 - **Trim repetitive frames**: if a traceback has dozens of recursive or repetitive stack frames, keep the top few, the bottom few, and replace the middle with `... (N frames omitted) ...`. The diagnostic value is in the entry point and the crash site, not 40 identical recursion frames.
 - **Collapse verbose logs**: if CI output is hundreds of lines, extract only the relevant section. Use `<details><summary>Full log</summary>` blocks for longer context the maintainer might need but should not have to scroll past.
 - **Preserve error messages verbatim**: sanitize paths and private data, but never paraphrase or reword the actual error string. Maintainers grep their codebase for exact error messages.
