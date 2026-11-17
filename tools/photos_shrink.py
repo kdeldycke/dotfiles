@@ -21,22 +21,25 @@ subcommand is one step of it:
    and compares them field by field.
 5. `mark` adds each original whose new asset passed `check` to an album.
 
-The last step is manual: delete the content of that album in Photos, because
-`osxphotos` has no delete command. `mark` runs after `check`, so the album only
-holds an original that has a verified replacement.
+`finish` takes the last step, once a person has looked at the new assets. It
+checks each asset of that album once more, and moves those that still have their
+replacement to Recently Deleted through PhotoKit: `osxphotos` has no delete
+command. It then deletes the albums of the batch. `mark` runs after `check`, so
+the album only holds an original that has a verified replacement. Emptying
+Recently Deleted stays manual: it keeps the originals for 30 days.
 
 `run` takes a list of videos through the first three steps one at a time, and
 runs `check` and `mark` at intervals. `import` removes the exported original of
 each copy that it adds: the original stays in the library and in iCloud until
-the manual delete. The copy goes once its video is kept, or marked with its new
+`finish`. The copy goes once its video is kept, or marked with its new
 asset in iCloud. `status` prints the totals of a work directory.
 
 `import`, `mark` and `dedup` drive Photos through AppleScript, and `export`
 downloads through PhotoKit. Run them from a terminal that macOS lets control
 Photos and read the Photos library. Without the first permission, `osxphotos`
 reports each asset as missing or invalid and names no cause: `osascript` shows
-the real error. `import`, `mark` and `dedup` are the steps that change the
-library, and each takes `--dry-run`, as does `run`.
+the real error. `import`, `mark`, `dedup` and `finish` are the steps that change
+the library, and each takes `--dry-run`, as do `run` and `all`.
 
 The download does not use the AppleScript route of `osxphotos`. That route
 gives Photos 120 seconds per file, has no option to change that, and quits
@@ -153,6 +156,7 @@ Usage:
     photos_shrink.py check --work {directory}
     photos_shrink.py mark --work {directory} [--dry-run]
     photos_shrink.py dedup --work {directory} [--dry-run]
+    photos_shrink.py finish --work {directory} [--dry-run]
 """
 
 from __future__ import annotations
@@ -365,6 +369,51 @@ if session.status() != AVFoundation.AVAssetExportSessionStatusCompleted:
 # Codec tags of the data tracks that `ffmpeg` cannot write: Apple's timed metadata,
 # like the faces that an iPhone detects. A source with one goes through AVFoundation.
 PASSTHROUGH_TAGS = ("mebx",)
+
+# Python file that `osxphotos run` executes to move assets to Recently Deleted, or
+# to delete albums: `{file} assets {uuid}...` or `{file} albums {title}...`. An
+# album goes alone: its assets stay in the library. macOS can ask a person to
+# confirm the change.
+PHOTOKIT_DELETE = """\
+import sys
+
+import Foundation
+import Photos
+
+kind, names = sys.argv[1], sys.argv[2:]
+if kind == "assets":
+    targets = Photos.PHAsset.fetchAssetsWithLocalIdentifiers_options_(
+        [f"{uuid}/L0/001" for uuid in names], None
+    )
+
+    def change():
+        Photos.PHAssetChangeRequest.deleteAssets_(targets)
+
+else:
+    options = Photos.PHFetchOptions.alloc().init()
+    titles = Foundation.NSPredicate.predicateWithFormat_argumentArray_
+    options.setPredicate_(titles("title IN %@", [names]))
+    targets = Photos.PHAssetCollection.fetchAssetCollectionsWithType_subtype_options_(
+        Photos.PHAssetCollectionTypeAlbum, Photos.PHAssetCollectionSubtypeAny, options
+    )
+    found = set()
+    for index in range(targets.count()):
+        found.add(str(targets.objectAtIndex_(index).localizedTitle()))
+    for title in names:
+        if title not in found:
+            print(f"no album named {title!r}")
+
+    def change():
+        Photos.PHAssetCollectionChangeRequest.deleteAssetCollections_(targets)
+
+count = targets.count()
+if count:
+    library = Photos.PHPhotoLibrary.sharedPhotoLibrary()
+    done, error = library.performChangesAndWait_error_(change, None)
+    if not done:
+        sys.exit(f"Photos deleted no {kind}: {error}")
+print(f"deleted {count} {kind}")
+"""
 
 # Python file that `osxphotos run` executes to give a new asset the edit of its
 # original: `{file} {original} {new asset} {render} {format}`. The edit holds the
@@ -801,6 +850,13 @@ def photos(uuids: list[str]) -> dict[str, dict]:
     for uuid in uuids:
         args += ["--uuid", uuid]
     return {photo["uuid"]: photo for photo in json.loads(run(args).stdout)}
+
+
+def album_members(title: str) -> list[dict]:
+    """Return the Photos record of each asset of an album, out of Recently Deleted."""
+    query = [tool("osxphotos"), "query", "--album", title, "--json"]
+    found: list[dict] = json.loads(run(query).stdout)
+    return found
 
 
 def trim_edit(photo: dict, visual: bool = False) -> dict | None:
@@ -2350,13 +2406,11 @@ def status_report(args: argparse.Namespace) -> bool:
     return True
 
 
-def duplicate_sets() -> list[list[dict]]:
-    """Return the Photos records of the assets in each set of duplicates.
+def fingerprint_index() -> dict[tuple[str, str], list[str]]:
+    """Return the UUIDs of the assets of `DUPLICATE_SCAN`, by fingerprint and size.
 
-    The assets of a set hold the same original file: Photos gives them the same
-    fingerprint, and their originals have the same size. A set leaves out the
-    assets in Recently Deleted and in `ALBUM_ORIGINALS`. A short listing of the
-    whole library finds the sets, so that only their assets are read in full.
+    A short listing of the whole library gives them, so that only the assets that
+    matter are read in full later. An asset with no fingerprint is left out.
     """
     keys: dict[tuple[str, str], list[str]] = {}
     listing = run([tool("osxphotos"), "query", *DUPLICATE_SCAN]).stdout
@@ -2365,6 +2419,17 @@ def duplicate_sets() -> list[list[dict]]:
         # osxphotos prints an underscore for a field that has no value.
         if len(fields) == 3 and "_" not in fields[1:]:
             keys.setdefault((fields[1], fields[2]), []).append(fields[0])
+    return keys
+
+
+def duplicate_sets() -> list[list[dict]]:
+    """Return the Photos records of the assets in each set of duplicates.
+
+    The assets of a set hold the same original file: Photos gives them the same
+    fingerprint, and their originals have the same size. A set leaves out the
+    assets in Recently Deleted and in `ALBUM_ORIGINALS`.
+    """
+    keys = fingerprint_index()
     shared = [uuid for uuids in keys.values() if len(uuids) > 1 for uuid in uuids]
     found: dict[tuple[str, int], list[dict]] = {}
     for photo in photos(shared).values():
@@ -2392,7 +2457,7 @@ def keep_order(photo: dict) -> tuple:
 
 
 def merge_plan(
-    members: list[dict],
+    members: list[dict], keep: str | None = None
 ) -> tuple[dict, list[dict], list[list[str]], list[str]]:
     """Plan how a set of duplicates becomes one asset.
 
@@ -2404,11 +2469,16 @@ def merge_plan(
     asset, or the date that its file gives: any other date is one that a person or
     an app set on that copy.
 
+    :param keep: The UUID of the asset to keep, in place of the one that
+        `keep_order` puts first.
     :return: The asset to keep, the other copies, the `batch-edit` options with
         their values that give the kept asset what it lacks, and each difference
         that stops the merge.
     """
-    kept, *copies = sorted(members, key=keep_order)
+    ordered = sorted(members, key=keep_order)
+    if keep is not None:
+        ordered.sort(key=lambda photo: photo["uuid"] != keep)
+    kept, *copies = ordered
     changes: list[list[str]] = []
     problems = []
     if any(copy["hasadjustments"] for copy in copies):
@@ -2564,6 +2634,129 @@ def full_pass(args: argparse.Namespace) -> bool:
             "with edits. Their next step would give an HEVC copy the render of "
             "their edits, as `--visual-edits` does for a cut."
         )
+    if not args.list:
+        print(
+            f"\nNext: look at the new assets in {ALBUM_NEW!r}, then run `finish "
+            f"--work {shlex.quote(str(args.work))}`."
+        )
+    return passed
+
+
+def finish_plan(
+    album: list[dict],
+    records: dict[str, dict],
+    library: dict[str, dict],
+    twins: dict[str, list[str]],
+) -> tuple[list[str], dict[str, str]]:
+    """Sort the assets of `ALBUM_ORIGINALS` into those that can go and those that stay.
+
+    An original that a round trip marked can go while its new asset still passes the
+    comparison of `mark`. A copy that `dedup` marked can go while a duplicate of it
+    outside the album still holds all that the copy holds: `merge_plan` checks it,
+    with that album left out and the duplicate as the kept asset. Any other asset
+    stays, with its reason.
+
+    :param records: The record of each original that a round trip marked, by UUID.
+    :param library: The Photos record of each asset that the checks read, by UUID.
+    :param twins: The UUIDs of the duplicates outside the album of each other asset.
+    :return: The UUIDs of the assets that can go, and the reason of each that stays.
+    """
+    ready: list[str] = []
+    stays: dict[str, str] = {}
+    for photo in album:
+        uuid = photo["uuid"]
+        record = records.get(uuid)
+        if record is not None:
+            new = library.get(record["new_uuid"])
+            rows = comparison(record, library.get(uuid), new)
+            differ = [row[0] for row in rows if row[3] not in {SAME, OK, INFO}]
+            if differ:
+                stays[uuid] = f"its new asset differs: {', '.join(differ)}"
+            else:
+                ready.append(uuid)
+            continue
+        found = [library[twin] for twin in twins.get(uuid, []) if twin in library]
+        if not found:
+            stays[uuid] = "it has no record and no duplicate outside the album"
+            continue
+        members = [
+            {
+                **member,
+                "album_info": [
+                    a for a in member["album_info"] if a["title"] != ALBUM_ORIGINALS
+                ],
+            }
+            for member in (*found, photo)
+        ]
+        keep = min(found, key=keep_order)["uuid"]
+        _, _, gaps, problems = merge_plan(members, keep)
+        lacks = [*problems, *(" ".join(gap) for gap in gaps)]
+        if lacks:
+            stays[uuid] = f"its duplicate {keep} lacks part of it: {'; '.join(lacks)}"
+        else:
+            ready.append(uuid)
+    return ready, stays
+
+
+def finish_batch(args: argparse.Namespace) -> bool:
+    """Move the replaced originals to Recently Deleted, then delete the batch albums.
+
+    The records come from the work directory and from those of `FULL_PASS` under
+    it, so the step takes the work directory of `run` or of `all`. `finish_plan`
+    picks the assets of `ALBUM_ORIGINALS` that can go. That album goes once it is
+    empty, and `ALBUM_NEW` once no new asset waits for `check` or `mark`.
+    """
+    album = album_members(ALBUM_ORIGINALS)
+    records: dict[str, dict] = {}
+    waiting = 0
+    for folder in (args.work, *(args.work / name for name, _ in FULL_PASS)):
+        for uuid, record in load_state(folder).items():
+            if record["status"] == "marked" and "new_uuid" in record:
+                records[uuid] = record
+            waiting += record["status"] in ("imported", "verified")
+    held = {photo["uuid"] for photo in album}
+    twins: dict[str, list[str]] = {}
+    others = [photo for photo in album if photo["uuid"] not in records]
+    if others:
+        keys = fingerprint_index()
+        for photo in others:
+            key = (str(photo["fingerprint"]), str(photo["original_filesize"]))
+            twins[photo["uuid"]] = [u for u in keys.get(key, []) if u not in held]
+    wanted = [*held, *(records[u]["new_uuid"] for u in held if u in records)]
+    wanted += [twin for found in twins.values() for twin in found]
+    library = photos(wanted)
+    ready, stays = finish_plan(album, records, library, twins)
+    names = {photo["uuid"]: photo["original_filename"] for photo in album}
+    for uuid in ready:
+        print(f"{uuid} {names[uuid]}: to Recently Deleted.")
+    for uuid, reason in stays.items():
+        print(f"{uuid} {names[uuid]}: stays, {reason}.", file=sys.stderr)
+    size = sum(p["original_filesize"] for p in album if p["uuid"] in ready) / 2**30
+    print(f"Originals to Recently Deleted: {len(ready)}, {size:.1f} GiB.", flush=True)
+    helper = args.scratch / ".photokit_delete.py"
+    passed = not stays
+    if ready and not args.dry_run:
+        helper.write_text(PHOTOKIT_DELETE, encoding="UTF-8")
+        command = [tool("osxphotos"), "run", str(helper), "assets", *ready]
+        passed = drive(command, args.scratch) and passed
+    if args.dry_run or not ready:
+        empty = len(ready) == len(album)
+    else:
+        empty = not album_members(ALBUM_ORIGINALS)
+    albums = [ALBUM_ORIGINALS] if empty else []
+    if not waiting:
+        albums.append(ALBUM_NEW)
+    shown = ", ".join(repr(title) for title in albums)
+    print(f"Albums to delete: {shown or 'none'}.")
+    if albums and not args.dry_run:
+        helper.write_text(PHOTOKIT_DELETE, encoding="UTF-8")
+        command = [tool("osxphotos"), "run", str(helper), "albums", *albums]
+        passed = drive(command, args.scratch) and passed
+    if ready and not args.dry_run:
+        print(
+            "The originals wait in Recently Deleted for 30 days: empty it in Photos "
+            "to free their space now."
+        )
     return passed
 
 
@@ -2684,6 +2877,7 @@ def main() -> int:
         dry_run_option(step(name, action))
     step("check", check_videos)
     dry_run_option(step("dedup", dedup_assets))
+    dry_run_option(step("finish", finish_batch))
 
     args = parser.parse_args()
     if getattr(args, "visual_edits", False) and not args.trim:
@@ -2702,7 +2896,7 @@ def main() -> int:
             file=sys.stderr,
         )
         return 128 + signal.SIGINT
-    if args.step not in ("all", "dedup"):
+    if args.step not in ("all", "dedup", "finish"):
         summary(load_state(args.work))
     return 0 if passed else 1
 
