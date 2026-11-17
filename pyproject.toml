@@ -275,8 +275,9 @@ warn_unreachable = true
 pretty = true
 
 [[tool.mypy.overrides]]
-# The scripts of the transcribe-recording skill import packages that their PEP 723
-# block or the Python of Nativ provides, and that CI does not install.
+# The scripts of the transcribe-recording skill, and tools/usage_by_model.py,
+# import packages that their PEP 723 block or the Python of Nativ provides, and
+# that CI does not install.
 ignore_missing_imports = true
 module = [
     "extract_msg",
@@ -289,6 +290,7 @@ module = [
     "pyannote.*",
     "pymupdf",
     "rapidfuzz.*",
+    "tabulate",
     "torch",
     "wordfreq",
 ]
