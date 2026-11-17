@@ -87,9 +87,10 @@ originals that only iCloud holds, with "Could not get video for asset". Photos
 keeps a local copy of the download, so the export copies it and downloads nothing.
 
 `--visual-edits` adds to `--trim` the trimmed videos whose other edits a cut
-cannot apply, like a crop or a light change. A slow-motion edit changes the
-timing, so such a video stays out. Each new asset gets the cut as its original,
-and an edit that holds the render that Photos made for the original. Both assets
+cannot apply, like a crop, a light change or a slow motion. Each new asset gets
+the cut as its original, and an edit that holds the render that Photos made for
+the original. The render lasts as long as the cut, or longer by the slowed parts
+of a slow-motion edit, and the check of the cut verifies that length. Both assets
 then look the same, and "Revert to Original" shows the whole frame of the trimmed
 range. PhotoKit refuses the edit format of Photos from another process. So the
 edit keeps the adjustments of Photos, without the trim, under `EDIT_FORMAT`.
@@ -520,7 +521,8 @@ PHOTOS_TIMEOUT = 300
 PROBE_ERRORS = (RuntimeError, KeyError, IndexError, StopIteration)
 
 # Seconds that the render of a `--visual-edits` video can last more or less than
-# its cut: both hold the trimmed range.
+# it must: as long as its cut, which holds the trimmed range, or longer by the
+# parts of that range that a slow-motion edit slows.
 RENDER_TOLERANCE = 0.1
 
 # Asset fields that must be equal in an original and in its new asset.
@@ -543,6 +545,10 @@ SELECTION = (
     *("--query-eval", "photo.exif_info and photo.exif_info.codec == 'avc1'"),
 )
 
+# Photos edit that plays parts of a high frame rate video slower. Its render lasts
+# longer than the cut: `trim_edit` gives the length that it must have.
+SLOW_MOTION = "SlowMotion"
+
 # osxphotos template fields that print the characters that its template parser
 # reads. A text value takes them in place of those characters: see `literal`.
 TEMPLATE_ESCAPES = {
@@ -561,10 +567,6 @@ TEXT_KEYS = ("comment", "description", "keywords", "title")
 # it copies the tags of the original. exiftool calls the keywords `Keyword` in
 # the `ItemList` group and `Keywords` in the other groups.
 TEXT_TAGS = ("Comment", "Description", "Keyword", "Keywords", "Title")
-
-# Photos edits that change the timing of a video. Its render then lasts longer
-# than the trimmed range, so `--visual-edits` leaves the video out.
-TIMING_EDITS = frozenset(("SlowMotion",))
 
 # Photos edits that a cut applies. A trim must be among the enabled edits.
 TRIM_EDITS = frozenset(("Mute", "Trim", "VideoPosterFrame"))
@@ -797,10 +799,12 @@ def trim_edit(photo: dict, visual: bool = False) -> dict | None:
     edit that a person turned off, and that edit changes nothing.
 
     :param visual: Return the trim of a video whose edits go past `TRIM_EDITS`
-        instead, with none of `TIMING_EDITS`. Its new asset keeps those edits in
-        the render of Photos, so its cut keeps the audio that a mute silences.
+        instead. Its new asset keeps those edits in the render of Photos, so its
+        cut keeps the audio that a mute silences.
     :return: The trim start and end as `value/timescale` text, and whether the
-        cut leaves out the audio.
+        cut leaves out the audio. With a slow-motion edit, `shown` also gives the
+        seconds that the render lasts: the trim, plus the time that each slowed
+        part of it gains at the rate of the edit.
     """
     adjustments = (photo.get("adjustments") or {}).get("adjustments") or []
     enabled = {
@@ -811,15 +815,35 @@ def trim_edit(photo: dict, visual: bool = False) -> dict | None:
     names = set(enabled)
     if "Trim" not in names:
         return None
-    if visual and (names <= TRIM_EDITS or names & TIMING_EDITS):
+    if visual and names <= TRIM_EDITS:
         return None
     if not visual and not names <= TRIM_EDITS:
         return None
     times = {key: enabled["Trim"][f"{key}Time"] for key in ("start", "end")}
-    return {
+    trim: dict = {
         **{key: f"{time['value']}/{time['timescale']}" for key, time in times.items()},
         "mute": "Mute" in names and not visual,
     }
+    if SLOW_MOTION in enabled:
+        start, end = (
+            Fraction(times[key]["value"], times[key]["timescale"])
+            for key in ("start", "end")
+        )
+        slow = enabled[SLOW_MOTION]
+        rate = Fraction(str(slow.get("rate", 0)))
+        if rate <= 0:
+            return None
+        shown = end - start
+        for region in slow.get("regions") or []:
+            span = region["timeRange"]
+            begin = Fraction(span["start"]["value"], span["start"]["timescale"])
+            stop = begin + Fraction(
+                span["duration"]["value"], span["duration"]["timescale"]
+            )
+            slowed = min(end, stop) - max(start, begin)
+            shown += max(slowed, Fraction(0)) * (1 / rate - 1)
+        trim["shown"] = str(shown)
+    return trim
 
 
 def refusal(photo: dict | None, trim: bool = False, visual: bool = False) -> str | None:
@@ -1620,13 +1644,27 @@ def cut_problems(src: Path, dst: Path, record: dict) -> list[str]:
         problems.append(
             f"frames: {same} of {len(have)} match the {len(want)} kept frames"
         )
+    movie, *found = tracks(dst)
+    _, *originals = tracks(src)
+    mvhd, version = movie["mvhd"]
+    _, raw = read_moov(dst)
+    fmt = ">Q" if version else ">I"
+    length = struct.unpack_from(fmt, raw, mvhd + (24 if version else 16))[0]
+    lasts = Fraction(length, movie["timescale"])
+    # The movie time scale, 1/600 s for an iPhone, can be coarser than the time base
+    # of the frames, like 1/2400 s at 240 fps. The movie and its tracks then end on
+    # a tick next to the end of the last kept frame.
+    kept = lasts
+    if abs(lasts - (end - start)) >= Fraction(1, movie["timescale"]):
+        problems.append(f"the movie lasts {float(lasts):.6f} s")
+        kept = end - start
     audio = next((s for s in before if s["codec_type"] == "audio"), None)
     if audio is not None and not mute:
         audio_tb = Fraction(audio["time_base"])
         # A cut can start half way between two samples, as with 44.1 kHz audio and
         # an iPhone time base of 1/600 s. AVFoundation then starts on the later one.
         half = Fraction(1, 2)
-        span = ((start / audio_tb + half) // 1, (end / audio_tb + half) // 1)
+        span = ((start / audio_tb + half) // 1, ((start + kept) / audio_tb + half) // 1)
         want_pcm = audio_samples(src, window, span)
         have_pcm = audio_samples(dst)
         frame = 4 * int(audio["channels"])
@@ -1640,19 +1678,10 @@ def cut_problems(src: Path, dst: Path, record: dict) -> list[str]:
                 f"audio: {len(have_pcm) // frame} samples for {len(want_pcm) // frame},"
                 " or other values"
             )
-    movie, *found = tracks(dst)
-    _, *originals = tracks(src)
-    mvhd, version = movie["mvhd"]
-    _, raw = read_moov(dst)
-    fmt = ">Q" if version else ">I"
-    length = struct.unpack_from(fmt, raw, mvhd + (24 if version else 16))[0]
-    lasts = Fraction(length, movie["timescale"])
-    if lasts != end - start:
-        problems.append(f"the movie lasts {float(lasts):.6f} s")
     for track in found:
         name = HANDLER_NAMES.get(track["handler"], track["handler"])
         shown = sum(segment for _, _, segment, _ in track["edits"])
-        if Fraction(shown, movie["timescale"]) > end - start:
+        if Fraction(shown, movie["timescale"]) > kept:
             problems.append(f"the {name} track lasts longer than the cut")
         source = next((t for t in originals if t["handler"] == track["handler"]), None)
         if source is None:
@@ -1670,12 +1699,17 @@ def cut_problems(src: Path, dst: Path, record: dict) -> list[str]:
     return problems
 
 
-def render_problems(render: Path, cut: Path) -> list[str]:
+def render_problems(
+    render: Path, cut: Path, shown: Fraction | None = None
+) -> list[str]:
     """Return each way the render of an edit does not fit the cut of its video.
 
     PhotoKit takes only a QuickTime movie as the render of a video edit. The render
     and the cut both hold the trimmed range, so they last as long as each other,
     within `RENDER_TOLERANCE`.
+
+    :param shown: The seconds that the render of a slow-motion edit lasts, in place
+        of the length of the cut.
     """
     problems = []
     entries = "format=duration:format_tags=major_brand"
@@ -1688,11 +1722,10 @@ def render_problems(render: Path, cut: Path) -> list[str]:
         problems.append(
             f"the render is a {brand or 'bare'} file, not a QuickTime movie"
         )
-    lengths = [float(found["duration"]) for found in formats]
-    if abs(lengths[0] - lengths[1]) > RENDER_TOLERANCE:
-        problems.append(
-            f"the render lasts {lengths[0]:.2f} s and the cut {lengths[1]:.2f} s"
-        )
+    lasts = float(formats[0]["duration"])
+    expected = float(formats[1]["duration"]) if shown is None else float(shown)
+    if abs(lasts - expected) > RENDER_TOLERANCE:
+        problems.append(f"the render lasts {lasts:.2f} s, not {expected:.2f} s")
     return problems
 
 
@@ -1734,7 +1767,8 @@ def encode_videos(args: argparse.Namespace, only: set[str] | None = None) -> boo
             problems = cut_problems(src, dst, record) if trim else differences(src, dst)
             if "render" in record:
                 render = args.scratch / "renders" / uuid / record["render"]
-                problems += render_problems(render, dst)
+                shown = record["trim"].get("shown")
+                problems += render_problems(render, dst, shown and Fraction(shown))
         except PROBE_ERRORS as error:
             record["error"] = f"{type(error).__name__}: {error}"
             save_state(args.work, state)
