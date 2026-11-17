@@ -1127,18 +1127,21 @@ def facts(path: Path) -> dict:
             str(path),
         ]).stdout
     )
-    # The stream summary can contradict the bitstream, so read a decoded frame.
-    first_frames = json.loads(
-        run([
-            *probe,
-            *("-select_streams", "v:0", "-read_intervals", "%+3", "-show_frames"),
-            *("-show_entries", f"frame={','.join(COLOR_KEYS)}"),
-            str(path),
-        ]).stdout
-    )["frames"]
     streams = info["streams"]
     video = next(s for s in streams if s["codec_type"] == "video")
     audio = next((s for s in streams if s["codec_type"] == "audio"), None)
+    # The stream summary can contradict the bitstream, so read a decoded frame. An
+    # edit list can hide packets before the first frame that it shows, and ffprobe
+    # decodes no frame from them: the read goes past their count.
+    hidden = max(int(video["nb_read_packets"]) - int(video["nb_read_frames"]), 0)
+    first_frames = json.loads(
+        run([
+            *probe,
+            *("-select_streams", "v:0", "-read_intervals", f"%+#{hidden + 3}"),
+            *("-show_frames", "-show_entries", f"frame={','.join(COLOR_KEYS)}"),
+            str(path),
+        ]).stdout
+    )["frames"]
     rotation = next(
         (
             int(d["rotation"])
