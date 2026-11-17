@@ -15,6 +15,8 @@ Measured on one project file: 11,801 words became 848, and most of the removed t
 
 To speed up step 2, list every identifier the file writes in backticks, and search the tree for each one. An identifier found in no other file marks a claim with no home yet, or a stale one.
 
+Before step 2, run `uv run --script {skill}/scripts/instruction_scan.py` with the file, then the directories of the other layers. Its first report lists the longest lines. The file has no hard wrap, so they are its largest rules, and a procedure among them is the first candidate for the Extract verdict. Its second report lists each line that holds a sentence a layer file states verbatim: a candidate for the Drop verdict.
+
 | The comparison finds                  | Verdict of `SKILL.md`                               |
 | :------------------------------------ | :-------------------------------------------------- |
 | The home already says it.             | Drop                                                |
