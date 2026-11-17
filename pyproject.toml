@@ -215,6 +215,14 @@ default.extend-ignore-identifiers-re = [
   #     ╰╴                              ━━
   # Two flags of the zsh `print` builtin.
   "^Pn$",
+  # error: `trak` should be `track`
+  #      ╭▸ ./tools/photos_shrink.py:1225:22
+  #      │
+  # 1225 │         if kind != b"trak":
+  #      ╰╴                     ━━━━
+  # The type of the track box in an MP4 file. A box type is always four bytes,
+  # so the correction matches no box and `tracks()` finds no track.
+  "^trak$",
   # error: `WHT` should be `WHAT`
   #    ╭▸ ./dotfiles/.agents/skills/rename-with-dates/SKILL.md:70:80
   #    │
