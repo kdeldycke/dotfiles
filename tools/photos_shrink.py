@@ -134,7 +134,14 @@ two copies, two titles, or a date set on a copy, stays as it is for a person.
 Run `dedup` before a batch. `dedup` leaves out the assets in the album of `mark`,
 so a copy of an original that a batch marked stays in the library.
 
+`all` cleans a whole library in one pass: `dedup`, then the round trip with
+`--trim --visual-edits`, then the HEVC one, which takes the H.264 cuts of the
+first too. Each round trip keeps its records in a work directory under the one of
+`all`: `trim/` and `recompress/`. `status` takes those directories. At its end,
+`all` counts the edited videos that no step takes yet: those with no trim.
+
 Usage:
+    photos_shrink.py all --work {directory} --min-size {size} [--list] [--dry-run]
     photos_shrink.py run --work {directory} --uuid {uuid} [--dry-run]
     photos_shrink.py run --work {directory} --min-size {size} [--limit {n}]
     photos_shrink.py run --work {directory} --trim --min-size {size} [--list]
@@ -271,6 +278,11 @@ FAILURE_LIMIT = 3
 
 # Steps after which a video needs no more work from `run`.
 FINISHED = ("kept", "marked")
+
+# Round trips that `all` runs, in order, each with its work directory under the
+# one of `all`, and whether it is the `--trim --visual-edits` one. The cuts come
+# first, so that an H.264 cut gets its HEVC copy in the same pass.
+FULL_PASS = (("trim", True), ("recompress", False))
 
 # Words for the handler types of movie tracks, in the messages of the cut check.
 HANDLER_NAMES = {
@@ -2509,6 +2521,52 @@ def dedup_assets(args: argparse.Namespace) -> bool:
     return passed
 
 
+def full_pass(args: argparse.Namespace) -> bool:
+    """Run `dedup`, then each round trip, on the videos of a whole library.
+
+    The round trips of `FULL_PASS` keep their records in work directories under the
+    one of this step, and take the videos of `--min-size` and up. With `--list`,
+    `dedup` shows its plan and changes nothing, and each round trip prints its
+    selection. At the end, a line counts the edited videos that no step takes:
+    those with no trim, which the HEVC round trip leaves out for their edits.
+    """
+    print("Looking for duplicates.", flush=True)
+    dedup = argparse.Namespace(**{**vars(args), "dry_run": args.dry_run or args.list})
+    passed = dedup_assets(dedup)
+    locks = []
+    for name, trim in FULL_PASS:
+        phase = argparse.Namespace(**vars(args))
+        phase.work = args.work / name
+        phase.scratch = scratch_folder(phase.work)
+        phase.trim = phase.visual_edits = trim
+        phase.uuid = None
+        kind = "trim" if trim else "HEVC"
+        print(f"\nThe {kind} round trip, with its records in {phase.work}.", flush=True)
+        if not args.list:
+            # Each lock lasts until this step returns.
+            locks.append(lock_work(phase.scratch))
+        passed = run_videos(phase) and passed
+        summary(load_state(phase.work))
+    command = [tool("osxphotos"), "query", *TRIM_SELECTION]
+    command += ["--min-size", args.min_size, "--json"]
+    rest = [
+        photo
+        for photo in json.loads(run(command).stdout)
+        if trim_edit(photo) is None
+        and trim_edit(photo, visual=True) is None
+        and ALBUM_ORIGINALS not in {album["title"] for album in photo["album_info"]}
+    ]
+    if rest:
+        size = sum(photo["original_filesize"] for photo in rest) / 2**30
+        print(
+            f"\nLeft as they are: {len(rest)} edited videos with no trim, {size:.1f} "
+            "GiB. No step takes them yet: the HEVC round trip leaves out a video "
+            "with edits. Their next step would give an HEVC copy the render of "
+            "their edits, as `--visual-edits` does for a cut."
+        )
+    return passed
+
+
 def main() -> int:
     """Run one step, and return 1 when it failed for a video or a set of assets.
 
@@ -2577,35 +2635,45 @@ def main() -> int:
             help="Show the changes to the library, and make none.",
         )
 
+    def batch_options(sub: argparse.ArgumentParser) -> None:
+        sub.add_argument(
+            "--limit", type=int, help="Largest number of videos to select."
+        )
+        sub.add_argument(
+            "--list",
+            action=argparse.BooleanOptionalAction,
+            default=False,
+            help="Print the selected videos, and do nothing else.",
+        )
+        sub.add_argument(
+            "--min-free",
+            type=int,
+            default=MIN_FREE,
+            help="Free disk space, in bytes, to keep on top of the next video.",
+        )
+        sub.add_argument(
+            "--upload-wait",
+            type=int,
+            default=UPLOAD_WAIT,
+            help="Seconds to wait at the end for the last uploads to iCloud.",
+        )
+        download_options(sub)
+        encode_options(sub)
+        dry_run_option(sub)
+
     sub = step("run", run_videos)
     selection = sub.add_mutually_exclusive_group(required=True)
     selection.add_argument("--uuid", nargs="+", help="UUID of each original.")
     selection.add_argument(
         "--min-size", help="Smallest original to select, like '500 MiB'."
     )
-    sub.add_argument("--limit", type=int, help="Largest number of videos to select.")
-    sub.add_argument(
-        "--list",
-        action=argparse.BooleanOptionalAction,
-        default=False,
-        help="Print the selected videos, and do nothing else.",
-    )
-    sub.add_argument(
-        "--min-free",
-        type=int,
-        default=MIN_FREE,
-        help="Free disk space, in bytes, to keep on top of the next video.",
-    )
-    sub.add_argument(
-        "--upload-wait",
-        type=int,
-        default=UPLOAD_WAIT,
-        help="Seconds to wait at the end for the last uploads to iCloud.",
-    )
-    download_options(sub)
-    encode_options(sub)
+    batch_options(sub)
     trim_option(sub)
-    dry_run_option(sub)
+    sub = step("all", full_pass)
+    sub.add_argument(
+        "--min-size", required=True, help="Smallest original to select, like '1 MB'."
+    )
+    batch_options(sub)
     step("status", status_report)
     sub = step("export", export_videos)
     sub.add_argument("--uuid", nargs="+", required=True, help="UUID of each original.")
@@ -2634,7 +2702,7 @@ def main() -> int:
             file=sys.stderr,
         )
         return 128 + signal.SIGINT
-    if args.step != "dedup":
+    if args.step not in ("all", "dedup"):
         summary(load_state(args.work))
     return 0 if passed else 1
 
