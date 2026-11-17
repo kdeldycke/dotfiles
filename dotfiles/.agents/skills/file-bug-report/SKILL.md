@@ -30,6 +30,8 @@ The writing, rendering and code block rules below apply to replies too.
 
 Before writing anything, exhaustively search for every piece of guidance the maintainers publish about how they want contributions. Do not skip any of these checks: each one can reveal requirements that, if missed, make the report look careless.
 
+When those rules bar AI-written issues or comments, write a fact sheet instead of prose: each fact with its link, for the user to put in their own words, and say so at the top of the file.
+
 #### 1a. Organization-level community health files
 
 GitHub allows organizations to define default community health files in a `.github` repository. These files (CONTRIBUTING.md, CODE_OF_CONDUCT.md, SECURITY.md, SUPPORT.md, issue templates, PR templates) are inherited by every repo in the organization that does not provide its own copy. Resolution is per-file: a repo can override one file while inheriting all others.
