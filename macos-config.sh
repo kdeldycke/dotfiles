@@ -778,19 +778,22 @@ sudo defaults write /Library/Preferences/com.apple.timezone.auto.plist Active -b
 # belongs in this repo instead of the reverse-engineered plists below:
 #   https://github.com/AprilNEA/OpenLogi
 #
-# Blocked on two upstream gaps, as of 2026-09-28 against `v0.8.9`. Re-evaluate
+# Blocked on two upstream gaps, as of 2026-11-17 against `v0.9.0`. Re-evaluate
 # when they close:
 #   - No Smart zoom action, and no keystroke can stand in for it, so page-up
 #     has no equivalent. `SmartZoom` is only an HID++ task ID (0x9F) in
 #     `crates/openlogi-hidpp/src/feature/reprog_controls/task_ids.rs`, with no
-#     entry in `binding/action.rs`. Four competing open PRs, one binding the
-#     button to a native macOS gesture, three adding thumb-wheel zoom:
+#     entry in `binding/action.rs`. Two open PRs add it as a button action.
+#     This one waits for a maintainer decision, and two testers report that it
+#     works on macOS 27:
+#     https://github.com/AprilNEA/OpenLogi/pull/2089
+#     This older one has had no activity since 2026-09-25:
 #     https://github.com/AprilNEA/OpenLogi/pull/1119
-#     https://github.com/AprilNEA/OpenLogi/pull/1354
-#     https://github.com/AprilNEA/OpenLogi/pull/1546
-#     https://github.com/AprilNEA/OpenLogi/pull/1590
-#   - Device not detected, this exact model on Unifying. `LogiMgrDaemon` holds
-#     the HID++ channel, so the gap stays unverifiable until Logi Options goes:
+#     Thumb-wheel zoom PRs do not close this gap: their zoom in and zoom out
+#     actions cannot toggle Smart zoom, and the MX Ergo has no thumb wheel.
+#   - Device not detected, this exact model on Unifying. A user reports that
+#     it works on Linux. `LogiMgrDaemon` holds the HID++ channel, so the gap
+#     stays unverifiable on macOS until Logi Options goes:
 #     https://github.com/AprilNEA/OpenLogi/issues/367
 #
 # The other five assignments map today: wheel click to MissionControl, wheel
