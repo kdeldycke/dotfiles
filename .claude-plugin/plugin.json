@@ -28,6 +28,7 @@
     "./dotfiles/.agents/skills/pr-triage",
     "./dotfiles/.agents/skills/rename-with-dates",
     "./dotfiles/.agents/skills/session-title",
+    "./dotfiles/.agents/skills/shared-tree-commit",
     "./dotfiles/.agents/skills/transcribe-recording",
     "./dotfiles/.agents/skills/wrapup-session"
   ],
