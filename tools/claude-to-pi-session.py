@@ -47,12 +47,21 @@ With --all the script converts every transcript in `~/.claude/projects/`,
 except the sessions still in use: one that a running Claude Code process holds,
 as `~/.claude/sessions/` registers them, and one whose transcript changed
 within the cooldown period (--cooldown-days), as it may still resume in Claude
-Code. --entrypoint, repeatable, limits --all
-to the transcripts of the clients it names. Claude Code stamps each row with
-the client that wrote it (`cli` for the terminal, `sdk-cli` for a
-non-interactive run like `claude --print`, `claude-desktop` for the Code tab of
-Claude Desktop), and a transcript matches when any of its rows does, so a
-session resumed from another client matches both.
+Code. --entrypoint, repeatable, limits --all to the transcripts of the clients
+it names. Claude Code stamps each row with the client that wrote it (`cli` for
+the terminal, `sdk-cli` for a non-interactive run like `claude --print`,
+`claude-desktop` for the Code tab of Claude Desktop, `local-agent` for
+Cowork), and a transcript matches when any of its rows does, so a session
+resumed from another client matches both.
+
+--all also reads the transcripts Cowork keeps for each session, in a Claude
+Code store of its own under
+`~/Library/Application Support/Claude/local-agent-mode-sessions/`. Desktop's
+record of the session, a JSON file beside the session's folder, supplies the
+title and the pi working directory: the first host folder the session
+connected (`userSelectedFolders`), so pi lists it among that folder's
+sessions. A session without a connected folder keeps the path it ran in, like
+a path inside the Cowork virtual machine.
 
 With --trash-source the script moves the migrated session's Claude Code
 artifacts to the Trash through the `trash` CLI, and only once the pi file holds
@@ -63,13 +72,15 @@ when it names this session. Shared files that only reference the session (the
 prompt history, the global config and its backups) are left in place: other
 sessions write them too, and the references age out on their own. Trashing
 always goes through `trash`, never `rm`, so a mistaken import stays
-recoverable, and the script trashes nothing at all when the CLI is missing.
+recoverable, and the script trashes nothing at all when the CLI is missing. A
+Cowork transcript is never trashed: Desktop still lists its session.
 
 Entry ids derive from the Claude row uuid, so re-running the script on one
 transcript writes byte-identical output. A destination that already starts
 with that output counts as migrated and is not written again, so the entries
 pi appends when the session continues there survive a re-run. A destination
-holding anything else is left alone unless --force is passed.
+that the output extends, as when the source grew since, is rewritten. A
+destination holding anything else is left alone unless --force is passed.
 """
 
 from __future__ import annotations
@@ -112,6 +123,9 @@ PI_PACKAGE_LAYOUTS = (
     ("libexec", "lib", "node_modules"),
     ("node_modules",),
 )
+
+# Where Claude Desktop keeps Cowork sessions, under the home directory.
+COWORK_STORE = ("Library", "Application Support", "Claude", "local-agent-mode-sessions")
 
 # A transcript modified within this many days belongs to a session that may
 # still resume in Claude Code, so --all leaves it in place.
@@ -286,12 +300,36 @@ def session_dir_for(cwd: str, agent_dir: Path) -> Path:
 
 
 def claude_transcripts() -> list[Path]:
-    """Return every session transcript in the Claude Code project store.
+    """Return every session transcript of Claude Code, then of Cowork.
 
     A subagent transcript sits one level deeper, in its parent session's
     directory, and is not a session of its own.
     """
-    return sorted((Path.home() / ".claude" / "projects").glob("*/*.jsonl"))
+    projects = Path.home() / ".claude" / "projects"
+    cowork = Path.home().joinpath(*COWORK_STORE)
+    return sorted(projects.glob("*/*.jsonl")) + sorted(
+        cowork.glob("**/.claude/projects/*/*.jsonl")
+    )
+
+
+def cowork_record(transcript: Path) -> dict | None:
+    """Return Desktop's record of the Cowork session that wrote `transcript`.
+
+    Cowork gives each session a folder holding its own `.claude` directory, and
+    Desktop describes the session in a JSON file beside that folder. Return None
+    for a transcript outside the Cowork store, and an empty dict when the record
+    is missing or unreadable.
+    """
+    store = Path.home().joinpath(*COWORK_STORE)
+    if not transcript.resolve().is_relative_to(store.resolve()):
+        return None
+    session_dir = transcript.parents[3]
+    record = session_dir.parent / f"{session_dir.name}.json"
+    try:
+        data = json.loads(record.read_text(encoding="UTF-8"))
+    except (OSError, ValueError):
+        return {}
+    return data if isinstance(data, dict) else {}
 
 
 def transcript_entrypoints(rows: list[dict]) -> set[str]:
@@ -420,8 +458,14 @@ class SessionWriter:
         return self._append("session_info", "name", stamp, seed, name)
 
 
-def convert(rows: list[dict]) -> tuple[list[dict], dict]:
-    """Return pi session entries and a conversion report for `rows`."""
+def convert(
+    rows: list[dict], *, cwd: str | None = None, title: str | None = None
+) -> tuple[list[dict], dict]:
+    """Return pi session entries and a conversion report for `rows`.
+
+    `cwd` and `title` replace the working directory and the title that the rows
+    record, as a Cowork session needs.
+    """
     report: dict = {
         "skipped": {},
         "dropped": 0,
@@ -432,8 +476,9 @@ def convert(rows: list[dict]) -> tuple[list[dict], dict]:
     }
 
     session_id = next((r["sessionId"] for r in rows if r.get("sessionId")), None)
-    cwds = [r["cwd"] for r in rows if isinstance(r.get("cwd"), str)]
-    cwd = max(set(cwds), key=cwds.count) if cwds else str(Path.cwd())
+    if cwd is None:
+        cwds = [r["cwd"] for r in rows if isinstance(r.get("cwd"), str)]
+        cwd = max(set(cwds), key=cwds.count) if cwds else str(Path.cwd())
     stamps = [r["timestamp"] for r in rows if isinstance(r.get("timestamp"), str)]
     first_stamp = min(stamps) if stamps else datetime.now(UTC).isoformat()
 
@@ -478,7 +523,7 @@ def convert(rows: list[dict]) -> tuple[list[dict], dict]:
         "timestamp": first_stamp,
         "cwd": cwd,
     })
-    title = session_title(rows, session_id)
+    title = title or session_title(rows, session_id)
     if title:
         writer.append_session_info(first_stamp, f"{session_id}:title", title)
     report["title"] = title
@@ -644,10 +689,19 @@ def convert(rows: list[dict]) -> tuple[list[dict], dict]:
 
 
 def session_bytes(entries: list[dict]) -> bytes:
-    """Return entries in pi's JSONL session format."""
-    return "".join(
-        json.dumps(entry, ensure_ascii=False) + "\n" for entry in entries
-    ).encode("UTF-8")
+    """Return entries in pi's JSONL session format.
+
+    A lone surrogate, like half an emoji that a cut left in a message, has no
+    UTF-8 form. An entry holding one is written with JSON's `\\u` escapes, which
+    pi reads back as the same string.
+    """
+    lines = []
+    for entry in entries:
+        try:
+            lines.append(json.dumps(entry, ensure_ascii=False).encode("UTF-8"))
+        except UnicodeEncodeError:
+            lines.append(json.dumps(entry).encode("UTF-8"))
+    return b"".join(line + b"\n" for line in lines)
 
 
 def write_session(payload: bytes, destination: Path, mtime_ms: int) -> None:
@@ -674,12 +728,22 @@ def migrate(
     `rows` are the rows of `transcript`, as `read_transcript` returns them.
     Return the entries and the report. The report's `status` is `written`,
     `migrated` when the destination already starts with this conversion,
-    `conflict` when the destination holds anything else and `force` is off,
-    `invalid` when the transcript holds no session id to name the file, or
-    `empty` when it holds no conversation. Only a `written` or `migrated`
-    session is trashed.
+    `updated` when the conversion extends the destination, `conflict` when the
+    destination holds anything else and `force` is off, `invalid` when the
+    transcript holds no session id to name the file, or `empty` when it holds
+    no conversation. Only a `written`, `migrated` or `updated` session is
+    trashed, and never a Cowork one.
     """
-    entries, report = convert(rows)
+    record = cowork_record(transcript)
+    folders = (record or {}).get("userSelectedFolders")
+    folder = folders[0] if isinstance(folders, list) and folders else None
+    desktop_title = (record or {}).get("title")
+    entries, report = convert(
+        rows,
+        cwd=folder if isinstance(folder, str) else None,
+        title=desktop_title if isinstance(desktop_title, str) else None,
+    )
+    report["cowork"] = record is not None
     if not report.get("session_id"):
         report["status"] = "invalid"
         return entries, report
@@ -695,16 +759,23 @@ def migrate(
     report["destination"] = destination
     payload = session_bytes(entries)
     existing = destination.read_bytes() if destination.exists() else None
-    if existing is not None and existing.startswith(payload):
-        report["status"] = "migrated"
-    elif existing is not None and not force:
+    if existing is None:
+        status = "written"
+    elif existing.startswith(payload):
+        status = "migrated"
+    elif payload.startswith(existing):
+        # The source grew since the last run, and pi added nothing.
+        status = "updated"
+    elif force:
+        status = "written"
+    else:
         report["status"] = "conflict"
         return entries, report
-    else:
+    if status != "migrated":
         write_session(payload, destination, parse_timestamp(report["last_timestamp"]))
-        report["status"] = "written"
+    report["status"] = status
     report["trashed"] = []
-    if trash:
+    if trash and not report["cowork"]:
         artifacts = claude_session_artifacts(transcript, report["session_id"])
         if artifacts:
             try:
@@ -797,6 +868,8 @@ def migrate_all(
             line += f" (trash failed: {report['trash_error']})"
         elif report.get("trashed"):
             line += f" (source paths moved to Trash: {len(report['trashed'])})"
+        elif trash and report.get("cowork"):
+            line += " (Cowork source kept)"
         print(line)
     counts = ", ".join(f"{k}={v}" for k, v in sorted(tally.items()))
     print(f"{len(transcripts)} transcripts")
@@ -834,7 +907,7 @@ def main() -> int:
     source.add_argument(
         "--all",
         action="store_true",
-        help="convert every transcript in ~/.claude/projects, except open sessions",
+        help="convert every Claude Code and Cowork transcript, except open sessions",
     )
     parser.add_argument(
         "--cooldown-days",
@@ -849,7 +922,7 @@ def main() -> int:
         action="append",
         metavar="NAME",
         help="with --all, take only transcripts this client wrote, like cli, "
-        "sdk-cli or claude-desktop; repeat to take several",
+        "sdk-cli, claude-desktop or local-agent (Cowork); repeat to take several",
     )
     parser.add_argument(
         "--agent-dir",
@@ -868,7 +941,7 @@ def main() -> int:
     parser.add_argument(
         "--trash-source",
         action="store_true",
-        help="move the migrated Claude Code session to the Trash",
+        help="move the migrated Claude Code session to the Trash, never a Cowork one",
     )
     args = parser.parse_args()
 
@@ -911,10 +984,15 @@ def main() -> int:
         return 1
     if report["status"] == "migrated":
         print(f"Already migrated: {report['destination']}")
+    elif report["status"] == "updated":
+        print(f"Updated {report['destination']}")
     else:
         print(f"Wrote {report['destination']}")
     print_report(entries, report)
     if args.trash_source:
+        if report["cowork"]:
+            print("  source: kept, as Desktop still lists this Cowork session")
+            return 0
         if report.get("trash_error"):
             print(
                 f"Failed to trash the source: {report['trash_error']}", file=sys.stderr
