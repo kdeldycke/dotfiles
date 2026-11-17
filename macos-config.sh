@@ -1162,8 +1162,11 @@ defaults write NSGlobalDomain AppleShowAllExtensions -bool true
 # Finder: show status bar
 defaults write com.apple.finder ShowStatusBar -bool true
 
-# Finder: show path bar
-defaults write com.apple.finder ShowPathbar -bool true
+# Finder: hide path bar. With it shown, Quick Look reloads the preview of a file
+# in a File Provider folder (Proton Drive, Dropbox) about every second, and a
+# scrolled PDF jumps back to page 1 (macOS 26.0 to at least 27.2.1):
+# https://community.dropbox.com/discussions/101001017/quick-look-flickering-on-macos-26-2/855393
+defaults write com.apple.finder ShowPathbar -bool false
 
 # Display full POSIX path as Finder window title
 defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
