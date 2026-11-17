@@ -217,8 +217,8 @@ def cmd_apply(args: argparse.Namespace) -> int:
         print(f"  {project_label(path.parent)}/{path.name}")
     print(f"indexes rewritten: {len(new_indexes)}")
     print(f"errors: {len(errors)}")
-    for error in errors:
-        print(f"  {error}")
+    for message in errors:
+        print(f"  {message}")
     if not args.apply:
         return 1 if errors else 0
     if errors:
@@ -303,7 +303,7 @@ def main() -> int:
     apply.set_defaults(func=cmd_apply)
     subparsers.add_parser("check").set_defaults(func=cmd_check)
     args = parser.parse_args()
-    return args.func(args)
+    return int(args.func(args))
 
 
 if __name__ == "__main__":
