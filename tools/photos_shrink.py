@@ -112,16 +112,15 @@ Photos. The render lasts as long as the copy, or longer by the slowed parts of a
 slow-motion edit. An edit that osxphotos cannot read stays out, like the slow
 motion that older iPhones wrote in another format.
 
-The work directory holds the records of a batch: `state.json` and the import
-reports. The large files go to the scratch folder of the work directory, under
-`SCRATCH_ROOT`: one directory per asset UUID under `export/`, and the same layout
-under `encoded/`, `originals/` and `renders/`. Each file keeps its exact name
-there, and that name becomes the name of the new asset. A flat export renames the
-second of two files that have the same name. The layout also lets the export
-database, which finds a file by its relative path, match a copy to the record of
-its original. `state.json` records the step each video reached, so each
-subcommand skips the work that an earlier run completed, and a cut run resumes
-where it stopped:
+The work directory holds the records of a batch in `state.json`. The large files
+go to the scratch folder of the work directory, under `SCRATCH_ROOT`: one
+directory per asset UUID under `export/`, and the same layout under `encoded/`,
+`originals/` and `renders/`. Each file keeps its exact name there, and that name
+becomes the name of the new asset. A flat export renames the second of two files
+that have the same name. The layout also lets the export database, which finds a
+file by its relative path, match a copy to the record of its original.
+`state.json` records the step each video reached, so each subcommand skips the
+work that an earlier run completed, and a cut run resumes where it stopped:
 
 - A video replaced or kept is never selected again. Its new HEVC asset is not
   selected either, because the selection takes H.264 videos only.
@@ -1992,6 +1991,8 @@ def import_videos(args: argparse.Namespace, only: set[str] | None = None) -> boo
     """Add each accepted copy to the library as a new asset.
 
     The new asset of a `--visual-edits` video then gets the edit of its original.
+    The import report of `osxphotos` goes to the scratch folder, and only until
+    `state.json` records each new asset of it: a report that misses one stays.
     """
     state = load_state(args.work)
     ready = {
@@ -2009,7 +2010,7 @@ def import_videos(args: argparse.Namespace, only: set[str] | None = None) -> boo
         ready = {uuid: r for uuid, r in ready.items() if r["status"] == "encoded"}
     if not ready:
         return edit_new_assets(args, only)
-    report = args.work / "reports" / f"import-{time.strftime('%Y%m%dT%H%M%S')}.json"
+    report = args.scratch / f"import-{time.strftime('%Y%m%dT%H%M%S')}.json"
     report.parent.mkdir(parents=True, exist_ok=True)
     command = [tool("osxphotos"), "import"]
     command += [
@@ -2019,7 +2020,9 @@ def import_videos(args: argparse.Namespace, only: set[str] | None = None) -> boo
     command += ["--exportdir", str(args.scratch / "encoded")]
     command += ["--album", literal(ALBUM_NEW), "--report", str(report), "--verbose"]
     if args.dry_run:
-        return drive([*command, "--dry-run"], args.scratch)
+        passed = drive([*command, "--dry-run"], args.scratch)
+        report.unlink(missing_ok=True)
+        return passed
     passed = drive_photos(command, args.scratch)
     rows = json.loads(report.read_text(encoding="UTF-8")) if report.exists() else []
     for row in rows:
@@ -2027,11 +2030,15 @@ def import_videos(args: argparse.Namespace, only: set[str] | None = None) -> boo
         if uuid in ready and row["imported"] and row["uuid"] and not row["error"]:
             state[uuid].update(status="imported", new_uuid=row["uuid"])
             print(f"{uuid}: imported as {row['uuid']}.")
-    for uuid in ready:
-        if state[uuid]["status"] != "imported":
-            print(f"{uuid}: the report records no import.", file=sys.stderr)
-            passed = False
+    missed = [uuid for uuid in ready if state[uuid]["status"] != "imported"]
+    for uuid in missed:
+        print(f"{uuid}: the report records no import.", file=sys.stderr)
     save_state(args.work, state)
+    if missed and report.exists():
+        print(f"The import report stays in {report}.", file=sys.stderr)
+    else:
+        report.unlink(missing_ok=True)
+    passed = not missed and passed
     passed = edit_new_assets(args, only) and passed
     clean_work_files(args)
     return passed
