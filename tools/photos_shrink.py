@@ -101,6 +101,17 @@ Photos cannot read that format, so a new edit in Photos starts from the render,
 with neutral values. The cut keeps the audio: the render of a muted video holds
 none.
 
+Without `--trim`, the round trip also takes an edited H.264 video with no trim
+whose enabled edits are at most a mute and a poster frame. Like a plain cut, its
+HEVC copy leaves out the audio that the mute silences, its new asset has no edit,
+and it needs no saving floor: the new asset also takes the place of the render of
+the edit, which can be as large as the original. `--visual-edits` adds the edited
+H.264 videos with no trim and other edits. Each of their new assets gets the HEVC
+copy of the whole original as its original, and the same edit with the render of
+Photos. The render lasts as long as the copy, or longer by the slowed parts of a
+slow-motion edit. An edit that osxphotos cannot read stays out, like the slow
+motion that older iPhones wrote in another format.
+
 The work directory holds the records of a batch: `state.json` and the import
 reports. The large files go to the scratch folder of the work directory, under
 `SCRATCH_ROOT`: one directory per asset UUID under `export/`, and the same layout
@@ -138,19 +149,21 @@ Run `dedup` before a batch. `dedup` leaves out the assets in the album of `mark`
 so a copy of an original that a batch marked stays in the library.
 
 `all` cleans a whole library in one pass: `dedup`, then the round trip with
-`--trim --visual-edits`, then the HEVC one, which takes the H.264 cuts of the
-first too. Each round trip keeps its records in a work directory under the one of
-`all`: `trim/` and `recompress/`. `status` takes those directories. At its end,
-`all` counts the edited videos that no step takes yet: those with no trim.
+`--trim --visual-edits`, then the HEVC one with `--visual-edits`, which takes the
+H.264 cuts of the first too. Each round trip keeps its records in a work directory
+under the one of `all`: `trim/` and `recompress/`. `status` takes those
+directories. At its end, `all` counts the edited H.264 videos that no step takes:
+those whose edit osxphotos cannot read.
 
 Usage:
     photos_shrink.py all --work {directory} --min-size {size} [--list] [--dry-run]
     photos_shrink.py run --work {directory} --uuid {uuid} [--dry-run]
     photos_shrink.py run --work {directory} --min-size {size} [--limit {n}]
+    photos_shrink.py run --work {directory} --visual-edits --min-size {size}
     photos_shrink.py run --work {directory} --trim --min-size {size} [--list]
     photos_shrink.py run --work {directory} --trim --visual-edits --min-size {size}
     photos_shrink.py status --work {directory}
-    photos_shrink.py export --work {directory} --uuid {uuid} [--trim [--visual-edits]]
+    photos_shrink.py export --work {directory} --uuid {uuid} [--trim] [--visual-edits]
     photos_shrink.py encode --work {directory}
     photos_shrink.py import --work {directory} [--dry-run]
     photos_shrink.py check --work {directory}
@@ -600,9 +613,10 @@ SAME_FIELDS = (
 # copies, many GiB during a batch. Time Machine skips it.
 SCRATCH_ROOT = Path.home() / "Library" / "Caches" / "photos_shrink"
 
-# osxphotos query that selects the videos of a batch, on top of `--min-size`.
+# osxphotos query that selects the H.264 videos of an HEVC batch, on top of
+# `--min-size`. `refusal` then leaves out each edit that the batch cannot keep.
 SELECTION = (
-    *("--only-movies", "--not-edited", "--not-shared"),
+    *("--only-movies", "--not-shared"),
     *("--query-eval", "photo.exif_info and photo.exif_info.codec == 'avc1'"),
 )
 
@@ -859,27 +873,86 @@ def album_members(title: str) -> list[dict]:
     return found
 
 
+def enabled_edits(photo: dict) -> dict[str, dict]:
+    """Return the settings of each enabled edit of a video, by edit identifier.
+
+    An edit counts when its `enabled` flag is true or missing: Photos keeps an
+    edit that a person turned off, and that edit changes nothing. A video whose
+    edit data osxphotos cannot read has none.
+    """
+    adjustments = (photo.get("adjustments") or {}).get("adjustments") or []
+    return {
+        str(item["identifier"]): item.get("settings") or {}
+        for item in adjustments
+        if isinstance(item, dict)
+        and item.get("identifier")
+        and item.get("enabled", True)
+    }
+
+
+def slowed_length(slow: dict, start: Fraction, end: Fraction) -> Fraction | None:
+    """Return the seconds in which a slow-motion edit shows a range of a video.
+
+    That is the range, plus the time that each slowed part of it gains at the
+    rate of the edit. A rate that is not positive gives None.
+    """
+    rate = Fraction(str(slow.get("rate", 0)))
+    if rate <= 0:
+        return None
+    shown = end - start
+    for region in slow.get("regions") or []:
+        span = region["timeRange"]
+        begin = Fraction(span["start"]["value"], span["start"]["timescale"])
+        stop = begin + Fraction(
+            span["duration"]["value"], span["duration"]["timescale"]
+        )
+        shown += max(min(end, stop) - max(start, begin), Fraction(0)) * (1 / rate - 1)
+    return shown
+
+
+def hevc_edit(photo: dict, visual: bool = False) -> dict | None:
+    """Return how the HEVC copy of an edited video keeps its edit, or None.
+
+    The edit must be one of Photos that osxphotos can read, with no trim: a trim
+    goes to the round trip of `--trim`. An encode applies the edits of
+    `TRIM_EDITS` other than the trim, like a cut: the copy leaves out the audio
+    that a mute silences, and the new asset has no edit.
+
+    :param visual: Return how the copy keeps edits that go past `TRIM_EDITS`
+        instead. Its new asset keeps them in the render of Photos, as a cut does
+        with `--visual-edits`, so the copy keeps the audio that a mute silences.
+    :return: Whether the copy leaves out the audio as `mute`, and the settings of
+        the slow-motion edit as `slow`, or None as its value.
+    """
+    adjustments = photo.get("adjustments") or {}
+    if adjustments.get("format_id") != "com.apple.photo":
+        return None
+    if not adjustments.get("adjustments"):
+        return None
+    enabled = enabled_edits(photo)
+    names = set(enabled)
+    if "Trim" in names:
+        return None
+    if visual and names <= TRIM_EDITS:
+        return None
+    if not visual and not names <= TRIM_EDITS:
+        return None
+    return {"mute": "Mute" in names and not visual, "slow": enabled.get(SLOW_MOTION)}
+
+
 def trim_edit(photo: dict, visual: bool = False) -> dict | None:
     """Return the trim of an edited video that a cut can apply, or None.
 
     A cut applies the edits of `TRIM_EDITS`, and only when a trim is among them.
-    An edit counts when its `enabled` flag is true or missing: Photos keeps an
-    edit that a person turned off, and that edit changes nothing.
 
     :param visual: Return the trim of a video whose edits go past `TRIM_EDITS`
         instead. Its new asset keeps those edits in the render of Photos, so its
         cut keeps the audio that a mute silences.
     :return: The trim start and end as `value/timescale` text, and whether the
         cut leaves out the audio. With a slow-motion edit, `shown` also gives the
-        seconds that the render lasts: the trim, plus the time that each slowed
-        part of it gains at the rate of the edit.
+        seconds that the render lasts, from `slowed_length`.
     """
-    adjustments = (photo.get("adjustments") or {}).get("adjustments") or []
-    enabled = {
-        item.get("identifier"): item.get("settings") or {}
-        for item in adjustments
-        if isinstance(item, dict) and item.get("enabled", True)
-    }
+    enabled = enabled_edits(photo)
     names = set(enabled)
     if "Trim" not in names:
         return None
@@ -897,19 +970,9 @@ def trim_edit(photo: dict, visual: bool = False) -> dict | None:
             Fraction(times[key]["value"], times[key]["timescale"])
             for key in ("start", "end")
         )
-        slow = enabled[SLOW_MOTION]
-        rate = Fraction(str(slow.get("rate", 0)))
-        if rate <= 0:
+        shown = slowed_length(enabled[SLOW_MOTION], start, end)
+        if shown is None:
             return None
-        shown = end - start
-        for region in slow.get("regions") or []:
-            span = region["timeRange"]
-            begin = Fraction(span["start"]["value"], span["start"]["timescale"])
-            stop = begin + Fraction(
-                span["duration"]["value"], span["duration"]["timescale"]
-            )
-            slowed = min(end, stop) - max(start, begin)
-            shown += max(slowed, Fraction(0)) * (1 / rate - 1)
         trim["shown"] = str(shown)
     return trim
 
@@ -918,8 +981,9 @@ def refusal(photo: dict | None, trim: bool = False, visual: bool = False) -> str
     """Return why a video cannot make the round trip, or None when it can.
 
     :param trim: Whether the round trip cuts the video to its trim.
-    :param visual: Whether a cut can also take a video with other edits, which its
-        new asset keeps in the render of Photos.
+    :param visual: Whether the round trip also takes a video whose edits go past
+        `TRIM_EDITS`, which its new asset keeps in the render of Photos: a trimmed
+        one with `trim`, an H.264 one with no trim without it.
     """
     if photo is None:
         return "it is not in the library"
@@ -935,10 +999,15 @@ def refusal(photo: dict | None, trim: bool = False, visual: bool = False) -> str
         if trim_edit(photo, visual=True) is None:
             return "it has no trim, or an edit that a cut cannot apply"
         return None if visual else "its other edits need `--visual-edits`"
-    if photo["hasadjustments"]:
-        return "it has edits, which a new asset cannot keep"
     if (photo["exif_info"] or {}).get("codec") == "hvc1":
         return "it is HEVC already"
+    if photo["hasadjustments"] and hevc_edit(photo) is None:
+        if "Trim" in enabled_edits(photo):
+            return "it has a trim, which needs `--trim`"
+        if hevc_edit(photo, visual=True) is None:
+            return "osxphotos cannot read its edits"
+        if not visual:
+            return "its other edits need `--visual-edits`"
     return None
 
 
@@ -997,22 +1066,24 @@ def export_videos(args: argparse.Namespace, uuids: list[str] | None = None) -> b
             continue
         wanted.append(uuid)
     # Photos keeps a local copy of each downloaded original, which the export then
-    # copies, so the export downloads nothing. A video that a cut alone cannot
-    # edit also needs the render of its edit.
+    # copies, so the export downloads nothing. A video whose new asset keeps its
+    # edit also needs the render of that edit: all but a plain trim or mute.
     held: dict[str, Path] = {}
     renders: dict[str, Path] = {}
-    for uuid in wanted if trim else []:
+    edited = [uuid for uuid in wanted if library[uuid]["hasadjustments"]]
+    for uuid in edited:
         try:
             size = library[uuid]["original_filesize"]
             original = download_resource(uuid, "original", args, size)
-            if trim_edit(library[uuid]) is None:
+            plain = trim_edit(library[uuid]) if trim else hevc_edit(library[uuid])
+            if plain is None:
                 renders[uuid] = download_resource(uuid, "render", args)
         except RuntimeError as error:
             print(f"{uuid}: {error}.", file=sys.stderr)
             passed = False
             continue
         held[uuid] = original
-    wanted = [uuid for uuid in wanted if uuid in held or not trim]
+    wanted = [uuid for uuid in wanted if uuid in held or uuid not in edited]
     for uuid in wanted:
         # osxphotos gives a new name to a file that a cut export left behind.
         for leftover in (export_dir / uuid).glob("*"):
@@ -1024,7 +1095,7 @@ def export_videos(args: argparse.Namespace, uuids: list[str] | None = None) -> b
             command += ["--uuid", uuid]
         command += ["--directory", EXPORT_LAYOUT]
         command += ["--only-movies", "--update", "--verbose"]
-        if trim:
+        if edited:
             command.append("--skip-edited")
         extra_env = {}
         if args.download_missing:
@@ -1041,7 +1112,7 @@ def export_videos(args: argparse.Namespace, uuids: list[str] | None = None) -> b
             print(f"{uuid}: {len(files)} exported files, not 1.", file=sys.stderr)
             passed = False
             continue
-        if trim:
+        if uuid in held:
             # The file keeps its path, which the export database records for the
             # import, and takes the bytes of the original in any case.
             held[uuid].replace(files[0])
@@ -1067,26 +1138,37 @@ def export_videos(args: argparse.Namespace, uuids: list[str] | None = None) -> b
             codec = (photo["exif_info"] or {}).get("codec")
             cut = trim_edit(photo) or trim_edit(photo, visual=True)
             state[uuid].update(mode="trim", trim=cut, codec=codec)
-            if uuid in renders:
-                state[uuid]["render"] = renders[uuid].name
+        elif photo["hasadjustments"]:
+            plain = hevc_edit(photo)
+            edit = plain or hevc_edit(photo, visual=True) or {}
+            for key in ("mute", "slow"):
+                if edit.get(key):
+                    state[uuid][key] = edit[key]
+            if plain:
+                state[uuid]["plain_edit"] = True
+        if uuid in renders:
+            state[uuid]["render"] = renders[uuid].name
         print(f"{uuid}: exported {files[0].name}, {size / 2**20:.0f} MiB.")
     save_state(args.work, state)
     return passed
 
 
-def encode(src: Path, dst: Path) -> float:
+def encode(src: Path, dst: Path, mute: bool = False) -> float:
     """Encode the video stream to HEVC, copy the audio, and return the seconds.
 
     `ffmpeg` writes to a partial file first, so a file at `dst` is always whole.
     The copy takes the metadata of the original, except the keys of `TEXT_KEYS`.
+
+    :param mute: Leave the audio out, for a video that an edit of Photos mutes.
     """
     dst.parent.mkdir(parents=True, exist_ok=True)
     partial = dst.with_name(f".partial-{dst.name}")
+    audio = () if mute else ("-map", "0:a?")
     start = time.monotonic()
     run([
         *(tool("ffmpeg"), "-nostdin", "-hide_banner", "-loglevel", "error", "-y"),
         *("-i", str(src)),
-        *("-map", "0:v:0", "-map", "0:a?"),
+        *("-map", "0:v:0", *audio),
         *ENCODER,
         *("-tag:v", "hvc1"),
         *("-c:a", "copy"),
@@ -1173,9 +1255,15 @@ def facts(path: Path) -> dict:
     }
 
 
-def differences(src: Path, dst: Path) -> list[str]:
-    """Return each way an encoded copy differs from its original."""
+def differences(src: Path, dst: Path, mute: bool = False) -> list[str]:
+    """Return each way an encoded copy differs from its original.
+
+    :param mute: Expect no audio in the copy, for a video that an edit of Photos
+        mutes.
+    """
     before = facts(src)
+    if mute:
+        before["audio"] = None
     after = facts(dst)
     found = [
         f"{key}: {before[key]} -> {after[key]}"
@@ -1810,7 +1898,10 @@ def encode_videos(args: argparse.Namespace, only: set[str] | None = None) -> boo
         src = args.scratch / "export" / uuid / record["name"]
         dst = args.scratch / "encoded" / uuid / record["name"]
         trim = record.get("mode") == "trim"
+        mute = record.get("mute", False)
         signature = CUT_SIGNATURE if trim else " ".join(ENCODER)
+        if mute:
+            signature += " -an"
         try:
             # A copy counts only when the state proves its encode ended with the
             # current settings. In any doubt, the encode runs again.
@@ -1824,7 +1915,7 @@ def encode_videos(args: argparse.Namespace, only: set[str] | None = None) -> boo
                 verb = "cutting" if trim else "encoding"
                 print(f"{uuid}: {verb} {record['name']}.", flush=True)
                 if not trim:
-                    seconds = encode(src, dst)
+                    seconds = encode(src, dst, mute)
                 elif needs_passthrough(src):
                     seconds = passthrough_cut(src, dst, record, args.scratch)
                 else:
@@ -1835,11 +1926,20 @@ def encode_videos(args: argparse.Namespace, only: set[str] | None = None) -> boo
             copy_tags(src, dst)
             if "date" in record:
                 stamp_date(record, dst)
-            problems = cut_problems(src, dst, record) if trim else differences(src, dst)
+            if trim:
+                problems = cut_problems(src, dst, record)
+            else:
+                problems = differences(src, dst, mute)
             if "render" in record:
                 render = args.scratch / "renders" / uuid / record["render"]
-                shown = record["trim"].get("shown")
-                problems += render_problems(render, dst, shown and Fraction(shown))
+                shown = record.get("trim", {}).get("shown")
+                expected = Fraction(shown) if shown else None
+                if "slow" in record:
+                    # An HEVC copy holds the whole video, which the edit slows.
+                    entries = ["-show_entries", "format=duration", str(dst)]
+                    lasts = Fraction(probe_json(entries)["format"]["duration"])
+                    expected = slowed_length(record["slow"], Fraction(0), lasts)
+                problems += render_problems(render, dst, expected)
         except PROBE_ERRORS as error:
             record["error"] = f"{type(error).__name__}: {error}"
             save_state(args.work, state)
@@ -1852,9 +1952,10 @@ def encode_videos(args: argparse.Namespace, only: set[str] | None = None) -> boo
         if problems:
             record.update(status="kept", reason="; ".join(problems))
             passed = False
-        # A cut needs no floor: the new asset also takes the place of the render of
-        # the edit, which Photos keeps next to the original.
-        elif saving < args.min_saving and not trim:
+        # A cut needs no floor, nor the copy of a plain edit: the new asset also
+        # takes the place of the render of the edit, which Photos keeps next to the
+        # original.
+        elif saving < args.min_saving and not trim and not record.get("plain_edit"):
             floor = f"{args.min_saving:.0%}"
             record.update(status="kept", reason=f"saves {saving:.0%}, under {floor}")
         else:
@@ -2308,13 +2409,11 @@ def select_videos(args: argparse.Namespace) -> dict[str, int]:
     selection = TRIM_SELECTION if args.trim else SELECTION
     command = [tool("osxphotos"), "query", *selection]
     command += ["--min-size", args.min_size, "--json"]
-    found = json.loads(run(command).stdout)
-    if args.trim:
-        found = [
-            photo
-            for photo in found
-            if refusal(photo, trim=True, visual=args.visual_edits) is None
-        ]
+    found = [
+        photo
+        for photo in json.loads(run(command).stdout)
+        if refusal(photo, args.trim, args.visual_edits) is None
+    ]
     state = load_state(args.work)
     found = [
         photo
@@ -2598,10 +2697,10 @@ def full_pass(args: argparse.Namespace) -> bool:
     """Run `dedup`, then each round trip, on the videos of a whole library.
 
     The round trips of `FULL_PASS` keep their records in work directories under the
-    one of this step, and take the videos of `--min-size` and up. With `--list`,
-    `dedup` shows its plan and changes nothing, and each round trip prints its
-    selection. At the end, a line counts the edited videos that no step takes:
-    those with no trim, which the HEVC round trip leaves out for their edits.
+    one of this step, and take the videos of `--min-size` and up, with
+    `--visual-edits`. With `--list`, `dedup` shows its plan and changes nothing,
+    and each round trip prints its selection. At the end, a line counts the edited
+    H.264 videos that no step takes: osxphotos reads no Photos edit for them.
     """
     print("Looking for duplicates.", flush=True)
     dedup = argparse.Namespace(**{**vars(args), "dry_run": args.dry_run or args.list})
@@ -2611,7 +2710,8 @@ def full_pass(args: argparse.Namespace) -> bool:
         phase = argparse.Namespace(**vars(args))
         phase.work = args.work / name
         phase.scratch = scratch_folder(phase.work)
-        phase.trim = phase.visual_edits = trim
+        phase.trim = trim
+        phase.visual_edits = True
         phase.uuid = None
         kind = "trim" if trim else "HEVC"
         print(f"\nThe {kind} round trip, with its records in {phase.work}.", flush=True)
@@ -2620,22 +2720,21 @@ def full_pass(args: argparse.Namespace) -> bool:
             locks.append(lock_work(phase.scratch))
         passed = run_videos(phase) and passed
         summary(load_state(phase.work))
-    command = [tool("osxphotos"), "query", *TRIM_SELECTION]
+    command = [tool("osxphotos"), "query", *SELECTION, "--edited"]
     command += ["--min-size", args.min_size, "--json"]
     rest = [
         photo
         for photo in json.loads(run(command).stdout)
-        if trim_edit(photo) is None
-        and trim_edit(photo, visual=True) is None
+        if refusal(photo, trim=True, visual=True) is not None
+        and refusal(photo, trim=False, visual=True) is not None
         and ALBUM_ORIGINALS not in {album["title"] for album in photo["album_info"]}
     ]
     if rest:
         size = sum(photo["original_filesize"] for photo in rest) / 2**30
         print(
-            f"\nLeft as they are: {len(rest)} edited videos with no trim, {size:.1f} "
-            "GiB. No step takes them yet: the HEVC round trip leaves out a video "
-            "with edits. Their next step would give an HEVC copy the render of "
-            "their edits, as `--visual-edits` does for a cut."
+            f"\nLeft as they are: {len(rest)} edited H.264 videos, {size:.1f} GiB. "
+            "osxphotos reads no Photos edit for them, like the slow motion of older "
+            "iPhones, so no new asset could keep their edits."
         )
     if not args.list:
         print(
@@ -2817,9 +2916,9 @@ def main() -> int:
             action=argparse.BooleanOptionalAction,
             default=False,
             help=(
-                "With --trim, also take trimmed videos with other edits. Each new "
-                "asset keeps them in the render of Photos, which Photos cannot "
-                "adjust again."
+                "Also take videos with edits other than a trim, a mute or a poster "
+                "frame. Each new asset keeps them in the render of Photos, which "
+                "Photos cannot adjust again."
             ),
         )
 
@@ -2883,8 +2982,6 @@ def main() -> int:
     dry_run_option(step("finish", finish_batch))
 
     args = parser.parse_args()
-    if getattr(args, "visual_edits", False) and not args.trim:
-        parser.error("--visual-edits needs --trim")
     # The work directory keeps the path of the command line, links included: the
     # real path of a cloud storage folder holds the name of the account.
     args.work = Path(os.path.abspath(args.work))
