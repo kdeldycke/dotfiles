@@ -24,6 +24,16 @@ The user runs agent sessions in parallel in one checkout. A second session may c
 3. Stage it as a blob: `git hash-object -w`, then `git update-index --cacheinfo 100644,<sha>,<path>`. This never rewrites a file the other session is still writing.
 4. Commit with a plain `git commit` once `git diff --cached --name-only` lists only your paths.
 
+When `git diff` shows your edits and its edits in separate hunks, a filtered patch is shorter. It is the scripted form of `git add --patch`, and it writes the index only:
+
+1. Save `git diff --no-prefix -- <path>` to a file outside the tree.
+2. Delete each hunk of the other session from that file. A hunk runs from its `@@` line to the line before the next `@@` line. Keep the header lines above the first hunk.
+3. Run `git apply --cached -p0 --check <patch>`, then the same command without `--check`.
+4. Prove the result: `git diff --cached -- <path>` shows only your hunks, and `git diff -- <path>` shows only its hunks.
+5. Commit with a plain `git commit` once `git diff --cached --name-only` lists only your paths.
+
+Use the blob route when one hunk holds edits of both sessions.
+
 ## Edits built on its uncommitted work
 
 1. Ask the user.
