@@ -22,7 +22,7 @@ You help users manage their `changelog.md` file. See § Style rules below for ho
 
 ### Mechanical layer
 
-The `changelog.yaml` workflow's `fix-changelog` job runs `lint-changelog --fix` in CI, checking release dates against PyPI, orphaned versions, over-long unreleased bullets, *released* sections holding no entry, an entry filed out of the Breaking, then Deprecated, then ordinary order, a `#N` naming no thread, and a heading carrying a `v` tag prefix, which `--fix` strips. The `check` and `fix` subcommands below invoke the same tool locally. The `add` subcommand is purely analytical — it reviews git history and drafts entries, which no CI job does.
+The `changelog.yaml` workflow's `fix-changelog` job runs `lint-changelog --fix` in CI, checking release dates against PyPI, orphaned versions, over-long unreleased bullets, *released* sections holding no entry, an entry filed out of the Breaking, then Deprecated, then ordinary order, a `#N` naming no thread, an entry the newest released section gained after its tag, and a heading carrying a `v` tag prefix, which `--fix` strips. The `check` and `fix` subcommands below invoke the same tool locally. The `add` subcommand is purely analytical — it reviews git history and drafts entries, which no CI job does.
 
 ### Determine invocation method
 
