@@ -201,6 +201,7 @@ Maintainers can diagnose faster when they can see the original context themselve
 - **Source code**: link to the exact file and line(s) in the user's public repo that trigger the bug, using GitHub's permalink format (`https://github.com/<owner/repo>/blob/<sha>/path/to/file.py#L42-L55`). Use a commit SHA, not a branch name, so the link stays stable.
 - **Configuration files**: if the bug depends on a specific config (workflow YAML, `pyproject.toml` section, tool config), link to it.
 - **PR or commit diffs**: if the bug surfaced after a specific change, link to the PR's file diff (e.g., `https://github.com/owner/repo/pull/123/changes#diff-<hash>`) or the commit, not just the PR landing page. The reader should see the relevant change immediately on click.
+- **Confirmations in other projects**: link every report, fix or workaround another project holds for the same behavior, and say what each one confirms. An independent reproduction, or a workaround another maintainer shipped, shows the bug is real. Claim a reproduction only where its thread records one.
 
 Ask yourself: "Can the maintainer click a link and immediately see what I'm describing?" If yes, include the link. If the context is private, quote the relevant snippet inline instead.
 
