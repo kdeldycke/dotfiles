@@ -311,6 +311,7 @@ GitHub autolinks the bare `owner/repo#N` form only inside conversations (issues,
 - **A comment describes how the code works now, not how it used to work.** A refactor replaces the old behavior. The story of why it changed belongs in the commit message, not in a comment beside the new code.
 - **A comment stands alone.** The reader never saw the session that wrote it: no phase numbers, no design-doc section references, no narration of the path taken ("first we tried X"), no note about what the code is not ("this is the deployment manual, not the README"). That context belongs in the commit message or the ticket.
 - **A comment explains what the code does not say.** The code shows what it does; a comment earns its place by saying why. Do not justify every change: a block narrating the diff belongs in the commit message.
+- **Prose in a readme or in `docs/` also describes the current state and stands alone.** Text written right after a change refers to a version the reader never saw. Often no word like "now" marks it, so a phrase list misses it: read the final text as a newcomer.
 - Docstrings use MyST markdown (single-backtick inline code, `[text](url)` links, `` {role}`target` `` cross-references, ```` ```{directive} ```` admonitions); `click_extra.sphinx.myst_docstrings` converts to reST at build time. For Sphinx operational detail (fence style, `click-extra convert-to-myst`, page rosters, `conf.py` hygiene), see `.claude/agents/sphinx-docs.md`.
 - **No Google-style docstring sections** (`Args:`, `Returns:`, `Raises:`, …; no `sphinx.ext.napoleon`). Use reST field lists: `:param name:`, `:return:` (not `:returns:`), `:raises ExceptionType:`. Markers pass through unchanged; their content is MyST-converted, and continuation lines indent to align with the description above.
 - **Dataclass field docs:** attribute docstrings (a string literal immediately after the field), not `:param:` entries; the class docstring is for the class purpose only.
@@ -453,7 +454,7 @@ Patterns that recur across sessions, to watch for proactively:
 
 ### Skills
 
-A skill is a plain folder of static files, copied verbatim to wherever it runs, with optional `scripts/`, `references/` and `assets/` subdirectories: nothing renders it or varies it per destination. Its frontmatter carries [Agent Skills spec](https://agentskills.io/specification) fields plus `argument-hint`, and no other Claude Code extension: no `model:` (a recommended model goes in the spec's `compatibility` field) and no `disable-model-invocation:`, so every skill stays model-invocable and the permission layer decides what it may do. Keep a skill self-contained: its domain knowledge sits inline or in its own `references/`, never behind a `docs/` page or a web fetch. A cross-reference to another skill must degrade to a no-op when the target is missing, and a programmatic `Skill` call falls back to a subagent or inline work.
+A skill is a plain folder of static files, copied verbatim to wherever it runs, with optional `scripts/`, `references/` and `assets/` subdirectories: nothing renders it or varies it per destination. Its frontmatter carries [Agent Skills spec](https://agentskills.io/specification) fields plus `argument-hint`, and no other Claude Code extension: no `model:` (a recommended model goes in the spec's `compatibility` field) and no `disable-model-invocation:`, so every skill stays model-invocable and the permission layer decides what it may do. Keep a skill self-contained: its domain knowledge sits inline or in its own `references/`, never behind a `docs/` page or a web fetch. A cross-reference to another skill must degrade to a no-op when the target is missing, and a programmatic `Skill` call falls back to a subagent or inline work. Open a `description` with a trigger at the start of the task, like "Load at the start of any task whose deliverable is ...". One that asks to run as the last step loads rarely: the model selects skills when it reads the task ([declauding `0.9.3` changelog](https://github.com/oaustegard/claude-skills/blob/declauding-v0.13.0/declauding/CHANGELOG.md)).
 
 ## Design principles
 
@@ -564,6 +565,10 @@ Where STE conflicts with another rule, the other rule wins for its own concerns 
 ### Cut before rewriting
 
 A request to make text shorter or simpler asks for deletion first and paraphrase second. Cut the ideas a nearby structure already carries: a table, a linked page, a column of the same report. Then simplify what remains. A rewrite-only pass keeps every idea and changes only the words, so the text stays as long as before.
+
+Cut ideas, never function words: a shorter text that is harder to parse is worse. Keep every number, name, negation and scope word of the source.
+
+Before you edit a draft, state its point in one sentence. If you cannot, rebuild the draft from that sentence.
 
 ## Answer shape
 

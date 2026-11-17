@@ -1,6 +1,6 @@
 # AI Writing Tropes to Avoid
 
-Sources: [AI writing tropes](https://gist.github.com/ossa-ma/f3baa9d25154c33095e22272c631f5a1), Wikipedia's [Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing), and [load-bearing](https://github.com/louisabraham/load-bearing), a cluster analysis of 461,121 GitHub pull request descriptions.
+Sources: [AI writing tropes](https://gist.github.com/ossa-ma/f3baa9d25154c33095e22272c631f5a1), Wikipedia's [Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing), the [declauding](https://github.com/oaustegard/claude-skills/tree/main/declauding) and [deslop](https://github.com/etodanik/deslop) skills, and [load-bearing](https://github.com/louisabraham/load-bearing), a cluster analysis of 461,121 GitHub pull request descriptions.
 
 Each trope below is a pattern to avoid. The quoted lines under it show the pattern.
 
@@ -64,7 +64,7 @@ Synonyms cycled to avoid repeating a word: the festival becomes "the event", the
 
 ### "Load-Bearing" and Other Engineering Metaphors
 
-Mechanical and structural metaphors that dress prose up as rigorous systems analysis. Structure: "load-bearing", "tension", "gated", "guarded against", "pushing back" (usually "gently"). Ops and planning: "blast radius", changes "land", "spine", "seams", "grammar", plans "bake", "cutover", "long pole", boundaries "dissolve", outcomes "sealed", ideas "earn their keep", "register", "grain", "floor", "ladder". Legal and accounting: "premise", "ruling", "carve-out", "ceiling", "owed". Machinery and plumbing: "backstop", "chokepoint", "lever", "wedged", "stamped". Personified code: it "refuses" input, "carries" responsibility, "survives" refactors. Literal technical uses are fine (a guard clause, a feature gate, tension in a cable, a version floor, a patch landing on a branch): the tell is the metaphorical spread into ordinary prose. In the load-bearing corpus, this style went from 0.7% of everything written at the start of 2025 to 39% by mid-2026, and "load-bearing" is the single most distinctive word of the corpus.
+Mechanical and structural metaphors that dress prose up as rigorous systems analysis. Structure: "load-bearing", "tension", "gated", "guarded against", "pushing back" (usually "gently"). Ops and planning: "blast radius", changes "land", "spine", "seams", "grammar", plans "bake", "cutover", "long pole", boundaries "dissolve", outcomes "sealed", ideas "earn their keep", "register", "grain", "floor", "ladder". Legal and accounting: "premise", "ruling", "carve-out", "ceiling", "owed". Machinery and plumbing: "backstop", "chokepoint", "lever", "wedged", "stamped". Personified code, with any verb that needs a mind or a body: it "refuses" input, "carries" responsibility, "swallows" an error, "wants" a fixture, "survives" refactors. Standard pairs like "the function returns" are fine. Literal technical uses are fine (a guard clause, a feature gate, tension in a cable, a version floor, a patch landing on a branch): the tell is the metaphorical spread into ordinary prose. In the load-bearing corpus, this style went from 0.7% of everything written at the start of 2025 to 39% by mid-2026, and "load-bearing" is the single most distinctive word of the corpus.
 
 - "That comment is load-bearing: the whole abstraction leans on it."
 - "This change lands behind a gate to keep the blast radius small."
@@ -118,7 +118,7 @@ Filler transitions that connect nothing: "It's worth noting", "It bears mentioni
 
 ### Superficial Analyses
 
-A present participle ("-ing") phrase at the end of a sentence that attaches significance, legacy or broader meaning to a mundane fact: "highlighting its importance", "reflecting broader trends", "contributing to the development of...".
+A present participle ("-ing") phrase at the end of a sentence that attaches significance, legacy or broader meaning to a mundane fact: "highlighting its importance", "reflecting broader trends", "contributing to the development of...". Also the tail that holds a consequence: ", making...", ", ensuring...", ", leaving...". Write "so" or "because" with a finite verb, or a new sentence.
 
 - "underscoring its role as a dynamic hub of activity and culture"
 
@@ -134,13 +134,22 @@ A claim followed by a stream of verbless gerund fragments, standalone sentences 
 
 - "Fixing small bugs. Writing straightforward features. Implementing well-defined tickets."
 
+### Compressed Syntax
+
+A claim packed into fewer words than a reader can parse: a stack of three or more nouns, a noun used as a verb where the field has no such verb ("footnote it"), "that" dropped before a long clause, a subject held from its verb by a list. It is common in chat, agent reports and commit text. The fix makes the sentence longer. Established terms like "foreign key constraint" are fine.
+
+- "New tests for dry-run write prevention and idempotent config reinstalls."
+- "The others check behaviour the old code never reached."
+
 ## Paragraph Structure
 
 ### Short Punchy Fragments
 
-Very short sentences or fragments as standalone paragraphs, for manufactured emphasis.
+Very short sentences or fragments as standalone paragraphs, for manufactured emphasis. Also a short sentence that adds no fact: a maxim that restates the paragraph, a general truth joined to a fact by "so", a flip on a bare auxiliary.
 
 - "He published this. Openly. In a book. As a priest."
+- "None of this fixes itself."
+- "The tool died; the data didn't."
 
 ### Listicle in a Trench Coat
 
@@ -182,7 +191,7 @@ A statement that the point is obvious, clear or simple, in place of the proof. A
 
 ### False Precision
 
-Diagnostic confidence without the diagnosis: a guess labeled "the root cause", a hunch labeled "the key insight", an approximation wrapped in "exactly" or "precisely". Certainty adverbs that close a case nobody opened: "plainly", "outright", "merely", "provably", "empirically". Check-claiming compounds that report a verification the writer never ran: "byte-identical", "bit-identical", "mutation-checked". Human hedging ("seems", "perhaps", "probably") is falling out of PR prose while this vocabulary takes its place.
+Diagnostic confidence without the diagnosis: a guess labeled "the root cause", a hunch labeled "the key insight", an approximation wrapped in "exactly" or "precisely". Certainty adverbs that close a case nobody opened: "plainly", "outright", "merely", "provably", "empirically". Check-claiming compounds and "re-" verbs that report a verification the writer never ran: "byte-identical", "bit-identical", "mutation-checked", "re-verified". Universal negatives with no stated search: "nothing else uses it", "no path reaches". Coined privatives in place of the missing part: "unwired", "ungated". Human hedging ("seems", "perhaps", "probably") is falling out of PR prose while this vocabulary takes its place.
 
 - "The root cause is a race condition in the scheduler."
 - "The two outputs are byte-identical, so the rewrite is provably safe."
@@ -207,7 +216,7 @@ Unearned significance vocabulary that awards every subject a legacy: "stands as 
 
 ### Staged Gravity
 
-Phrases that stop the prose to announce that something matters: "the moment", "in one breath", "the thing itself", "near and dear".
+Phrases that stop the prose to announce that something matters: "the moment", "in one breath", "the thing itself", "near and dear". Also the sentence that ranks itself: "the real fix", "the part that matters", "this matters because", "that's the whole point".
 
 - "In one breath it promises speed, and in the next it takes it away."
 
@@ -219,7 +228,7 @@ The pedagogical voice that assumes the reader needs hand-holding, even an expert
 
 ### "No Action Required"
 
-Reassurance about what the reader does not have to do: a step or a section that closes by naming what is not needed, not required, or will happen without the reader. Also the pitch variant, a benefit listed as absences. Keep a negative statement only when it changes what the reader does: a warning against a wrong action ("Do not squash-merge"), the consequence of skipping a step ("Without the key, releases skip the scan"), or, in reference docs, a fact about how a mechanism works ("Cloudflare never builds the site").
+Reassurance about what the reader does not have to do: a step or a section that closes by naming what is not needed, not required, or will happen without the reader. Also the pitch variant, a benefit listed as absences, and the benefit that claims no cost: "without sacrificing", "the best of both worlds". Keep a negative statement only when it changes what the reader does: a warning against a wrong action ("Do not squash-merge"), the consequence of skipping a step ("Without the key, releases skip the scan"), or, in reference docs, a fact about how a mechanism works ("Cloudflare never builds the site").
 
 - "No action is required. This issue will close automatically."
 - "It installs each tool at a pinned version: no manual setup, no dotfile sprawl."
@@ -261,7 +270,7 @@ Use of unicode arrows (->), smart/curly quotes, and other special characters tha
 
 ### Structural Tics
 
-Document-shape giveaways: Title Case On Every Heading, a horizontal rule before each section, emoji as bullet markers or heading decorations, heading levels that jump from H2 to H4, and a gratuitous comparison table where a sentence would do. Each is defensible alone. Together they make a page look like a filled-in template.
+Document-shape giveaways: Title Case On Every Heading, a horizontal rule before each section, emoji as bullet markers or heading decorations, heading levels that jump from H2 to H4, and a gratuitous comparison table where a sentence would do. Each is defensible alone. Together they make a page look like a filled-in template. Also a heading that hides or judges its section: a question-word clause ("Why it matters") or a verdict ("The default was wrong"). A heading that states its rule is fine in an instruction file.
 
 - "🚀 Features / ⚡ Performance / 🔒 Security"
 
@@ -335,4 +344,4 @@ Plausible specifics with no source behind them: a version number nobody looked u
 
 - "This takes about 200ms on a typical machine."
 
-Any of these patterns used once might be fine. The problem is when multiple tropes appear together or when a single trope is used repeatedly. Write like a human: varied, imperfect, specific.
+Any of these patterns used once might be fine. The problem is when multiple tropes appear together or when a single trope is used repeatedly. Write like a human: varied, imperfect, specific. After you remove a trope, read what replaced it: a cut can leave a noun stack, an abstract noun heading or a new maxim.
