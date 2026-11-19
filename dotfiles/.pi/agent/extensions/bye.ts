@@ -35,22 +35,32 @@
  *
  * ## The resume-line rewrite
  *
- * pi prints its own exit hint as one line, `To resume this session: pi
- * --session <id>`, from core (`interactive-mode.ts`), after `session_shutdown`
- * handlers run. A triple-click on that line selects the label with the
- * command, so the paste is not runnable. Upstream declined the one-line fix
- * (earendil-works/pi#9515, closed NOT_PLANNED), so this extension rewrites the
- * chunk during the shutdown window: the label keeps its line, the command
- * gets the next one. The match is anchored to the label and its optional dim
- * escape, so no other write in that window changes.
+ * Up to pi 1.5.2, pi prints its own exit hint as one line, `To resume this
+ * session: pi --session <id>`, from core (`interactive-mode.ts`), after
+ * `session_shutdown` handlers run. A triple-click on that line selects the
+ * label with the command, so the paste is not runnable. This extension
+ * rewrites the chunk during the shutdown window: the label keeps its line,
+ * the command gets the next one. The match is anchored to the label, its
+ * optional dim escape and the space after them, so no other write in that
+ * window changes. A pi release that prints the command on its own line
+ * writes no such space, so the rewrite leaves its hint unchanged.
+ *
+ * ```{todo}
+ * Delete `rewriteResumeLineOntoItsOwn()`, its `resumeLineRewritten` flag, its
+ * call and this section once the installed pi includes
+ * [earendil-works/pi@63dec26](https://github.com/earendil-works/pi/commit/63dec2621d3cb2e1f4d7cefd6df061e78c6de979).
+ * That commit puts the command on its own line. pi 1.5.2 does not include it.
+ * A release that includes it cites
+ * [earendil-works/pi#12237](https://github.com/earendil-works/pi/issues/12237)
+ * in its `CHANGELOG.md`.
+ * ```
  *
  * ## The nudge
  *
  * A plain `/quit` or Ctrl+D on a session with real user turns prints a dim
  * hint line, then the one-liner `pi --session <id> "/bye"` on a line of its
  * own, next to pi's own resume hint: a terminal triple-click then copies the
- * command without the hint text. pi's own resume hint still prefixes the
- * command inline. An initial CLI message goes through
+ * command without the hint text. An initial CLI message goes through
  * `session.prompt()`, whose `expandPromptTemplates` defaults to true, so the
  * `/bye` argument dispatches as an extension command (pi 1.3.0) and the
  * one-liner resumes, wraps up, and quits in one move. TUI
