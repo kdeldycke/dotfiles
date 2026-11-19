@@ -678,7 +678,7 @@ zsh reserves `status` as a read-only variable, so `while read -r id name status`
 
 Never run `ruff --fix --select RUF100` outside the project's full rule set: with only RUF100 selected, ruff judges every `# noqa` unused and strips the ones the code needs. Autofix it only under the project's own configuration, and diff the result before staging.
 
-Read one file through the API with `gh api 'repos/{owner}/{repo}/contents/{path}?ref={tag}' -H "Accept: application/vnd.github.raw"`. To search an unfamiliar repository, fetch `gh api repos/{owner}/{repo}/tarball/{ref}` once and grep the extracted tree.
+Read one file through the API with `gh api 'repos/{owner}/{repo}/contents/{path}?ref={tag}' -H "Accept: application/vnd.github.raw"`. To search an unfamiliar repository, fetch `gh api repos/{owner}/{repo}/tarball/{ref}` once and grep the extracted tree. For an annotated tag, the extracted folder ends in the tag object's short SHA, not the commit's: before you pin a permalink, resolve the commit with `gh api repos/{owner}/{repo}/commits/{tag} --jq .sha`.
 
 Read what ran on a commit with `gh api 'repos/{owner}/{repo}/actions/runs?head_sha={sha}'` and the full 40-character SHA, never with `gh run list`, which lists weeks-old runs first. The `babysit-ci` skill carries the details.
 
