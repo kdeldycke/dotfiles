@@ -492,7 +492,7 @@ Workflows and CLI commands must be safe to re-run: the same command twice with t
 
 When a release goes wrong (squash merge, broken artifact, bad metadata), prefer **skipping the version and releasing the next one** over reverting, force-pushing, or rewriting `main`: a burned version number is cheap, a botched automated recovery is not (this mirrors PyPI's [yank](https://peps.python.org/pep-0592/) model). When designing new safeguards, default to **detection + notification** over **detection + automated fix**: the blast radius of a missed notification is zero; that of a bad automated fix can be catastrophic.
 
-A release that published without some of its binaries is the same case, because publishing locks the asset list: never hold a release or sit on a draft waiting for a red build cell. Fix the cause and let the next version carry it; the `repomatic-ship` skill (§ Repairing a short ship) repairs the notes that still advertise the missing binaries.
+A release that published without some of its binaries is the same case, because publishing locks the asset list: never hold a release or sit on a draft waiting for a red build cell. Fix the cause and let the next version carry it; the `repomatic-ship` skill (§ Repairing a short ship) says what to report, and the changelog names no missing binary.
 
 ### Command-line options
 
