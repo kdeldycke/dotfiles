@@ -1,6 +1,6 @@
 ---
 name: shared-tree-commit
-description: Load before you stage, commit, push or undo edits in a git checkout where another agent session also works, when its edits sit in a file you changed, when its commits sit unpushed on the branch, or when it committed work of yours. Gives the git recipes that commit only the hunks of this session and never rewrite a file the other session is editing.
+description: Load before you stage, commit, amend, push or undo edits in a git checkout where another agent session also works, when its edits sit in a file you changed, when its commits sit unpushed on the branch, or when it committed work of yours. Gives the git recipes that commit only the hunks of this session and never rewrite a file the other session is editing.
 compatibility: Designed for Claude Code and pi. Needs git, and uv for the Python steps.
 ---
 
@@ -72,6 +72,15 @@ Still end with the commit on local `<branch>`, never on a side branch. Fast-forw
 2. Run `git reset --quiet -- <your paths>`. A full reset drops what the other session staged.
 
 When it staged a hunk in one of your paths, skip the reset for that path: point its entry at the blob of the new commit plus that hunk, with `git update-index --cacheinfo`.
+
+## Amend an older unpushed commit
+
+`git rebase` needs a clean tree, and its `--autostash` is the `git stash` that "Undo and compare" forbids. Rebuild the range with plumbing instead, after you check that `git log origin/<branch>..HEAD` lists each of its commits:
+
+1. Take each commit from the target to `HEAD`, oldest first. Read its tree into a temporary index (`GIT_INDEX_FILE=<scratch> git read-tree <sha>`), set the entry of your path to your blob with `git update-index --cacheinfo`, then run `git write-tree`.
+2. Create the new commit with `git commit-tree <tree> -p <new parent> -F -`. Give it the old message on standard input, and the old author in `GIT_AUTHOR_NAME`, `GIT_AUTHOR_EMAIL` and `GIT_AUTHOR_DATE`.
+3. Build the whole range once without `-S`. Check that `git diff --name-only <old head> <new head>` lists only your paths, and that each message and author is unchanged. A check that fails after the signed build wastes one signature for each commit.
+4. Build the range again with `-S`, one commit at a time, then move the branch as "Commit authorized, push not authorized" says.
 
 ## Work that another session committed
 
