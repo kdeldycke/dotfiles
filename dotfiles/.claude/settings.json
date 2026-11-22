@@ -13,6 +13,12 @@
     "pr": "",
     "sessionUrl": false
   },
+  "autoMode": {
+    "allow": [
+      "$defaults",
+      "A `git -C {path} add` or `git -C {path} commit` in a git checkout under /Users/kde/code/ other than the session's own, when a message the user typed in this conversation asks for that commit, by naming it or a listed task that is that commit. This does not cover a push, an amend, a rebase or a reset there."
+    ]
+  },
   "permissions": {
     "allow": [
       "Edit(**)",
