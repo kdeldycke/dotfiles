@@ -30,7 +30,9 @@ Usage:
     utm-host.py connect {alias} {port}   Open a connection, for `ProxyCommand`.
 
 An alias is the first word of the virtual machine name, in lower case:
-"Ubuntu 26.06 LTS" answers to `ubuntu`.
+"Ubuntu 26.06 LTS" answers to `ubuntu`. When two machines share a first
+word, one of them answers to its whole name. A machine named by that word
+alone keeps the word: beside "Fedora", "Fedora IoT" answers to `fedora-iot`.
 """
 
 from __future__ import annotations
@@ -104,7 +106,7 @@ def normalize_mac(mac: str) -> str:
 
 def virtual_machines() -> dict[str, dict[str, str]]:
     """Map each alias to the name and MAC address of its virtual machine."""
-    machines: dict[str, dict[str, str]] = {}
+    found = []
     for bundle in sorted(UTM_DOCUMENTS.glob("*.utm")):
         config = bundle / "config.plist"
         if not config.exists():
@@ -114,15 +116,22 @@ def virtual_machines() -> dict[str, dict[str, str]]:
         if not networks:
             continue
         name = (data.get("Information") or {}).get("Name") or bundle.stem
-        alias = re.sub(r"[^a-z0-9]", "", name.split()[0].lower())
-        # A second machine claiming an alias takes its full name instead, so
-        # one machine cannot shadow another.
-        if alias in machines:
-            alias = re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
-        machines[alias] = {
-            "name": name,
-            "mac": normalize_mac(networks[0]["MacAddress"]),
-        }
+        found.append((
+            re.sub(r"[^a-z0-9]", "", name.split()[0].lower()),
+            re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-"),
+            name,
+            normalize_mac(networks[0]["MacAddress"]),
+        ))
+    machines: dict[str, dict[str, str]] = {}
+    # A one-word name goes first: its whole name gives the same alias as its
+    # first word, so it has no other alias to fall back to. The sort is stable,
+    # so the other machines keep their order.
+    for first_word, whole_name, name, mac in sorted(
+        found, key=lambda machine: machine[0] != machine[1]
+    ):
+        # A machine whose first word is taken answers to its whole name.
+        alias = whole_name if first_word in machines else first_word
+        machines[alias] = {"name": name, "mac": mac}
     return machines
 
 
