@@ -81,10 +81,16 @@ jobs:
         # "not trusted" warning about it. Nothing here installs from that tap,
         # so drop it rather than granting whole-tap trust or setting
         # HOMEBREW_NO_REQUIRE_TAP_TRUST, which would disable the check outright.
+        #
+        # The runner image keeps copies of RubyGems and Bundler in Homebrew's gem
+        # directory, outside any keg. A ruby@3.4 bottle that ships the same
+        # versions then fails to link in the `brew upgrade` of install.sh, so
+        # upgrade it here and let it overwrite those copies.
         run: |
           rm /usr/local/bin/aws
           rm /usr/local/bin/aws_completer
           brew untap aws/tap
+          brew upgrade ruby@3.4 || brew link --overwrite ruby@3.4
       - name: Install Zsh
         run: brew install zsh
       - name: Force default shell
