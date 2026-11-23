@@ -637,6 +637,8 @@ When drafting a bug report, a reproducer write-up, or a reply on an upstream iss
 
 Before proposing a change upstream, read how the maintainer received past contributions of the same kind: what merged, what was reworked or declined, and why.
 
+Read the project's AI policy before you write any text for it, a pull request body or a commit included. Where it bans LLM prose, as nixpkgs does, hand over an evidence sheet of facts, links and quoted output, and name any disclosure trailer it requires before the first commit.
+
 Fold a small fix into the open pull request that already edits the same lines, never into a second one: the reviewer meets the bug in that diff anyway, and the new text may rely on the fix.
 
 Never shop for a proxy submitter. Several distributions refuse a package submitted by the software's own author: where that rule applies, accept it, publish the verified templates, and say a distribution user is welcome to submit them as their own. Never ask a named contributor to re-file the work, and never offer to take maintainership back once it is merged.
