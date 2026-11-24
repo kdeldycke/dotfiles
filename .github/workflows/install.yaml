@@ -85,11 +85,14 @@ jobs:
         # The runner image keeps copies of RubyGems and Bundler in Homebrew's gem
         # directory, outside any keg. A ruby@3.4 bottle that ships the same
         # versions then fails to link in the `brew upgrade` of install.sh, so
-        # upgrade it here and let it overwrite those copies.
+        # upgrade it here and let it overwrite those copies. Run `brew update`
+        # first: before it, Homebrew knows only the ruby@3.4 version that the
+        # image ships, so the upgrade does nothing.
         run: |
           rm /usr/local/bin/aws
           rm /usr/local/bin/aws_completer
           brew untap aws/tap
+          brew update
           brew upgrade ruby@3.4 || brew link --overwrite ruby@3.4
       - name: Install Zsh
         run: brew install zsh
