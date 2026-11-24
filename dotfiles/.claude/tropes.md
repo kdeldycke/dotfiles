@@ -1,7 +1,5 @@
 # AI Writing Tropes to Avoid
 
-Sources: [AI writing tropes](https://gist.github.com/ossa-ma/f3baa9d25154c33095e22272c631f5a1), Wikipedia's [Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing), the [declauding](https://github.com/oaustegard/claude-skills/tree/main/declauding) and [deslop](https://github.com/etodanik/deslop) skills, and [load-bearing](https://github.com/louisabraham/load-bearing), a cluster analysis of 461,121 GitHub pull request descriptions.
-
 Each trope below is a pattern to avoid. The quoted lines under it show the pattern.
 
 ## Word Choice
@@ -64,7 +62,7 @@ Synonyms cycled to avoid repeating a word: the festival becomes "the event", the
 
 ### "Load-Bearing" and Other Engineering Metaphors
 
-Mechanical and structural metaphors that dress prose up as rigorous systems analysis. Structure: "load-bearing", "tension", "gated", "guarded against", "pushing back" (usually "gently"). Ops and planning: "blast radius", changes "land", "spine", "seams", "grammar", plans "bake", "cutover", "long pole", boundaries "dissolve", outcomes "sealed", ideas "earn their keep", "register", "grain", "floor", "ladder". Legal and accounting: "premise", "ruling", "carve-out", "ceiling", "owed". Machinery and plumbing: "backstop", "chokepoint", "lever", "wedged", "stamped". Personified code, with any verb that needs a mind or a body: it "refuses" input, "carries" responsibility, "swallows" an error, "wants" a fixture, "survives" refactors. Standard pairs like "the function returns" are fine. Literal technical uses are fine (a guard clause, a feature gate, tension in a cable, a version floor, a patch landing on a branch): the tell is the metaphorical spread into ordinary prose. In the load-bearing corpus, this style went from 0.7% of everything written at the start of 2025 to 39% by mid-2026, and "load-bearing" is the single most distinctive word of the corpus.
+Mechanical and structural metaphors that dress prose up as rigorous systems analysis. Structure: "load-bearing", "tension", "gated", "guarded against", "pushing back" (usually "gently"). Ops and planning: "blast radius", changes "land", "spine", "seams", "grammar", plans "bake", "cutover", "long pole", boundaries "dissolve", outcomes "sealed", ideas "earn their keep", "register", "grain", "floor", "ladder". Legal and accounting: "premise", "ruling", "carve-out", "ceiling", "owed". Machinery and plumbing: "backstop", "chokepoint", "lever", "wedged", "stamped". Personified code, with any verb that needs a mind or a body: it "refuses" input, "carries" responsibility, "swallows" an error, "wants" a fixture, "survives" refactors. Standard pairs like "the function returns" are fine. Literal technical uses are fine (a guard clause, a feature gate, tension in a cable, a version floor, a patch landing on a branch): the tell is the metaphorical spread into ordinary prose.
 
 - "That comment is load-bearing: the whole abstraction leans on it."
 - "This change lands behind a gate to keep the blast radius small."
@@ -191,7 +189,7 @@ A statement that the point is obvious, clear or simple, in place of the proof. A
 
 ### False Precision
 
-Diagnostic confidence without the diagnosis: a guess labeled "the root cause", a hunch labeled "the key insight", an approximation wrapped in "exactly" or "precisely". Certainty adverbs that close a case nobody opened: "plainly", "outright", "merely", "provably", "empirically". Check-claiming compounds and "re-" verbs that report a verification the writer never ran: "byte-identical", "bit-identical", "mutation-checked", "re-verified". Universal negatives with no stated search: "nothing else uses it", "no path reaches". Coined privatives in place of the missing part: "unwired", "ungated". Human hedging ("seems", "perhaps", "probably") is falling out of PR prose while this vocabulary takes its place.
+Diagnostic confidence without the diagnosis: a guess labeled "the root cause", a hunch labeled "the key insight", an approximation wrapped in "exactly" or "precisely". Certainty adverbs that close a case nobody opened: "plainly", "outright", "merely", "provably", "empirically". Check-claiming compounds and "re-" verbs that report a verification the writer never ran: "byte-identical", "bit-identical", "mutation-checked", "re-verified". Universal negatives with no stated search: "nothing else uses it", "no path reaches". Coined privatives in place of the missing part: "unwired", "ungated".
 
 - "The root cause is a race condition in the scheduler."
 - "The two outputs are byte-identical, so the rewrite is provably safe."

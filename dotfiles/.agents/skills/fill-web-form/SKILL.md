@@ -173,6 +173,12 @@ After completing each step:
 4. `screenshot` to confirm advancement
 5. Repeat
 
+### Running JavaScript in the page
+
+- **`javascript_tool` cuts its output at about 1,500 characters.** Return a long result in slices.
+- **A call fails after 45 seconds** with `CDP sendCommand "Runtime.evaluate" timed out after 45000ms`. Keep the state of a long loop on `window`, and run the loop in batches.
+- **A `window.fetch` or XHR wrapper set from `javascript_tool` can miss the page's own requests.** Read them with `read_network_requests`.
+
 ## Handling common SPA frameworks
 
 ### SAP UI5 (e.g., government portals)

@@ -36,6 +36,21 @@ You bring a downstream repository in line with `kdeldycke/repomatic`, and you do
 
 Use `uvx --exclude-newer '{window}' --exclude-newer-package repomatic=P0D --from 'repomatic==X.Y.Z' -- repomatic`, with `X.Y.Z` the `ADOPTED_PIN` the context shows. Read `{window}` from the `UV_EXCLUDE_NEWER` value of any `.github/workflows/*.yaml`, which `repomatic init` renders from `[tool.repomatic] minimum-release-age`. The pin keeps the tool registry (`ruff`, `typos`, `mypy` versions) identical to what CI runs, and the cooldown gates the dependency tree while keeping a fresh release installable. References to `<cmd>` below resolve to it.
 
+### Move the pin by hand
+
+The `sync-repomatic` job moves the pin once a release clears the cooldown. To adopt a release before that, run `init` as that release, on each component to regenerate. `X.Y.Z` is the release to adopt:
+
+```shell-session
+$ uvx --no-progress --exclude-newer '{window}' --exclude-newer-package repomatic=P0D 'repomatic==X.Y.Z' init --no-cooldown workflows/autofix.yaml workflows/lint.yaml
+```
+
+- **Regenerate, never search and replace the version.** A generator change, like a new job permission or a reshaped trigger, then arrives with the pin and not one release late.
+- **Pass `--no-cooldown`.** Without it, `init` holds the pin back while the release is inside the window, and writes or deletes no file. `init --upgrade` cannot do this job: it skips a release inside the window, and it takes no components.
+- **Name each component.** A bare `init` also writes whatever else is in scope, like a labels config or a changelog, and a bare `workflows` selector bypasses the scope gates. Name each tool config to sync again too, like `typos`: workflows alone leave those sections one release behind.
+- **Close the pull request of a renamed autofix job.** Its branch stays open, attached to a job that no longer exists.
+
+Then run the two passes below on the result.
+
 ### Read the scope and the version pair
 
 Both values come from `$ARGUMENTS`, in any order, and neither constrains the other.

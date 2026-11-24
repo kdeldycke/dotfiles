@@ -172,6 +172,7 @@ If `rsvg-convert` is unavailable, fall back to `inkscape --export-type=png --exp
 - Give every themed element its own explicit class, even one reused nowhere else (lettering, a caption). A migration or bake step that identifies "themed" nodes by stripping inline paint off wrapper `<g>` elements will also strip color from any child that was relying on inherited fill instead of a class of its own, silently turning it black.
 - The font stack for text elements is: `'Inter', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif`.
 - When creating new SVGs, use the Tailwind Slate palette for all grays and the same `radialGradient` for the lens glass.
+- On macOS, verify a regenerated SVG by reading its source. `qlmanage -t` can render a stale thumbnail of a file just rewritten, even after `qlmanage -r cache`: use the thumbnail only for layout.
 
 ## Sphinx integration
 
