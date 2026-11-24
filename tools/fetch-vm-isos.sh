@@ -64,8 +64,11 @@ done
 # never let one slow mirror hang the whole run.
 curl_base=(--location --fail --show-error --connect-timeout 20)
 curl_meta=("${curl_base[@]}" --silent --max-time 90)
+# --retry-all-errors also retries a transfer that the server ends mid-file, like
+# an HTTP/2 stream reset: --retry alone does not. From curl 8.17.0 on, a retry
+# resumes from the bytes already on disk when the server accepts byte ranges.
 curl_get=("${curl_base[@]}" --progress-bar --retry 3 --retry-delay 5
-	--continue-at - --remote-time)
+	--retry-all-errors --continue-at - --remote-time)
 
 # dnf. The build suffix moves with every release, so read the current image out
 # of the release index instead of pinning one.
@@ -199,6 +202,16 @@ resolve_haiku() {
 		sort -u | tail -1
 }
 
+# pacman and yay, on Omarchy. From Omarchy 4.0.0 on, a pacman hook aborts every
+# full system upgrade not started by `omarchy update`, which a plain Arch guest
+# cannot reproduce. Omarchy publishes an arm64 image beside its x86 one, and its
+# home page links the current release. iso.omarchy.org lists no index.
+resolve_omarchy() {
+	curl "${curl_meta[@]}" https://omarchy.org/ |
+		grep -oE 'https://iso\.omarchy\.org/omarchy-[0-9.]+-aarch64\.iso' |
+		sort -u --version-sort | tail -1
+}
+
 # Package managers, image, architecture, resolver, the utm-host.py alias of the
 # guest, and an optional file name for an image whose own name does not say
 # what it holds. A guest serving several package managers lists them
@@ -217,6 +230,7 @@ guests=(
 	"netpkg|Zenwalk|x86_64|resolve_zenwalk|zenwalk"
 	"upkg|paldo live|x86_64|resolve_paldo|paldo"
 	"pkgman|Haiku|x86_64|resolve_haiku|haiku"
+	"pacman,yay|Omarchy|arm64|resolve_omarchy|omarchy"
 )
 
 # Read the size the server reports, so a complete image is never fetched twice.
