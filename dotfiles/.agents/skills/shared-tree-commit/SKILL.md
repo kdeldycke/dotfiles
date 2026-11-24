@@ -82,6 +82,13 @@ When it staged a hunk in one of your paths, skip the reset for that path: point 
 3. Build the whole range once without `-S`. Check that `git diff --name-only <old head> <new head>` lists only your paths, and that each message and author is unchanged. A check that fails after the signed build wastes one signature for each commit.
 4. Build the range again with `-S`, one commit at a time, then move the branch as "Commit authorized, push not authorized" says.
 
+## Push rejected as non-fast-forward
+
+`git pull` refuses the dirty tree for the same reason. Rebuild the unpushed range on `origin/<branch>` as "Amend an older unpushed commit" says, with two changes:
+
+- Take each tree from `git merge-tree --write-tree --merge-base=<old parent> <new parent> <commit>`, which stops on a conflict, and compare each pair with `git patch-id --stable`.
+- After the branch moves, point the index entry of each path the remote changed at its new blob with `git update-index --cacheinfo`. Then run `git checkout-index --force -- <path>`, unless the working copy already holds that blob: otherwise the path reads as reverted.
+
 ## Work that another session committed
 
 A session can also commit work it did not write. An uncommitted strand in this checkout is a strand offered to whoever commits next. Commit promptly, or rebuild yours as a blob once the absorption shows.
