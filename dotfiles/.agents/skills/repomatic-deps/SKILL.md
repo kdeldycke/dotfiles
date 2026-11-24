@@ -25,7 +25,7 @@ You help users understand and maintain their project's dependencies. This skill 
 ### Determine invocation method
 
 - If the context above shows `CANONICAL_REPO`, use `uv run --frozen repomatic`: without `--frozen`, an edit to `pyproject.toml` makes the local uv relock `uv.lock`.
-- Otherwise, use `uvx --exclude-newer '{window}' --exclude-newer-package repomatic=P0D --from 'repomatic==X.Y.Z' -- repomatic`, with `X.Y.Z` the `WORKFLOW_PIN` the context shows. Read `{window}`, here and in every command below, from the `UV_EXCLUDE_NEWER` value of any `.github/workflows/*.yaml`, which `repomatic init` renders from `[tool.repomatic] minimum-release-age`. `--exclude-newer-package` exempts repomatic itself, so a fresh release stays installable while its dependency tree stays gated. The pin runs `update-dep-graph` at the version the `update-dep-graph` job runs, so a local graph does not churn against the next CI refresh. Drop the `--from` clause only when the context shows no `WORKFLOW_PIN`.
+- Otherwise, use `uvx --exclude-newer '{window}' --exclude-newer-package repomatic=P0D --from 'repomatic==X.Y.Z' -- repomatic`, with `X.Y.Z` the `WORKFLOW_PIN` the context shows. Read `{window}`, here and in every command below, from the workflow-level `UV_EXCLUDE_NEWER` of `.github/workflows/tests.yaml` or `release.yaml`, which `repomatic init` renders from `[tool.repomatic] minimum-release-age`. `--exclude-newer-package` exempts repomatic itself, so a fresh release stays installable while its dependency tree stays gated. The pin runs `update-dep-graph` at the version the `update-dep-graph` job runs, so a local graph does not churn against the next CI refresh. Drop the `--from` clause only when the context shows no `WORKFLOW_PIN`.
 
 ### Mode selection
 
@@ -63,7 +63,7 @@ With `[tool.repomatic] dependency-graph.update = false`, the `update-dep-graph` 
 
 ### Mechanical layer
 
-`<cmd> lint-deps` decides everything readable from `pyproject.toml` and `uv.lock`: upper bounds, missing specifiers, extras that install nothing, unsorted lists, type stubs outside the `typing` group, floors with no comment above them, and floor comments running past `[tool.repomatic] lint-deps.comment-word-threshold` words (40 by default). Run it first and let it own those rows. CI runs it from the release lane's `lint-deps` job (`_release-build.yaml`, reached through `release.yaml`), which fires on every push but annotates with `--no-fatal` until a release commit makes the blocking *shippability* findings fatal. A floor inside the cooldown blocks only in `[project]` dependencies and extras, which reach the published metadata. In a dependency group, it stays a warning. These policy rows never block either way, so no CI gate will catch them for you.
+`<cmd> lint-deps` decides everything readable from `pyproject.toml` and `uv.lock`: upper bounds in `[project]` dependencies and extras, missing specifiers, extras that install nothing, unsorted lists, type stubs outside the `typing` group, floors with no comment above them, and floor comments running past `[tool.repomatic] lint-deps.comment-word-threshold` words (40 by default). Run it first and let it own those rows. CI runs it from the release lane's `lint-deps` job (`_release-build.yaml`, reached through `release.yaml`), which fires on every push but annotates with `--no-fatal` until a release commit makes the blocking *shippability* findings fatal. A floor inside the cooldown blocks only in `[project]` dependencies and extras, which reach the published metadata. In a dependency group, it stays a warning. These policy rows never block either way, so no CI gate will catch them for you.
 
 What is left is the part no parser settles, and it is the reason this mode exists: whether a floor is **justified** by the APIs the code actually calls, whether a comment is **stale or weak**, and whether a rationale **contradicts** its conditional marker. Spend the review there.
 
@@ -80,9 +80,7 @@ These conventions are derived from the `pyproject.toml` files across all `kdeldy
 
 #### Runtime dependencies (`[project].dependencies`)
 
-1. **Use `>=` (not `~=` or `==`).** Relaxed lower bounds give packagers freedom to release security hotfixes without waiting for an upstream bump. Upper bounds are forbidden per [https://iscinumpy.dev/post/bound-version-constraints/](https://iscinumpy.dev/post/bound-version-constraints/).
-
-2. **Every version bound needs a comment tying the floor to a concrete code dependency.** The comment goes on the line above the dependency and states which feature, method, or API from that version the project actually uses. Prefer referencing the call site or module that depends on it:
+1. **Every version bound needs a comment tying the floor to a concrete code dependency.** The comment goes on the line above the dependency and states which feature, method, or API from that version the project actually uses. Prefer referencing the call site or module that depends on it:
 
    ```toml
    dependencies = [
@@ -94,7 +92,7 @@ These conventions are derived from the `pyproject.toml` files across all `kdeldy
 
    A good floor comment answers: "if someone installed an older version, what would break and where?" If you cannot point to a concrete usage, the floor may be unnecessarily high.
 
-   **A floor comment documents the floor as it stands, in one short paragraph.** It is not a record of how the floor got there. Left alone it drifts that way on its own: each bump appends a paragraph about the newly required version, nothing is deleted, and the comment becomes a private changelog of the dependency with the declared version buried under the floors it replaced. When raising a floor, **rewrite the comment rather than extending it**: keep what the new version buys (API, fix, `requires-python` alignment, the call site consuming it, a CVE or upstream issue identifier), delete every superseded floor (`git log -- pyproject.toml` keeps that history), and move out what is not about this floor (usage detail belongs in the module using it, a comparison against an alternative package in an `XXX` pointer to the upstream ticket). `lint-deps` warns past 40 words, which is the ceiling to write to even where it is not run.
+   **A floor comment documents the floor as it stands, in one short paragraph.** When raising a floor, **rewrite the comment rather than extending it**: keep what the new version buys (API, fix, `requires-python` alignment, the call site consuming it, a CVE or upstream issue identifier), delete every superseded floor (`git log -- pyproject.toml` keeps that history), and move out what is not about this floor (usage detail belongs in the module using it, a comparison against an alternative package in an `XXX` pointer to the upstream ticket). `lint-deps` warns past 40 words, which is the ceiling to write to even where it is not run.
 
    **Security fixes are also a valid floor bump reason.** A CVE or advisory in an older version justifies raising the floor even when the API is unchanged. The comment should cite the CVE or advisory:
 
@@ -105,7 +103,7 @@ These conventions are derived from the `pyproject.toml` files across all `kdeldy
    ]
    ```
 
-3. **Python version support is not a valid reason to bump a floor.** The dependency resolver already picks the right version via `requires-python` metadata. If `mango>=2` works and mango 5 merely adds Python 3.13 support, keep `>=2` — the resolver handles it. **Exception:** when a dependency *drops* a Python version your project still supports (or your project drops one, aligning minimum `requires-python`), that alignment is a valid floor bump reason. The comment should state the version range alignment, not the Python support:
+2. **Python version support is not a valid reason to bump a floor.** The dependency resolver already picks the right version via `requires-python` metadata. If `mango>=2` works and mango 5 merely adds Python 3.13 support, keep `>=2` — the resolver handles it. **Exception:** when a dependency *drops* a Python version your project still supports (or your project drops one, aligning minimum `requires-python`), that alignment is a valid floor bump reason. The comment should state the version range alignment, not the Python support:
 
    ```toml
    dependencies = [
@@ -114,27 +112,21 @@ These conventions are derived from the `pyproject.toml` files across all `kdeldy
    ]
    ```
 
-4. **Use conditional markers for Python-version-gated deps.** Example: `"tomli>=2; python_version<'3.11'"`. When a dep has a version marker, the floor rationale must make sense for the Python versions where the dep is actually installed — not for versions excluded by the marker.
-
-5. **Alphabetical order** within the list.
+3. **Use conditional markers for Python-version-gated deps.** Example: `"tomli>=2; python_version<'3.11'"`. When a dep has a version marker, the floor rationale must make sense for the Python versions where the dep is actually installed — not for versions excluded by the marker.
 
 #### Development dependencies (`[dependency-groups]`)
 
-06. **Prefer `[dependency-groups]`** (uv standard) over `[project.optional-dependencies]` for test, typing, and docs groups.
-07. **`>=` is preferred for dev deps too**, but `~=` is acceptable when stricter pinning reduces CI randomness. If a package also appears in runtime deps, the dev entry must use the same specifier style. The relaxation is about specifier *style* (`~=` allowed), not about floor *accuracy* — dev dep floors still need to be grounded in actual API or compatibility requirements, not adoption timestamps.
-08. **Standard group names:** `test`, `typing`, `docs` (lowercase, alphabetical).
-09. **Type stubs** go in the `typing` group with stub-specific versions: `"types-pyyaml>=6.0.12.9"`.
-10. **Alphabetical order** within each group.
+4. **Prefer `[dependency-groups]`** (uv standard) over `[project.optional-dependencies]` for test, typing, and docs groups.
+5. **`>=` is preferred for dev deps**, but `~=` is acceptable when stricter pinning reduces CI randomness. If a package also appears in runtime deps, the dev entry must use the same specifier style. The relaxation is about specifier *style* (`~=` allowed), not about floor *accuracy* — dev dep floors still need to be grounded in actual API or compatibility requirements, not adoption timestamps.
+6. **Standard group names:** `test`, `typing`, `docs` (lowercase, alphabetical).
 
 #### General rules
 
-11. **No upper bounds** (`<`, `<=`, `!=`, `~=` that implies an upper bound). The only exception is conditional markers like `python_version<'3.11'`.
-12. **Extras syntax** is fine: `"pytest-xdist[psutil]>=3.7"`.
-13. **One dependency per line** for readable diffs. Short groups that fit on one line are acceptable — the `format-pyproject` job normalizes layout automatically.
+7. **Extras syntax** is fine: `"pytest-xdist[psutil]>=3.7"`.
 
 ### Audit procedure
 
-Read the full `pyproject.toml`. `lint-deps` already reports the specifier style, missing comments, ordering, bare dependencies, empty extras and misplaced type stubs, so read its output rather than re-deriving them. For each dependency entry, check what it cannot:
+Read the full `pyproject.toml`. For each dependency entry, check what `lint-deps` cannot:
 
 | Check                     | What to flag                                                                                                                                                    |
 | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -172,7 +164,6 @@ To test one floor alone, build an environment from the lockfile and swap that pa
 #### Special cases
 
 - **Backport packages** (like `backports-strenum`, `tomli`, `exceptiongroup`) exist solely to provide a stdlib class to older Python versions. Their entire API is the backported class itself, available in all versions. The floor is typically `>=1` (or the first release) unless a specific bug fix is needed for the Python versions where the dep is actually installed.
-- **Conditional deps with stale bug-fix floors.** A dep gated by `python_version<'3.11'` that has a floor set for a bug affecting Python \<3.8.6 — if the project's `requires-python` is `>=3.10`, that bug is irrelevant and the floor can be lowered.
 - **pytest plugins** with no special API beyond auto-registration (like `pytest-randomly`, `pytest-github-actions-annotate-failures`) have low effective floors — their basic functionality has been stable across major versions. Set the floor at the major version introducing the current plugin interface, not at the latest release.
 
 #### Floor bumps to adopt new APIs
@@ -193,8 +184,8 @@ When `explore` mode identifies a candidate, the review output should include it 
 These comment patterns typically signal a floor set at adoption or auto-bump time, not at an API boundary:
 
 - "First version we used" / "first version when we last changed the requirement" — the floor is an artifact of when the dep was added or last bumped by a dependency bot, not a deliberate API minimum.
-- "First version to support Python 3.X" — unless it documents a `requires-python` drop alignment or a concrete build failure (missing wheels that cause install failures on that Python version), this is not a valid floor reason.
-- **The `~= -> >=` conversion pipeline.** A common inflation path: (a) dep added as `~=X.Y` (latest at time), (b) a dependency bot bumps to `~=X.Z`, (c) a bulk "relax requirements" commit converts all `~=` to `>=`. Each step inflates the floor without API validation. Check `git log` for this pattern when a floor looks suspiciously high.
+
+Check `git log` when a floor looks suspiciously high.
 
 ### `exclude-newer-package` cooldown audit
 
@@ -237,7 +228,7 @@ Search for unused APIs in existing dependencies that could replace hand-rolled c
 ### Scope selection
 
 - No argument: explore all runtime dependencies.
-- `<package>`: explore a single dependency (e.g., `explore boltons`).
+- `<package>`: explore a single dependency (like `explore papaya`).
 
 ### Procedure
 
@@ -247,21 +238,7 @@ For each dependency in scope:
 
 2. **Catalog available APIs.** Using your knowledge of the library (and its docs if needed via `WebFetch`), list the public APIs the project does NOT currently use. Focus on utilities, helpers, and data structures: the kind of thing that replaces 3-10 lines of hand-rolled code.
 
-3. **Search for replacement candidates.** For each unused API, grep the source tree for code patterns it could replace. Be specific about what constitutes a match:
-
-   | Library API                                      | Pattern to search for                                                                                             |
-   | ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- |
-   | `boltons.iterutils.partition`                    | Two complementary list comprehensions filtering the same iterable                                                 |
-   | `boltons.iterutils.first`                        | `next(iter(...), None)` or `seq[0] if seq else None` on non-generator sequences                                   |
-   | `boltons.iterutils.bucketize`                    | Loops building a `dict[K, list[V]]` via `setdefault(k, []).append(v)`                                             |
-   | `boltons.iterutils.chunked`                      | Manual slice loops (`for i in range(0, len(seq), n)`)                                                             |
-   | `boltons.dictutils.subdict`                      | `{k: v for k, v in d.items() if k in keys}` or `if k not in exclude`                                              |
-   | `boltons.fileutils.atomic_save`                  | `Path.write_text()` on files where partial writes would corrupt state                                             |
-   | `packaging.specifiers.SpecifierSet`              | Manual version-range checks with `<`/`>`/`in` loops over `Version` objects                                        |
-   | `packaging.requirements.Requirement`             | Regex parsing of PEP 508 requirement strings                                                                      |
-   | `packaging.markers.Marker`                       | Regex parsing of PEP 508 environment markers (only when the public API exposes the needed structure)              |
-   | `wcmatch.fnmatch` / `wcmatch.pathlib`            | stdlib `fnmatch` or `pathlib.Path.glob()` that would benefit from brace expansion, negation, or extended patterns |
-   | `pyproject_metadata.StandardMetadata` properties | Manual `toml_dict.get("project", {}).get("field")` when a `StandardMetadata` instance is already available        |
+3. **Search for replacement candidates.** For each unused API, grep the source tree for code patterns it could replace. Be specific about what constitutes a match.
 
 4. **Verify each candidate.** Read the actual code at each location. Discard false positives:
 
@@ -278,23 +255,16 @@ For each dependency in scope:
 
 Produce a table of findings:
 
-| Dependency         | Unused API                  | Location           | Current code (summary)                    | Replacement                   | Version needed             | Verdict                                    |
-| ------------------ | --------------------------- | ------------------ | ----------------------------------------- | ----------------------------- | -------------------------- | ------------------------------------------ |
-| boltons            | `subdict`                   | `metadata.py:2232` | dict comprehension filtering by key set   | `subdict(metadata, keys)`     | any (available since 16.x) | Skip: one-liner, no clarity gain           |
-| pyproject-metadata | `StandardMetadata.keywords` | `cli.py:2733`      | `toml.get("project", {}).get("keywords")` | `metadata.pyproject.keywords` | current floor sufficient   | **Adopt**: parsed object already available |
+| Dependency | Unused API          | Location                | Current code (summary)                     | Replacement         | Version needed            | Verdict                                    |
+| ---------- | ------------------- | ----------------------- | ------------------------------------------ | ------------------- | ------------------------- | ------------------------------------------ |
+| papaya     | `ripe`              | `orchard/harvest.py:42` | comprehension keeping the ripe fruits      | `ripe(basket)`      | any (available since 2.x) | Skip: one-liner, no clarity gain           |
+| mango      | `Forecast.rainfall` | `weather/report.py:118` | `data.get("forecast", {}).get("rainfall")` | `forecast.rainfall` | current floor sufficient  | **Adopt**: parsed object already available |
 
 Only recommend changes where the replacement is a genuine simplification: fewer lines, better error handling, or elimination of a manual reimplementation.
 
 ### Filtering noise
 
 Most dependencies are already well-used. Expect the majority of candidates to be discarded during verification. A run that produces zero recommendations is a valid outcome: it means the codebase is already leveraging its dependencies effectively.
-
-Common false-positive patterns to reject early:
-
-- **Swapping idioms for library calls.** `next(iter(x))` → `first(x)` adds an import for no clarity gain.
-- **Adding atomicity where none is needed.** `atomic_save` on files that are immediately git-committed or overwritten by CI.
-- **Unifying glob implementations.** stdlib `glob` and `wcmatch.glob` serve different purposes; not every `glob.glob()` call needs extended syntax.
-- **Replacing regex with structured parsing** when the regex is simpler. `re.match(r"extra\s*==\s*'([^']+)'", marker)` is more direct than navigating a `Marker` object's internal structure.
 
 ### Removal candidates
 
@@ -335,7 +305,7 @@ The usage catalog of step 1 also shows when the project uses a dependency so lit
 
 2. **Read each changelog for the delta.** Fetch the release notes covering that version range from the link in the bump table (GitHub releases via `gh api repos/{owner}/{repo}/releases`, or `WebFetch` on the compare URL; the PyPI project page otherwise). A release body that only links to a docs page, as Sphinx's does, has its notes in the repository: read the changelog file at the tag with `gh api 'repos/{owner}/{repo}/contents/{file}?ref={tag}' -H "Accept: application/vnd.github.raw"`. Extract only what is **new or changed** in the range: added public APIs, fixed bugs our code works around, and deprecations of APIs we still call. **Degrade gracefully:** if `WebFetch` is unavailable and the package is not on GitHub, fall back to your own knowledge of the library's release history and lower your confidence accordingly.
 
-3. **Map deltas to our code.** For each new or changed item, grep the source tree (not tests) for code it touches, reusing the candidate patterns and false-positive filters from [Explore mode](#explore-mode):
+3. **Map deltas to our code.** For each new or changed item, grep the source tree (not tests) for code it touches, reusing the false-positive filters from [Explore mode](#explore-mode):
 
    - A new helper that replaces hand-rolled logic.
    - A bug fix that lets us delete a workaround — search comments for the package name, `work around`, `TODO`, and version-guarded branches.

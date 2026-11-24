@@ -43,7 +43,7 @@ The `labels.toml` it writes holds the whole shipped set: a `default` profile eve
 Present the design as a diff between that effective set and the live `gh label list` above:
 
 - **Live label matching a default**: map it. The defaults carry `rename-from` lists migrating GitHub's stock names (`bug`, `documentation`, `invalid`, `wontfix`, …) to their emoji equivalents in place, preserving issue and PR associations. Never delete-and-recreate to rename.
-- **Live label with no default**: propose it as a `[[tool.repomatic.labels.extra]]` entry in `pyproject.toml` (with `rename-from` when it is a spelling variant of a default), or propose retiring it. A label kept outside the config is not what `sync-labels` applies, so it drifts back on the next run.
+- **Live label with no default**: propose it as a `[[tool.repomatic.labels.extra]]` entry in `pyproject.toml` (with `rename-from` when it is a spelling variant of a default), or propose retiring it. `sync-labels` does not manage a label kept outside the config.
 - **Default with no live label**: it lands on the next sync, so classify the backlog against it now instead of waiting.
 
 Depart from the defaults only for a domain axis they cannot express, and land the departure in the config (`labels.extra`, or `labels.extra-files` for a multi-profile set) so it survives. Designing a taxonomy from scratch is the last resort, for maintainers who explicitly want off the shared set.
@@ -54,25 +54,18 @@ The sections below name labels by their default (`🪫 AI slop`, `🚫 wont do/f
 
 `sync-labels` only creates and updates. Dropping a label from the configuration never removes it from the repository, it just stops managing it, so the label stays live on every issue and pull request still carrying it. A repository reorganizing its taxonomy (folding per-item labels into an ecosystem group, renaming a family) therefore accumulates orphans that no longer appear in any config and that only a maintainer can clear. `lint-repo` lists them in its `undeclared-labels` warning, which never fails the run.
 
-Prefer a rename to a create-and-delete, because GitHub keeps every issue and pull request attached across a rename while a deletion drops the association outright. `rename-from` is how that is declared, and it is strictly **one-to-one**: labelmaker renames only when the target does *not* exist and exactly one listed source does. Two live sources is an unconditional error, and a target that already exists falls to `on-rename-clash`, which `[defaults]` pins to `error` so the clash surfaces instead of passing silently.
+`rename-from` declares a rename, and it is strictly **one-to-one**: labelmaker renames only when the target does *not* exist and exactly one listed source does. Two live sources is an unconditional error, and a target that already exists falls to `on-rename-clash`, which `[defaults]` pins to `error` so the clash surfaces instead of passing silently.
 
 Two consequences worth knowing before writing the field:
 
 - **An N-to-1 merge cannot be automated.** Name the single source carrying the most history, let the rename move it wholesale, and hand-migrate the remainder. Listing every source instead errors and migrates nothing.
 - **Order matters against the sync.** Once a sync has created the new label, a rename into it can only clash. So declare `rename-from` in the same change that introduces the label, never after; a fold whose target is already live has missed the window and is left with a manual migration.
 
-Check what is actually attached before planning any of this:
-
-```shell-session
-$ gh issue list --label "{label}" --state all --limit 200
-$ gh pr list --label "{label}" --state all --limit 200
-```
-
 An orphan with nothing on it is a plain deletion, and much of a taxonomy change usually turns out to be exactly that.
 
 ### Local cache
 
-Fetch the complete inventory once into SQLite (a `{repo}-github.sqlite` file at the repo root, gitignored) instead of hammering the API per item:
+Keep a SQLite cache in a `{repo}-github.sqlite` file at the repo root. No rule of the synced `.gitignore` covers that file, so add its name to `.git/info/exclude`. Fetch the complete inventory into it once, instead of hammering the API per item:
 
 - Page through issues and PRs with GraphQL (100 per page): number, type, title, body, state, `stateReason`, timestamps, `mergedAt`, author, labels, url.
 - A `label_plan` working table holds one row per (item, proposed label) with `confidence` (high/medium/low), `method` (how it was decided), and a one-line `rationale`. Every item must end with at least one row: full coverage is a hard invariant.
@@ -140,7 +133,7 @@ Then propagate to issues:
 ### GitHub API techniques
 
 - **Batch reads with GraphQL aliases**: 40-50 items per query via `i123: issue(number: 123) {...}`. `timelineItems(itemTypes: [CLOSED_EVENT], last: 1)` yields both `actor` (who closed) and `closer` (the PR/commit that closed it).
-- **REST pagination**: put `?state=all&per_page=100` in the path; `--paginate` concatenates JSON arrays that break naive `json.load`.
+- **REST pagination**: put `?state=all&per_page=100` in the path. `gh api --paginate` merges the pages of an endpoint that answers an array into one JSON array. An endpoint that answers an object, like `search/issues`, needs `--paginate --slurp`, which wraps every page in one outer array. `--slurp` rejects `--jq`.
 - **`gh pr edit --milestone <name>` cannot resolve closed milestones.** Assign by number instead: `gh api -X PATCH repos/{owner}/{repo}/issues/{n} -F milestone={milestone_number}` (works for PRs too: they are issues in the REST API).
 - Labels are fine by name: `gh issue|pr edit N --add-label "x" --remove-label "y"`, several flags per call to make one atomic edit per item.
 - **Search API for verification**: `gh api -X GET search/issues -f q="repo:{owner}/{repo} is:pr no:milestone"` and `-label:"x"` negations give instant gap counts.

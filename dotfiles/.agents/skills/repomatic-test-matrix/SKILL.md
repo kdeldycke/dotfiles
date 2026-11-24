@@ -24,9 +24,11 @@ A matrix cell costs a runner on every push, so each one has to earn its place. T
 
 ### Cover the shipped config broadly; probe unreleased axes narrowly; smoke-test released flavors
 
-Released dependencies on stable Python get a broad spread, but *broad* means broad on the axis the product actually varies along, not on both at once. A tool whose behaviour changes per platform (it drives different system binaries, resolves different paths, ships a different feature set) earns a cell for every OS and architecture, because that spread **is** the product. Interpreter compatibility is OS-independent by construction, so the floor, the prerelease and the free-threaded build each need one runner rather than one per OS. Crossing the two axes multiplies cells to buy their *interaction*, which is worth paying for only where the failure history shows an interaction exists: measure it (see below) instead of assuming it, and put the floor on whichever OS its users actually run, which for a Python tool is usually Linux, where distribution packagers build against whatever interpreter their channel ships.
+Released dependencies on stable Python get a broad spread, but *broad* means broad on the axis the product actually varies along, not on both at once. A tool whose behaviour changes per platform (it drives different system binaries, resolves different paths, ships a different feature set) earns a cell for every OS and architecture, because that spread **is** the product. Interpreter compatibility is OS-independent by construction, so the floor, the prerelease and the free-threaded build each need one runner rather than one per OS. The default matrix gives one runner to the free-threaded build only: it crosses the floor and the prerelease with every runner. Crossing the two axes multiplies cells to buy their *interaction*, which is worth paying for only where the failure history shows an interaction exists: measure it (see below) instead of assuming it, and put the floor on whichever OS its users actually run, which for a Python tool is usually Linux, where distribution packagers build against whatever interpreter their channel ships.
 
-Unreleased dependency branches and prerelease Python run on one runner as `continue-on-error` probes (`test-matrix.unstable`), never across platforms: a probe that fails is information, and paying for it six times over buys none.
+An unreleased dependency branch runs on one runner as a `continue-on-error` probe (`test-matrix.unstable`), never across platforms: a probe that fails is information, and paying for it six times over buys none.
+
+The default matrix does not treat the prerelease Python that way. It runs that version (currently `3.16`) on every runner, and marks those cells `continue-on-error` itself, with no `test-matrix.unstable` entry. To keep that probe on one runner, remove its other cells with `test-matrix.exclude`: one entry for each other runner, like `{ "os" = "macos-26", "python-version" = "3.16" }`.
 
 A *released* free-threaded build (`3.15t`) is a different case and runs **stable** on a single runner, as one `include` row pinned to that runner and left out of `unstable`. It is shipped software, so a failure there is a real failure.
 
@@ -103,12 +105,6 @@ That reports median whole-job wall-clock per runner image from recent successful
 
 Where one fast runner suffices, `ubuntu-26.04-arm` is the default: fastest and cheapest tier, against hosted macOS billing roughly ten times Linux. Reserve `macos-26` and Windows for the OS coverage only they add, and drop the slower twin of an OS pair with `test-matrix.remove.os`.
 
-### Time whole jobs, not the tool pass
-
-A measurement that times only tool execution misses checkout and install, which is where most of the difference between runner images lives. The lean `ubuntu-slim` image survived for a long time on exactly that mistake: measured end to end, the full image ran 27-32% *faster*.
-
-`job-timings` reads the jobs API's start and end timestamps, so what it reports is whole-job by construction and this mistake is not expressible through it.
-
 ### Watch what is arriving and retiring
 
 You are not the first to know an image is changing. `repomatic sync-runner-images` runs weekly from the `autofix.yaml` workflow, looks up every label this repository runs in GitHub's *Available Images* table, and proposes the mechanical half as a pull request. A retiring image has its literal `runs-on:` values and its `[tool.repomatic.test-matrix.*]` entries moved onto a successor. A workflow's own matrix that lists it is named in the pull request body and in a warning, for a move by hand. A strictly newer *version* of an image in use gets its literal `runs-on:` values moved too, and also joins the full matrix as a `continue-on-error` probe unless the fleet already runs it. It opens a pull request only when something here is exposed, so its existence is the signal.
@@ -125,9 +121,9 @@ Never introduce a `-latest` alias to sidestep the question: GitHub repoints thos
 
 ### Every job runs on a test axis
 
-The images a job may run on are exactly those the test matrices use, and `lint-repo` warns about any other `runs-on:`. Read the effective set from `repomatic show-metadata` rather than from the package source, which a repository consuming repomatic does not have checked out. That keeps "where is the suite exercised" and "what may a job run on" a single question, because each extra image is one more to track, pin and migrate.
+A job may run on the images of repomatic's default test matrices, and on no other. `lint-repo` warns about any other literal `runs-on:`, and its warning lists the allowed images. The check reads that bundled list. It does not read the matrix that this repository computes, so a `test-matrix` setting adds no image to the list. Each extra image is one more to track, pin and migrate.
 
-A job that genuinely needs something else widens the axes rather than naming a one-off image. This covers the Linux Nuitka hosts (a published binary is built on the image the suite is validated against, and its toolchain comes from a digest-pinned manylinux container regardless) and the light mechanical jobs.
+A job that needs another image names it in `[tool.repomatic.sync-runner-images] ignore`. `lint-repo` then reports the image with no warning, and `sync-runner-images` leaves the job on it.
 
 ### Reporting
 

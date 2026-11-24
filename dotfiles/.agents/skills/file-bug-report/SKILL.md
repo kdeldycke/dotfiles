@@ -46,8 +46,6 @@ If the repo belongs to an organization (extract `<org>` from `<owner/repo>`), fe
 
 If the org has no `.github` repo or the request returns 404, skip this step. If the repo owner is a user account rather than an organization, skip this step.
 
-When the repo-level checks in subsequent steps find a file that also exists at the org level, the repo-level file takes precedence. When no repo-level file exists, the org-level file is authoritative.
-
 #### 1b. Contribution guidelines
 
 GitHub recognizes contribution guidelines in the repo root, `.github/`, and `docs/`, but owners do not always follow GitHub's conventions. File names vary in casing, extension, and placement. Do not assume any single path: check all plausible variations.
@@ -69,7 +67,7 @@ $ gh api repos/<owner/repo>/contents/docs --jq '.[].name'
 $ gh api repos/<owner/repo>/contents/doc --jq '.[].name'
 ```
 
-Look for files matching these patterns (case-insensitive): `contributing.md`, `CONTRIBUTING.md`, `Contributing.md`, `CONTRIBUTING.markdown`, `CONTRIBUTING.rst`, `CONTRIBUTING.txt`, `CONTRIBUTING`, `contributing.adoc`, `CONTRIBUTING.adoc`, or any other variation. Owners may use `.rst`, `.txt`, `.adoc`, `.markdown`, no extension, or non-standard casing. Fetch and read every match.
+Fetch and read every match.
 
 **Step 3: check the readme** for inline contribution guidance or links to external docs:
 
@@ -233,24 +231,20 @@ A `…/actions/runs/{run}/job/{job}#step:{N}:{line}` link follows non-obvious nu
 
 ### 4. Select the right template
 
-Based on step 1d, pick the correct template:
+Pick the template by the rules of step 1d. Two cases need the user:
 
-- **Bug report template/form found**: use it. Fill in every required field. Preserve the exact field names, order, and structure.
 - **Multiple templates exist but none is a clear bug report match**: report this to the user and ask which template to use.
-- **No templates found**: use the default structure in step 5.
 - **Template chooser disables blank issues and no bug template exists**: warn the user that the repo may not accept bug reports through issues.
 
 ### 5. Write the report
 
-Write a markdown file to `<repo>-bug-report.md` at the repository root (next to `pyproject.toml`). Placing it at the top level makes it obvious and hard to miss during review.
+Write the report to a markdown file named `<repo>-bug-report.md`, outside the checkout, in the session's scratch directory. A file at the repository root does not belong to the project, and a broad `git add` can stage it.
 
-**If using a template from step 4**, replicate its structure exactly: same headings, same field order, same placeholder comments replaced with actual content. For YAML issue forms, use each field label as a markdown heading and fill in the content.
+Open the file with a `Title: <clear, specific title>` line. The user pastes it into the title field of the issue, and the body under it holds no H1 heading.
 
 **If no template exists**, use this default structure:
 
 ```markdown
-# <Clear, specific title>
-
 ## Summary
 
 One paragraph describing what fails and the impact.
@@ -285,7 +279,6 @@ What happens instead, with exact error output in code blocks.
 - When the user sends a posted URL, diff the posted body against the draft before deleting the draft. A hand edit made before posting can break a code span or a link: name the line to fix.
 - Keep reproduction steps minimal: strip everything not needed to trigger the bug.
 - Match the depth of the reports the maintainer already accepted: read two or three closed reports of the same kind with their replies, and leave out the checks the maintainer runs themselves. Evidence they would redo only lengthens the report.
-- Link to CI runs or logs when available.
 - Do not speculate about fixes unless the root cause is clear from the evidence.
 - Do not use em dashes; use colons for inline elaboration.
 - Respect any tone, formatting, or content requirements found in the contribution guidelines. If the guidelines say "include output of `tool --version`", include it. If they say "use the template", use it verbatim.
@@ -299,11 +292,10 @@ The report will be pasted into a GitHub issue (or PR body). Write for GitHub's r
 - **Use `#NNN` shorthand for same-repo references.** GitHub auto-links `#NNN` to issues/PRs in the same repository. Do not write `[#123](https://github.com/owner/repo/issues/123)` or `[Issue #123](...)` when a bare `#123` works. Reserve full URLs for cross-repo references.
 - **Use `@username` for people, not indirect references.** Write "Original example from @octocat" not "The maintainer's example". GitHub renders @-mentions as profile links and notifies the person, which is appropriate in a bug report where they are the relevant party.
 - **Prefer bare URLs over `[text](url)` when the URL IS the information.** GitHub auto-links and previews bare URLs. A markdown link like `[owner/repo#123](https://github.com/owner/repo/pull/123)` adds nothing over the bare URL and is harder to audit. Use `[text](url)` only when the link text adds meaning the URL lacks (e.g., describing what the link shows).
-- **Deep-link to the exact evidence.** When referencing a PR that demonstrates a problem, link to the specific file diff (`/changes#diff-...`), not the PR landing page. When referencing a CI run, link to the specific failed step. The reader should see the evidence immediately on click, not have to navigate.
 - **A code permalink embeds only in its own repository.** GitHub turns `blob/{full-sha}/{path}#L{a}-L{b}`, alone on its line, into a rendered syntax-highlighted snippet, but [only in the repository the link points at](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/creating-a-permanent-link-to-a-code-snippet); a link to any other repository stays a bare URL. Quote a cross-repo excerpt in a fenced block and put the permalink beside it, or the reader gets a naked link where the evidence should be. Use the 40-character commit SHA that `Copy permalink` (`y`) emits, not a tag or a branch name.
 - **Resolve line numbers against the commit you link, never your checkout.** A working tree ahead of the tag shifts every line below the drift, so a range read off a local file lands on the wrong code at the pinned SHA while still looking plausible. Extract the blob first (`git show {sha}:{path}`, or `gh api 'repos/{owner}/{repo}/contents/{path}?ref={sha}' -H "Accept: application/vnd.github.raw"`), grep it for the symbol, and take the range from that output.
 - **Backtick tool and project names in prose.** When a tool name appears outside a hyperlink, wrap it in backticks: `` `mdformat` ``, `` `tabulate` ``. This distinguishes the tool identifier from surrounding prose and is consistent with how code identifiers are formatted.
-- **Keep implementation details out of the body.** The code diff already shows what changed. The issue/PR body should describe the problem and the behavioral fix. Do not walk through the implementation line by line: describe what the fix does, not how the code is structured. Reserve the technical walkthrough for code comments and commit messages.
+- **Keep implementation details out of the body.** The code diff already shows what changed. The issue/PR body should describe the problem and the behavioral fix. Do not walk through the implementation line by line: describe what the fix does, not how the code is structured. Reserve the technical walkthrough for code comments and docstrings.
 
 ### Sanitizing output
 
@@ -327,20 +319,15 @@ Clean up code blocks before including them in the report:
 
 Use precise Pygments lexer IDs on fenced code blocks so GitHub renders them with proper syntax highlighting. Never use bare ```` ``` ```` when a specific lexer applies. Common IDs for bug reports:
 
-| Content                    | Lexer ID                | Notes                                                                               |
-| :------------------------- | :---------------------- | :---------------------------------------------------------------------------------- |
-| Python traceback           | `pytb`                  | Full `Traceback (most recent call last):` output.                                   |
-| Python console session     | `pycon`                 | `>>>` prompts with output.                                                          |
-| Shell session (Unix)       | `shell-session`         | `$` prompts with output. Prefer over `bash` when showing command + output together. |
-| Shell session (PowerShell) | `pwsh-session`          | `PS>` prompts with output.                                                          |
-| PowerShell script          | `pwsh`                  | Pure PowerShell code without prompts.                                               |
-| Plain shell commands       | `bash` / `zsh` / `fish` | Pure commands without output.                                                       |
-| JSON output                | `json`                  | API responses, config dumps.                                                        |
-| YAML config                | `yaml`                  | Workflow snippets, config files.                                                    |
-| TOML config                | `toml`                  | `pyproject.toml` sections.                                                          |
-| Rust panic / backtrace     | `rust`                  | `thread 'main' panicked at...` output.                                              |
-| Go panic                   | `go`                    | `goroutine 1 [running]:` output.                                                    |
-| JavaScript error           | `js`                    | Node.js stack traces.                                                               |
-| Plain text / logs          | `text`                  | When no lexer fits. Still better than bare ```` ``` ````.                           |
+| Content                    | Lexer ID        | Notes                                                                               |
+| :------------------------- | :-------------- | :---------------------------------------------------------------------------------- |
+| Python traceback           | `pytb`          | Full `Traceback (most recent call last):` output.                                   |
+| Python console session     | `pycon`         | `>>>` prompts with output.                                                          |
+| Shell session (Unix)       | `shell-session` | `$` prompts with output. Prefer over `bash` when showing command + output together. |
+| Shell session (PowerShell) | `pwsh-session`  | `PS>` prompts with output.                                                          |
+| PowerShell script          | `pwsh`          | Pure PowerShell code without prompts.                                               |
+| Rust panic / backtrace     | `rust`          | `thread 'main' panicked at...` output.                                              |
+| Go panic                   | `go`            | `goroutine 1 [running]:` output.                                                    |
+| Plain text / logs          | `text`          | When no lexer fits. Still better than bare ```` ``` ````.                           |
 
 Match the lexer to the content, not the project language. A Python project's bug report might include `yaml` for a workflow snippet, `shell-session` for a CLI invocation, and `pytb` for the traceback, all in the same report.

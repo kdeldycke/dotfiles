@@ -26,7 +26,7 @@ This skill automates the detection side: find what drifted, show the delta, and 
 
 **In downstream `awesome-*` repos:** Sync `readme.*.md` files against `readme.md`.
 
-**In the repomatic canonical repo:** Sync `contributing.*.md` against `contributing.md` inside `repomatic/data/awesome_template/.github/`. The awesome-template is the source of truth for contributing guides synced to all downstream repos, so keeping its translations current benefits every downstream project.
+**In the repomatic canonical repo:** When the context shows `CANONICAL_REPO` and `HAS_AWESOME_TEMPLATE`, sync `contributing.*.md` against `contributing.md` inside `repomatic/data/awesome_template/.github/`. The awesome-template is the source of truth for contributing guides synced to all downstream repos, so keeping its translations current benefits every downstream project.
 
 ### Argument handling
 
@@ -35,8 +35,6 @@ This skill automates the detection side: find what drifted, show the delta, and 
 ### Step 1: Discover translation pairs
 
 Find all files matching the `*.{lang}.md` pattern (e.g., `readme.zh.md`, `contributing.fr.md`). For each, identify the English source by stripping the language suffix (e.g., `readme.zh.md` pairs with `readme.md`).
-
-If context shows `CANONICAL_REPO` and `HAS_AWESOME_TEMPLATE`, look inside `repomatic/data/awesome_template/.github/` instead of the repo root.
 
 Report the discovered pairs as a table:
 
@@ -118,9 +116,6 @@ Flag files missing the badge block or with mismatched language entries.
 
 ### Guidelines
 
-- URLs, code blocks, and HTML tags are never translated. They must be identical in source and translation.
-- Section ordering in the translation must match the English source.
-- When drafting translations, match the register and terminology of the existing translated content. Do not impose a different style.
 - For `awesome-falsehood`, sections are in alphabetical order (per `contributing.md`). Verify the translation preserves this.
 - The PR template checklist item "I applied the changes to all translations in `readme.*.md` files" is the contributor-facing enforcement. This skill is the maintainer-facing verification.
 

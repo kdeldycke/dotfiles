@@ -20,9 +20,10 @@ You help users bootstrap a repository to use the reusable GitHub Actions workflo
 
 ### Determine invocation method
 
-- If the context above shows `CANONICAL_REPO`, use `uv run --frozen repomatic init`: without `--frozen`, an edit to `pyproject.toml` makes the local uv relock `uv.lock`.
-- Otherwise, use `uvx -- repomatic init`.
-- Gate the `uvx` form with the supply-chain cooldown: `uvx --exclude-newer '{window}' --exclude-newer-package repomatic=P0D -- repomatic`. Read `{window}` from the `UV_EXCLUDE_NEWER` value of any `.github/workflows/*.yaml`, which `repomatic init` renders from `[tool.repomatic] minimum-release-age`. With no workflow yet, read that key from `pyproject.toml`, and ask the user when it is unset. `--exclude-newer-package` exempts repomatic itself, so a fresh release stays installable while its dependency tree stays gated.
+- If the context above shows `CANONICAL_REPO`, use `uv run --frozen repomatic`: without `--frozen`, an edit to `pyproject.toml` makes the local uv relock `uv.lock`.
+- Otherwise, use `uvx --exclude-newer '{window}' --exclude-newer-package repomatic=P0D -- repomatic`. Read `{window}` from the workflow-level `UV_EXCLUDE_NEWER` of `.github/workflows/tests.yaml` or `release.yaml`, which `repomatic init` renders from `[tool.repomatic] minimum-release-age`. With no workflow yet, read that key from `pyproject.toml`, and ask the user when it is unset. `--exclude-newer-package` exempts repomatic itself, so a fresh release stays installable while its dependency tree stays gated.
+
+References to `<cmd>` below resolve to one or the other.
 
 ### Argument handling
 
@@ -32,7 +33,6 @@ You help users bootstrap a repository to use the reusable GitHub Actions workflo
 ### After running
 
 - Show the generated files and explain what each workflow does.
-- Highlight required next steps: GitHub PAT setup for workflows that need it, GitHub Pages configuration for docs workflows, and any `pyproject.toml` `[tool.repomatic]` configuration options.
 - If existing workflow files were detected, warn about potential conflicts.
 
 ### Next steps
