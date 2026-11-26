@@ -24,7 +24,7 @@ On a repeat call, do not re-list the leftovers. Finish them:
 Collect what this session leaves behind:
 
 - Promises made in the conversation but not delivered: deferred fixes, "later" items, questions parked with a workaround.
-- Working-tree changes this session created or touched, still uncommitted, in every repository it wrote to. List the repositories from this session's file edits and `git -C` calls: the current one, sibling checkouts, and any other folder under git. Run `git status` in each, and name only what this session produced. Never push or post anywhere.
+- Working-tree changes this session created or touched, still uncommitted, in every repository it wrote to. List the repositories from the files this session wrote, by a tool or a script, and from its `git -C` calls. They include the current one, sibling checkouts, and any other folder under git. Run `git status` in each, and name only what this session produced. Never push or post anywhere.
 - Background jobs or processes started here and still running.
 
 **Verify every candidate against the current state before listing it.** The user often fixes, commits, or cleans items by hand between the last prompt and this wrap-up, and a stale item tells them to redo work already done. For each candidate, re-check the evidence: re-run `git status` and `git log` rather than trusting an earlier snapshot, read the file a fix would touch, check whether a deferred report or upstream comment already exists. Drop every item that is already resolved. When an item is only partially done, list only the remainder.
