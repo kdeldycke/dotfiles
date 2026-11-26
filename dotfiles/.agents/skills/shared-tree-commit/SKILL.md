@@ -44,7 +44,7 @@ For each commit, run a plain `git commit` once `git diff --cached --name-only` l
 
 ## Derived artifacts
 
-To regenerate a derived artifact from that reconstruction, export `git archive HEAD` to a scratch directory and run the generator under `uv run --project <scratch>`. A swap of files in the shared tree races the other session.
+To regenerate a derived artifact from that reconstruction, export `git archive HEAD` to a scratch directory and run the generator under `uv run --project <scratch>`. A generator that reads Git, like a version from `git log`, needs a clone instead: `git clone --no-hardlinks <repo> <scratch>`, then run the copy of the generator in the clone. A swap of files in the shared tree races the other session.
 
 ## After your commit
 
