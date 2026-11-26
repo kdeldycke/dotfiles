@@ -1,6 +1,6 @@
 ---
 name: wrapup-session
-description: Close out a coding session. List what is left to do, then persist any lesson worth keeping into agent instructions, skills, memory, or code comments. Use when the user ends a session, asks to wrap up, or runs /bye.
+description: Close out a coding session. List what is left to do, persist any lesson worth keeping into agent instructions, skills, memory, or code comments, and commit the finished work locally. Use when the user ends a session, asks to wrap up, or runs /bye.
 argument-hint: '[focus]'
 ---
 
@@ -10,23 +10,21 @@ This is the last turn of the session: the harness may quit as soon as it settles
 
 ## 1. Repeat invocation
 
-Check the conversation for a closing report from an earlier invocation of this skill: the numbered, labelled to-do list (`T1 Commit:` …, `T2 Push:` …) is its signature. The user may refer to its items by ID. If one is there, this is a repeat call, and the session must end clean this time instead of deferring again.
+Check the conversation for a closing report from an earlier invocation of this skill: the numbered, labelled to-do list (`T1 Decide:` …, `T2 Push:` …) is its signature. The user may refer to its items by ID. If one is there, this is a repeat call, and the session must end clean this time instead of deferring again.
 
 On a repeat call, do not re-list the leftovers. Finish them:
 
 - Settle each `Decide:` item first. Apply the answer the user gave, in the arguments or in a later message. With no answer, apply the recommended one if it changes only the working tree. An item that changes something outside the working tree stays listed until the user answers it.
 - Execute every remaining item in the working tree: apply the deferred fix, write the code or the docs entry, draft the upstream report, delete the scratch files left in a checkout, run the verifications. Re-verify each item first, per § 2: work finished by hand since the last report is done, not to do. Leave an item that another session already works on: its uncommitted edits sit in the files the item touches. Name the remainder instead of redoing it, which collides with that session.
-- The repeat invocation is the user's go-ahead to commit: stage and commit the finished work locally, one commit per strand, following the commit-message rules. A first invocation never commits; a repeat one does.
-- That go-ahead covers the work this session wrote, not a review artifact. A draft issue report, pull request body or review reply stays untracked and stays listed for the user to file or discard.
 - Pushing to a remote and posting to an external service still need the user's own hand. If only such items remain, say the tree is clean and name them.
-- Then run the lessons pass (§ 3) and close with the same two lists (§ 4), near-empty by design.
+- Then run the lessons pass (§ 3), commit the finished work (§ 4), and close with the same two lists (§ 5), near-empty by design.
 
 ## 2. Loose ends
 
 Collect what this session leaves behind:
 
 - Promises made in the conversation but not delivered: deferred fixes, "later" items, questions parked with a workaround.
-- Working-tree changes this session created or touched, still uncommitted. Check `git status` and name only what this session produced. Never push or post anywhere; committing is reserved for the repeat invocation (§ 1).
+- Working-tree changes this session created or touched, still uncommitted, in every repository it wrote to. List the repositories from this session's file edits and `git -C` calls: the current one, sibling checkouts, and any other folder under git. Run `git status` in each, and name only what this session produced. Never push or post anywhere.
 - Background jobs or processes started here and still running.
 
 **Verify every candidate against the current state before listing it.** The user often fixes, commits, or cleans items by hand between the last prompt and this wrap-up, and a stale item tells them to redo work already done. For each candidate, re-check the evidence: re-run `git status` and `git log` rather than trusting an earlier snapshot, read the file a fix would touch, check whether a deferred report or upstream comment already exists. Drop every item that is already resolved. When an item is only partially done, list only the remainder.
@@ -52,21 +50,34 @@ Guards:
 - Read the target file first and dedupe: update an existing rule in place instead of appending a near-duplicate.
 - Write a lesson for the global file as its rule and its fix, in two sentences at most. Leave the story out: no dates, durations, counts or account of what happened, and a version stamp only on a claim about the harness itself. Keep an exact error string when it is how the situation announces itself.
 - Measure the global file before and after the pass (`wc -c`): each lesson adds about 400 characters at most. More means a story stayed in or a narrower home was skipped, so cut until it fits. When the harness warns that the instruction files exceed its size limit, remove at least as much as the pass adds.
-- Apply small, safe edits directly, in the working tree only. Anything larger becomes a one-line proposal, reported as a `Decide:` item in the closing report (§ 4).
+- Apply small, safe edits directly, and let § 4 commit them. Anything larger becomes a one-line proposal, reported as a `Decide:` item in the closing report (§ 5).
 
-## 4. Closing report
+## 4. Local commits
+
+This invocation is the user's go-ahead to commit locally. Before the closing report, commit the session's finished work: the uncommitted changes that § 2 found, and the edits of § 3.
+
+- Make one commit per strand in each repository, and follow the commit-message rules.
+- Before you stage a file, compare its diff with this session's own edits. A file that also holds another session's edits stays a `Commit:` item.
+- Leave out a change that is not finished, like one whose tests fail. Its item stays in **Left to do**.
+- A draft issue report, pull request body or review reply is not finished work. It stays untracked and stays listed for the user to file or discard.
+- Stage a new file with `git -C {repo} add -- {paths}`. Commit with `git -C {repo} commit -- {paths}`, which leaves the rest of the index alone.
+- Make one commit at a time. A signed commit can wait while the user unlocks the key: wait for it to end, then check it with `git -C {repo} log -1 --format='%h %G? %s'`.
+- A commit that the harness refuses stays a `Commit:` item, with the exact `git` command for the user to run.
+- Never push. Each new commit on a branch with a remote becomes a `Push:` item.
+
+## 5. Closing report
 
 End with two short lists, a few words per item: **Done** first, then **Left to do**. Write "none" where a list is empty.
 
 Start each item with an ID, so the user can answer "yes to `T1`" or "drop `T3`". Number **Done** items `D1`, `D2`, … and **Left to do** items `T1`, `T2`, …, like `- T1 Decide: …`. The IDs restart at `1` on each invocation. Keep the whole report under about 15 lines.
 
-**Done** holds what this session finished: lessons persisted and where (with the global file's size before and after, when the pass touched it), plus any tree work completed this turn. A lesson deliberately capped at a suggestion is not done: it moves to **Left to do** as a `Decide:` item instead, so every decision the user owes lives in one list. A lesson examined and skipped because the code, history, or docs already record it appears here as one line: `Skipped: …`, naming where it already lives. The report is exactly these two lists and nothing else.
+**Done** holds what this session finished: lessons persisted and where (with the global file's size before and after, when the pass touched it), plus any tree work completed this turn and each commit made, with its SHA and repository. A lesson deliberately capped at a suggestion is not done: it moves to **Left to do** as a `Decide:` item instead, so every decision the user owes lives in one list. A lesson examined and skipped because the code, history, or docs already record it appears here as one line: `Skipped: …`, naming where it already lives. The report is exactly these two lists and nothing else.
 
 **Left to do** holds every remaining action. Order it so it can be executed top to bottom. `Decide:` items come first, since an answer can add work below them. Then come create-and-fix work, documentation and `Commit:`. The steps only the user can take come last: `Push:`, `Report:`, a merge, a credential to supply. Name each item's target in full: the path, the SHA, the checkout, the upstream project. Say what an item waits on when this session cannot run it: a credential it does not hold, a release not yet published. Prefix each item with an action label naming the verb it needs, so the list is scannable at a glance. Pick the narrowest label that fits:
 
 - `Decide:` a change this session proposed and the user has not approved, like a proposal from the lessons pass, or a choice between options. End the item with the answer you recommend: yes, no, or one option.
 - `Implement:` new code or a feature to write, in this repo or a sibling checkout (name the checkout).
-- `Commit:` uncommitted changes to stage and commit in this repository.
+- `Commit:` uncommitted changes that § 4 left out, with the reason, like another session's edits in the same file.
 - `Push:` commits already made but not on the remote.
 - `Report:` an issue or comment to file upstream. Name the project, and the draft's path once one exists.
 

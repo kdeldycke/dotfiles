@@ -179,7 +179,7 @@ Diagnose any of this from `~/Library/Logs/Claude/main.log`, never the dialog, wh
 
 The [list of writing tropes](dotfiles/.claude/tropes.md) that every session loads draws on [AI writing tropes](https://gist.github.com/ossa-ma/f3baa9d25154c33095e22272c631f5a1), Wikipedia's [Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing), the [declauding](https://github.com/oaustegard/claude-skills/tree/main/declauding) and [deslop](https://github.com/etodanik/deslop) skills, and [load-bearing](https://github.com/louisabraham/load-bearing), a cluster analysis of 461,121 GitHub pull request descriptions.
 
-`/wrapup-session` (the shared [skill](dotfiles/.agents/skills/wrapup-session/SKILL.md)) closes out a session: loose ends, then lessons worth persisting. Claude Code cannot quit after a turn, so run it by hand before exiting; a [`SessionEnd` hook](dotfiles/.claude/hooks/wrapup-session-nudge.py) prints a reminder when an interactive exit skipped it.
+`/wrapup-session` (the shared [skill](dotfiles/.agents/skills/wrapup-session/SKILL.md)) closes out a session: loose ends, lessons worth persisting, then local commits of the finished work. It never pushes. Claude Code cannot quit after a turn, so run it by hand before exiting; a [`SessionEnd` hook](dotfiles/.claude/hooks/wrapup-session-nudge.py) prints a reminder when an interactive exit skipped it.
 
 ### Pi
 
