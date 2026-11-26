@@ -73,6 +73,10 @@ Still end with the commit on local `<branch>`, never on a side branch. Fast-forw
 
 When it staged a hunk in one of your paths, skip the reset for that path: point its entry at the blob of the new commit plus that hunk, with `git update-index --cacheinfo`.
 
+## Move a branch that is not checked out
+
+The user or another session can check out that branch while you build its commits. Read `git symbolic-ref HEAD` right before `git update-ref`, and when it names the branch, move it with `git reset --keep <new>` instead. A move under a checkout leaves the old tree in the index, which `git status` shows as a staged reverse of your commits: run `git read-tree -m -u <old> <new>`, which stops when a path it changes holds local edits.
+
 ## Amend an older unpushed commit
 
 `git rebase` needs a clean tree, and its `--autostash` is the `git stash` that "Undo and compare" forbids. Rebuild the range with plumbing instead, after you check that `git log origin/<branch>..HEAD` lists each of its commits:
