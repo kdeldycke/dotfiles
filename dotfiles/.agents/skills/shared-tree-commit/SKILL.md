@@ -32,7 +32,9 @@ When `git diff` shows your edits and its edits in separate hunks, a filtered pat
 4. Prove the result: `git diff --cached -- <path>` shows only your hunks, and `git diff -- <path>` shows only its hunks.
 5. Commit with a plain `git commit` once `git diff --cached --name-only` lists only your paths.
 
-Use the blob route when one hunk holds edits of both sessions.
+Use the blob route when one hunk holds edits of both sessions, and for a file the other session keeps editing, like a changelog: it can change between your check of its diff and `git commit -- <path>`.
+
+When `git diff --cached --name-only` also lists files the other session staged, commit on a temporary index instead: `GIT_INDEX_FILE=<scratch> git read-tree HEAD`, `update-index` your blobs, `write-tree`, then `git commit-tree -S <tree> -p HEAD`. Move the branch as "Commit authorized, push not authorized" says.
 
 ## Edits built on its uncommitted work
 
@@ -82,7 +84,7 @@ The user or another session can check out that branch while you build its commit
 `git rebase` needs a clean tree, and its `--autostash` is the `git stash` that "Undo and compare" forbids. Rebuild the range with plumbing instead, after you check that `git log origin/<branch>..HEAD` lists each of its commits:
 
 1. Take each commit from the target to `HEAD`, oldest first. Read its tree into a temporary index (`GIT_INDEX_FILE=<scratch> git read-tree <sha>`), set the entry of your path to your blob with `git update-index --cacheinfo`, then run `git write-tree`.
-2. Create the new commit with `git commit-tree <tree> -p <new parent> -F -`. Give it the old message on standard input, and the old author in `GIT_AUTHOR_NAME`, `GIT_AUTHOR_EMAIL` and `GIT_AUTHOR_DATE`.
+2. Create the new commit with `git commit-tree <tree> -p <new parent> -F -`. Give it the old message on standard input, read from `git cat-file commit <sha> | sed '1,/^$/d'`: `git log --format=%B` adds a newline that `commit-tree` keeps. Give it the old author in `GIT_AUTHOR_NAME`, `GIT_AUTHOR_EMAIL` and `GIT_AUTHOR_DATE`.
 3. Build the whole range once without `-S`. Check that `git diff --name-only <old head> <new head>` lists only your paths, and that each message and author is unchanged. A check that fails after the signed build wastes one signature for each commit.
 4. Build the range again with `-S`, one commit at a time, then move the branch as "Commit authorized, push not authorized" says.
 
