@@ -276,7 +276,7 @@ What happens instead, with exact error output in code blocks.
 - If multiple distinct failures exist, group them under numbered sub-sections but keep them in one report if they share a root cause. File separate issues if root causes differ.
 - File a second finding as its own issue, cross-referenced, never by broadening the first one's title. The title must still name the fix that closes it.
 - When two new drafts link each other, put the link only in the draft to post second, and name the posting order in the hand-off: a placeholder for the other number gets posted as is when the order flips.
-- When the user sends a posted URL, diff the posted body against the draft before deleting the draft. A hand edit made before posting can break a code span or a link: name the line to fix.
+- When the user sends a posted URL, diff the posted body against the draft before deleting the draft. A hand edit made before posting can break a code span or a link: name the line to fix. A block the user produced anew, like the environment report, has no draft to diff against: check that it names the interpreter and versions the evidence ran with.
 - Keep reproduction steps minimal: strip everything not needed to trigger the bug.
 - Match the depth of the reports the maintainer already accepted: read two or three closed reports of the same kind with their replies, and leave out the checks the maintainer runs themselves. Evidence they would redo only lengthens the report.
 - Do not speculate about fixes unless the root cause is clear from the evidence.
