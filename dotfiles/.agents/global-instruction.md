@@ -549,6 +549,8 @@ Use first-person singular ("I", "my") in all prose written on behalf of the user
 
 Use ":" instead of em dashes for inline elaboration or appositive clauses. That substitutes for the dash. It does not license joining clauses: when the second half is a full thought, a full stop beats a colon and two sentences beat one compound. Reference prose in `docs/` needs this most, and a parenthetical list reads better promoted behind a colon than left in brackets. Keep bold for a whole labelled item, never for emphasis mid-sentence.
 
+Set a section title in italics when prose names it without a link: "see `notes.md`, *If the key is lost*", not "see `notes.md`, If the key is lost". The italics mark where the title starts and ends, so it does not read as part of the sentence. Quote the title exactly as its heading spells it, and use no quotation marks around it. A Markdown link to the section needs no italics.
+
 ## Name every file and URL by its full address
 
 Every file and every URL named in a message carries its complete address: `/Users/kde/code/repomatic/changelog.md`, never `changelog.md` or `scratchpad/draft.md`; `https://github.com/kdeldycke/repomatic/issues/42`, never "the issue above". A bare or relative path is not clickable, and a scratchpad path is unreachable without the session directory in front of it. This binds every message an agent emits, not the final answer alone: a clarifying question, a plan step, a finding, the reason given for a tool call, a draft offered for review. The `file_path:line_number` reference form keeps its line suffix, with the path spelled in full. Put the address in parentheses when it would otherwise break the sentence: "the changelog (`/Users/kde/code/repomatic/changelog.md`) gained one bullet".
