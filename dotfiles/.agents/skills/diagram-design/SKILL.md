@@ -36,7 +36,7 @@ These rules come from the user's reviews of earlier diagrams. Apply all of them 
 ## Labels
 
 - Put each label beside its branch, near the arrowhead first, then along the branch, then along the shared line. A rule with a line of its own may also take a spot by its circle.
-- When no spot is clean, a label breaks onto two lines at its first colon or comma, or steps 12 or 24 pixels further out to clear a line beside its branch.
+- When no spot is clean, a label breaks onto two lines, at its first colon or comma or at the space nearest its middle, or steps 12 or 24 pixels further out to clear a line beside its branch. Score a second line or a step below one crossing, so a clean spot always beats a crossing one.
 - Score candidate spots, and take the one that touches the fewest lines, boxes and borders. A label never sits on a region's border, with a margin of 7 pixels.
 - Give label text a halo in the page's background color (`paint-order: stroke`), so a line under it does not cut through the glyphs.
 
