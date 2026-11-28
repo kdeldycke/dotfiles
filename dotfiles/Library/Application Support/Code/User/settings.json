@@ -5,6 +5,9 @@
   "workbench.colorTheme": "Monokai",
   "workbench.tree.indent": 16,
   "workbench.editor.showIcons": false,
+  "workbench.editorAssociations": {
+    "*.md": "vscode.markdown.editor"
+  },
   "editor.overviewRulerBorder": false,
   "editor.renderLineHighlight": "gutter",
   "editor.renderLineHighlightOnlyWhenFocus": true,
