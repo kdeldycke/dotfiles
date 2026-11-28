@@ -281,15 +281,15 @@ function modelLabel(ctx: ExtensionContext): string {
 	return `${model.provider}:${name}`;
 }
 
-/** pi's fallback name for a session nobody renamed: its creation time, which would read as a clock. */
+/** The name `session-title.ts` gives a new session: its creation time, which reads as a clock. */
 const DEFAULT_SESSION_NAME = /^\d{2}-\d{2}@\d{2}:\d{2}$/;
 
 /**
  * The session name the row prints, before any fitting, or `undefined` for none.
  *
- * pi names an unrenamed session after its creation time, and a frozen timestamp on the row reads
- * as a clock that stalls while the session ages. No row draws a clock, so the stored name earns
- * its column only once it says more: a `/rename`, or the summary `session-title.ts` adds.
+ * `session-title.ts` names a new session after its creation time, and a frozen timestamp on the
+ * row reads as a clock that stalls while the session ages. No row draws a clock, so the stored
+ * name earns its column only once it says more: a `/rename`, or the summary that extension adds.
  */
 function sessionName(ctx: ExtensionContext): string | undefined {
 	const stored = ctx.sessionManager.getSessionName();
