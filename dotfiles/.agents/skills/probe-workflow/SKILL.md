@@ -52,8 +52,8 @@ Measured on hosted `ubuntu-26.04` runners and `alpine:edge` containers, 2026-08.
 ## The iteration loop
 
 1. Push. The `paths:` trigger starts the run.
-2. Watch with `repomatic ci-status --branch <branch> --workflow <subject>-probe.yaml --wait`. It polls in-process, and returns when a required job fails or when the run settles on the pushed commit.
-3. Read the logs with the same command and `--failed-logs <directory>`: it writes one file per failed required job.
+2. Watch with a single-pipeline poll: `until gh api "repos/<OWNER>/<REPO>/actions/workflows/<file>/runs?head_sha=<FULL_SHA>" --jq '.workflow_runs[] | select(.status == "completed") | "DONE " + .conclusion' | grep DONE; do sleep 20; done`. Multi-step shell in background watchers (variables, `set --`, `paste`) fails silently; one pipeline per tick is the shape that survives. Read runs through the API, never `gh run list`: both its forms have put runs weeks old at the top of the list. Give `head_sha` the **full** 40-character SHA, since an abbreviated one matches nothing and returns an empty list that looks identical to "nothing ran", and quote the whole path, since zsh expands the `?` as a glob.
+3. Read `gh run view <id> --log-failed` first, the full `--log` when the failed step's cause sits in an earlier step's output.
 4. Diagnose from measurement, fix exactly one thing, commit with a subject naming the lesson, push again.
 5. A failing gate can indict the probe's staging *or* the code under test. When raw commands succeed where the code fails, the probe has found a real bug: fix it in the codebase with its own tests and changelog entry, and let the probe re-validate.
 

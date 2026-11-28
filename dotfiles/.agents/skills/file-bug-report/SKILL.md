@@ -30,8 +30,6 @@ The writing, rendering and code block rules below apply to replies too.
 
 Before writing anything, exhaustively search for every piece of guidance the maintainers publish about how they want contributions. Do not skip any of these checks: each one can reveal requirements that, if missed, make the report look careless.
 
-When those rules bar AI-written issues or comments, write a fact sheet instead of prose: each fact with its link, for the user to put in their own words, and say so at the top of the file.
-
 #### 1a. Organization-level community health files
 
 GitHub allows organizations to define default community health files in a `.github` repository. These files (CONTRIBUTING.md, CODE_OF_CONDUCT.md, SECURITY.md, SUPPORT.md, issue templates, PR templates) are inherited by every repo in the organization that does not provide its own copy. Resolution is per-file: a repo can override one file while inheriting all others.
@@ -45,6 +43,8 @@ $ gh api repos/<org>/.github/contents/ --jq '.[].name'
 If the repo belongs to an organization (extract `<org>` from `<owner/repo>`), fetch and read every community health file found. Common files: `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, `SUPPORT.md`, `FUNDING.yml`. Some org repos also contain a readme with links to external contribution guides: follow those links.
 
 If the org has no `.github` repo or the request returns 404, skip this step. If the repo owner is a user account rather than an organization, skip this step.
+
+When the repo-level checks in subsequent steps find a file that also exists at the org level, the repo-level file takes precedence. When no repo-level file exists, the org-level file is authoritative.
 
 #### 1b. Contribution guidelines
 
@@ -67,7 +67,7 @@ $ gh api repos/<owner/repo>/contents/docs --jq '.[].name'
 $ gh api repos/<owner/repo>/contents/doc --jq '.[].name'
 ```
 
-Fetch and read every match.
+Look for files matching these patterns (case-insensitive): `contributing.md`, `CONTRIBUTING.md`, `Contributing.md`, `CONTRIBUTING.markdown`, `CONTRIBUTING.rst`, `CONTRIBUTING.txt`, `CONTRIBUTING`, `contributing.adoc`, `CONTRIBUTING.adoc`, or any other variation. Owners may use `.rst`, `.txt`, `.adoc`, `.markdown`, no extension, or non-standard casing. Fetch and read every match.
 
 **Step 3: check the readme** for inline contribution guidance or links to external docs:
 
@@ -201,7 +201,6 @@ Maintainers can diagnose faster when they can see the original context themselve
 - **Source code**: link to the exact file and line(s) in the user's public repo that trigger the bug, using GitHub's permalink format (`https://github.com/<owner/repo>/blob/<sha>/path/to/file.py#L42-L55`). Use a commit SHA, not a branch name, so the link stays stable.
 - **Configuration files**: if the bug depends on a specific config (workflow YAML, `pyproject.toml` section, tool config), link to it.
 - **PR or commit diffs**: if the bug surfaced after a specific change, link to the PR's file diff (e.g., `https://github.com/owner/repo/pull/123/changes#diff-<hash>`) or the commit, not just the PR landing page. The reader should see the relevant change immediately on click.
-- **Confirmations in other projects**: link every report, fix or workaround another project holds for the same behavior, and say what each one confirms. An independent reproduction, or a workaround another maintainer shipped, shows the bug is real. Claim a reproduction only where its thread records one.
 
 Ask yourself: "Can the maintainer click a link and immediately see what I'm describing?" If yes, include the link. If the context is private, quote the relevant snippet inline instead.
 
@@ -231,20 +230,24 @@ A `…/actions/runs/{run}/job/{job}#step:{N}:{line}` link follows non-obvious nu
 
 ### 4. Select the right template
 
-Pick the template by the rules of step 1d. Two cases need the user:
+Based on step 1d, pick the correct template:
 
+- **Bug report template/form found**: use it. Fill in every required field. Preserve the exact field names, order, and structure.
 - **Multiple templates exist but none is a clear bug report match**: report this to the user and ask which template to use.
+- **No templates found**: use the default structure in step 5.
 - **Template chooser disables blank issues and no bug template exists**: warn the user that the repo may not accept bug reports through issues.
 
 ### 5. Write the report
 
-Write the report to a markdown file named `<repo>-bug-report.md`, outside the checkout, in the session's scratch directory. A file at the repository root does not belong to the project, and a broad `git add` can stage it.
+Write a markdown file to `<repo>-bug-report.md` at the repository root (next to `pyproject.toml`). Placing it at the top level makes it obvious and hard to miss during review.
 
-Open the file with a `Title: <clear, specific title>` line. The user pastes it into the title field of the issue, and the body under it holds no H1 heading.
+**If using a template from step 4**, replicate its structure exactly: same headings, same field order, same placeholder comments replaced with actual content. For YAML issue forms, use each field label as a markdown heading and fill in the content.
 
 **If no template exists**, use this default structure:
 
 ```markdown
+# <Clear, specific title>
+
 ## Summary
 
 One paragraph describing what fails and the impact.
@@ -276,9 +279,10 @@ What happens instead, with exact error output in code blocks.
 - If multiple distinct failures exist, group them under numbered sub-sections but keep them in one report if they share a root cause. File separate issues if root causes differ.
 - File a second finding as its own issue, cross-referenced, never by broadening the first one's title. The title must still name the fix that closes it.
 - When two new drafts link each other, put the link only in the draft to post second, and name the posting order in the hand-off: a placeholder for the other number gets posted as is when the order flips.
-- When the user sends a posted URL, diff the posted body against the draft before deleting the draft. A hand edit made before posting can break a code span or a link: name the line to fix. A block the user produced anew, like the environment report, has no draft to diff against: check that it names the interpreter and versions the evidence ran with.
+- When the user sends a posted URL, diff the posted body against the draft before deleting the draft. A hand edit made before posting can break a code span or a link: name the line to fix.
 - Keep reproduction steps minimal: strip everything not needed to trigger the bug.
 - Match the depth of the reports the maintainer already accepted: read two or three closed reports of the same kind with their replies, and leave out the checks the maintainer runs themselves. Evidence they would redo only lengthens the report.
+- Link to CI runs or logs when available.
 - Do not speculate about fixes unless the root cause is clear from the evidence.
 - Do not use em dashes; use colons for inline elaboration.
 - Respect any tone, formatting, or content requirements found in the contribution guidelines. If the guidelines say "include output of `tool --version`", include it. If they say "use the template", use it verbatim.
@@ -292,17 +296,18 @@ The report will be pasted into a GitHub issue (or PR body). Write for GitHub's r
 - **Use `#NNN` shorthand for same-repo references.** GitHub auto-links `#NNN` to issues/PRs in the same repository. Do not write `[#123](https://github.com/owner/repo/issues/123)` or `[Issue #123](...)` when a bare `#123` works. Reserve full URLs for cross-repo references.
 - **Use `@username` for people, not indirect references.** Write "Original example from @octocat" not "The maintainer's example". GitHub renders @-mentions as profile links and notifies the person, which is appropriate in a bug report where they are the relevant party.
 - **Prefer bare URLs over `[text](url)` when the URL IS the information.** GitHub auto-links and previews bare URLs. A markdown link like `[owner/repo#123](https://github.com/owner/repo/pull/123)` adds nothing over the bare URL and is harder to audit. Use `[text](url)` only when the link text adds meaning the URL lacks (e.g., describing what the link shows).
+- **Deep-link to the exact evidence.** When referencing a PR that demonstrates a problem, link to the specific file diff (`/changes#diff-...`), not the PR landing page. When referencing a CI run, link to the specific failed step. The reader should see the evidence immediately on click, not have to navigate.
 - **A code permalink embeds only in its own repository.** GitHub turns `blob/{full-sha}/{path}#L{a}-L{b}`, alone on its line, into a rendered syntax-highlighted snippet, but [only in the repository the link points at](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/creating-a-permanent-link-to-a-code-snippet); a link to any other repository stays a bare URL. Quote a cross-repo excerpt in a fenced block and put the permalink beside it, or the reader gets a naked link where the evidence should be. Use the 40-character commit SHA that `Copy permalink` (`y`) emits, not a tag or a branch name.
 - **Resolve line numbers against the commit you link, never your checkout.** A working tree ahead of the tag shifts every line below the drift, so a range read off a local file lands on the wrong code at the pinned SHA while still looking plausible. Extract the blob first (`git show {sha}:{path}`, or `gh api 'repos/{owner}/{repo}/contents/{path}?ref={sha}' -H "Accept: application/vnd.github.raw"`), grep it for the symbol, and take the range from that output.
 - **Backtick tool and project names in prose.** When a tool name appears outside a hyperlink, wrap it in backticks: `` `mdformat` ``, `` `tabulate` ``. This distinguishes the tool identifier from surrounding prose and is consistent with how code identifiers are formatted.
-- **Keep implementation details out of the body.** The code diff already shows what changed. The issue/PR body should describe the problem and the behavioral fix. Do not walk through the implementation line by line: describe what the fix does, not how the code is structured. Reserve the technical walkthrough for code comments and docstrings.
+- **Keep implementation details out of the body.** The code diff already shows what changed. The issue/PR body should describe the problem and the behavioral fix. Do not walk through the implementation line by line: describe what the fix does, not how the code is structured. Reserve the technical walkthrough for code comments and commit messages.
 
 ### Sanitizing output
 
 Before including any error output, tracebacks, or logs in the report, scrub them for readability and privacy:
 
 - **Strip local paths**: replace long absolute paths (`/Users/kde/code/project/venv/lib/python3.12/site-packages/...`) with short relative equivalents (`site-packages/...` or `.venv/.../`). The maintainer does not need the user's home directory or filesystem layout.
-- **Remove private information**: usernames, home directory names, hostnames, IP addresses, API keys, tokens, internal domain names, email addresses. Scan the entire output before pasting. A private channel like a vendor's support email is no exception. Name a third party's account by its role, and let the user give the address if support asks.
+- **Remove private information**: usernames, home directory names, hostnames, IP addresses, API keys, tokens, internal domain names, email addresses. Scan the entire output before pasting.
 - **Trim repetitive frames**: if a traceback has dozens of recursive or repetitive stack frames, keep the top few, the bottom few, and replace the middle with `... (N frames omitted) ...`. The diagnostic value is in the entry point and the crash site, not 40 identical recursion frames.
 - **Collapse verbose logs**: if CI output is hundreds of lines, extract only the relevant section. Use `<details><summary>Full log</summary>` blocks for longer context the maintainer might need but should not have to scroll past.
 - **Preserve error messages verbatim**: sanitize paths and private data, but never paraphrase or reword the actual error string. Maintainers grep their codebase for exact error messages.
@@ -319,15 +324,20 @@ Clean up code blocks before including them in the report:
 
 Use precise Pygments lexer IDs on fenced code blocks so GitHub renders them with proper syntax highlighting. Never use bare ```` ``` ```` when a specific lexer applies. Common IDs for bug reports:
 
-| Content                    | Lexer ID        | Notes                                                                               |
-| :------------------------- | :-------------- | :---------------------------------------------------------------------------------- |
-| Python traceback           | `pytb`          | Full `Traceback (most recent call last):` output.                                   |
-| Python console session     | `pycon`         | `>>>` prompts with output.                                                          |
-| Shell session (Unix)       | `shell-session` | `$` prompts with output. Prefer over `bash` when showing command + output together. |
-| Shell session (PowerShell) | `pwsh-session`  | `PS>` prompts with output.                                                          |
-| PowerShell script          | `pwsh`          | Pure PowerShell code without prompts.                                               |
-| Rust panic / backtrace     | `rust`          | `thread 'main' panicked at...` output.                                              |
-| Go panic                   | `go`            | `goroutine 1 [running]:` output.                                                    |
-| Plain text / logs          | `text`          | When no lexer fits. Still better than bare ```` ``` ````.                           |
+| Content                    | Lexer ID                | Notes                                                                               |
+| :------------------------- | :---------------------- | :---------------------------------------------------------------------------------- |
+| Python traceback           | `pytb`                  | Full `Traceback (most recent call last):` output.                                   |
+| Python console session     | `pycon`                 | `>>>` prompts with output.                                                          |
+| Shell session (Unix)       | `shell-session`         | `$` prompts with output. Prefer over `bash` when showing command + output together. |
+| Shell session (PowerShell) | `pwsh-session`          | `PS>` prompts with output.                                                          |
+| PowerShell script          | `pwsh`                  | Pure PowerShell code without prompts.                                               |
+| Plain shell commands       | `bash` / `zsh` / `fish` | Pure commands without output.                                                       |
+| JSON output                | `json`                  | API responses, config dumps.                                                        |
+| YAML config                | `yaml`                  | Workflow snippets, config files.                                                    |
+| TOML config                | `toml`                  | `pyproject.toml` sections.                                                          |
+| Rust panic / backtrace     | `rust`                  | `thread 'main' panicked at...` output.                                              |
+| Go panic                   | `go`                    | `goroutine 1 [running]:` output.                                                    |
+| JavaScript error           | `js`                    | Node.js stack traces.                                                               |
+| Plain text / logs          | `text`                  | When no lexer fits. Still better than bare ```` ``` ````.                           |
 
 Match the lexer to the content, not the project language. A Python project's bug report might include `yaml` for a workflow snippet, `shell-session` for a CLI invocation, and `pytb` for the traceback, all in the same report.

@@ -45,8 +45,9 @@ For each binary artifact (`.bin`, `.exe`):
 1. Download via `gh release download`.
 2. Compute SHA256 locally (must match the digest in the scan history, when present).
 3. Check `GET /api/v3/files/{sha256}` to see if VT already has results.
-4. If not found or results are stale (older than 7 days), re-upload with the `scan-virustotal` command above. Its `--poll` option waits for the verdicts.
-5. Handle rate limits (HTTP 429) by waiting 60 seconds and retrying.
+4. If not found or results are stale (older than 7 days), upload via `POST /api/v3/files`.
+5. Poll `GET /api/v3/analyses/{id}` until `status == "completed"`.
+6. Handle rate limits (HTTP 429) by waiting 60 seconds and retrying.
 
 ### Step 3: collect results
 
@@ -83,7 +84,7 @@ Each submission file must be optimized for copy-paste. The maintainer should be 
 - Never write "copy from above" or "see the file section above". Every field value must be spelled out inline at the point of use.
 - For vendors requiring one submission per file: repeat the full form walkthrough for each binary as a separate `## Submission N` section with `---` separators.
 - For vendors accepting a single submission covering multiple files: one section is fine, but list every binary with its full details (SHA256, VT link, detection name, download URL) inline in the text.
-- No placeholders in a pre-written text block: use the actual URLs.
+- Every pre-written text block must include the specific binary's VT scan link, the clean source distribution VT links, and the GitHub release link. No placeholders: use the actual URLs.
 
 #### Dynamic project metadata
 
@@ -103,7 +104,7 @@ User-facing documentation of vendor portals, submission priority, and common iss
 
 - Portal: https://www.microsoft.com/en-us/wdsi/filesubmission?persona=SoftwareDeveloper
 - Requires Microsoft account login. Select "Software developer" on the persona page.
-- **One file per form submission.**
+- **One file per form submission.** Generate a separate `## Submission N` section per flagged binary.
 - Only include binaries where Microsoft's own engine returned `category == "malicious"`. Windows ARM64 binaries are typically not flagged by Microsoft (only by MaxSecure), so check before including.
 - macOS binaries can be flagged by Microsoft too (with `Wacatac` variants): include them if detected.
 - Form fields per binary:
@@ -120,12 +121,13 @@ User-facing documentation of vendor portals, submission priority, and common iss
 | **Definition version**                                               | (leave blank)                                                 |
 | **Additional information**                                           | Paste the text below                                          |
 
-- Additional information: **1900 character limit.** Fit the content of § Common rules for all vendors within it.
+- Additional information: **1900 character limit.** Include: binary's VT scan link, clean `.whl` and `.tar.gz` VT links, GitHub release link, project URL, PyPI URL, license, previous FP reference if found.
 - **Known portal issues:** the upload sometimes fails with CORS errors or stuck progress modals (auth session expiring mid-upload). Workaround: sign out, clear cookies for `microsoft.com` and `wdsiprod.westus.cloudapp.azure.com`, sign back in, submit immediately. Also check the URL doesn't have a duplicated `?persona=SoftwareDeveloper&persona=SoftwareDeveloper` parameter.
 
 ##### BitDefender (engines: `BitDefender`, `ALYac`, `Arcabit`, `Emsisoft`, `GData`, `MicroWorld-eScan`, `VIPRE`)
 
 - Portal: https://www.bitdefender.com/submit/
+- BitDefender's engine powers ~6 downstream vendors. Fixing BitDefender removes the most detections per submission.
 - Only list artifacts flagged by the `BitDefender` engine itself (not downstream).
 - **One file per submission.** Max 25 MB per file upload.
 - The **"Sensitive files / Screenshot" field is mandatory**: instruct the user to take a screenshot of the VT report page showing the BitDefender detection row.
@@ -142,6 +144,7 @@ User-facing documentation of vendor portals, submission priority, and common iss
 | **Description**                  | Paste the pre-written text                                         |
 | **Sensitive files / Screenshot** | Screenshot of the VT report page showing the BitDefender detection |
 
+- Generate one complete `## Submission N` section per binary.
 - **Known portal issues:** the form sometimes returns "Your request could not be registered!" with no details. This is a backend issue on BitDefender's side. Retry later.
 
 ##### ESET (engines: `ESET-NOD32`)
@@ -151,7 +154,8 @@ User-facing documentation of vendor portals, submission priority, and common iss
 - **Single email covering all flagged binaries.** Attach files in a password-protected ZIP (password: `infected`).
 - **Email attachment limit: ~24 MB.** Nuitka binaries are ~23 MB each, so only one binary fits in the ZIP. Attach the first binary and reference all others by SHA256 and direct download URL in the email body so ESET can fetch them.
 - Email subject format: `False positive: {detection_name} in {Project Name} {VERSION}`
-- Email body must list per binary: filename, SHA256, detection name, VT report link, download URL.
+- Email body must list per binary: filename, SHA256, detection name, VT report link, download URL. Also include clean source distribution VT links and GitHub release link.
+- ESET is the most reliable submission channel since it doesn't depend on any web portal being up.
 
 ##### Symantec / Broadcom (engines: `Symantec`)
 
@@ -201,8 +205,9 @@ Then paste the description text listing all binaries with SHA256, VT links, clea
 ##### Avast/AVG (engines: `Avast`, `AVG`)
 
 - Portal: https://www.avast.com/submit-a-sample
-- Include artifacts flagged by either engine.
+- Shared engine: one submission covers both Avast and AVG. Include artifacts flagged by either engine.
 - **One file per submission.** Select "I want to report a false detection (false positive)".
+- Generate one complete `## Submission N` section per binary with all details inline.
 - **Known portal issues:** the form sometimes returns "An internal error occurred while sending the form." This is a backend issue. Retry later.
 
 ##### Sophos (engines: `Sophos`)
@@ -223,6 +228,8 @@ Then paste the description text listing all binaries with SHA256, VT links, clea
 | **Operating System**                     | `Windows`                  |
 | **Why do you want to send this sample?** | Paste the pre-written text |
 | **File**                                 | Upload the exact filename  |
+
+- Generate one complete `## Submission N` section per binary.
 
 #### Common rules for all vendors
 
@@ -257,4 +264,4 @@ Print a summary of what was generated:
 - Submission priority order and expected turnaround times
 - Note any vendor portals known to have intermittent issues (Microsoft, Avast, BitDefender)
 
-Suggest one follow-up: once the vendors process the reports, run the `scan-virustotal` re-upload of step 2 again. It appends the post-submission snapshot to the scan history.
+Suggest a follow-up for after the vendors process the reports: re-running `scan-virustotal --tag v{VERSION} --binaries-dir {dir} --poll --records docs/assets/virustotal-scans.csv --carry-from scan-virustotal` appends the post-submission snapshot to the scan history, keeping the delisting trajectory on record without altering the at-release numbers shown in `docs/binaries.md`.
