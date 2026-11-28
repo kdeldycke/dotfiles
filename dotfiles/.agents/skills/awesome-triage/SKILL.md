@@ -46,16 +46,19 @@ Evaluate the submission against each criterion below. For each, state PASS, FAIL
 - Search existing list entries (`readme.md` and all `readme.*.md`) for the proposed URL or domain.
 - Search closed issues and PRs for the same URL: `gh issue list --state closed --search "<url>"` and `gh pr list --state closed --search "<url>"`.
 - **Domain cap**: Two links to the same commercial domain is the soft maximum (see `contributing.md` FAQ "Why my link was rejected?"). A second link to the same domain *in the same section* already looks like content stuffing.
+- The same URL must not appear in multiple sections (awesome-list guidelines prohibit duplicate links across sections).
 
 #### 3. AI slop detection
 
-This is not covered by `contributing.md`. Look for these signals. **Any two, drawn from this section and §9 in any combination, warrant the `🪫 AI slop` label**; one alone never does, because the label is reputational:
+This is not covered by `contributing.md`. Look for these signals. **Any two, drawn from this section and §9 in any combination, warrant the `AI slop` label**; one alone never does, because the label is reputational:
 
 - The PR body or issue text reads as LLM output (generic phrasing, no specific knowledge of the list's content, template-like structure beyond the actual template).
 - The PR explicitly discloses AI generation (e.g., "Generated with Claude Code", "Created by Copilot").
 - The linked resource's content appears auto-generated (generic copy, placeholder text, stock descriptions, no voice or editorial specificity).
 - The product is not launched (coming soon pages, empty repos). A temporary address is a separate hard check: see §8.
 - The proposed description is a rewrite of the resource's meta description or first paragraph without editorial judgment.
+
+See also §9 for contributor and repo provenance signals — these often reinforce the surface-level slop tells above.
 
 #### 4. Competitive context
 
@@ -76,7 +79,7 @@ This is not covered by `contributing.md`. Look for these signals. **Any two, dra
 - Self-promotion is allowed but must be disclosed. Undisclosed affiliation is a trust signal.
 - Author submissions get more scrutiny on the "marketing vs. genuine content" axis but are not automatically penalized. Many accepted PRs across all four lists are author self-submissions.
 - For commercial content, apply `contributing.md` FAQ "Why my commercial project is not in the list?": prefer open-source repository links over commercial landing pages.
-- When a commercial brand or vendor sits behind the submission (product site, paid SaaS, or a lead-gen funnel pointing at a commercial domain), record the exact brand and domain in the triage analysis.
+- When a commercial brand or vendor sits behind the submission (product site, paid SaaS, or a lead-gen funnel pointing at a commercial domain), record the exact brand and domain in the triage analysis. A declined commercial or self-promotional submission must close its comment with the fixed sponsorship phrase: see § Drafting comments.
 
 #### 7. Formatting and editorial compliance
 
@@ -94,11 +97,11 @@ Check the diff (for PRs) against `contributing.md` §§ Formatting and Editorial
 - **Maintained**: For GitHub repos, check if the project is archived, when the last commit was. Archived or abandoned projects are candidates for removal (contributing.md FAQ "Why removes inactive GitHub projects?"). Check for forks or reboots before recommending deletion.
 - **Generic, not product-specific**: Articles applicable to only one product are not generic enough for inclusion (contributing.md "Why my link was rejected?").
 - **Original, not a rehash of its own sources**: Trace the candidate to its primary source before scoring it. Look for a republication notice ("Originally published at ..."), then diff the body against whatever it links under "further reading" or references. A page that paraphrases Wikipedia row by row without citing it adds an unstable hop and no data: prefer the primary source, and write the software framing into the description yourself, which `contributing.md` section Formatting licenses as "smart editorializing". Same test picks the canonical URL: the author's own domain beats a syndication, an aggregator or a mirror.
-- **Verify every row of a small factual table, not one**: A spot-check that passes says nothing about the rows beside it.
+- **Verify every row of a small factual table, not one**: A spot-check that passes says nothing about the rows beside it. Eight rows cost one fetch of the source to check in full, and one stale row can invalidate the system-impact claim built on it. A triage that scored this check PASS on a single verified row missed both a stale postal-code claim and that the whole table was unattributed Wikipedia paraphrase.
 
 #### 9. Contributor and repo provenance
 
-This is not covered by `contributing.md`. Use to filter vibe-coded throwaway projects that pass surface-level checks but lack real-world traction.
+This is not covered by `contributing.md`. Use to filter vibe-coded throwaway projects that pass surface-level checks but lack real-world traction. Signals here reinforce §3 (AI slop): they count toward the same two-signal bar, in any combination with §3's.
 
 **PR/issue author (the GitHub user)**:
 
@@ -115,7 +118,7 @@ This is not covered by `contributing.md`. Use to filter vibe-coded throwaway pro
 - Commit cadence and authorship: `gh api repos/<owner>/<name>/commits --jq '[.[] | {sha: .sha[:7], date: .commit.author.date, author: .commit.author.name, message: .commit.message | split("\n")[0]}]'`. Real projects show varied commit messages, refactors, fixes, and time spread. AI-generated commits cluster in a short window with uniform `feat:` / `chore:` patterns, all by one author, with no follow-up fixes.
 - Issues, PRs, and contributors from anyone other than the author: their absence in a project claiming to be useful is a signal.
 - Bot-coauthor pattern: AI coding agents in the contributors list (`claude[bot]`, `copilot[bot]`, `devin[bot]`, etc.) alongside a single human and no other human contributors mean the project is one person plus tooling, not collaborative work. Distinct from human-with-AI-assist development, where the human commits under their own name. Infrastructure bots (`dependabot[bot]`, `renovate[bot]`, `github-actions[bot]`) don't count: those are normal hygiene. Check via `gh api repos/<owner>/<name>/contributors --jq '[.[] | {login, type, contributions}]'`.
-- Solo contributor humanness: when the repo has exactly one human contributor, vet that account against the same PR/issue author checks above (account age, profile completeness, follower/following counts, repo portfolio depth, contribution graph activity). Particularly weighty when the solo contributor is *not* the PR submitter: PR opened by account B promoting account A's one-person repo is the alt-account self-promotion pattern. Check via `gh api users/<login>` for profile fields and `gh api users/<login>/repos --jq '[.[] | {name, stars: .stargazers_count, pushed: .pushed_at, fork: .fork}] | sort_by(.pushed) | reverse'` for portfolio shape.
+- Solo contributor humanness: when the repo has exactly one human contributor, vet that account against the same PR/issue author checks above (account age, profile completeness, follower/following counts, repo portfolio depth, contribution graph activity). A < 6-month-old account with 0 followers, no bio, a thin or burst-pattern repo portfolio, and a sparse contribution graph signals a throwaway identity. Particularly weighty when the solo contributor is *not* the PR submitter: PR opened by account B promoting account A's one-person repo is the alt-account self-promotion pattern. Check via `gh api users/<login>` for profile fields and `gh api users/<login>/repos --jq '[.[] | {name, stars: .stargazers_count, pushed: .pushed_at, fork: .fork}] | sort_by(.pushed) | reverse'` for portfolio shape.
 
 **Cross-checks**:
 
@@ -148,9 +151,15 @@ After the verdict, propose 2-3 short, ready-to-post comments that the maintainer
 
 When drafting a rejection or request-for-changes comment:
 
+- Be specific about which criteria were not met.
+
+- Reference `contributing.md` sections where applicable.
+
+- Stay polite and constructive. Contributors may improve and resubmit.
+
 - For AI slop: keep it brief. State the specific tells (e.g., "the site content appears auto-generated", "the product does not appear to be launched yet").
 
-- For a temporary URL: name the address type (a platform default or preview domain).
+- For a temporary URL: name the address type (a platform default or preview domain). Ask for the canonical address only when no other check failed, so the contributor does not resubmit for nothing.
 
 - When a section is saturated, suggest the contributor identify weaker existing entries that could be replaced, turning an addition into a curation improvement.
 
@@ -158,7 +167,7 @@ When drafting a rejection or request-for-changes comment:
 
   > If you want to promote your product, you can purchase a sponsorship to this repository: https://github.com/sponsors/kdeldycke
 
-  Do not substitute the brand or domain into it, do not reword it, and do not backtick the product name inside it. The phrase is generic on purpose: it reads the same to every contributor, it never argues about whether the submission was commercial, and it survives being copied across the four lists unchanged. This mirrors `contributing.md` FAQ "How can I force a link into the list?", which is the paid path around the curation rules.
+  Do not substitute the brand or domain into it, do not reword it, and do not backtick the product name inside it. The phrase is generic on purpose: it reads the same to every contributor, it never argues about whether the submission was commercial, and it survives being copied across the four lists unchanged. This mirrors `contributing.md` FAQ "How can I force a link into the list?", which is the paid path around the curation rules. Record the brand and domain in the triage analysis instead, where the maintainer can see them and the contributor cannot.
 
 ### Broken link triage
 
@@ -172,14 +181,14 @@ For issues reporting broken links (typically automated by the lychee link checke
 
 Suggest applying these labels based on findings:
 
-| Label            | When to apply                                                   |
-| ---------------- | --------------------------------------------------------------- |
-| `🪫 AI slop`     | Any two signals from §3 and §9 combined.                        |
-| `⚖️ curation`    | Involves removing, replacing, or reorganizing existing entries. |
-| `🆕 new link`    | Proposes adding a new resource to the list.                     |
-| `🧑‍🤝‍🧑 duplicate`   | The resource or a near-equivalent is already in the list.       |
-| `🩹 fix link`    | Reports or fixes a broken URL.                                  |
-| `🚫 wont do/fix` | Maintainer decision to not act on the request.                  |
+| Label         | When to apply                                                   |
+| ------------- | --------------------------------------------------------------- |
+| `AI slop`     | Any two signals from §3 and §9 combined.                        |
+| `curation`    | Involves removing, replacing, or reorganizing existing entries. |
+| `new link`    | Proposes adding a new resource to the list.                     |
+| `duplicate`   | The resource or a near-equivalent is already in the list.       |
+| `fix link`    | Reports or fixes a broken URL.                                  |
+| `wont do/fix` | Maintainer decision to not act on the request.                  |
 
 ### Next steps
 

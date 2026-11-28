@@ -117,7 +117,7 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
    $ <cmd> ci-status --branch=<BRANCH> --wait --no-fatal
    ```
 
-   It reads every workflow a push can start (derived from `.github/workflows/`, so its list is wider than the five above), polls in-process at `--interval` (60 seconds by default, which keeps the REST quota intact), prints each run whose verdict changed, and returns the moment a required job fails, or once every run settled and the tip has a run of its own. A matrix job whose name still holds its `${{` template never evaluated, and the report says so. Four traps it settles, so no hand-rolled `jq` has to: a run's own `status` lags its jobs (every monitored workflow can read `queued` while a dozen jobs have already finished, which is indistinguishable from the runner-cap saturation a busy account genuinely hits); a `continue-on-error` probe that crashed hides inside a `success` run conclusion; a run whose `conclusion` is `failure` with *no* failed job is a workflow-level error (an invalid `strategy.matrix` expression, malformed YAML, a missing secret) with no job log to read, which the command flags rather than letting you write off a persistently-red workflow as a known artifact; and a run that was cancelled, or that ran no job, has no failed job and still gives its commit no result, so its verdict reads `cancelled` or `skipped`, never `green`.
+   It reads every workflow a push can start (derived from `.github/workflows/`, so its list is wider than the five above), polls in-process at `--interval` (60 seconds by default, which keeps the REST quota intact), and prints each run whose verdict changed. It returns on the first run that blocks a merge, like one with a failed or cancelled required job, or once every run settled and the tip has a run of its own. A matrix job whose name still holds its `${{` template never evaluated, and the report says so. Four traps it settles, so no hand-rolled `jq` has to: a run's own `status` lags its jobs (every monitored workflow can read `queued` while a dozen jobs have already finished, which is indistinguishable from the runner-cap saturation a busy account genuinely hits); a `continue-on-error` probe that crashed hides inside a `success` run conclusion; a run whose `conclusion` is `failure` with *no* failed job is a workflow-level error (an invalid `strategy.matrix` expression, malformed YAML, a missing secret) with no job log to read, which the command flags rather than letting you write off a persistently-red workflow as a known artifact, unless a required job in it was cancelled, like one no runner picked up, which the command names instead; and a run that was cancelled, or that ran no job, has no failed job and still gives its commit no result, so its verdict reads `cancelled` or `skipped`, never `green`, while a cancelled required job in a run on the tip blocks, since no newer push stopped it.
 
    `ci-status` reads runs through the same `head_sha` endpoint, commit by commit back from the branch tip, and says when the tip has no run yet. A workflow that ran no job on the tip, like `tests.yaml` on a version-bump commit, is read on an earlier commit, and the command names it. A `cancelled` or `skipped` verdict is not a pass: see [§ When supersession never lets a run conclude](#when-supersession-never-lets-a-run-conclude). A workflow with no run on the newest commits falls back to its own run listing, filtered by creation date. Re-read a surprising red or green once before acting on it.
 
@@ -131,15 +131,7 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
 
    **Never hand-roll a poll loop around `gh`.** A loop with no delay fires thousands of requests per minute and exhausts the REST quota (5,000/hour) within minutes. Exhaustion does not just blind your own polling: workflows authenticating with the same PAT start failing server-side with misleading errors (see [§ GitHub API rate-limit exhaustion](references/failure-patterns.md#github-api-rate-limit-exhaustion)).
 
-4. **On any CI failure**, cancel the branch's remaining runs to free runners:
-
-   ```shell-session
-   $ <cmd> cancel-runs --branch=<BRANCH>
-   ```
-
-   The command spares any run whose head commit opens on `[changelog] Release` or `[changelog] Post-release`, the two commits of a release push. The concurrency groups of `release.yaml` and `tests.yaml` apply the same test. Cancelling a release run costs that version its binaries permanently, so never hand-roll the sweep with `gh run cancel`.
-
-   Then fetch the logs of **all** failed required jobs across the workflows (logs are retained after cancellation):
+4. **On any CI failure**, fetch the logs of **all** failed required jobs across the workflows:
 
    ```shell-session
    $ <cmd> ci-status --branch=<BRANCH> --no-fatal --failed-logs <DIR>
@@ -147,7 +139,7 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
 
    One file per failed required job, control sequences stripped, readable the moment the job settled: a failed cell is diagnosed twenty minutes into its slowest sibling's build, since the job-scoped log endpoint answers at once where `gh run view --log-failed` waits for the whole run. Fix them as one batch: different sources surface different issues. Batch only what has *already failed*, never what might still fail. Once every harvested failure is root-caused and fixed, push immediately rather than waiting for undrained cells to surface more: the fresh run supersedes the stale one, and serially waiting out each full matrix is the slow path. Analyze following the [error triage discipline](#error-triage-discipline): stable-job `FAILED`/`AssertionError` lines only. Then match each failure against `references/failure-patterns.md` before fixing anything.
 
-   So the diagnosis is minutes away, not an hour: harvest every failed cell as it lands and keep the run alive for the cells still to report. Cancelling to read logs is never the reason: logs survive cancellation, but they never needed it. **Make the run terminal only when you have a fix**, per the batch-and-push rule above: the stale run has no verification value left once superseded.
+   So the diagnosis is minutes away, not an hour: harvest every failed cell as it lands and keep the run alive for the cells still to report. Cancelling to read logs is never the reason: logs survive cancellation, but they never needed it. **Make the run terminal only when you have a fix**: step 7 cancels it right before the push, since the stale run has no verification value left once superseded.
 
 5. **Fix the root cause** using the combined picture from CI logs and local results. Fix the codebase, not the tests, unless the tests are genuinely wrong. Address mypy and ruff failures together (see [§ mypy/ruff fix oscillation](references/failure-patterns.md#mypy-ruff-fix-oscillation)).
 
@@ -175,7 +167,15 @@ After fixing (step 5-7), the loop restarts from the top: push, run all three cha
 
    If any open autofix PR already contains your fix — a `format-python` branch (ruff's own autofixes), a `sync-repomatic`/`sync-workflow-pins` branch (a bumped workflow pin, or a spliced-in `--exclude-newer-package repomatic=P0D` cooldown exemption carrying no version bump at all — that one is the whole fix when the `metadata` job cannot resolve its own pin), or another `sync-*`/`fix-*` branch — prefer merging it over authoring your own commit: GitHub signs the merge commit server-side, so this sidesteps a local hardware-key signing prompt entirely. If it resolves the failure, merge it (`gh pr merge <n> --squash --delete-branch`), pull, and rebase your fix before pushing — or skip your own commit if the merge is the whole fix. If `gh pr merge` is denied outright (a standing `permissions.deny` on the verb, not a retryable prompt), see [§ PR-merge permission wall](references/failure-patterns.md#pr-merge-permission-wall).
 
-7. **Commit the fix** with a clear message describing what changed and why, then `git push`.
+7. **Commit the fix** with a clear message describing what changed and why. Before a push that goes out at once, cancel the branch's remaining runs to free runners, then `git push`:
+
+   ```shell-session
+   $ <cmd> cancel-runs --branch=<BRANCH>
+   ```
+
+   The command spares any run whose head commit opens on `[changelog] Release` or `[changelog] Post-release`, the two commits of a release push. The concurrency groups of `release.yaml` and `tests.yaml` apply the same test. Cancelling a release run costs that version its binaries permanently, so never hand-roll the sweep with `gh run cancel`.
+
+   After the cancel, `ci-status` reports each required job it stopped on the tip as `required job cancelled`, with a `gh run rerun` command. Do not run that command: your cancel stopped the job, and your fix push moves the tip past that run.
 
    When the fix corrects a *user-facing* bug, add a `changelog.md` entry **only when the bug reached a released version**. Blame the changed line against the last release tag (`git blame`, or `git log -S`): a bug introduced *and* fixed within the current unreleased cycle never shipped, so it gets no entry; a bug that predates the last tag is a real regression and does. Making this call here keeps a parent `/repomatic-ship` run from having to add or drop entries afterward.
 

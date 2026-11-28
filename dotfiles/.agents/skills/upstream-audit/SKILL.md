@@ -57,7 +57,7 @@ Determine the GitHub username from `gh api /user --jq '.login'` or `git config u
 
 Extract dependencies from `pyproject.toml` (both `[project.dependencies]` and `[project.optional-dependencies]`/`[dependency-groups]`). For each dependency, find its GitHub repository:
 
-- Read the `Project-URL` metadata of the installed package: `uv run --frozen python -c "from importlib.metadata import metadata; print(metadata('<pkg>').get_all('Project-URL'))"`. Or read `https://pypi.org/pypi/<pkg>/json`.
+- Check PyPI metadata: `pip show <pkg>` or `https://pypi.org/pypi/<pkg>/json`
 - Check `uv.lock` for source URLs
 
 Also include significant build/test/docs dependencies (Sphinx themes, pytest plugins, linters) that the project interacts with.
@@ -133,7 +133,7 @@ git log --all --oneline --grep="github.com/" | head -100
 Search the codebase for inline issue references:
 
 ```
-git grep -nE 'github\.com/.*/(issues|pull)/' -- '*.py'
+grep -rn 'github\.com/.*/\(issues\|pull\)/' src/ lib/ --include="*.py" | grep -v __pycache__
 ```
 
 Also check `docs/` and any changelog for upstream references.
@@ -159,11 +159,17 @@ To determine whether the project has a workaround for an issue, search the codeb
 
 #### 7. Build the page
 
-Write the document following the five-section structure.
+Write the document following the five-section structure. Within "Code contributed upstream", group PRs by upstream project and optionally by theme (for projects with many PRs). Within "Addressed by this project", group by feature area rather than by upstream project.
 
 Give a project its own heading in one section only when `docs/conf.py` loads `sphinx.ext.autosectionlabel`: a repeated heading raises a duplicate-label warning. Elsewhere, write `project#N` in the item's link text.
 
 Wrap an item whose title quotes a misspelling in `<!-- typos:off -->` and `<!-- typos:on -->` lines, or the `fix-typos` job rewrites the title.
+
+Use the `{octicon}` title format if sphinx-design is available (check `docs/conf.py` for the extension):
+
+```markdown
+# {octicon}`cross-reference` Upstream
+```
 
 ### Auditing an existing page (`audit`)
 
