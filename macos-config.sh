@@ -730,8 +730,10 @@ defaults write NSGlobalDomain AppleEnableSwipeNavigateWithScrolls -bool true
 defaults -currentHost write NSGlobalDomain com.apple.trackpad.threeFingerHorizSwipeGesture -int 1
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerHorizSwipeGesture -int 1
 
-# Disable “natural” (Lion-style) scrolling
-defaults write NSGlobalDomain com.apple.swipescrolldirection -bool false
+# Keep the macOS default, “natural” scrolling: the content follows the fingers,
+# as on a touch screen. The delete undoes an older override of this script, and
+# fails when the key is already absent.
+defaults delete NSGlobalDomain com.apple.swipescrolldirection || true
 
 # Enable full keyboard access for all controls
 # (e.g. enable Tab in modal dialogs)
