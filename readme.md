@@ -15,9 +15,7 @@ Dot-files and system configuration for Python developers on **macOS** with Apple
 
 ## Pre-installation
 
-We will reinstall macOS from scratch.
-
-1. Download macOS from the `App Store.app`.
+1. To reinstall a Mac from scratch, download macOS from the `App Store.app`. A new Mac starts at step 3.
 
 2. Plug a USB drive to your machine, format it with the Disk Utility app, double-check it is mounted at `/Volumes/Untitled`, and finally [flash it with the macOS image](https://support.apple.com/en-us/HT201372):
 
@@ -25,43 +23,36 @@ We will reinstall macOS from scratch.
    $ sudo /Applications/Install\ macOS\ 27\ Golden\ Gate.app/Contents/Resources/createinstallmedia --volume /Volumes/Untitled --nointeraction
    ```
 
-3. Reboot your machine, reinstall macOS, create a user.
+   Then start the Mac from the USB drive, and reinstall macOS.
 
-4. Login to your new user, and launch `System Preferences.app`.
+3. Create a user, and log in.
 
-5. Go to `Security & Privacy` → `Privacy` → `Click the lock to make changes`, and then unlock with touch ID or password:
-
-   ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/system-preferences-security-privacy-unlock.png)
-
-6. Go to `Full Disk Access`, click the `+` button, go to `Applications` → `Utilities`, and choose `Terminal.app`:
+4. In `System Settings.app` → `Privacy & Security` → `Full Disk Access`, click the `+` button, go to `Applications` → `Utilities`, and choose `Terminal.app`:
 
    ![](https://raw.githubusercontent.com/kdeldycke/dotfiles/main/assets/terminal-full-disk-access.png)
 
 ## Install
 
-1. First, you need a local copy of this project.
-
-   If you're lucky and have `git` already installed on your machine, do:
+1. Install the Command Line Tools, which provide `git`:
 
    ```shell-session
-   $ cd ~
-   $ git clone --recursive https://github.com/kdeldycke/dotfiles.git
+   $ xcode-select --install
    ```
 
-   If you don't have `git` yet, fetch an archive of the repository:
+   Wait until the installer window says the software was installed. On a new Mac, `git` is only a stub: a `git clone` run before this step starts the same installer, clones nothing, and must run again.
+
+2. Clone this repository into `~/code/dotfiles`, the path that the agent instructions and skills name:
 
    ```shell-session
-   $ mkdir ~/dotfiles
-   $ cd ~/dotfiles
-   $ curl -fsSL https://github.com/kdeldycke/dotfiles/tarball/main | tar --strip-components 1 -xvzf -
+   $ git clone https://github.com/kdeldycke/dotfiles.git ~/code/dotfiles
    ```
 
-2. Now you can install the dotfiles on your system:
+3. Install the dotfiles:
 
-```shell-session
-$ cd ~/dotfiles
-$ /bin/zsh ./install.sh 2>&1 | tee ./install.log
-```
+   ```shell-session
+   $ cd ~/code/dotfiles
+   $ /bin/zsh ./install.sh 2>&1 | tee ./install.log
+   ```
 
 ### Stages
 
