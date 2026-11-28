@@ -45,7 +45,7 @@ These rules come from the user's reviews of earlier diagrams. Apply all of them 
 - A box is something the reader owns or manages. Something outside, like the internet, is not a box: draw a borderless tint that fades out toward the page's edge and at both ends. Keep its side that faces the arrows sharp, so the arrows touch it.
 - A container, like a zone, holds its members as small boxes: a name line, then a detail line.
 - A tunnel inside a link is a double-bordered tube inside the link's box. The edge that leaves the tunnel for its far end is a double line in the tube's color, since its traffic stays encrypted until there.
-- Planned members get a dashed grey border.
+- A planned member gets a dashed grey border and subtle oblique stripes behind it, in the diagram and in the table row that lists it: a `repeating-linear-gradient` at 135 degrees, 5-pixel bands, the planned color at 14% over the background. The legend shows a striped swatch.
 - Sections of one device are split by dotted lines that run from one border to the other, with no margin. Dashed lines mean planned, so they never split sections.
 
 ## Text, chips, badges and icons
