@@ -95,6 +95,11 @@ run_stages=("$@")
 
 ######### Pre-checks #########
 
+# Every stage reads its files relative to the repository, like
+# `dotfiles/.ssh/config` or `./packages.toml`, so run from there whatever the
+# caller's current directory.
+cd "${0:A:h}"
+
 # Detect platform.
 if [ "$(uname -s)" != "Darwin" ]; then
     echo "These dotfiles only targets macOS."
@@ -308,6 +313,10 @@ stage_packages() {
     if (( ! ${+commands[brew]} )); then
         # Install Homebrew without prompting for user confirmation.
         NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        # The installer puts brew on the PATH of later shells only, through
+        # /etc/paths.d/homebrew. Without this line, every brew and mpm call
+        # below fails with `command not found`.
+        eval "$(/opt/homebrew/bin/brew shellenv)"
     fi
 
     # Activate brew analytics in GitHub actions, to prevent overzealous maintainers for
