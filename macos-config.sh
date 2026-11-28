@@ -130,8 +130,15 @@ fi
 # General UI/UX                                                               #
 ###############################################################################
 
-# Transform '  |   "model" = <"MacBookAir8,1">' to 'MBA'
-COMPUTER_MODEL_SHORTHAND=$(ioreg -c IOPlatformExpertDevice -d 2 -r | grep '"model" =' | python3 -c "print(''.join([c for c in input() if c.isupper()]))")
+# Shorten the Model Name to the capitals of each word, or its first letter when
+# it has none: "MacBook Pro" gives "MBP", "Mac Studio" gives "MS" and "Mac mini"
+# gives "MM". The model identifier does not work: on Macs since 2023 it reads
+# like "Mac15,3", whose capitals give a bare "M".
+COMPUTER_MODEL_SHORTHAND=$(system_profiler SPHardwareDataType -json | python3 -c "
+import json, sys
+name = json.load(sys.stdin)['SPHardwareDataType'][0]['machine_name']
+print(''.join(''.join(c for c in w if c.isupper()) or w[0].upper() for w in name.split()))
+")
 COMPUTER_NAME="$(whoami)-${COMPUTER_MODEL_SHORTHAND}"
 # Set computer name (as done via System Settings → General → About)
 sudo scutil --set ComputerName "${COMPUTER_NAME}"
