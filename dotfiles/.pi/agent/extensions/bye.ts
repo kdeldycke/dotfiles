@@ -33,28 +33,6 @@
  * wrap-up (or typing anything after `/bye`) cancels the auto-quit rather
  * than quitting under the user.
  *
- * ## The resume-line rewrite
- *
- * Up to pi 1.5.2, pi prints its own exit hint as one line, `To resume this
- * session: pi --session <id>`, from core (`interactive-mode.ts`), after
- * `session_shutdown` handlers run. A triple-click on that line selects the
- * label with the command, so the paste is not runnable. This extension
- * rewrites the chunk during the shutdown window: the label keeps its line,
- * the command gets the next one. The match is anchored to the label, its
- * optional dim escape and the space after them, so no other write in that
- * window changes. A pi release that prints the command on its own line
- * writes no such space, so the rewrite leaves its hint unchanged.
- *
- * ```{todo}
- * Delete `rewriteResumeLineOntoItsOwn()`, its `resumeLineRewritten` flag, its
- * call and this section once the installed pi includes
- * [earendil-works/pi@63dec26](https://github.com/earendil-works/pi/commit/63dec2621d3cb2e1f4d7cefd6df061e78c6de979).
- * That commit puts the command on its own line. pi 1.5.2 does not include it.
- * A release that includes it cites
- * [earendil-works/pi#12237](https://github.com/earendil-works/pi/issues/12237)
- * in its `CHANGELOG.md`.
- * ```
- *
  * ## The nudge
  *
  * A plain `/quit` or Ctrl+D on a session with real user turns prints a dim
@@ -201,28 +179,8 @@ export default function (pi: ExtensionAPI) {
 		ctx.shutdown();
 	});
 
-	/** Installed once per process, from the first quit through process exit. */
-	let resumeLineRewritten = false;
-
-	/** Put pi's exit resume command on its own line, for terminal line selection. */
-	function rewriteResumeLineOntoItsOwn(): void {
-		if (resumeLineRewritten) return;
-		resumeLineRewritten = true;
-		const original = process.stdout.write.bind(process.stdout);
-		process.stdout.write = ((chunk: unknown, ...rest: unknown[]): boolean => {
-			if (typeof chunk === "string") {
-				return (original as (...args: unknown[]) => boolean)(
-					chunk.replace(/(To resume this session:(?:\x1b\[[0-9;]*m)?) /, "$1\n"),
-					...rest,
-				);
-			}
-			return (original as (...args: unknown[]) => boolean)(chunk, ...rest);
-		}) as typeof process.stdout.write;
-	}
-
 	pi.on("session_shutdown", async (event, ctx) => {
 		if (event.reason !== "quit" || ctx.mode !== "tui") return;
-		rewriteResumeLineOntoItsOwn();
 		if (armed) return;
 		if (!hasRealUserTurns(ctx)) return;
 		// The runtime object behind ReadonlySessionManager is the full SessionManager;
