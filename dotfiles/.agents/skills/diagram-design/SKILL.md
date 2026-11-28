@@ -1,6 +1,6 @@
 ---
 name: diagram-design
-description: Load at the start of any task whose deliverable is a diagram or a page that draws one, in HTML, SVG or Mermaid, like a network, zone, flow or architecture diagram. Gives the house visual conventions for edges, shared lines, labels, regions, chips, badges and icons, the layout method, and the render checks that keep boxes apart at every window width.
+description: Load at the start of any task whose deliverable is a diagram or a page that draws one, in HTML, SVG or Mermaid, like a network, zone, flow or architecture diagram. Gives the house visual conventions for edges, shared lines, labels, regions, chips, badges and icons, the layout method, an optional gallery of layout alternatives for the user to choose from, and the render checks that keep boxes apart at every window width.
 compatibility: 'Designed for Claude Code. Recommended model: Opus.'
 argument-hint: '[path/to/page.html]'
 ---
@@ -73,9 +73,39 @@ These rules come from the user's reviews of earlier diagrams. Apply all of them 
 - Ship the page in the stacked layout, and let the script switch it: without the script, the reader still gets every rule in words.
 - Draw once, in the same task as the script loads, then again on `resize` and `document.fonts.ready`. A headless browser can skip `requestAnimationFrame`, so never make the first draw wait for it.
 
-## Choosing a layout
+## Optional phase: a gallery of layouts
 
-When the user asks for options, or calls a layout busy, build a gallery of at least 20 variants from different placement methods: Graphviz `dot` and `neato` (read positions from `-Tjson`), ELK layered with `INCLUDE_CHILDREN` (child positions are relative to the parent), and hand-placed rows with shared lines. Show each variant with the same content, and let the user choose.
+Run this phase when the user asks for options, or calls a diagram busy. Offer it before the first draft when the content has many crossing flows. The user picks a layout by its number, and only then do you build the page with the rest of this skill.
+
+1. Scope it. Draw only the part under redesign, and leave out a part the user called fine. Every variant draws the same content, at the same scale.
+2. Build at least 20 variants, from the families below, as one local HTML page in the scratchpad. Use inline SVG, one card per variant. Each card shows:
+   - a number (`V01` …) and a short name;
+   - a tag for its family, and one for each constraint the real page needs, like "keeps one row per group";
+   - a "Nodes:" line naming the placement method, and an "Edges:" line naming the routing method.
+3. Make the cards live: hover a member to light its edges, as on the final page.
+4. Open the page in an installed browser, never a hosted service. Ask for the number of the layout, with a recommendation and its reason in one line.
+
+| Family          | Variants                                                                                                                                                                                           |
+| :-------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Rows            | One row per group, members placed over their partners. Edges as tracks in the gap between rows, as curves, as one shared line per source (a confluent drawing), or as the rules written in the gap |
+| List            | One row per member, edges as arcs beside the list; BioFabric, with members as lines and edges as vertical segments                                                                                 |
+| Layered         | Graphviz `dot`, top to bottom with splines, or with orthogonal edges; ELK layered with ports; `dot` left to right                                                                                  |
+| Linear          | Lifelines, one row per rule, like a sequence diagram; members on one axis, with arcs above for one direction and below for the other                                                               |
+| Tabular         | Adjacency matrix: a filled cell is a rule, an empty one a block                                                                                                                                    |
+| Bipartite       | Sources in a left column, targets in a right one                                                                                                                                                   |
+| Small multiples | One panel per busy member, rules in from the left and out to the right                                                                                                                             |
+| Force           | Graphviz `fdp` with groups as boxes; `neato` stress, with each group as a hull                                                                                                                     |
+| Packing         | Graphviz `osage`; a `patchwork` treemap with arrows on top                                                                                                                                         |
+| Radial          | A ring with group arcs; edges bundled through group centers; `twopi` around a hub; rings by trust; a hive plot; a chord diagram                                                                    |
+
+What each method needs:
+
+- Graphviz: render with `-Tjson`, and read the cluster `bb`, the node `pos`, the edge `pos` spline points and the label `lp` and `xlp`. Flip y, since Graphviz counts from the bottom. Write edges with `dir=none` so they end at the box borders, and draw the arrowheads yourself. Reverse an edge that points up, for the ranking, and fix the group order with invisible edges and `rank=same`. `concentrate=true` merges nothing on such graphs, so build shared lines by hand. A group too wide for one rank splits into two, through invisible edges.
+- `neato`: hold each group together with invisible edges between all its members (`len=0.5`, `weight=12`), give the real edges `len=1.5`, then draw a hull around each group.
+- ELK: run `elkjs` under Node (install it with a cooldown) and set `elk.hierarchyHandling` to `INCLUDE_CHILDREN`. A child's position is relative to its parent, so add the parent's.
+- Text width, outside a browser: measure with Pillow and the system font at the browser's optical size. Use `ImageFont.truetype("/System/Library/Fonts/SFNS.ttf", size * 8)`, then `set_variation_by_axes([100, max(17, size), 400, weight])`, and divide the length by 8. That matches Chromium within about 2%. Without the optical size, SF Pro measures at its default size of 28, and text overflows its boxes.
+
+The gallery is working material: leave it in the scratchpad, and keep only the chosen layout.
 
 ## Checks
 
