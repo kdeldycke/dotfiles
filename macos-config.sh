@@ -763,9 +763,10 @@ defaults write NSGlobalDomain AppleMetricUnits -bool true
 # Show language menu in the top right corner of the boot screen
 sudo defaults write /Library/Preferences/com.apple.loginwindow showInputMenu -bool true
 
-# Set the timezone; see `sudo systemsetup -listtimezones` for other values
-sudo systemsetup -settimezone "Europe/Paris" > /dev/null
-sudo systemsetup -setnetworktimeserver "time.euro.apple.com"
+# Keep the time zone that Setup Assistant chose, or that was set by hand: this
+# script runs on Macs in different countries. Set the clock from Apple's global
+# time server, the macOS default.
+sudo systemsetup -setnetworktimeserver "time.apple.com"
 sudo systemsetup -setusingnetworktime on
 
 # Do not set timezone automatticaly depending on location.

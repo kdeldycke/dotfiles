@@ -12,11 +12,13 @@
 [user]
     name = Kevin Deldycke
     email = kevin@deldycke.com
-    # Literal public key from Secretive's Secure Enclave, avoids a path into
-    # the macOS sandbox container.
+    # The public half of the Secretive key that signs commits. The private half
+    # never leaves the Secure Enclave of its Mac, so each Mac has its own key,
+    # and saves its public half to this path, outside Secretive's sandbox
+    # container. `ssh-keygen` finds the private half through the agent.
     # https://github.com/maxgoedjen/secretive/issues/262
     # https://github.com/maxgoedjen/secretive/issues/403
-    signingkey = key::ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBMoHo4DGGFpz4PpFfs8fNGP7uotGIxykFU/6QWOLE17tIkJJ6VQkIU66yCYYtLcm7wIWpZwHYsKGnnCNoKQu9LU= GitHub-signin-key@secretive.kde-MBP.local
+    signingkey = ~/.ssh/github_secretive.pub
 [gpg]
     format = ssh
 [gpg "ssh"]

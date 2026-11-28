@@ -118,7 +118,21 @@ This is a list of manual post-installation steps required to fully configure the
 
 ### SSH
 
-Copy the SSH folder (`~/.ssh/`) from Time Machine backups. It holds the keys, which stay out of this repository: `./install.sh links` only links the shared config files into it. It also holds `config.d/`, the private host blocks that the shared `config` includes. After restoring, add the public key to GitHub as both an "Authentication key" and a "Signing key" at https://github.com/settings/keys.
+Secretive keeps its keys in the Secure Enclave, so no backup or copy moves them to another Mac. On each new Mac:
+
+1. In Secretive, create the key for GitHub. Save its public key as `~/.ssh/github_secretive.pub`: `.gitconfig` signs commits with it.
+
+2. Add that public key to GitHub twice, as an "Authentication key" and as a "Signing key", at https://github.com/settings/keys.
+
+3. Add it to [`dotfiles/.ssh/allowed_signers`](dotfiles/.ssh/allowed_signers). Keep the lines of the older Macs, so their commits still verify.
+
+4. Copy `~/.ssh/config.d/` and `~/.ssh/known_hosts` from the old Mac. `config.d/` holds the private host blocks that the shared `config` includes.
+
+`./install.sh links` links only the shared config files into `~/.ssh`. The keys stay out of this repository.
+
+### Proton VPN
+
+Sign in, approve the VPN configuration and the system extensions, and connect once. Then run `./install.sh config` again: the app keeps its preferences in a container that appears at its first start. Make the profiles by hand: the ProtonVPN section of `macos-config.sh` says why.
 
 ### Safari
 

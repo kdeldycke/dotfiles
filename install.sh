@@ -100,6 +100,16 @@ run_stages=("$@")
 # caller's current directory.
 cd "${0:A:h}"
 
+# The terminal running this script needs Full Disk Access: `macos-config.sh`
+# writes into the containers of sandboxed apps, like Safari. No script can
+# grant it, so open its pane and stop before any change. Reading the system
+# TCC database works only with that access. GitHub runners skip the check.
+if (( ! ${+GITHUB_WORKFLOW} )) && ! /bin/cat "/Library/Application Support/com.apple.TCC/TCC.db" > /dev/null 2>&1; then
+    open "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles"
+    echo "Give Full Disk Access to ${TERM_PROGRAM:-this terminal}, restart it, then run this script again." >&2
+    exit 1
+fi
+
 # Detect platform.
 if [ "$(uname -s)" != "Darwin" ]; then
     echo "These dotfiles only targets macOS."
