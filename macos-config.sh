@@ -9,6 +9,12 @@ if (( ${SURVEY:-0} )); then
     set +e
 fi
 
+# This script calls the BSD tools of macOS with flags that only they know, like
+# `chmod -N`. The shell profile puts the uutils and GNU replacements first on
+# the PATH, which reject such flags or prompt where the BSD tools do not: put
+# the system folders back in front.
+export PATH="/usr/bin:/bin:/usr/sbin:/sbin:${PATH}"
+
 # Record when this run started, for `tools/audit_defaults.py --menubar`. A
 # declaration older than this stamp has been applied at least once, which is
 # what separates a key macOS refused from one the script has never reached: a
@@ -390,9 +396,11 @@ net_interfaces=$(networksetup -listallnetworkservices | awk '{gsub(/^*/,""); if(
 for net_service (${(f)net_interfaces}); do
     # Use the DNS servers the network hands out. ProtonVPN answers the lookups
     # itself while it is connected.
-    networksetup -setdnsservers "${net_service}" "Empty"
+    # Some services, like `Thunderbolt Bridge`, take the change from an
+    # administrator only.
+    sudo networksetup -setdnsservers "${net_service}" "Empty"
     # Clear out all search domains.
-    networksetup -setsearchdomains "${net_service}" "Empty"
+    sudo networksetup -setsearchdomains "${net_service}" "Empty"
     # Setup 10G NIC.
     if [ "${net_service}" = "Thunderbolt Ethernet Slot 1, Port 2" ]; then
         networksetup -setMTU "${net_service}" 9000
@@ -630,7 +638,8 @@ sudo chmod 440 /etc/sudoers.d/mscp.tmp
 # Validate before install: a broken sudoers.d file locks sudo out. The .tmp
 # name is skipped by sudo (names with a dot are ignored) until the rename.
 sudo visudo -c -f /etc/sudoers.d/mscp.tmp
-sudo mv /etc/sudoers.d/mscp.tmp /etc/sudoers.d/mscp
+# -f: a rerun replaces the read-only file of the previous run without a prompt.
+sudo mv -f /etc/sudoers.d/mscp.tmp /etc/sudoers.d/mscp
 
 # Activates Touch ID for sudo and make it persistent.
 # See: https://sixcolors.com/post/2023/08/in-macos-sonoma-touch-id-for-sudo-can-survive-updates/

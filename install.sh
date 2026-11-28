@@ -465,42 +465,57 @@ ProtonVPN
     if (( ! ${+GITHUB_WORKFLOW} )); then
         open -a SwiftBar
 
-        # Open Tor Browser at least once in the background to create a default profile.
-        # Then close it after a while to not block script execution.
-        open --wait-apps -g -a "Tor Browser" & sleep 20s; killall "firefox"
-        # Show TorBrowser bookmark toolbar.
-        TB_CONFIG_DIR=$($FIND_CLI "${HOME}/Library/Application Support/TorBrowser-Data/Browser" -maxdepth 1 -iname "*.default")
-        # Heredoc body and its EOF stay unindented: `<<-` strips leading tabs
-        # only, so an indented terminator would never close the document.
-        tee -a "$TB_CONFIG_DIR/xulstore.json" <<-EOF
+        # Open Tor Browser once in the background to create its default profile,
+        # then close it. A first launch can wait on the Gatekeeper dialog for an
+        # app downloaded from the Internet, so wait up to 2 minutes for the
+        # profile folder. Without it, TB_CONFIG_DIR stays empty and every write
+        # below would go to the filesystem root: skip them instead.
+        open -g -a "Tor Browser"
+        TB_CONFIG_DIR=""
+        for _ in {1..24}; do
+            TB_CONFIG_DIR=$($FIND_CLI "${HOME}/Library/Application Support/TorBrowser-Data/Browser" -maxdepth 1 -iname "*.default" 2> /dev/null || true)
+            [[ -n "${TB_CONFIG_DIR}" ]] && break
+            sleep 5
+        done
+        # Let the first start finish writing the profile before closing it.
+        sleep 10
+        killall "firefox" || true
+        if [[ -z "${TB_CONFIG_DIR}" ]]; then
+            echo "Tor Browser created no profile: open it once by hand, then run './install.sh apps' again." >&2
+        else
+            # Show TorBrowser bookmark toolbar.
+            # Heredoc body and its EOF stay unindented: `<<-` strips leading tabs
+            # only, so an indented terminator would never close the document.
+            tee -a "$TB_CONFIG_DIR/xulstore.json" <<-EOF
 {"chrome://browser/content/browser.xhtml": {
     "PersonalToolbar": {"collapsed": "false"}
 }}
 EOF
-        # Set TorBrowser bookmarks in toolbar.
-        # Source: https://yro.slashdot.org/story/16/06/08/151245/kickasstorrents-enters-the-dark-web-adds-official-tor-address
-        # Entries stay unindented: leading blanks would end up in the values.
-        BOOKMARKS="
+            # Set TorBrowser bookmarks in toolbar.
+            # Source: https://yro.slashdot.org/story/16/06/08/151245/kickasstorrents-enters-the-dark-web-adds-official-tor-address
+            # Entries stay unindented: leading blanks would end up in the values.
+            BOOKMARKS="
 https://protonmailrmez3lotccipshtkleegetolb73fuirgj7r4o4vfu7ozyd.onion,ProtonMail,ehmwyurmkort,eqeiuuEyivna
 http://piratebayo3klnzokct3wt5yyxb2vpebbuyjl7m623iaxmqhsd52coid.onion,PirateBay,nnypemktnpya,dvzeeooowsgx
 "
-        TB_BOOKMARK_DB="$TB_CONFIG_DIR/places.sqlite"
-        # Remove all bookmarks from the toolbar.
-        sqlite3 -echo -header -column "$TB_BOOKMARK_DB" "DELETE FROM moz_bookmarks WHERE parent=(SELECT id FROM moz_bookmarks WHERE guid='toolbar_____'); SELECT * FROM moz_bookmarks;"
-        # Add bookmarks one by one.
-        for BM_INFO (${(f)BOOKMARKS})
-        do
-            BM_URL=$(echo $BM_INFO | cut -d',' -f1)
-            BM_TITLE=$(echo $BM_INFO | cut -d',' -f2)
-            BM_GUID1=$(echo $BM_INFO | cut -d',' -f3)
-            BM_GUID2=$(echo $BM_INFO | cut -d',' -f4)
-            sqlite3 -echo -header -column "$TB_BOOKMARK_DB" "INSERT OR REPLACE INTO moz_places(url, hidden, guid, foreign_count) VALUES('$BM_URL', 0, '$BM_GUID1', 1); INSERT OR REPLACE INTO moz_bookmarks(type, fk, parent, title, guid) VALUES(1, (SELECT id FROM moz_places WHERE guid='$BM_GUID1'), (SELECT id FROM moz_bookmarks WHERE guid='toolbar_____'), '$BM_TITLE', '$BM_GUID2');"
-        done
-        sqlite3 -echo -header -column "$TB_BOOKMARK_DB" "SELECT * FROM moz_bookmarks; SELECT * FROM moz_places;"
+            TB_BOOKMARK_DB="$TB_CONFIG_DIR/places.sqlite"
+            # Remove all bookmarks from the toolbar.
+            sqlite3 -echo -header -column "$TB_BOOKMARK_DB" "DELETE FROM moz_bookmarks WHERE parent=(SELECT id FROM moz_bookmarks WHERE guid='toolbar_____'); SELECT * FROM moz_bookmarks;"
+            # Add bookmarks one by one.
+            for BM_INFO (${(f)BOOKMARKS})
+            do
+                BM_URL=$(echo $BM_INFO | cut -d',' -f1)
+                BM_TITLE=$(echo $BM_INFO | cut -d',' -f2)
+                BM_GUID1=$(echo $BM_INFO | cut -d',' -f3)
+                BM_GUID2=$(echo $BM_INFO | cut -d',' -f4)
+                sqlite3 -echo -header -column "$TB_BOOKMARK_DB" "INSERT OR REPLACE INTO moz_places(url, hidden, guid, foreign_count) VALUES('$BM_URL', 0, '$BM_GUID1', 1); INSERT OR REPLACE INTO moz_bookmarks(type, fk, parent, title, guid) VALUES(1, (SELECT id FROM moz_places WHERE guid='$BM_GUID1'), (SELECT id FROM moz_bookmarks WHERE guid='toolbar_____'), '$BM_TITLE', '$BM_GUID2');"
+            done
+            sqlite3 -echo -header -column "$TB_BOOKMARK_DB" "SELECT * FROM moz_bookmarks; SELECT * FROM moz_places;"
 
-        # Force installation of Firefox plugins.
-        # For privacy extensions, see: https://github.com/arkenfox/user.js/wiki/4.1-Extensions
-        wget https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/addon-607454-latest.xpi -O "$TB_CONFIG_DIR/extensions/uBlock0@raymondhill.net.xpi"
+            # Force installation of Firefox plugins.
+            # For privacy extensions, see: https://github.com/arkenfox/user.js/wiki/4.1-Extensions
+            wget https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/addon-607454-latest.xpi -O "$TB_CONFIG_DIR/extensions/uBlock0@raymondhill.net.xpi"
+        fi
 
         # Open IINA at least once in the background to let it register its Safari extension.
         # Then close it after a while to not block script execution.
