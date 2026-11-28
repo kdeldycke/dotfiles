@@ -700,3 +700,5 @@ When producing matplotlib figures, follow the design system at https://github.co
 In plain GFM, where MyST's `(my-anchor)=` is unavailable, the explicit anchor form is `<a id="…"></a>`.
 
 GitHub renders an alert (`> [!NOTE]`, `> [!WARNING]`) only at the top level: nested in `<details>`, a list item or a blockquote, it shows its marker as plain text. There, write an emoji-labelled quote instead, like `> ⚠️ **Warning**: …`.
+
+Give each step of a plan, a roadmap or a to-do list a checkbox: `- [ ]` open, `- [x]` done, and `1. [ ]` for steps that run in order. A parent step stays open until each of its sub-steps is ticked. While a session works through such a file, update it after each exchange that finishes, splits or changes a step: tick the box, add a box for a step found on the way, and rewrite a step done another way to say what was done. Put no date next to a tick: git records when.
