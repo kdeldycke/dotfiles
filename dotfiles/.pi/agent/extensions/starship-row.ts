@@ -289,7 +289,7 @@ const DEFAULT_SESSION_NAME = /^\d{2}-\d{2}@\d{2}:\d{2}$/;
  *
  * pi names an unrenamed session after its creation time, and a frozen timestamp on the row reads
  * as a clock that stalls while the session ages. No row draws a clock, so the stored name earns
- * its column only once it says more: a `/rename`, or the summary `session-title.ts` adds at exit.
+ * its column only once it says more: a `/rename`, or the summary `session-title.ts` adds.
  */
 function sessionName(ctx: ExtensionContext): string | undefined {
 	const stored = ctx.sessionManager.getSessionName();
